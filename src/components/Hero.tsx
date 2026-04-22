@@ -65,8 +65,8 @@ export const Hero = () => {
           </div>
         </div>
 
-        <div className="lg:col-span-5 relative">
-          <div className="relative aspect-[4/5] rounded-2xl overflow-hidden shadow-elegant border border-white/10">
+        <div className="lg:col-span-5 relative flex justify-center lg:justify-end">
+          <div className="relative w-48 md:w-56 aspect-[4/5] rounded-2xl overflow-hidden shadow-elegant border border-white/10">
             <img
               src={new URL("../assets/florian-portrait.png", import.meta.url).href}
               alt="Florian Beermann, Customer Success consultant"
@@ -76,7 +76,7 @@ export const Hero = () => {
           </div>
 
           {/* Floating metric card */}
-          <div className="absolute -bottom-6 -left-6 bg-background rounded-xl shadow-elegant p-5 border border-border max-w-[240px] hidden md:block">
+          <div className="absolute -bottom-6 left-0 lg:-left-6 bg-background rounded-xl shadow-elegant p-5 border border-border max-w-[240px] hidden md:block">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center">
                 <TrendingUp className="h-5 w-5 text-accent" />
