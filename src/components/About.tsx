@@ -1,4 +1,3 @@
-import portrait from "@/assets/florian-portrait.png";
 import { CheckCircle2 } from "lucide-react";
 
 const highlights = [
@@ -16,26 +15,7 @@ const stack = [
 export const About = () => {
   return (
     <section id="about" className="py-24 lg:py-32 bg-background">
-      <div className="container grid lg:grid-cols-12 gap-12 items-start">
-        <div className="lg:col-span-5 lg:sticky lg:top-28">
-          <div className="relative">
-            <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-elegant">
-              <img
-                src={portrait}
-                alt="Florian Beermann"
-                className="h-full w-full object-cover"
-              />
-            </div>
-            <div className="absolute -bottom-4 -right-4 bg-primary text-primary-foreground rounded-xl px-5 py-3 shadow-elegant">
-              <div className="text-xs uppercase tracking-wider opacity-70">
-                Based in
-              </div>
-              <div className="font-semibold">Hamburg, Germany</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="lg:col-span-7 space-y-8">
+      <div className="container max-w-4xl space-y-8">
           <div>
             <div className="inline-block text-xs font-semibold uppercase tracking-wider text-accent mb-4">
               About me
