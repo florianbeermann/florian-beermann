@@ -125,29 +125,29 @@ export const Contact = () => {
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Full name</Label>
-                <Input id="name" required placeholder="Jane Doe" />
+                <Input id="name" name="name" required placeholder="Jane Doe" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Work email</Label>
-                <Input id="email" type="email" required placeholder="jane@company.com" />
+                <Input id="email" name="email" type="email" required placeholder="jane@company.com" />
               </div>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="company">Company</Label>
-                <Input id="company" required placeholder="Acme Inc." />
+                <Input id="company" name="company" required placeholder="Acme Inc." />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="role">Your role</Label>
-                <Input id="role" placeholder="VP Customer Success" />
+                <Input id="role" name="role" placeholder="VP Customer Success" />
               </div>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="size">Company size</Label>
-                <Select>
+                <Select value={size} onValueChange={setSize}>
                   <SelectTrigger id="size">
                     <SelectValue placeholder="Select size" />
                   </SelectTrigger>
@@ -162,7 +162,7 @@ export const Contact = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="tooling">Current CS tooling</Label>
-                <Select>
+                <Select value={tooling} onValueChange={setTooling}>
                   <SelectTrigger id="tooling">
                     <SelectValue placeholder="Select tooling" />
                   </SelectTrigger>
