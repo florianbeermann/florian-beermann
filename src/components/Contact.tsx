@@ -184,6 +184,7 @@ export const Contact = () => {
               <Label htmlFor="message">What would you like to solve?</Label>
               <Textarea
                 id="message"
+                name="message"
                 rows={4}
                 placeholder="Briefly describe your current CS challenge or goal…"
               />
