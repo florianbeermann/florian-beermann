@@ -34,12 +34,6 @@ export const Hero = () => {
           </p>
 
           <div className="flex flex-wrap gap-4">
-            <Button variant="accent" size="xl" asChild>
-              <a href="#contact">
-                Get a CS Audit
-                <ArrowRight className="ml-1 h-4 w-4" />
-              </a>
-            </Button>
             <Button variant="outlineLight" size="xl" asChild>
               <a href="#services">Explore Services</a>
             </Button>
