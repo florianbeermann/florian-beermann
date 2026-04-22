@@ -12,18 +12,45 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Mail, Linkedin, MapPin, ArrowRight } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Contact = () => {
   const [submitting, setSubmitting] = useState(false);
+  const [size, setSize] = useState("");
+  const [tooling, setTooling] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
+    const form = e.currentTarget;
+    const fd = new FormData(form);
+    const payload = {
+      name: String(fd.get("name") || ""),
+      email: String(fd.get("email") || ""),
+      company: String(fd.get("company") || ""),
+      role: String(fd.get("role") || ""),
+      size,
+      tooling,
+      message: String(fd.get("message") || ""),
+    };
+
+    try {
+      const { data, error } = await supabase.functions.invoke("send-contact-email", {
+        body: payload,
+      });
+      if (error || !data?.success) {
+        throw new Error(error?.message || data?.error || "Failed to send");
+      }
       toast.success("Thanks — I'll be in touch within 2 business days.");
-      (e.target as HTMLFormElement).reset();
-    }, 700);
+      form.reset();
+      setSize("");
+      setTooling("");
+    } catch (err) {
+      console.error(err);
+      toast.error("Something went wrong. Please email florian@beermann.xyz directly.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -98,29 +125,29 @@ export const Contact = () => {
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Full name</Label>
-                <Input id="name" required placeholder="Jane Doe" />
+                <Input id="name" name="name" required placeholder="Jane Doe" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Work email</Label>
-                <Input id="email" type="email" required placeholder="jane@company.com" />
+                <Input id="email" name="email" type="email" required placeholder="jane@company.com" />
               </div>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="company">Company</Label>
-                <Input id="company" required placeholder="Acme Inc." />
+                <Input id="company" name="company" required placeholder="Acme Inc." />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="role">Your role</Label>
-                <Input id="role" placeholder="VP Customer Success" />
+                <Input id="role" name="role" placeholder="VP Customer Success" />
               </div>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="size">Company size</Label>
-                <Select>
+                <Select value={size} onValueChange={setSize}>
                   <SelectTrigger id="size">
                     <SelectValue placeholder="Select size" />
                   </SelectTrigger>
@@ -135,7 +162,7 @@ export const Contact = () => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="tooling">Current CS tooling</Label>
-                <Select>
+                <Select value={tooling} onValueChange={setTooling}>
                   <SelectTrigger id="tooling">
                     <SelectValue placeholder="Select tooling" />
                   </SelectTrigger>
@@ -157,6 +184,7 @@ export const Contact = () => {
               <Label htmlFor="message">What would you like to solve?</Label>
               <Textarea
                 id="message"
+                name="message"
                 rows={4}
                 placeholder="Briefly describe your current CS challenge or goal…"
               />
