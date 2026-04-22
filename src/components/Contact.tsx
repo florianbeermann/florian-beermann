@@ -12,18 +12,45 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Mail, Linkedin, MapPin, ArrowRight } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Contact = () => {
   const [submitting, setSubmitting] = useState(false);
+  const [size, setSize] = useState("");
+  const [tooling, setTooling] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
+    const form = e.currentTarget;
+    const fd = new FormData(form);
+    const payload = {
+      name: String(fd.get("name") || ""),
+      email: String(fd.get("email") || ""),
+      company: String(fd.get("company") || ""),
+      role: String(fd.get("role") || ""),
+      size,
+      tooling,
+      message: String(fd.get("message") || ""),
+    };
+
+    try {
+      const { data, error } = await supabase.functions.invoke("send-contact-email", {
+        body: payload,
+      });
+      if (error || !data?.success) {
+        throw new Error(error?.message || data?.error || "Failed to send");
+      }
       toast.success("Thanks — I'll be in touch within 2 business days.");
-      (e.target as HTMLFormElement).reset();
-    }, 700);
+      form.reset();
+      setSize("");
+      setTooling("");
+    } catch (err) {
+      console.error(err);
+      toast.error("Something went wrong. Please email florian@beermann.xyz directly.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
