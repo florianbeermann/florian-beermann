@@ -24,10 +24,7 @@ export const Hero = () => {
           </div>
 
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] text-balance">
-            Scaling{" "}
-            <span className="bg-gradient-to-r from-accent-glow to-accent bg-clip-text text-transparent">
-            </span>{" "}
-            with precision.
+            Scaling with precision.
           </h1>
 
           <p className="text-lg md:text-xl text-white/70 max-w-2xl leading-relaxed">

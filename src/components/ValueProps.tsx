@@ -33,8 +33,7 @@ export const ValueProps = () => {
             What I deliver
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-foreground text-balance">
-            Three levers that move{" "}
-            <span className="text-accent"></span>.
+            Three core levers.
           </h2>
         </div>
 
