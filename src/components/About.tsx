@@ -21,17 +21,17 @@ export const About = () => {
               About me
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-foreground text-balance mb-6">
-              Florian Beermann — Customer Success strategist for B2B SaaS.
+              Florian Beermann - Customer Success strategist for B2B SaaS.
             </h2>
             <p className="text-lg text-muted-foreground leading-relaxed">
               I help SaaS companies turn Customer Success into a measurable
               revenue engine. My career has been built inside category-defining
-              organisations — from hyperscale cloud at Microsoft, to
-              high-growth scale-ups like Personio, Spendesk and HubSpot — with
+              organisations - from hyperscale cloud at Microsoft, to
+              high-growth scale-ups like Personio, Spendesk and HubSpot - with
               a consistent focus on retention, expansion and operational rigour.
             </p>
             <p className="text-lg text-muted-foreground leading-relaxed mt-4">
-              Today I advise CS leaders on building data-driven frameworks that
+              I advise CS leaders on building data-driven frameworks that
               stand up under restructuring, rapid growth or shifting market
               conditions. My approach is pragmatic, metrics-led and grounded
               in years of carrying retention and expansion targets myself.
