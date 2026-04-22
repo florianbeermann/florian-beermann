@@ -19,7 +19,7 @@ const values = [
     icon: Cog,
     title: "CS Ops & Automation",
     description:
-      "Operationalise Customer Success with the right tooling — Gainsight, ChurnZero, Vitally, Salesforce — so your team scales without adding headcount.",
+      "Operationalise Customer Success with the right tooling so your team scales without adding headcount.",
     points: ["Tooling architecture", "Workflow automation", "Reporting layer"],
   },
 ];
@@ -33,8 +33,7 @@ export const ValueProps = () => {
             What I deliver
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-foreground text-balance">
-            Three levers that move{" "}
-            <span className="text-accent">Net Revenue Retention</span>.
+            Three core levers.
           </h2>
         </div>
 

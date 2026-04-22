@@ -24,11 +24,7 @@ export const Hero = () => {
           </div>
 
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] text-balance">
-            Scaling{" "}
-            <span className="bg-gradient-to-r from-accent-glow to-accent bg-clip-text text-transparent">
-              Net Revenue Retention
-            </span>{" "}
-            with precision.
+            Scaling with precision.
           </h1>
 
           <p className="text-lg md:text-xl text-white/70 max-w-2xl leading-relaxed">
@@ -52,7 +48,7 @@ export const Hero = () => {
           <div className="flex flex-wrap gap-8 pt-8 border-t border-white/10">
             {[
               { label: "Years in B2B SaaS CS", value: "6+" },
-              { label: "Clients advised", value: "Enterprise" },
+              { label: "Clients advised", value: "100+" },
               { label: "Focus", value: "NRR & Expansion" },
             ].map((s) => (
               <div key={s.label}>
@@ -84,7 +80,7 @@ export const Hero = () => {
               <div>
                 <div className="text-xs text-muted-foreground">Outcome focus</div>
                 <div className="text-sm font-semibold text-foreground">
-                  Higher NRR, lower churn
+                  Higher NRR, lower churn while keeping operations efficient
                 </div>
               </div>
             </div>

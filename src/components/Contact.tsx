@@ -47,7 +47,7 @@ export const Contact = () => {
 
           <div className="space-y-4">
             <a
-              href="mailto:florian.beermann@gmail.com"
+              href="mailto:florian@beermann.xyz"
               className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-accent transition-smooth group"
             >
               <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center group-hover:bg-accent transition-smooth">
@@ -56,7 +56,7 @@ export const Contact = () => {
               <div>
                 <div className="text-xs text-muted-foreground">Email</div>
                 <div className="font-medium text-foreground">
-                  florian.beermann@gmail.com
+                  florian@beermann.xyz
                 </div>
               </div>
             </a>
