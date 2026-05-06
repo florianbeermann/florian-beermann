@@ -34,7 +34,6 @@ export const Header = () => {
             <LineChart className="h-4 w-4 text-accent-foreground" />
           </div>
           <span className={scrolled ? "text-foreground" : "text-white"}>
-            Beermann<span className="text-accent">.XYZ</span>
           </span>
         </a>
 
