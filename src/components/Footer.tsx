@@ -9,7 +9,6 @@ export const Footer = () => {
             <div className="h-8 w-8 rounded-lg bg-gradient-accent flex items-center justify-center">
               <LineChart className="h-4 w-4 text-accent-foreground" />
             </div>
-            <span></span>
           </div>
           <div className="text-sm text-white/50">
             © {new Date().getFullYear()} Florian Beermann

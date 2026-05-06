@@ -33,8 +33,6 @@ export const Header = () => {
           <div className="h-8 w-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-accent">
             <LineChart className="h-4 w-4 text-accent-foreground" />
           </div>
-          <span className={scrolled ? "text-foreground" : "text-white"}>
-          </span>
         </a>
 
         <nav className="hidden md:flex items-center gap-8">
