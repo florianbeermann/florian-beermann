@@ -9,10 +9,10 @@ export const Footer = () => {
             <div className="h-8 w-8 rounded-lg bg-gradient-accent flex items-center justify-center">
               <LineChart className="h-4 w-4 text-accent-foreground" />
             </div>
-            <span>Beermann<span className="text-accent-glow">.XYZ</span></span>
+            <span></span>
           </div>
           <div className="text-sm text-white/50">
-            © {new Date().getFullYear()} Florian Beermann · Customer Success Consulting
+            © {new Date().getFullYear()} Florian Beermann
           </div>
         </div>
         <div className="flex gap-6 text-sm text-white/70">

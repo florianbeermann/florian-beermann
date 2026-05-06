@@ -21,7 +21,7 @@ export const About = () => {
               About me
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-foreground text-balance mb-6">
-              Florian Beermann - Customer Success strategist for B2B SaaS.
+              Customer Success strategist for B2B SaaS.
             </h2>
             <p className="text-lg text-muted-foreground leading-relaxed">
               I help SaaS companies turn Customer Success into a measurable
