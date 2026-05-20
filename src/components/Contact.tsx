@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Mail, Linkedin, MapPin, ArrowRight } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 
 export const Contact = () => {
   const [submitting, setSubmitting] = useState(false);
@@ -24,23 +23,23 @@ export const Contact = () => {
     setSubmitting(true);
     const form = e.currentTarget;
     const fd = new FormData(form);
-    const payload = {
-      name: String(fd.get("name") || ""),
-      email: String(fd.get("email") || ""),
-      company: String(fd.get("company") || ""),
-      role: String(fd.get("role") || ""),
-      size,
-      tooling,
-      message: String(fd.get("message") || ""),
-    };
+    
+    // Explicitly set state-based values for shadcn select components
+    fd.set("size", size);
+    fd.set("tooling", tooling);
+    fd.set("form-name", "contact");
 
     try {
-      const { data, error } = await supabase.functions.invoke("send-contact-email", {
-        body: payload,
+      const response = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(fd as any).toString(),
       });
-      if (error || !data?.success) {
-        throw new Error(error?.message || data?.error || "Failed to send");
+
+      if (!response.ok) {
+        throw new Error("Form submission failed");
       }
+
       toast.success("Thanks — I'll be in touch within 2 business days.");
       form.reset();
       setSize("");
@@ -120,8 +119,13 @@ export const Contact = () => {
         <div className="lg:col-span-7">
           <form
             onSubmit={handleSubmit}
+            name="contact"
+            data-netlify="true"
             className="bg-card rounded-2xl shadow-elegant border border-border p-8 lg:p-10 space-y-6"
           >
+            <input type="hidden" name="form-name" value="contact" />
+            <input type="hidden" name="size" value={size} />
+            <input type="hidden" name="tooling" value={tooling} />
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Full name</Label>
