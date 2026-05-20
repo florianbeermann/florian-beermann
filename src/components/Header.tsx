@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { LineChart, Menu, X } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 const navLinks = [
   { label: "Value", href: "#value" },
@@ -12,6 +13,8 @@ const navLinks = [
 export const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const location = useLocation();
+  const isHome = location.pathname === "/";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -20,16 +23,22 @@ export const Header = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const showSolidHeader = scrolled || !isHome;
+
+  const getHref = (hash: string) => {
+    return isHome ? hash : `/${hash}`;
+  };
+
   return (
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-smooth ${
-        scrolled
+        showSolidHeader
           ? "bg-background/80 backdrop-blur-xl border-b border-border shadow-card"
           : "bg-transparent"
       }`}
     >
       <div className="container flex h-16 items-center justify-between">
-        <a href="#" className="flex items-center gap-2 font-bold text-lg">
+        <a href={isHome ? "#" : "/"} className="flex items-center gap-2 font-bold text-lg">
           <div className="h-8 w-8 rounded-lg bg-gradient-accent flex items-center justify-center shadow-accent">
             <LineChart className="h-4 w-4 text-accent-foreground" />
           </div>
@@ -39,9 +48,9 @@ export const Header = () => {
           {navLinks.map((l) => (
             <a
               key={l.href}
-              href={l.href}
+              href={getHref(l.href)}
               className={`text-sm font-medium transition-smooth hover:text-accent ${
-                scrolled ? "text-muted-foreground" : "text-white/80"
+                showSolidHeader ? "text-muted-foreground" : "text-white/80"
               }`}
             >
               {l.label}
@@ -51,7 +60,7 @@ export const Header = () => {
 
         <div className="hidden md:block">
           <Button variant="accent" size="sm" asChild>
-            <a href="#contact">Get a CS Audit</a>
+            <a href={getHref("#contact")}>Get a CS Audit</a>
           </Button>
         </div>
 
@@ -61,9 +70,9 @@ export const Header = () => {
           aria-label="Toggle menu"
         >
           {open ? (
-            <X className={scrolled ? "text-foreground" : "text-white"} />
+            <X className={showSolidHeader ? "text-foreground" : "text-white"} />
           ) : (
-            <Menu className={scrolled ? "text-foreground" : "text-white"} />
+            <Menu className={showSolidHeader ? "text-foreground" : "text-white"} />
           )}
         </button>
       </div>
@@ -74,7 +83,7 @@ export const Header = () => {
             {navLinks.map((l) => (
               <a
                 key={l.href}
-                href={l.href}
+                href={getHref(l.href)}
                 onClick={() => setOpen(false)}
                 className="text-sm font-medium text-foreground"
               >
@@ -82,7 +91,7 @@ export const Header = () => {
               </a>
             ))}
             <Button variant="accent" asChild>
-              <a href="#contact" onClick={() => setOpen(false)}>Get a CS Audit</a>
+              <a href={getHref("#contact")} onClick={() => setOpen(false)}>Get a CS Audit</a>
             </Button>
           </div>
         </div>
@@ -90,3 +99,4 @@ export const Header = () => {
     </header>
   );
 };
+
