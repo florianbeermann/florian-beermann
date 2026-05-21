@@ -1,7 +1,7 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useEffect } from "react";
-import { Mail, MapPin, Scale, Phone } from "lucide-react";
+import { Mail, Scale, Phone } from "lucide-react";
 
 export const Imprint = () => {
   useEffect(() => {
@@ -63,21 +63,6 @@ export const Imprint = () => {
 
               {/* Right Column: Detailed legal texts */}
               <div className="md:col-span-2 space-y-8 text-sm sm:text-base text-muted-foreground leading-relaxed">
-                <section className="space-y-3">
-                  <h2 className="text-xl font-bold text-foreground">Anschrift / Address</h2>
-                  <div className="bg-card border border-border rounded-xl p-5">
-                    <div className="flex gap-3">
-                      <MapPin className="h-5 w-5 text-accent shrink-0 mt-0.5" />
-                      <div className="text-foreground font-medium">
-                        Florian Beermann<br />
-                        Hegestr. 31<br />
-                        20249 Hamburg<br />
-                        Germany
-                      </div>
-                    </div>
-                  </div>
-                </section>
-
                 <section className="space-y-3">
                   <h2 className="text-xl font-bold text-foreground">Redaktionell verantwortlich / Responsible for Content</h2>
                   <p>
