@@ -1,7 +1,7 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useEffect } from "react";
-import { ShieldCheck, Mail, MapPin, Scale } from "lucide-react";
+import { ShieldCheck, Mail, MapPin, Scale, Phone } from "lucide-react";
 
 export const Imprint = () => {
   useEffect(() => {
@@ -63,6 +63,15 @@ export const Imprint = () => {
                         </a>
                       </div>
                     </div>
+                    <div className="flex gap-3 pt-2 border-t border-border">
+                      <Phone className="h-5 w-5 text-accent shrink-0 mt-0.5" />
+                      <div>
+                        <div className="text-xs text-muted-foreground">Telefon / Phone</div>
+                        <a href="tel:+491629186291" className="font-medium text-foreground hover:text-accent transition-smooth">
+                          +49 1629186291
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -76,23 +85,12 @@ export const Imprint = () => {
                       <MapPin className="h-5 w-5 text-accent shrink-0 mt-0.5" />
                       <div className="text-foreground font-medium">
                         Florian Beermann<br />
-                        [Strasse und Hausnummer / Street Name and Number]<br />
-                        [PLZ und Ort / ZIP and City]<br />
-                        Hamburg, Germany
+                        Hegestr. 31<br />
+                        20249 Hamburg<br />
+                        Germany
                       </div>
                     </div>
-                    <div className="mt-4 p-3 bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 rounded-lg text-xs flex items-start gap-2">
-                      <span className="font-bold">Hinweis:</span> Bitte ersetzen Sie diese Platzhalter im Repository (src/pages/Imprint.tsx) mit Ihrer vollständigen ladungsfähigen Anschrift, um den deutschen gesetzlichen Pflichten zu entsprechen.
-                    </div>
                   </div>
-                </section>
-
-                <section className="space-y-3">
-                  <h2 className="text-xl font-bold text-foreground">Umsatzsteuer-ID / VAT ID</h2>
-                  <p>
-                    Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:<br />
-                    <span className="font-mono text-foreground">[Umsatzsteuer-ID / VAT ID - falls vorhanden / if applicable]</span>
-                  </p>
                 </section>
 
                 <section className="space-y-3">
@@ -100,9 +98,9 @@ export const Imprint = () => {
                   <p>
                     Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV:<br />
                     <span className="text-foreground font-medium">Florian Beermann</span><br />
-                    [Strasse und Hausnummer / Street Name and Number]<br />
-                    [PLZ und Ort / ZIP and City]<br />
-                    Hamburg, Germany
+                    Hegestr. 31<br />
+                    20249 Hamburg<br />
+                    Germany
                   </p>
                 </section>
 
