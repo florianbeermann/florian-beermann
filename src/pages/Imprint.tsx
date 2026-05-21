@@ -43,8 +43,8 @@ export const Imprint = () => {
                       <Mail className="h-5 w-5 text-accent shrink-0 mt-0.5" />
                       <div>
                         <div className="text-xs text-muted-foreground">E-Mail</div>
-                        <a href="mailto:florian@beermann.xyz" className="font-medium text-foreground hover:text-accent transition-smooth">
-                          florian@beermann.xyz
+                        <a href="mailto:contact@fb-partners.com" className="font-medium text-foreground hover:text-accent transition-smooth">
+                          contact@fb-partners.com
                         </a>
                       </div>
                     </div>

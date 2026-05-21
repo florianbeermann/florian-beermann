@@ -25,7 +25,7 @@ export const Footer = () => {
             </svg>
           </div>
           <div className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Florian Beermann
+            © {new Date().getFullYear()}
           </div>
         </div>
         <div className="flex gap-6 text-sm text-muted-foreground flex-wrap justify-center">
