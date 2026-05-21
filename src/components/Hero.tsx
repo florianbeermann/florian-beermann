@@ -17,37 +17,37 @@ export const Hero = () => {
       <div className="absolute bottom-0 -left-32 h-96 w-96 rounded-full bg-accent-glow/5 blur-3xl" />
 
       <div className="container relative z-10 py-20 grid lg:grid-cols-12 gap-12 items-center">
-        <div className="lg:col-span-7 text-white space-y-8">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 backdrop-blur px-4 py-1.5 text-sm">
-            <Sparkles className="h-3.5 w-3.5 text-accent-glow" />
-            <span className="text-white/90">Customer Success Consulting</span>
+        <div className="lg:col-span-7 text-foreground space-y-8">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-accent/5 px-4 py-1.5 text-sm">
+            <Sparkles className="h-3.5 w-3.5 text-accent" />
+            <span className="text-muted-foreground font-medium">Customer Success Consulting</span>
           </div>
 
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] text-balance">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] text-balance text-foreground">
             Scaling with precision.
           </h1>
 
-          <p className="text-lg md:text-xl text-white/70 max-w-2xl leading-relaxed">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed">
             Data-driven Customer Success frameworks for B2B SaaS. I help
             scale-ups and enterprise teams reduce churn, expand accounts, and
             operationalise CS with measurable outcomes.
           </p>
 
           <div className="flex flex-wrap gap-4">
-            <Button variant="outlineLight" size="xl" asChild>
+            <Button variant="outline" size="xl" asChild>
               <a href="#services">Explore Services</a>
             </Button>
           </div>
 
-          <div className="flex flex-wrap gap-8 pt-8 border-t border-white/10">
+          <div className="flex flex-wrap gap-8 pt-8 border-t border-border">
             {[
               { label: "Years in B2B SaaS CS", value: "6+" },
               { label: "Clients advised", value: "100+" },
               { label: "Focus", value: "NRR & Expansion" },
             ].map((s) => (
               <div key={s.label}>
-                <div className="text-2xl font-bold text-white">{s.value}</div>
-                <div className="text-xs uppercase tracking-wider text-white/50 mt-1">
+                <div className="text-2xl font-bold text-foreground">{s.value}</div>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">
                   {s.label}
                 </div>
               </div>
@@ -56,13 +56,13 @@ export const Hero = () => {
         </div>
 
         <div className="lg:col-span-5 relative flex justify-center lg:justify-end">
-          <div className="relative w-48 md:w-56 aspect-[4/5] rounded-2xl overflow-hidden shadow-elegant border border-white/10">
+          <div className="relative w-48 md:w-56 aspect-[4/5] rounded-2xl overflow-hidden shadow-elegant border border-border">
             <img
               src={new URL("../assets/florian-portrait.png", import.meta.url).href}
               alt="Florian Beermann, Customer Success consultant"
               className="absolute inset-0 h-full w-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-transparent" />
           </div>
 
           {/* Floating metric card */}

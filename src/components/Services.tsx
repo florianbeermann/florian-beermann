@@ -45,16 +45,16 @@ const services = [
 
 export const Services = () => {
   return (
-    <section id="services" className="py-24 lg:py-32 bg-primary text-primary-foreground relative overflow-hidden">
-      <div className="absolute top-0 right-0 h-96 w-96 rounded-full bg-accent-glow/5 blur-3xl" />
+    <section id="services" className="py-24 lg:py-32 bg-slate-50 border-y border-border relative overflow-hidden">
+      <div className="absolute top-0 right-0 h-96 w-96 rounded-full bg-accent/5 blur-3xl" />
       <div className="container relative">
         <div className="max-w-2xl mb-16">
-          <div className="inline-block text-xs font-semibold uppercase tracking-wider text-accent-glow mb-4">
+          <div className="inline-block text-xs font-semibold uppercase tracking-wider text-accent mb-4">
             Engagements
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-balance">
+          <h2 className="text-4xl md:text-5xl font-bold text-balance text-foreground">
             Detailed engagements built around{" "}
-            <span className="text-accent-glow">your retention curve</span>.
+            <span className="text-accent">your retention curve</span>.
           </h2>
         </div>
 
@@ -62,29 +62,29 @@ export const Services = () => {
           {services.map((s, i) => (
             <div
               key={s.title}
-              className="group relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 hover:bg-white/10 hover:border-accent/40 transition-smooth"
+              className="group relative bg-card border border-border rounded-2xl p-8 shadow-card hover:border-accent/40 hover:shadow-elegant transition-smooth"
             >
-              <div className="absolute top-6 right-6 text-xs font-mono text-white/30">
+              <div className="absolute top-6 right-6 text-xs font-mono text-muted-foreground/30">
                 0{i + 1}
               </div>
               <div className="h-12 w-12 rounded-xl bg-gradient-accent flex items-center justify-center mb-6 shadow-accent">
                 <s.icon className="h-6 w-6 text-accent-foreground" />
               </div>
-              <h3 className="text-2xl font-bold mb-2">{s.title}</h3>
-              <p className="text-accent-glow text-sm font-medium mb-4">
+              <h3 className="text-2xl font-bold mb-2 text-foreground">{s.title}</h3>
+              <p className="text-accent text-sm font-medium mb-4">
                 {s.tagline}
               </p>
-              <p className="text-white/70 leading-relaxed mb-6">
+              <p className="text-muted-foreground leading-relaxed mb-6">
                 {s.description}
               </p>
-              <div className="pt-6 border-t border-white/10">
-                <div className="text-xs uppercase tracking-wider text-white/50 mb-3">
+              <div className="pt-6 border-t border-border">
+                <div className="text-xs uppercase tracking-wider text-muted-foreground/60 mb-3">
                   Typical deliverables
                 </div>
                 <ul className="space-y-2">
                   {s.deliverables.map((d) => (
-                    <li key={d} className="text-sm text-white/80 flex items-start gap-2">
-                      <ArrowUpRight className="h-3.5 w-3.5 text-accent-glow mt-1 flex-shrink-0" />
+                    <li key={d} className="text-sm text-muted-foreground flex items-start gap-2">
+                      <ArrowUpRight className="h-3.5 w-3.5 text-accent mt-1 flex-shrink-0" />
                       {d}
                     </li>
                   ))}
