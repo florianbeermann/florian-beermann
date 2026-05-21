@@ -20,10 +20,10 @@
     --primary: 240 10% 3.9%;
     --primary-foreground: 0 0% 100%;
 
-    /* Carbon black accent reflecting the black monogram logo */
-    --accent: 240 10% 3.9%;
+    /* Success blue accent matching the profile picture lighting */
+    --accent: 210 95% 52%;
     --accent-foreground: 0 0% 100%;
-    --accent-glow: 240 5% 85%; /* Elegant platinum silver highlight */
+    --accent-glow: 210 100% 65%;
 
     --secondary: 240 5% 96%;
     --secondary-foreground: 240 10% 3.9%;
@@ -36,22 +36,22 @@
 
     --border: 240 6% 90%;
     --input: 240 6% 90%;
-    --ring: 240 10% 3.9%;
+    --ring: 210 95% 52%;
 
     --radius: 0.75rem;
 
     /* Custom design tokens */
     --slate-deep: 240 10% 3.9%;
     --slate-mid: 240 6% 12%;
-    --success-blue: 240 10% 3.9%;
+    --success-blue: 210 95% 52%;
 
-    --gradient-hero: radial-gradient(ellipse at top right, hsl(0 0% 100% / 0.05), transparent 60%),
+    --gradient-hero: radial-gradient(ellipse at top right, hsl(210 95% 52% / 0.18), transparent 60%),
                      linear-gradient(135deg, hsl(240 10% 3.9%) 0%, hsl(240 6% 10%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(240 6% 18%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(var(--accent-glow)) 100%);
     --gradient-subtle: linear-gradient(180deg, hsl(240 5% 98%) 0%, hsl(0 0% 100%) 100%);
 
     --shadow-elegant: 0 20px 60px -20px hsl(0 0% 0% / 0.4);
-    --shadow-accent: 0 16px 50px -12px hsl(240 10% 3.9% / 0.25);
+    --shadow-accent: 0 16px 50px -12px hsl(210 95% 52% / 0.35);
     --shadow-card: 0 1px 3px hsl(240 10% 4% / 0.04), 0 8px 24px -8px hsl(240 10% 4% / 0.06);
 
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
