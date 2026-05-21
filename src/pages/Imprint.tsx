@@ -1,7 +1,7 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useEffect } from "react";
-import { ShieldCheck, Mail, MapPin, Scale, Phone } from "lucide-react";
+import { Mail, MapPin, Scale, Phone } from "lucide-react";
 
 export const Imprint = () => {
   useEffect(() => {
@@ -34,21 +34,6 @@ export const Imprint = () => {
             <div className="grid md:grid-cols-3 gap-8 pt-4">
               {/* Left Column: Direct Info Cards */}
               <div className="md:col-span-1 space-y-4">
-                <div className="bg-card border border-border rounded-xl p-5 shadow-sm space-y-4">
-                  <h3 className="font-semibold text-foreground text-sm uppercase tracking-wider text-accent">
-                    Diensteanbieter
-                  </h3>
-                  <div className="space-y-3 text-sm">
-                    <div className="flex gap-3">
-                      <ShieldCheck className="h-5 w-5 text-accent shrink-0 mt-0.5" />
-                      <div>
-                        <div className="font-medium text-foreground">Florian Beermann</div>
-                        <div className="text-muted-foreground text-xs">Customer Success Consulting</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
                 <div className="bg-card border border-border rounded-xl p-5 shadow-sm space-y-4">
                   <h3 className="font-semibold text-foreground text-sm uppercase tracking-wider text-accent">
                     Kontakt / Contact
