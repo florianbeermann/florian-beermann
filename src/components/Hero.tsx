@@ -6,11 +6,13 @@ export const Hero = () => {
     <section className="relative min-h-screen bg-gradient-hero overflow-hidden flex items-center pt-24">
       {/* Decorative grid */}
       <div
-        className="absolute inset-0 opacity-[0.07]"
+        className="absolute inset-0 opacity-[0.45] pointer-events-none"
         style={{
           backgroundImage:
-            "linear-gradient(hsl(0 0% 100%) 1px, transparent 1px), linear-gradient(90deg, hsl(0 0% 100%) 1px, transparent 1px)",
-          backgroundSize: "64px 64px",
+            "linear-gradient(to right, hsl(240 6% 84%) 1px, transparent 1px), linear-gradient(to bottom, hsl(240 6% 84%) 1px, transparent 1px)",
+          backgroundSize: "56px 56px",
+          maskImage: "radial-gradient(circle at top center, white, transparent 85%)",
+          WebkitMaskImage: "radial-gradient(circle at top center, white, transparent 85%)",
         }}
       />
       <div className="absolute top-1/4 -right-32 h-96 w-96 rounded-full bg-accent-glow/10 blur-3xl" />

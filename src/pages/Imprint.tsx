@@ -67,7 +67,7 @@ export const Imprint = () => {
                   <h2 className="text-xl font-bold text-foreground">Redaktionell verantwortlich / Responsible for Content</h2>
                   <p>
                     Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV:<br />
-                    <span className="text-foreground font-medium">Florian Beermann</span><br />
+                    <span className="text-foreground font-medium">fb & partners</span><br />
                     Hegestr. 31<br />
                     20249 Hamburg<br />
                     Germany
