@@ -13,8 +13,8 @@ export const Hero = () => {
           backgroundSize: "64px 64px",
         }}
       />
-      <div className="absolute top-1/4 -right-32 h-96 w-96 rounded-full bg-accent/20 blur-3xl" />
-      <div className="absolute bottom-0 -left-32 h-96 w-96 rounded-full bg-accent/10 blur-3xl" />
+      <div className="absolute top-1/4 -right-32 h-96 w-96 rounded-full bg-accent-glow/10 blur-3xl" />
+      <div className="absolute bottom-0 -left-32 h-96 w-96 rounded-full bg-accent-glow/5 blur-3xl" />
 
       <div className="container relative z-10 py-20 grid lg:grid-cols-12 gap-12 items-center">
         <div className="lg:col-span-7 text-white space-y-8">

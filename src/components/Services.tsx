@@ -46,7 +46,7 @@ const services = [
 export const Services = () => {
   return (
     <section id="services" className="py-24 lg:py-32 bg-primary text-primary-foreground relative overflow-hidden">
-      <div className="absolute top-0 right-0 h-96 w-96 rounded-full bg-accent/10 blur-3xl" />
+      <div className="absolute top-0 right-0 h-96 w-96 rounded-full bg-accent-glow/5 blur-3xl" />
       <div className="container relative">
         <div className="max-w-2xl mb-16">
           <div className="inline-block text-xs font-semibold uppercase tracking-wider text-accent-glow mb-4">

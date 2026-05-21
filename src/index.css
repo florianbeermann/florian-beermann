@@ -6,53 +6,53 @@
 
 @layer base {
   :root {
-    /* Core palette inspired by deep slate stage + crisp Microsoft blue accent */
+    /* Core palette inspired by deep slate stage + carbon black accent */
     --background: 0 0% 100%;
-    --foreground: 215 35% 12%;
+    --foreground: 240 10% 3.9%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 35% 12%;
+    --card-foreground: 240 10% 3.9%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 35% 12%;
+    --popover-foreground: 240 10% 3.9%;
 
-    /* Deep slate as primary brand */
-    --primary: 215 45% 14%;
+    /* Pure carbon black as primary brand */
+    --primary: 240 10% 3.9%;
     --primary-foreground: 0 0% 100%;
 
-    /* Success blue accent (from portrait stage lighting) */
-    --accent: 210 95% 52%;
+    /* Carbon black accent reflecting the black monogram logo */
+    --accent: 240 10% 3.9%;
     --accent-foreground: 0 0% 100%;
-    --accent-glow: 210 100% 65%;
+    --accent-glow: 240 5% 85%; /* Elegant platinum silver highlight */
 
-    --secondary: 215 25% 96%;
-    --secondary-foreground: 215 45% 14%;
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 10% 3.9%;
 
-    --muted: 215 20% 96%;
-    --muted-foreground: 215 15% 42%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 5% 45%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 215 20% 90%;
-    --input: 215 20% 90%;
-    --ring: 210 95% 52%;
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 240 10% 3.9%;
 
     --radius: 0.75rem;
 
     /* Custom design tokens */
-    --slate-deep: 215 50% 10%;
-    --slate-mid: 215 35% 22%;
-    --success-blue: 210 95% 52%;
+    --slate-deep: 240 10% 3.9%;
+    --slate-mid: 240 6% 12%;
+    --success-blue: 240 10% 3.9%;
 
-    --gradient-hero: radial-gradient(ellipse at top right, hsl(210 95% 52% / 0.18), transparent 60%),
-                     linear-gradient(135deg, hsl(215 50% 10%) 0%, hsl(215 45% 16%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(var(--accent-glow)) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(215 25% 98%) 0%, hsl(0 0% 100%) 100%);
+    --gradient-hero: radial-gradient(ellipse at top right, hsl(0 0% 100% / 0.05), transparent 60%),
+                     linear-gradient(135deg, hsl(240 10% 3.9%) 0%, hsl(240 6% 10%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(240 6% 18%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(240 5% 98%) 0%, hsl(0 0% 100%) 100%);
 
-    --shadow-elegant: 0 20px 60px -20px hsl(215 50% 10% / 0.25);
-    --shadow-accent: 0 16px 50px -12px hsl(210 95% 52% / 0.35);
-    --shadow-card: 0 1px 3px hsl(215 30% 15% / 0.06), 0 8px 24px -8px hsl(215 30% 15% / 0.08);
+    --shadow-elegant: 0 20px 60px -20px hsl(0 0% 0% / 0.4);
+    --shadow-accent: 0 16px 50px -12px hsl(240 10% 3.9% / 0.25);
+    --shadow-card: 0 1px 3px hsl(240 10% 4% / 0.04), 0 8px 24px -8px hsl(240 10% 4% / 0.06);
 
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
