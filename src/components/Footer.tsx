@@ -26,6 +26,7 @@ export const Footer = () => {
           <a href={getHref("#services")} className="hover:text-accent transition-smooth">Services</a>
           <a href={getHref("#contact")} className="hover:text-accent transition-smooth">Contact</a>
           <Link to="/imprint" className="hover:text-accent transition-smooth">Imprint</Link>
+          <Link to="/privacy" className="hover:text-accent transition-smooth">Privacy</Link>
         </div>
       </div>
     </footer>
