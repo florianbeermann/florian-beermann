@@ -1,0 +1,38 @@
+name: Deploy to Hetzner
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  web-deploy:
+    name: 🎉 Deploy Website
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Build Project
+        run: npm run build
+
+      - name: 📂 Sync files to Hetzner
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.HETZNER_FTP_SERVER }}
+          username: ${{ secrets.HETZNER_FTP_USERNAME }}
+          password: ${{ secrets.HETZNER_FTP_PASSWORD }}
+          local-dir: ./dist/
+          # Change this to public_html/ or similar if your website files reside in a subfolder on Hetzner
+          server-dir: ${{ secrets.HETZNER_FTP_DIR || './' }}
+          # Uncomment the line below if you are using SFTP (port 22) instead of standard FTP (port 21)
+          # protocol: sftp

@@ -195,7 +195,7 @@ export const Contact = () => {
             </div>
 
             <Button type="submit" variant="accent" size="lg" className="w-full" disabled={submitting}>
-              {submitting ? "Sending…" : "Request CS audit"}
+              {submitting ? "Sending…" : "Send"}
               <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
 

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useLocation } from "react-router-dom";
 
@@ -58,12 +57,6 @@ export const Header = () => {
           ))}
         </nav>
 
-        <div className="hidden md:block">
-          <Button variant="accent" size="sm" asChild>
-            <a href={getHref("#contact")}>Get a CS Audit</a>
-          </Button>
-        </div>
-
         <button
           className="md:hidden text-foreground"
           onClick={() => setOpen(!open)}
@@ -90,9 +83,6 @@ export const Header = () => {
                 {l.label}
               </a>
             ))}
-            <Button variant="accent" asChild>
-              <a href={getHref("#contact")} onClick={() => setOpen(false)}>Get a CS Audit</a>
-            </Button>
           </div>
         </div>
       )}
