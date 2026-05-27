@@ -40,7 +40,7 @@ export const Contact = () => {
         throw new Error("Form submission failed");
       }
 
-      toast.success("Thanks — I'll be in touch within 2 business days.");
+      toast.success("Thanks - I'll be in touch within 2 business days.");
       form.reset();
       setSize("");
       setTooling("");
@@ -62,7 +62,7 @@ export const Contact = () => {
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-foreground text-balance mb-6">
               Book a complimentary{" "}
-              <span className="text-accent">CS audit</span>.
+              <span className="text-accent">audit</span>
             </h2>
             <p className="text-lg text-muted-foreground leading-relaxed">
               A focused 45-minute conversation to map your current Customer

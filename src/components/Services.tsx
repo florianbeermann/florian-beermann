@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 const services = [
   {
     icon: Compass,
-    title: "CS Strategy",
+    title: "Customer Success Strategy",
     tagline: "From reactive support to revenue-aligned function.",
     description:
-      "A diagnostic of your current Customer Success motion across segmentation, coverage model, health scoring and renewal forecasting — followed by a phased roadmap aligned to NRR and gross retention targets.",
+      "A diagnostic of your current Customer Success motion across segmentation, coverage model, health scoring and renewal forecasting - followed by a phased roadmap aligned to NRR and gross retention targets.",
     deliverables: [
       "Segmentation & coverage model",
       "Health-score architecture",
@@ -20,7 +20,7 @@ const services = [
     title: "Playbook Development",
     tagline: "Repeatable motions for every lifecycle stage.",
     description:
-      "Build the operational backbone of your CS team: onboarding, adoption, escalation, renewal and expansion playbooks — codified, instrumented in your tooling and tied to measurable outcomes.",
+      "Build the operational backbone of your CS team: onboarding, adoption, escalation, renewal and expansion playbooks - codified, instrumented in your tooling and tied to measurable outcomes.",
     deliverables: [
       "Onboarding & time-to-value plays",
       "Risk & save-motion playbooks",
@@ -33,7 +33,7 @@ const services = [
     title: "CSM Training",
     tagline: "Equip CSMs to act like strategic partners.",
     description:
-      "Hands-on enablement for individual contributors and team leads — covering commercial conversations, value-realisation storytelling, stakeholder mapping and data-led account planning.",
+      "Hands-on enablement for individual contributors and team leads - covering commercial conversations, value-realisation storytelling, stakeholder mapping and data-led account planning.",
     deliverables: [
       "Commercial conversation framework",
       "Stakeholder mapping workshops",
@@ -54,7 +54,7 @@ export const Services = () => {
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-balance text-foreground">
             Detailed engagements built around{" "}
-            <span className="text-accent">your retention curve</span>.
+            <span className="text-accent">your retention curve</span>
           </h2>
         </div>
 

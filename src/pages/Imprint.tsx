@@ -5,7 +5,7 @@ import { Mail, Scale, Phone } from "lucide-react";
 
 export const Imprint = () => {
   useEffect(() => {
-    document.title = "Impressum / Imprint — Florian Beermann";
+    document.title = "Impressum / Imprint - Florian Beermann";
     window.scrollTo(0, 0);
   }, []);
 

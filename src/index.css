@@ -8,16 +8,16 @@
   :root {
     /* Core palette inspired by deep slate stage + carbon black accent */
     --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --foreground: 210 100% 18.6%;
 
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 210 100% 18.6%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
+    --popover-foreground: 210 100% 18.6%;
 
     /* Pure carbon black as primary brand */
-    --primary: 240 10% 3.9%;
+    --primary: 210 100% 18.6%;
     --primary-foreground: 0 0% 100%;
 
     /* Success blue accent matching the profile picture lighting */
@@ -26,7 +26,7 @@
     --accent-glow: 210 100% 65%;
 
     --secondary: 240 5% 96%;
-    --secondary-foreground: 240 10% 3.9%;
+    --secondary-foreground: 210 100% 18.6%;
 
     --muted: 240 5% 96%;
     --muted-foreground: 240 5% 45%;
@@ -41,8 +41,8 @@
     --radius: 0.75rem;
 
     /* Custom design tokens */
-    --slate-deep: 240 10% 3.9%;
-    --slate-mid: 240 6% 12%;
+    --slate-deep: 210 100% 18.6%;
+    --slate-mid: 210 100% 25%;
     --success-blue: 210 95% 52%;
 
     --gradient-hero: radial-gradient(ellipse at top right, hsl(210 95% 52% / 0.08), transparent 55%),
