@@ -43,8 +43,8 @@ export const Imprint = () => {
                       <Mail className="h-5 w-5 text-accent shrink-0 mt-0.5" />
                       <div>
                         <div className="text-xs text-muted-foreground">E-Mail</div>
-                        <a href="mailto:contact@fb-partners.com" className="font-medium text-foreground hover:text-accent transition-smooth">
-                          contact@fb-partners.com
+                        <a href="mailto:hello@florianbeermann.com" className="font-medium text-foreground hover:text-accent transition-smooth">
+                          hello@florianbeermann.com
                         </a>
                       </div>
                     </div>
@@ -67,7 +67,7 @@ export const Imprint = () => {
                   <h2 className="text-xl font-bold text-foreground">Redaktionell verantwortlich / Responsible for Content</h2>
                   <p>
                     Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV:<br />
-                    <span className="text-foreground font-medium">fb & partners</span><br />
+                    <span className="text-foreground font-medium">Florian Beermann & Partners</span><br />
                     Hegestr. 31<br />
                     20249 Hamburg<br />
                     Germany
