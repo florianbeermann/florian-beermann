@@ -35,5 +35,6 @@ jobs:
           local-dir: ./dist/
           # Change this to public_html/ or similar if your website files reside in a subfolder on Hetzner
           server-dir: ${{ secrets.HETZNER_FTP_DIR || './' }}
+          secure: true
           # Uncomment the line below if you are using SFTP (port 22) instead of standard FTP (port 21)
           # protocol: sftp
