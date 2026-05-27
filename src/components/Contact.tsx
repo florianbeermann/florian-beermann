@@ -24,20 +24,26 @@ export const Contact = () => {
     const form = e.currentTarget;
     const fd = new FormData(form);
     
-    // Explicitly set state-based values for shadcn select components
+    // Explicitly set values for Web3Forms submission
     fd.set("size", size);
     fd.set("tooling", tooling);
-    fd.set("form-name", "contact");
+    fd.set("access_key", import.meta.env.VITE_WEB3FORMS_KEY || "YOUR_ACCESS_KEY");
+    fd.set("subject", `New CS Audit Request from ${fd.get("name") || "Client"}`);
 
     try {
-      const response = await fetch("/", {
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(fd as any).toString(),
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        },
+        body: JSON.stringify(Object.fromEntries(fd.entries())),
       });
 
-      if (!response.ok) {
-        throw new Error("Form submission failed");
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Form submission failed");
       }
 
       toast.success("Thanks - I'll be in touch within 2 business days.");

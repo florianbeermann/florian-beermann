@@ -25,6 +25,8 @@ jobs:
 
       - name: 🏗️ Build Project
         run: npm run build
+        env:
+          VITE_WEB3FORMS_KEY: ${{ secrets.WEB3FORMS_KEY }}
 
       - name: 📂 Sync files to Hetzner
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
