@@ -67,8 +67,7 @@ export const Contact = () => {
               Get in touch
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-foreground text-balance mb-6">
-              Book a complimentary{" "}
-              <span className="text-accent">audit</span>
+              Book a complimentary audit
             </h2>
             <p className="text-lg text-muted-foreground leading-relaxed">
               A focused 45-minute conversation to map your current Customer

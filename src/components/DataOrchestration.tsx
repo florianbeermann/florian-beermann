@@ -256,7 +256,7 @@ export const DataOrchestration = () => {
           >
             <div>
               <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground text-balance">
-                Bringing symmetry to your <span className="text-accent">Customer Success data</span>
+                Bringing symmetry to your Customer Success data
               </h2>
             </div>
 

@@ -20,11 +20,6 @@ export const Hero = () => {
 
       <div className="container relative z-10 py-20 grid lg:grid-cols-12 gap-12 items-center">
         <div className="lg:col-span-7 text-foreground space-y-8">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-accent/5 px-4 py-1.5 text-sm">
-            <Building2 className="h-3.5 w-3.5 text-accent" />
-            <span className="text-muted-foreground font-medium">Florian Beermann & Partners</span>
-          </div>
-
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] text-balance text-foreground">
             Scaling with precision
           </h1>

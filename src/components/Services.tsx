@@ -53,8 +53,7 @@ export const Services = () => {
             Engagements
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-balance text-foreground">
-            Detailed engagements built around{" "}
-            <span className="text-accent">your retention curve</span>
+            Detailed engagements built around your retention curve
           </h2>
         </div>
 
