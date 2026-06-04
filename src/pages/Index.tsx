@@ -10,7 +10,7 @@ import { useEffect } from "react";
 
 const Index = () => {
   useEffect(() => {
-    document.title = "Florian Beermann & Partners | Customer Success Consulting";
+    document.title = "florian beermann & partners | Customer Success Consulting";
     const desc = "Data-driven Customer Success consulting for B2B SaaS. Reduce churn, drive expansion revenue, and operationalise CS with measurable outcomes.";
     let meta = document.querySelector('meta[name="description"]');
     if (!meta) {

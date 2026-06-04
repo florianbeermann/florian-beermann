@@ -44,7 +44,7 @@ export const Privacy = () => {
                   <h3 className="font-semibold text-foreground">Verantwortliche Stelle / Data Controller</h3>
                   <p>
                     Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:<br />
-                    <span className="text-foreground font-medium">Florian Beermann & Partners</span><br />
+                    <span className="text-foreground font-medium">florian beermann & partners</span><br />
                     Hegestr. 31<br />
                     20249 Hamburg<br />
                     Germany<br />

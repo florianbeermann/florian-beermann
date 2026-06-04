@@ -37,17 +37,17 @@ export const Header = () => {
       }`}
     >
       <div className="container flex h-16 items-center justify-between">
-        <a href={isHome ? "#" : "/"} className="flex items-center gap-3 group" aria-label="Florian Beermann & Partners">
+        <a href={isHome ? "#" : "/"} className="flex items-center gap-3 group" aria-label="florian beermann & partners">
           <img
             src="/logo.png"
-            alt="Florian Beermann Partners"
+            alt="florian beermann & partners"
             className="h-10 w-auto group-hover:opacity-85 transition-smooth"
           />
           <span
             className="font-bold text-lg tracking-tight text-foreground transition-smooth hidden sm:block"
             style={{ fontFeatureSettings: "'ss01'" }}
           >
-            Florian Beermann & Partners
+            florian beermann & partners
           </span>
         </a>
 

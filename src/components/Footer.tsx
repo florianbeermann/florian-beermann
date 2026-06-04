@@ -14,7 +14,7 @@ export const Footer = () => {
         <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
             <img
               src="/logo.png"
-              alt="Florian Beermann Partners"
+              alt="florian beermann & partners"
               className="h-10 w-auto hover:opacity-80 transition-smooth"
             />
           <div className="text-sm text-muted-foreground">
