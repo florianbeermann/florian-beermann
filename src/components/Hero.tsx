@@ -31,7 +31,7 @@ export const Hero = () => {
 
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl leading-relaxed">
             Data-driven Customer Success frameworks for B2B SaaS. I help
-            scale-ups and enterprise teams reduce churn, expand accounts, and
+            scale-ups and enterprise teams reduce churn, expand accounts and
             operationalise CS with measurable outcomes.
           </p>
 

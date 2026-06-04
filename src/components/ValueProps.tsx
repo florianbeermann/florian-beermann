@@ -1,4 +1,4 @@
-import { TrendingDown, TrendingUp, Cog } from "lucide-react";
+import { TrendingDown, TrendingUp, Cpu } from "lucide-react";
 
 const values = [
   {
@@ -16,8 +16,8 @@ const values = [
     points: ["Whitespace mapping", "QBR frameworks", "Expansion triggers"],
   },
   {
-    icon: Cog,
-    title: "CS Ops & Automation",
+    icon: Cpu,
+    title: "Infrastructure & Operations",
     description:
       "Operationalise Customer Success with the right tooling so your team scales without adding headcount.",
     points: ["Tooling architecture", "Workflow automation", "Reporting layer"],

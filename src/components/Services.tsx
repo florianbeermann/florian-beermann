@@ -94,11 +94,6 @@ export const Services = () => {
           ))}
         </div>
 
-        <div className="mt-16 text-center">
-          <Button variant="accent" size="xl" asChild>
-            <a href="#contact">Discuss your engagement</a>
-          </Button>
-        </div>
       </div>
     </section>
   );

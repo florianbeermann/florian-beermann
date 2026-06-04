@@ -82,21 +82,21 @@ export const SymmetryCanvas = ({ size = 400 }: SymmetryCanvasProps) => {
           this.influence *= 0.96;
         } else {
           // Fragmented random particles on the right
-          this.velocity.x += (Math.random() - 0.5) * 0.4;
-          this.velocity.y += (Math.random() - 0.5) * 0.4;
+          this.velocity.x += (Math.random() - 0.5) * 0.5;
+          this.velocity.y += (Math.random() - 0.5) * 0.5;
           
-          // Friction / Speed limit
-          this.velocity.x *= 0.96;
-          this.velocity.y *= 0.96;
+          // Friction / Speed limit matching original
+          this.velocity.x *= 0.95;
+          this.velocity.y *= 0.95;
           
           this.x += this.velocity.x;
           this.y += this.velocity.y;
 
-          // Boundaries constraints: keep them mostly on the right side but allow cross-over
-          if (this.x < size * 0.4 || this.x > size) this.velocity.x *= -1;
+          // Boundaries constraints matching original
+          if (this.x < size / 2 || this.x > size) this.velocity.x *= -1;
           if (this.y < 0 || this.y > size) this.velocity.y *= -1;
 
-          this.x = Math.max(size * 0.35, Math.min(size, this.x));
+          this.x = Math.max(size / 2, Math.min(size, this.x));
           this.y = Math.max(0, Math.min(size, this.y));
         }
       }
@@ -114,8 +114,8 @@ export const SymmetryCanvas = ({ size = 400 }: SymmetryCanvasProps) => {
     }
 
     const particles: Particle[] = [];
-    const columns = 20;
-    const rows = 20;
+    const columns = 25;
+    const rows = 25;
     const step = size / columns;
 
     for (let c = 0; c < columns; c++) {
@@ -132,14 +132,12 @@ export const SymmetryCanvas = ({ size = 400 }: SymmetryCanvasProps) => {
     const animate = () => {
       ctx.clearRect(0, 0, size, size);
       
-      // Update neighbors periodically for connectivity lines
-      if (frame % 15 === 0) {
+      // Update neighbors periodically for connectivity lines (fixed nested loop bug)
+      if (frame % 30 === 0) {
         particles.forEach((p) => {
-          particles.forEach((other) => {
-            p.neighbors = particles.filter(
-              (o) => o !== p && Math.hypot(p.x - o.x, p.y - o.y) < 80
-            );
-          });
+          p.neighbors = particles.filter(
+            (o) => o !== p && Math.hypot(p.x - o.x, p.y - o.y) < 100
+          );
         });
       }
 
@@ -257,17 +255,13 @@ export const DataOrchestration = () => {
             }`}
           >
             <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-accent/20 bg-accent/5 px-3 py-1 text-xs text-accent font-medium mb-4">
-                <Cpu className="h-3.5 w-3.5" />
-                <span>CS Infrastructure & Operations</span>
-              </div>
               <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-foreground text-balance">
                 Bringing symmetry to your <span className="text-accent">Customer Success data</span>
               </h2>
             </div>
 
             <p className="text-lg text-muted-foreground leading-relaxed">
-              Your CRM, support logs, product events, and billing history contain the indicators needed to scale NRR. We turn fragmented data signals into clean, structured playbook executions.
+              Your CRM, support logs, product events and billing history contain the indicators needed to scale NRR. We turn fragmented data signals into clean, structured playbook executions.
             </p>
 
             <div className="grid sm:grid-cols-2 gap-6 pt-2">
@@ -276,7 +270,7 @@ export const DataOrchestration = () => {
                   <div className="h-9 w-9 rounded-lg bg-accent/10 flex items-center justify-center">
                     <GitMerge className="h-5 w-5 text-accent" />
                   </div>
-                  <h3 className="font-semibold text-foreground">Fragmented Inputs (Right)</h3>
+                  <h3 className="font-semibold text-foreground">Fragmented Inputs</h3>
                 </div>
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Ad-hoc customer actions, product usage telemetries, and support tickets wander unpredictably. Unmanaged, they create noise and delay response times.
@@ -288,7 +282,7 @@ export const DataOrchestration = () => {
                   <div className="h-9 w-9 rounded-lg bg-accent/10 flex items-center justify-center">
                     <LayoutGrid className="h-5 w-5 text-accent" />
                   </div>
-                  <h3 className="font-semibold text-foreground">Symmetrical Outcomes (Left)</h3>
+                  <h3 className="font-semibold text-foreground">Symmetrical Outcomes</h3>
                 </div>
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   We build the mapping layers that capture these signals, structuring them into predictable customer health scores and proactive automation triggers.
@@ -302,7 +296,7 @@ export const DataOrchestration = () => {
                 <div>
                   <h4 className="font-medium text-foreground text-sm">Operational Rigour</h4>
                   <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                    By feeding clean signals into tools like Gainsight, Vitally, or Salesforce, your CSM team shifts from reactive firefighting to high-value expansion motions.
+                    By feeding clean signals into tools like Dynamics, Gainsight or Salesforce, your CSM team shifts from reactive firefighting to high-value expansion motions
                   </p>
                 </div>
               </div>
