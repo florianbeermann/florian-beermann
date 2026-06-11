@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -77,18 +77,24 @@
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    @apply bg-background text-foreground antialiased font-extralight;
+    font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply tracking-tight;
+    @apply tracking-tight font-normal;
+    font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-feature-settings: 'ss01';
   }
 }
 
 @layer utilities {
+  .font-garamond {
+    font-family: "Garamond Premier Pro", "EB Garamond", Garamond, Georgia, serif;
+  }
+  .font-logo-caps {
+    font-family: "Montserrat", "Inter", sans-serif;
+  }
   .bg-gradient-hero {
     background: var(--gradient-hero);
   }

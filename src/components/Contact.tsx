@@ -66,7 +66,7 @@ export const Contact = () => {
             <div className="inline-block text-xs font-semibold uppercase tracking-wider text-accent mb-4">
               Get in touch
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground text-balance mb-6">
+            <h2 className="text-4xl md:text-5xl text-foreground text-balance mb-6">
               Book a complimentary audit
             </h2>
             <p className="text-lg text-muted-foreground leading-relaxed">

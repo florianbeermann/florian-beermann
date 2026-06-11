@@ -20,7 +20,7 @@ export const About = () => {
             <div className="inline-block text-xs font-semibold uppercase tracking-wider text-accent mb-4">
               About me
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground text-balance mb-6">
+            <h2 className="text-4xl md:text-5xl text-foreground text-balance mb-6">
               Customer Success strategist for B2B SaaS
             </h2>
             <p className="text-lg text-muted-foreground leading-relaxed">

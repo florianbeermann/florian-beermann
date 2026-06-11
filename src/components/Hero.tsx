@@ -20,7 +20,7 @@ export const Hero = () => {
 
       <div className="container relative z-10 py-20 grid lg:grid-cols-12 gap-12 items-center">
         <div className="lg:col-span-7 text-foreground space-y-8">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] text-balance text-foreground">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl leading-[1.05] text-balance text-foreground">
             Scaling with precision
           </h1>
 
@@ -36,14 +36,14 @@ export const Hero = () => {
             </Button>
           </div>
 
-          <div className="flex flex-wrap gap-8 pt-8 border-t border-border">
+          <div className="flex flex-wrap gap-8 pt-8">
             {[
               { label: "Years in B2B SaaS CS", value: "6+" },
               { label: "Clients advised", value: "100+" },
               { label: "Focus", value: "NRR & Expansion" },
             ].map((s) => (
               <div key={s.label}>
-                <div className="text-2xl font-bold text-foreground">{s.value}</div>
+                <div className="text-2xl font-extralight text-foreground">{s.value}</div>
                 <div className="text-xs uppercase tracking-wider text-muted-foreground mt-1">
                   {s.label}
                 </div>

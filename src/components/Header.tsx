@@ -43,12 +43,20 @@ export const Header = () => {
             alt="florian beermann & partners"
             className="h-10 w-auto group-hover:opacity-85 transition-smooth"
           />
-          <span
-            className="font-bold text-lg tracking-tight text-foreground transition-smooth hidden sm:block"
-            style={{ fontFeatureSettings: "'ss01'" }}
-          >
-            florian beermann & partners
-          </span>
+          <div className="flex flex-col justify-center items-center leading-none hidden sm:flex text-center">
+            <span
+              className="font-light text-sm font-logo-screenshot tracking-tighter text-foreground transition-smooth lowercase"
+              style={{ fontFeatureSettings: "'ss01'" }}
+            >
+              ƒlorian beermann
+            </span>
+            <span
+              className="font-light text-xs font-logo-screenshot tracking-tighter text-foreground transition-smooth lowercase mt-0.5"
+              style={{ fontFeatureSettings: "'ss01'" }}
+            >
+              & partners
+            </span>
+          </div>
         </a>
 
         <nav className="hidden md:flex items-center gap-8">

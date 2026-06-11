@@ -32,7 +32,7 @@ export const ValueProps = () => {
           <div className="inline-block text-xs font-semibold uppercase tracking-wider text-accent mb-4">
             What I deliver
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground text-balance">
+          <h2 className="text-4xl md:text-5xl text-foreground text-balance">
             Three core levers
           </h2>
         </div>
@@ -46,7 +46,7 @@ export const ValueProps = () => {
               <div className="h-12 w-12 rounded-xl bg-accent/10 flex items-center justify-center mb-6 group-hover:bg-accent group-hover:scale-110 transition-smooth">
                 <v.icon className="h-6 w-6 text-accent group-hover:text-accent-foreground transition-smooth" />
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-3">
+              <h3 className="text-xl text-foreground mb-3">
                 {v.title}
               </h3>
               <p className="text-muted-foreground leading-relaxed mb-6">

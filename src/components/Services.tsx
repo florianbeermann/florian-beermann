@@ -52,7 +52,7 @@ export const Services = () => {
           <div className="inline-block text-xs font-semibold uppercase tracking-wider text-accent mb-4">
             Engagements
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-balance text-foreground">
+          <h2 className="text-4xl md:text-5xl text-balance text-foreground">
             Detailed engagements built around your retention curve
           </h2>
         </div>
@@ -69,7 +69,7 @@ export const Services = () => {
               <div className="h-12 w-12 rounded-xl bg-gradient-accent flex items-center justify-center mb-6 shadow-accent">
                 <s.icon className="h-6 w-6 text-accent-foreground" />
               </div>
-              <h3 className="text-2xl font-bold mb-2 text-foreground">{s.title}</h3>
+              <h3 className="text-2xl mb-2 text-foreground">{s.title}</h3>
               <p className="text-accent text-sm font-medium mb-4">
                 {s.tagline}
               </p>
