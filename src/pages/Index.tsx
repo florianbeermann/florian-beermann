@@ -6,6 +6,7 @@ import { About } from "@/components/About";
 import { Services } from "@/components/Services";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
+
 import { useEffect } from "react";
 
 const Index = () => {
@@ -22,7 +23,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative overflow-hidden select-none">
       <Header />
       <main>
         <Hero />

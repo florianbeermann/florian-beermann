@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { ShieldCheck, GitMerge, LayoutGrid, Cpu } from "lucide-react";
+import { ShieldCheck, GitMerge, LayoutGrid } from "lucide-react";
+import { RevealText } from "@/components/ui/RevealText";
 
 interface SymmetryCanvasProps {
   size?: number;
@@ -7,6 +8,15 @@ interface SymmetryCanvasProps {
 
 export const SymmetryCanvas = ({ size = 400 }: SymmetryCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  
+  // Track mouse state in a ref to keep it responsive inside the animation frame
+  const mouseState = useRef({
+    x: -1000,
+    y: -1000,
+    active: false,
+    isDown: false
+  });
 
   useEffect(() => {
     let animationFrameId: number;
@@ -56,6 +66,23 @@ export const SymmetryCanvas = ({ size = 400 }: SymmetryCanvasProps) => {
       }
 
       update() {
+        const mouse = mouseState.current;
+        
+        // Mouse interaction (repulsion/gravity field)
+        if (mouse.active) {
+          const dist = Math.hypot(this.x - mouse.x, this.y - mouse.y);
+          const limit = mouse.isDown ? 100 : 50;
+          if (dist < limit) {
+            const force = (1 - dist / limit) * (mouse.isDown ? 7 : 2);
+            const angle = Math.atan2(this.y - mouse.y, this.x - mouse.x);
+            
+            // Push away from cursor
+            this.velocity.x += Math.cos(angle) * force * 0.15;
+            this.velocity.y += Math.sin(angle) * force * 0.15;
+            this.influence = Math.max(this.influence, 1 - dist / limit);
+          }
+        }
+
         if (this.isOrdered) {
           // Ordered grid on the left
           const dx = this.originalX - this.x;
@@ -76,14 +103,17 @@ export const SymmetryCanvas = ({ size = 400 }: SymmetryCanvasProps) => {
             }
           });
 
-          // Move back to anchor point, blended with push force
-          this.x += 0.06 * dx * (1 - this.influence) + pushForce.x * this.influence;
-          this.y += 0.06 * dy * (1 - this.influence) + pushForce.y * this.influence;
+          // Move back to anchor point, blended with push force and velocity damping
+          this.velocity.x *= 0.85;
+          this.velocity.y *= 0.85;
+          
+          this.x += 0.06 * dx * (1 - this.influence) + pushForce.x * this.influence + this.velocity.x;
+          this.y += 0.06 * dy * (1 - this.influence) + pushForce.y * this.influence + this.velocity.y;
           this.influence *= 0.96;
         } else {
           // Fragmented random particles on the right
-          this.velocity.x += (Math.random() - 0.5) * 0.5;
-          this.velocity.y += (Math.random() - 0.5) * 0.5;
+          this.velocity.x += (Math.random() - 0.5) * 0.4;
+          this.velocity.y += (Math.random() - 0.5) * 0.4;
           
           // Friction / Speed limit matching original
           this.velocity.x *= 0.95;
@@ -103,19 +133,29 @@ export const SymmetryCanvas = ({ size = 400 }: SymmetryCanvasProps) => {
 
       draw(c: CanvasRenderingContext2D) {
         // Change transparency and colors dynamically based on state
-        const opacity = this.isOrdered ? 0.75 - 0.35 * this.influence : 0.7;
+        const opacity = this.isOrdered ? 0.8 - 0.4 * this.influence : 0.75;
         const color = this.isOrdered ? colorGrid : colorMoving;
 
         c.fillStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${opacity})`;
         c.beginPath();
         c.arc(this.x, this.y, this.isOrdered ? this.size : this.size * 0.8, 0, 2 * Math.PI);
         c.fill();
+        
+        // Glow effect for highly influenced particles
+        if (this.influence > 0.4) {
+          c.shadowBlur = this.influence * 6;
+          c.shadowColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
+          c.beginPath();
+          c.arc(this.x, this.y, this.size * 1.2, 0, 2 * Math.PI);
+          c.fill();
+          c.shadowBlur = 0; // Reset
+        }
       }
     }
 
     const particles: Particle[] = [];
-    const columns = 25;
-    const rows = 25;
+    const columns = 24;
+    const rows = 24;
     const step = size / columns;
 
     for (let c = 0; c < columns; c++) {
@@ -132,11 +172,11 @@ export const SymmetryCanvas = ({ size = 400 }: SymmetryCanvasProps) => {
     const animate = () => {
       ctx.clearRect(0, 0, size, size);
       
-      // Update neighbors periodically for connectivity lines (fixed nested loop bug)
-      if (frame % 30 === 0) {
+      // Update neighbors periodically for connectivity lines
+      if (frame % 15 === 0) {
         particles.forEach((p) => {
           p.neighbors = particles.filter(
-            (o) => o !== p && Math.hypot(p.x - o.x, p.y - o.y) < 100
+            (o) => o !== p && Math.hypot(p.x - o.x, p.y - o.y) < 90
           );
         });
       }
@@ -149,11 +189,11 @@ export const SymmetryCanvas = ({ size = 400 }: SymmetryCanvasProps) => {
           const d = Math.hypot(p.x - n.x, p.y - n.y);
           const maxDistance = 45;
           if (d < maxDistance) {
-            const alpha = 0.12 * (1 - d / maxDistance);
+            const alpha = 0.15 * (1 - d / maxDistance) * (1 - p.influence * 0.5);
             // Blend colors of connecting lines
             const lineCol = p.isOrdered ? colorGrid : colorMoving;
             ctx.strokeStyle = `rgba(${lineCol.r}, ${lineCol.g}, ${lineCol.b}, ${alpha})`;
-            ctx.lineWidth = 0.55;
+            ctx.lineWidth = 0.6;
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(n.x, n.y);
@@ -163,7 +203,7 @@ export const SymmetryCanvas = ({ size = 400 }: SymmetryCanvasProps) => {
       });
 
       // Central symmetry boundary line
-      ctx.strokeStyle = "rgba(0, 47, 95, 0.08)";
+      ctx.strokeStyle = "rgba(16, 133, 249, 0.15)";
       ctx.setLineDash([4, 4]);
       ctx.lineWidth = 1;
       ctx.beginPath();
@@ -183,16 +223,52 @@ export const SymmetryCanvas = ({ size = 400 }: SymmetryCanvasProps) => {
     };
   }, [size]);
 
+  // Handlers for mouse interaction relative to canvas
+  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    mouseState.current.x = e.clientX - rect.left;
+    mouseState.current.y = e.clientY - rect.top;
+  };
+
+  const handleMouseEnter = () => {
+    mouseState.current.active = true;
+  };
+
+  const handleMouseLeave = () => {
+    mouseState.current.active = false;
+    mouseState.current.x = -1000;
+    mouseState.current.y = -1000;
+    mouseState.current.isDown = false;
+  };
+
+  const handleMouseDown = () => {
+    mouseState.current.isDown = true;
+  };
+
+  const handleMouseUp = () => {
+    mouseState.current.isDown = false;
+  };
+
   return (
-    <div className="relative aspect-square w-full max-w-[400px] flex items-center justify-center bg-accent/[0.01] rounded-3xl border border-border/40 p-4 shadow-card">
+    <div 
+      ref={containerRef}
+      className="relative aspect-square w-full max-w-[400px] flex items-center justify-center bg-card rounded-3xl border border-border/80 p-4 shadow-elegant group"
+    >
       {/* Decorative corners */}
-      <div className="absolute top-3 left-3 w-3 h-3 border-t-2 border-l-2 border-accent/20 rounded-tl" />
-      <div className="absolute top-3 right-3 w-3 h-3 border-t-2 border-r-2 border-accent/20 rounded-tr" />
-      <div className="absolute bottom-3 left-3 w-3 h-3 border-b-2 border-l-2 border-accent/20 rounded-bl" />
-      <div className="absolute bottom-3 right-3 w-3 h-3 border-b-2 border-r-2 border-accent/20 rounded-br" />
+      <div className="absolute top-4 left-4 w-3.5 h-3.5 border-t-2 border-l-2 border-accent/20 rounded-tl group-hover:border-accent/60 transition-smooth" />
+      <div className="absolute top-4 right-4 w-3.5 h-3.5 border-t-2 border-r-2 border-accent/20 rounded-tr group-hover:border-accent/60 transition-smooth" />
+      <div className="absolute bottom-4 left-4 w-3.5 h-3.5 border-b-2 border-l-2 border-accent/20 rounded-bl group-hover:border-accent/60 transition-smooth" />
+      <div className="absolute bottom-4 right-4 w-3.5 h-3.5 border-b-2 border-r-2 border-accent/20 rounded-br group-hover:border-accent/60 transition-smooth" />
       
       <canvas
         ref={canvasRef}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
         className="w-full h-full object-contain"
       />
     </div>
@@ -229,15 +305,14 @@ export const DataOrchestration = () => {
     <section
       id="orchestration"
       ref={containerRef}
-      className="py-24 lg:py-32 bg-[#FAFAFA] border-t border-border overflow-hidden relative"
+      className="py-24 lg:py-32 bg-[#FFFFFF] border-t border-border/60 overflow-hidden relative"
     >
-      {/* Background radial accent glow */}
-      <div className="absolute top-1/2 left-0 h-96 w-96 rounded-full bg-accent/5 blur-3xl -translate-y-1/2 pointer-events-none" />
+      <div className="absolute top-1/2 left-0 h-96 w-96 rounded-full bg-accent/5 blur-[100px] -translate-y-1/2 pointer-events-none" />
 
       <div className="container max-w-6xl">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-center">
           
-          {/* Column 1: Visual Interactive Canvas */}
+          {/* Column 1: Interactive Canvas */}
           <div
             className={`lg:col-span-5 flex justify-center order-2 lg:order-1 transition-all duration-1000 transform ${
               isVisible
@@ -248,55 +323,58 @@ export const DataOrchestration = () => {
             <SymmetryCanvas size={380} />
           </div>
 
-          {/* Column 2: Content Details */}
+          {/* Column 2: Content */}
           <div
             className={`lg:col-span-7 space-y-8 order-1 lg:order-2 transition-all duration-1000 delay-100 transform ${
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
             }`}
           >
-            <div>
+            <div className="space-y-4">
+              <div className="text-[10px] uppercase tracking-widest text-accent font-semibold">
+                Symmetry and Order
+              </div>
               <h2 className="text-4xl md:text-5xl tracking-tight text-foreground text-balance">
                 Bringing symmetry to your Customer Success data
               </h2>
             </div>
 
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              Your CRM, support logs, product events and billing history contain the indicators needed to scale NRR. We turn fragmented data signals into clean, structured playbook executions.
+            <p className="text-base text-muted-foreground leading-relaxed font-light">
+              Your CRM, support logs, product events, and billing history contain the indicators needed to scale NRR. We turn fragmented data signals into clean, structured playbook executions.
             </p>
 
             <div className="grid sm:grid-cols-2 gap-6 pt-2">
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="h-9 w-9 rounded-lg bg-accent/10 flex items-center justify-center">
+                  <div className="h-9 w-9 rounded-xl bg-accent/10 flex items-center justify-center">
                     <GitMerge className="h-5 w-5 text-accent" />
                   </div>
-                  <h3 className="font-semibold text-foreground">Fragmented Inputs</h3>
+                  <h3 className="font-semibold text-foreground text-sm">Fragmented Inputs</h3>
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="text-xs text-muted-foreground leading-relaxed font-light">
                   Ad-hoc customer actions, product usage telemetries, and support tickets wander unpredictably. Unmanaged, they create noise and delay response times.
                 </p>
               </div>
 
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="h-9 w-9 rounded-lg bg-accent/10 flex items-center justify-center">
+                  <div className="h-9 w-9 rounded-xl bg-accent/10 flex items-center justify-center">
                     <LayoutGrid className="h-5 w-5 text-accent" />
                   </div>
-                  <h3 className="font-semibold text-foreground">Symmetrical Outcomes</h3>
+                  <h3 className="font-semibold text-foreground text-sm">Symmetrical Outcomes</h3>
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="text-xs text-muted-foreground leading-relaxed font-light">
                   We build the mapping layers that capture these signals, structuring them into predictable customer health scores and proactive automation triggers.
                 </p>
               </div>
             </div>
 
             <div className="pt-4">
-              <div className="p-4 rounded-xl border border-border bg-card/50 flex items-start gap-4">
-                <ShieldCheck className="h-6 w-6 text-accent shrink-0 mt-0.5" />
+              <div className="p-5 rounded-2xl border border-border/80 bg-card flex items-start gap-4 shadow-card">
+                <ShieldCheck className="h-5 w-5 text-accent shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-medium text-foreground text-sm">Operational Rigour</h4>
-                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                    By feeding clean signals into tools like Dynamics, Gainsight or Salesforce, your CSM team shifts from reactive firefighting to high-value expansion motions
+                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed font-light">
+                    By feeding clean signals into tools like Dynamics, Gainsight, or Salesforce, your CSM team shifts from reactive firefighting to high-value expansion motions.
                   </p>
                 </div>
               </div>

@@ -15,7 +15,7 @@ export const Footer = () => {
             <img
               src="/logo.png"
               alt="florian beermann & partners"
-              className="h-10 w-auto hover:opacity-80 transition-smooth"
+              className="h-10 w-auto hover:opacity-80 transition-opacity duration-300 shrink-0"
             />
           <div className="text-sm text-muted-foreground">
             © {new Date().getFullYear()}

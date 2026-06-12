@@ -11,7 +11,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Mail, Linkedin, MapPin, ArrowRight } from "lucide-react";
+import { Mail, Linkedin, MapPin } from "lucide-react";
+import { Magnetic } from "@/components/ui/Magnetic";
 
 export const Contact = () => {
   const [submitting, setSubmitting] = useState(false);
@@ -59,17 +60,18 @@ export const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-24 lg:py-32 bg-gradient-subtle">
-      <div className="container grid lg:grid-cols-12 gap-12">
-        <div className="lg:col-span-5 space-y-8">
-          <div>
-            <div className="inline-block text-xs font-semibold uppercase tracking-wider text-accent mb-4">
+    <section id="contact" className="py-24 lg:py-32 bg-gradient-subtle relative">
+      <div className="container max-w-6xl grid lg:grid-cols-12 gap-16 items-start">
+        {/* Contact Info Column */}
+        <div className="lg:col-span-5 space-y-8 text-left">
+          <div className="space-y-4">
+            <div className="text-[10px] uppercase tracking-widest text-accent font-semibold">
               Get in touch
             </div>
-            <h2 className="text-4xl md:text-5xl text-foreground text-balance mb-6">
+            <h2 className="text-4xl md:text-5xl text-foreground text-balance">
               Book a complimentary audit
             </h2>
-            <p className="text-lg text-muted-foreground leading-relaxed">
+            <p className="text-base text-muted-foreground leading-relaxed font-light">
               A focused 45-minute conversation to map your current Customer
               Success motion against benchmarks for retention, expansion and
               operational maturity.
@@ -77,90 +79,125 @@ export const Contact = () => {
           </div>
 
           <div className="space-y-4">
-            <a
-              href="mailto:hello@florianbeermann.com"
-              className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-accent transition-smooth group"
-            >
-              <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center group-hover:bg-accent transition-smooth">
-                <Mail className="h-5 w-5 text-accent group-hover:text-accent-foreground" />
-              </div>
-              <div>
-                <div className="text-xs text-muted-foreground">Email</div>
-                <div className="font-medium text-foreground">
-                  hello@florianbeermann.com
+            <Magnetic>
+              <a
+                href="mailto:hello@florianbeermann.com"
+                className="flex items-center gap-4 p-5 rounded-2xl bg-card border border-border/80 hover:border-accent/60 shadow-card transition-smooth group"
+              >
+                <div className="h-10 w-10 rounded-xl bg-accent/10 flex items-center justify-center group-hover:bg-accent transition-smooth shrink-0">
+                  <Mail className="h-5 w-5 text-accent group-hover:text-accent-foreground" />
                 </div>
-              </div>
-            </a>
-            <a
-              href="https://linkedin.com/in/florian-beermann"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-accent transition-smooth group"
-            >
-              <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center group-hover:bg-accent transition-smooth">
-                <Linkedin className="h-5 w-5 text-accent group-hover:text-accent-foreground" />
-              </div>
-              <div>
-                <div className="text-xs text-muted-foreground">LinkedIn</div>
-                <div className="font-medium text-foreground">
-                  /in/florian-beermann
+                <div>
+                  <div className="text-[9px] uppercase tracking-widest text-muted-foreground font-semibold">Email</div>
+                  <div className="text-sm font-medium text-foreground mt-0.5">
+                    hello@florianbeermann.com
+                  </div>
                 </div>
-              </div>
-            </a>
-            <div className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border">
-              <div className="h-10 w-10 rounded-lg bg-accent/10 flex items-center justify-center">
+              </a>
+            </Magnetic>
+
+            <Magnetic>
+              <a
+                href="https://linkedin.com/in/florian-beermann"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-4 p-5 rounded-2xl bg-card border border-border/80 hover:border-accent/60 shadow-card transition-smooth group"
+              >
+                <div className="h-10 w-10 rounded-xl bg-accent/10 flex items-center justify-center group-hover:bg-accent transition-smooth shrink-0">
+                  <Linkedin className="h-5 w-5 text-accent group-hover:text-accent-foreground" />
+                </div>
+                <div>
+                  <div className="text-[9px] uppercase tracking-widest text-muted-foreground font-semibold">LinkedIn</div>
+                  <div className="text-sm font-medium text-foreground mt-0.5">
+                    /in/florian-beermann
+                  </div>
+                </div>
+              </a>
+            </Magnetic>
+
+            <div className="flex items-center gap-4 p-5 rounded-2xl bg-card border border-border/85 shadow-card">
+              <div className="h-10 w-10 rounded-xl bg-accent/5 flex items-center justify-center shrink-0">
                 <MapPin className="h-5 w-5 text-accent" />
               </div>
               <div>
-                <div className="text-xs text-muted-foreground">Location</div>
-                <div className="font-medium text-foreground">
-                  Hamburg, Germany · Remote across EU
+                <div className="text-[9px] uppercase tracking-widest text-muted-foreground font-semibold">Location</div>
+                <div className="text-sm font-medium text-foreground mt-0.5">
+                  Europe
                 </div>
               </div>
             </div>
           </div>
         </div>
 
+        {/* Form Column */}
         <div className="lg:col-span-7">
           <form
             onSubmit={handleSubmit}
             name="contact"
             data-netlify="true"
-            className="bg-card rounded-2xl shadow-elegant border border-border p-8 lg:p-10 space-y-6"
+            className="bg-card rounded-3xl shadow-elegant border border-border/80 p-8 lg:p-10 space-y-6 text-left"
           >
             <input type="hidden" name="form-name" value="contact" />
             <input type="hidden" name="size" value={size} />
             <input type="hidden" name="tooling" value={tooling} />
-            <div className="grid sm:grid-cols-2 gap-4">
+            
+            <div className="grid sm:grid-cols-2 gap-5">
               <div className="space-y-2">
-                <Label htmlFor="name">Full name</Label>
-                <Input id="name" name="name" required placeholder="Jane Doe" />
+                <Label htmlFor="name" className="text-xs font-semibold text-foreground uppercase tracking-widest">Full name</Label>
+                <Input 
+                  id="name" 
+                  name="name" 
+                  required 
+                  placeholder="Jane Doe" 
+                  className="rounded-xl border-border/80 focus-visible:ring-accent py-5"
+                />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">Work email</Label>
-                <Input id="email" name="email" type="email" required placeholder="jane@company.com" />
+                <Label htmlFor="email" className="text-xs font-semibold text-foreground uppercase tracking-widest">Work email</Label>
+                <Input 
+                  id="email" 
+                  name="email" 
+                  type="email" 
+                  required 
+                  placeholder="jane@company.com" 
+                  className="rounded-xl border-border/80 focus-visible:ring-accent py-5"
+                />
               </div>
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="grid sm:grid-cols-2 gap-5">
               <div className="space-y-2">
-                <Label htmlFor="company">Company</Label>
-                <Input id="company" name="company" required placeholder="Acme Inc." />
+                <Label htmlFor="company" className="text-xs font-semibold text-foreground uppercase tracking-widest">Company</Label>
+                <Input 
+                  id="company" 
+                  name="company" 
+                  required 
+                  placeholder="Acme Inc." 
+                  className="rounded-xl border-border/80 focus-visible:ring-accent py-5"
+                />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="role">Your role</Label>
-                <Input id="role" name="role" placeholder="VP Customer Success" />
+                <Label htmlFor="role" className="text-xs font-semibold text-foreground uppercase tracking-widest">Your role</Label>
+                <Input 
+                  id="role" 
+                  name="role" 
+                  placeholder="VP Customer Success" 
+                  className="rounded-xl border-border/80 focus-visible:ring-accent py-5"
+                />
               </div>
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="grid sm:grid-cols-2 gap-5">
               <div className="space-y-2">
-                <Label htmlFor="size">Company size</Label>
+                <Label htmlFor="size" className="text-xs font-semibold text-foreground uppercase tracking-widest">Company size</Label>
                 <Select value={size} onValueChange={setSize}>
-                  <SelectTrigger id="size">
+                  <SelectTrigger 
+                    id="size" 
+                    className="rounded-xl border-border/80 focus:ring-accent py-5"
+                  >
                     <SelectValue placeholder="Select size" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="rounded-xl border-border/80 shadow-elegant">
                     <SelectItem value="1-50">1–50 employees</SelectItem>
                     <SelectItem value="51-200">51–200 employees</SelectItem>
                     <SelectItem value="201-1000">201–1,000 employees</SelectItem>
@@ -170,12 +207,15 @@ export const Contact = () => {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="tooling">Current CS tooling</Label>
+                <Label htmlFor="tooling" className="text-xs font-semibold text-foreground uppercase tracking-widest">Current CS tooling</Label>
                 <Select value={tooling} onValueChange={setTooling}>
-                  <SelectTrigger id="tooling">
+                  <SelectTrigger 
+                    id="tooling" 
+                    className="rounded-xl border-border/80 focus:ring-accent py-5"
+                  >
                     <SelectValue placeholder="Select tooling" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="rounded-xl border-border/80 shadow-elegant">
                     <SelectItem value="gainsight">Gainsight</SelectItem>
                     <SelectItem value="churnzero">ChurnZero</SelectItem>
                     <SelectItem value="salesforce">Salesforce</SelectItem>
@@ -190,21 +230,29 @@ export const Contact = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="message">What would you like to solve?</Label>
+              <Label htmlFor="message" className="text-xs font-semibold text-foreground uppercase tracking-widest">What would you like to solve?</Label>
               <Textarea
                 id="message"
                 name="message"
                 rows={4}
                 placeholder="Briefly describe your current CS challenge or goal…"
+                className="rounded-xl border-border/80 focus-visible:ring-accent"
               />
             </div>
 
-            <Button type="submit" variant="accent" size="lg" className="w-full" disabled={submitting}>
-              {submitting ? "Sending…" : "Send"}
-              <ArrowRight className="ml-1 h-4 w-4" />
-            </Button>
+            <Magnetic>
+              <Button 
+                type="submit" 
+                variant="default" 
+                size="lg" 
+                className="w-full rounded-full uppercase tracking-wider text-xs font-semibold py-6 h-auto text-white" 
+                disabled={submitting}
+              >
+                {submitting ? "Sending…" : "Send"}
+              </Button>
+            </Magnetic>
 
-            <p className="text-xs text-muted-foreground text-center">
+            <p className="text-[10px] text-muted-foreground text-center">
               Your information is kept confidential and never shared with third parties.
             </p>
           </form>
