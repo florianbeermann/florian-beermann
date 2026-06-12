@@ -1,5 +1,11 @@
 RewriteEngine On
 RewriteBase /
+
+# Force HTTPS redirect
+RewriteCond %{HTTPS} !=on
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Fallback to index.html for client-side routing
 RewriteRule ^index\.html$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
