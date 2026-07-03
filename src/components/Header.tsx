@@ -45,7 +45,7 @@ export const Header = () => {
             <img
               src="/logo.png"
               alt="florian beermann & partners"
-              className="h-9 w-auto group-hover:scale-105 transition-transform duration-300 shrink-0"
+              className="h-9 w-auto group-hover:scale-105 transition-transform duration-300 shrink-0 pointer-events-none"
             />
             <div className="flex flex-col justify-center items-center leading-none hidden sm:flex text-center">
               <span

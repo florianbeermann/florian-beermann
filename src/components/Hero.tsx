@@ -144,7 +144,7 @@ export const Hero = () => {
               <img
                 src={new URL("../assets/florian-portrait.png", import.meta.url).href}
                 alt="Florian Beermann, Customer Success consultant"
-                className="absolute inset-0 h-full w-full object-cover scale-105 group-hover:scale-100 transition-all duration-700 ease-out"
+                className="absolute inset-0 h-full w-full object-cover scale-105 group-hover:scale-100 transition-all duration-700 ease-out pointer-events-none"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent pointer-events-none" />
             </div>
