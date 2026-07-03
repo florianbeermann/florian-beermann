@@ -251,6 +251,29 @@ export const SymmetryCanvas = ({ size = 400 }: SymmetryCanvasProps) => {
     mouseState.current.isDown = false;
   };
 
+  // Handlers for touch interaction on mobile devices
+  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas || e.touches.length === 0) return;
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches[0];
+    mouseState.current.x = touch.clientX - rect.left;
+    mouseState.current.y = touch.clientY - rect.top;
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    mouseState.current.active = true;
+    mouseState.current.isDown = true;
+    handleTouchMove(e);
+  };
+
+  const handleTouchEnd = () => {
+    mouseState.current.active = false;
+    mouseState.current.x = -1000;
+    mouseState.current.y = -1000;
+    mouseState.current.isDown = false;
+  };
+
   return (
     <div 
       ref={containerRef}
@@ -269,6 +292,9 @@ export const SymmetryCanvas = ({ size = 400 }: SymmetryCanvasProps) => {
         onMouseLeave={handleMouseLeave}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         className="w-full h-full object-contain"
       />
     </div>
