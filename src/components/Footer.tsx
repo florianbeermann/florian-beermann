@@ -11,12 +11,20 @@ export const Footer = () => {
   return (
     <footer className="bg-slate-50 text-foreground py-12 border-t border-border">
       <div className="container flex flex-col md:flex-row justify-between items-center gap-6">
-        <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
+        <div className="flex items-center gap-4 md:gap-6">
+          <div className="flex items-center gap-3 shrink-0">
             <img
               src="/logo.png"
               alt="florian beermann & partners"
-              className="h-10 w-auto hover:opacity-80 transition-opacity duration-300 shrink-0 pointer-events-none"
+              className="h-10 w-10 object-contain hover:opacity-80 transition-opacity duration-300 pointer-events-none"
             />
+            <span
+              className="font-light text-sm font-logo-screenshot tracking-tighter text-foreground lowercase whitespace-nowrap"
+              style={{ fontFeatureSettings: "'ss01'" }}
+            >
+              florian beermann & partners
+            </span>
+          </div>
           <div className="text-sm text-muted-foreground">
             © {new Date().getFullYear()}
           </div>
@@ -32,4 +40,3 @@ export const Footer = () => {
     </footer>
   );
 };
-
