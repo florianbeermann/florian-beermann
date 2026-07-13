@@ -1,4 +1,26 @@
-@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Inter+Tight:ital,wght@0,100..900;1,100..900&family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@300;400;500;600;700&display=swap');
+@font-face {
+  font-family: "Inter Variable";
+  src: url("/fonts/inter-latin-variable.woff2") format("woff2-variations");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter Tight Variable";
+  src: url("/fonts/inter-tight-latin-variable.woff2") format("woff2-variations");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "EB Garamond Variable";
+  src: url("/fonts/eb-garamond-latin-variable-italic.woff2") format("woff2-variations");
+  font-style: italic;
+  font-weight: 400 800;
+  font-display: swap;
+}
 
 @tailwind base;
 @tailwind components;
@@ -16,8 +38,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 210 100% 18.6%;
 
-    /* Electric blue brand identity */
-    --primary: 210 95% 52%;
+    /* Accessible functional blue + bright decorative accent */
+    --primary: 211 100% 34%;
     --primary-foreground: 0 0% 100%;
 
     --accent: 210 95% 52%;
@@ -35,7 +57,7 @@
 
     --border: 215 20% 90%;
     --input: 215 20% 90%;
-    --ring: 210 95% 52%;
+    --ring: 211 100% 34%;
 
     --radius: 1rem;
 
@@ -47,7 +69,7 @@
     --shadow-accent: 0 16px 40px -12px rgba(16, 133, 249, 0.2);
     --shadow-card: 0 2px 8px rgba(10, 26, 47, 0.02), 0 12px 30px -10px rgba(10, 26, 47, 0.04);
 
-    --transition-smooth: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-smooth: color 0.35s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
 }
 
@@ -62,22 +84,24 @@
 
   body {
     @apply bg-background text-foreground antialiased font-light;
-    font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: "Inter Variable", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+
+  ::selection {
+    background: hsl(var(--accent) / 0.22);
+    color: hsl(var(--foreground));
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply tracking-tight font-normal;
-    font-family: 'Inter Tight', 'Inter', sans-serif;
+    font-family: "Inter Tight Variable", "Inter Variable", sans-serif;
     font-feature-settings: 'ss01';
   }
 }
 
 @layer utilities {
   .font-garamond {
-    font-family: "Garamond Premier Pro", "EB Garamond", Garamond, Georgia, serif;
-  }
-  .font-logo-caps {
-    font-family: "Montserrat", "Inter", sans-serif;
+    font-family: "EB Garamond Variable", Garamond, Georgia, serif;
   }
   .bg-gradient-hero {
     background: var(--gradient-hero);
@@ -138,6 +162,27 @@
 @keyframes reveal-up {
   to {
     transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal-item,
+  .motion-reveal {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
 

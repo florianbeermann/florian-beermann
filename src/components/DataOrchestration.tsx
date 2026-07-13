@@ -1,413 +1,351 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { ShieldCheck, GitMerge, LayoutGrid } from "lucide-react";
-import { RevealText } from "@/components/ui/RevealText";
 
-interface SymmetryCanvasProps {
-  size?: number;
-}
+type Particle = {
+  x: number;
+  y: number;
+  anchorX: number;
+  anchorY: number;
+  vx: number;
+  vy: number;
+  ordered: boolean;
+  influence: number;
+};
 
-export const SymmetryCanvas = ({ size = 400 }: SymmetryCanvasProps) => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  
-  // Track mouse state in a ref to keep it responsive inside the animation frame
-  const mouseState = useRef({
-    x: -1000,
-    y: -1000,
-    active: false,
-    isDown: false
-  });
+const SymmetryGraphic = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const frameRef = useRef<HTMLDivElement>(null);
+  const pointerRef = useRef({ x: -1000, y: -1000, active: false, pressed: false });
 
   useEffect(() => {
-    let animationFrameId: number;
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const frame = frameRef.current;
+    const context = canvas?.getContext("2d");
+    if (!canvas || !frame || !context) return;
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let particles: Particle[] = [];
+    let animationFrame = 0;
+    let size = 0;
+    let isVisible = false;
+    let frameNumber = 0;
+    let connections: Array<[number, number]> = [];
 
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = size * dpr;
-    canvas.height = size * dpr;
-    canvas.style.width = `${size}px`;
-    canvas.style.height = `${size}px`;
-    ctx.scale(dpr, dpr);
+    const buildParticles = () => {
+      const columns = size < 330 ? 16 : 18;
+      const rows = columns;
+      const step = size / columns;
+      const top = step * 0.75;
+      const bottom = size - 48;
+      const usableHeight = bottom - top;
 
-    // Florian Beermann & Partners Brand Colors
-    // Navy: hsl(210, 100%, 18.6%) -> rgb(0, 47, 95)
-    // Accent Blue: hsl(210, 95%, 52%) -> rgb(16, 133, 249)
-    const colorGrid = { r: 0, g: 47, b: 95 };
-    const colorMoving = { r: 16, g: 133, b: 249 };
-
-    class Particle {
-      x: number;
-      y: number;
-      size: number;
-      isOrdered: boolean;
-      velocity: { x: number; y: number };
-      originalX: number;
-      originalY: number;
-      influence: number;
-      neighbors: Particle[];
-
-      constructor(x: number, y: number, isOrdered: boolean) {
-        this.x = x;
-        this.y = y;
-        this.originalX = x;
-        this.originalY = y;
-        this.size = 2.5;
-        this.isOrdered = isOrdered;
-        this.velocity = {
-          x: (Math.random() - 0.5) * 1.5,
-          y: (Math.random() - 0.5) * 1.5,
-        };
-        this.influence = 0;
-        this.neighbors = [];
-      }
-
-      update() {
-        const mouse = mouseState.current;
-        
-        // Mouse interaction (repulsion/gravity field)
-        if (mouse.active) {
-          const dist = Math.hypot(this.x - mouse.x, this.y - mouse.y);
-          const limit = mouse.isDown ? 100 : 50;
-          if (dist < limit) {
-            const force = (1 - dist / limit) * (mouse.isDown ? 7 : 2);
-            const angle = Math.atan2(this.y - mouse.y, this.x - mouse.x);
-            
-            // Push away from cursor
-            this.velocity.x += Math.cos(angle) * force * 0.15;
-            this.velocity.y += Math.sin(angle) * force * 0.15;
-            this.influence = Math.max(this.influence, 1 - dist / limit);
-          }
-        }
-
-        if (this.isOrdered) {
-          // Ordered grid on the left
-          const dx = this.originalX - this.x;
-          const dy = this.originalY - this.y;
-          const pushForce = { x: 0, y: 0 };
-
-          this.neighbors.forEach((neighbor) => {
-            if (!neighbor.isOrdered) {
-              const distance = Math.hypot(this.x - neighbor.x, this.y - neighbor.y);
-              const limit = 80;
-              if (distance < limit) {
-                const force = Math.max(0, 1 - distance / limit);
-                // Grid wiggles in response to moving particles
-                pushForce.x += neighbor.velocity.x * force * 1.2;
-                pushForce.y += neighbor.velocity.y * force * 1.2;
-                this.influence = Math.max(this.influence, force);
-              }
-            }
+      particles = [];
+      for (let column = 0; column < columns; column += 1) {
+        for (let row = 0; row < rows; row += 1) {
+          const ordered = column < columns / 2;
+          const anchorX = step * column + step / 2;
+          const anchorY = top + (row / (rows - 1)) * usableHeight;
+          particles.push({
+            x: ordered ? anchorX : size / 2 + Math.random() * (size / 2 - step),
+            y: ordered ? anchorY : top + Math.random() * usableHeight,
+            anchorX,
+            anchorY,
+            vx: ordered ? 0 : (Math.random() - 0.5) * 1.4,
+            vy: ordered ? 0 : (Math.random() - 0.5) * 1.4,
+            ordered,
+            influence: 0,
           });
-
-          // Move back to anchor point, blended with push force and velocity damping
-          this.velocity.x *= 0.85;
-          this.velocity.y *= 0.85;
-          
-          this.x += 0.06 * dx * (1 - this.influence) + pushForce.x * this.influence + this.velocity.x;
-          this.y += 0.06 * dy * (1 - this.influence) + pushForce.y * this.influence + this.velocity.y;
-          this.influence *= 0.96;
-        } else {
-          // Fragmented random particles on the right
-          this.velocity.x += (Math.random() - 0.5) * 0.4;
-          this.velocity.y += (Math.random() - 0.5) * 0.4;
-          
-          // Friction / Speed limit matching original
-          this.velocity.x *= 0.95;
-          this.velocity.y *= 0.95;
-          
-          this.x += this.velocity.x;
-          this.y += this.velocity.y;
-
-          // Boundaries constraints matching original
-          if (this.x < size / 2 || this.x > size) this.velocity.x *= -1;
-          if (this.y < 0 || this.y > size) this.velocity.y *= -1;
-
-          this.x = Math.max(size / 2, Math.min(size, this.x));
-          this.y = Math.max(0, Math.min(size, this.y));
         }
       }
+      connections = [];
+    };
 
-      draw(c: CanvasRenderingContext2D) {
-        // Change transparency and colors dynamically based on state
-        const opacity = this.isOrdered ? 0.8 - 0.4 * this.influence : 0.75;
-        const color = this.isOrdered ? colorGrid : colorMoving;
+    const resize = () => {
+      const bounds = canvas.getBoundingClientRect();
+      const nextSize = Math.round(bounds.width);
+      if (!nextSize || nextSize === size) return;
+      size = nextSize;
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(size * pixelRatio);
+      canvas.height = Math.round(size * pixelRatio);
+      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      buildParticles();
+      draw();
+    };
 
-        c.fillStyle = `rgba(${color.r}, ${color.g}, ${color.b}, ${opacity})`;
-        c.beginPath();
-        c.arc(this.x, this.y, this.isOrdered ? this.size : this.size * 0.8, 0, 2 * Math.PI);
-        c.fill();
-        
-        // Glow effect for highly influenced particles
-        if (this.influence > 0.4) {
-          c.shadowBlur = this.influence * 6;
-          c.shadowColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
-          c.beginPath();
-          c.arc(this.x, this.y, this.size * 1.2, 0, 2 * Math.PI);
-          c.fill();
-          c.shadowBlur = 0; // Reset
-        }
-      }
-    }
-
-    const particles: Particle[] = [];
-    const columns = 24;
-    const rows = 24;
-    const step = size / columns;
-
-    for (let c = 0; c < columns; c++) {
-      for (let r = 0; r < rows; r++) {
-        const x = step * c + step / 2;
-        const y = step * r + step / 2;
-        const isOrdered = x < size / 2;
-        particles.push(new Particle(x, y, isOrdered));
-      }
-    }
-
-    let frame = 0;
-
-    const animate = () => {
-      ctx.clearRect(0, 0, size, size);
-      
-      // Update neighbors periodically for connectivity lines
-      if (frame % 15 === 0) {
-        particles.forEach((p) => {
-          p.neighbors = particles.filter(
-            (o) => o !== p && Math.hypot(p.x - o.x, p.y - o.y) < 90
-          );
-        });
-      }
-
-      particles.forEach((p) => {
-        p.update();
-        p.draw(ctx);
-
-        p.neighbors.forEach((n) => {
-          const d = Math.hypot(p.x - n.x, p.y - n.y);
-          const maxDistance = 45;
-          if (d < maxDistance) {
-            const alpha = 0.15 * (1 - d / maxDistance) * (1 - p.influence * 0.5);
-            // Blend colors of connecting lines
-            const lineCol = p.isOrdered ? colorGrid : colorMoving;
-            ctx.strokeStyle = `rgba(${lineCol.r}, ${lineCol.g}, ${lineCol.b}, ${alpha})`;
-            ctx.lineWidth = 0.6;
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(n.x, n.y);
-            ctx.stroke();
+    const refreshConnections = () => {
+      const nextConnections: Array<[number, number]> = [];
+      const connectionDistance = size / 9;
+      for (let first = 0; first < particles.length; first += 1) {
+        for (let second = first + 1; second < particles.length; second += 1) {
+          const a = particles[first];
+          const b = particles[second];
+          if (a.ordered !== b.ordered) continue;
+          if (Math.hypot(a.x - b.x, a.y - b.y) < connectionDistance) {
+            nextConnections.push([first, second]);
           }
-        });
+        }
+      }
+      connections = nextConnections;
+    };
+
+    const update = () => {
+      const pointer = pointerRef.current;
+      const top = size / 18;
+      const bottom = size - 48;
+
+      particles.forEach((particle) => {
+        if (pointer.active) {
+          const distance = Math.hypot(particle.x - pointer.x, particle.y - pointer.y);
+          const radius = pointer.pressed ? size * 0.25 : size * 0.14;
+          if (distance > 0 && distance < radius) {
+            const force = (1 - distance / radius) * (pointer.pressed ? 0.9 : 0.35);
+            particle.vx += ((particle.x - pointer.x) / distance) * force;
+            particle.vy += ((particle.y - pointer.y) / distance) * force;
+            particle.influence = Math.max(particle.influence, 1 - distance / radius);
+          }
+        }
+
+        if (particle.ordered) {
+          particle.vx += (particle.anchorX - particle.x) * 0.035;
+          particle.vy += (particle.anchorY - particle.y) * 0.035;
+          particle.vx *= 0.82;
+          particle.vy *= 0.82;
+        } else {
+          particle.vx += (Math.random() - 0.5) * 0.12;
+          particle.vy += (Math.random() - 0.5) * 0.12;
+          particle.vx *= 0.985;
+          particle.vy *= 0.985;
+        }
+
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        particle.influence *= 0.94;
+
+        const leftEdge = particle.ordered ? size / 30 : size / 2 + size / 40;
+        const rightEdge = particle.ordered ? size / 2 - size / 40 : size - size / 30;
+        if (particle.x < leftEdge || particle.x > rightEdge) {
+          particle.x = Math.max(leftEdge, Math.min(rightEdge, particle.x));
+          particle.vx *= -0.75;
+        }
+        if (particle.y < top || particle.y > bottom) {
+          particle.y = Math.max(top, Math.min(bottom, particle.y));
+          particle.vy *= -0.75;
+        }
+      });
+    };
+
+    function draw() {
+      if (!size) return;
+      context.clearRect(0, 0, size, size);
+
+      const gradient = context.createLinearGradient(0, 0, size, size);
+      gradient.addColorStop(0, "rgba(16, 133, 249, 0.075)");
+      gradient.addColorStop(1, "rgba(0, 47, 95, 0.018)");
+      context.fillStyle = gradient;
+      context.fillRect(0, 0, size, size);
+
+      if (frameNumber % 12 === 0 || connections.length === 0) refreshConnections();
+      const connectionDistance = size / 9;
+      connections.forEach(([first, second]) => {
+        const a = particles[first];
+        const b = particles[second];
+        const distance = Math.hypot(a.x - b.x, a.y - b.y);
+        const alpha = Math.max(0, 1 - distance / connectionDistance) * (a.ordered ? 0.12 : 0.16);
+        context.strokeStyle = a.ordered ? `rgba(0, 64, 128, ${alpha})` : `rgba(16, 133, 249, ${alpha})`;
+        context.lineWidth = 0.7;
+        context.beginPath();
+        context.moveTo(a.x, a.y);
+        context.lineTo(b.x, b.y);
+        context.stroke();
       });
 
-      // Central symmetry boundary line
-      ctx.strokeStyle = "rgba(16, 133, 249, 0.15)";
-      ctx.setLineDash([4, 4]);
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(size / 2, 0);
-      ctx.lineTo(size / 2, size);
-      ctx.stroke();
-      ctx.setLineDash([]); // Reset dash
+      particles.forEach((particle) => {
+        context.fillStyle = particle.ordered ? "rgba(0, 64, 128, 0.76)" : "rgba(16, 133, 249, 0.82)";
+        if (particle.influence > 0.35) {
+          context.shadowBlur = particle.influence * 8;
+          context.shadowColor = particle.ordered ? "rgb(0, 64, 128)" : "rgb(16, 133, 249)";
+        }
+        context.beginPath();
+        context.arc(particle.x, particle.y, particle.ordered ? 2.3 : 2.6, 0, Math.PI * 2);
+        context.fill();
+        context.shadowBlur = 0;
+      });
 
-      frame++;
-      animationFrameId = requestAnimationFrame(animate);
+      context.strokeStyle = "rgba(16, 133, 249, 0.26)";
+      context.lineWidth = 1;
+      context.setLineDash([5, 7]);
+      context.beginPath();
+      context.moveTo(size / 2, size / 14);
+      context.lineTo(size / 2, size - 22);
+      context.stroke();
+      context.setLineDash([]);
+
+      context.fillStyle = "rgba(0, 64, 128, 0.92)";
+      context.font = `600 ${Math.max(8, size * 0.027)}px "Inter Variable", sans-serif`;
+      context.letterSpacing = `${Math.max(0.8, size * 0.003)}px`;
+      context.fillText("STRUCTURED SIGNALS", size * 0.06, size - 17);
+      context.fillText("FRAGMENTED INPUTS", size * 0.57, size - 17);
+    }
+
+    const animate = () => {
+      if (!isVisible || document.hidden || reducedMotion.matches) {
+        animationFrame = 0;
+        return;
+      }
+      update();
+      frameNumber += 1;
+      draw();
+      animationFrame = window.requestAnimationFrame(animate);
     };
 
-    animate();
+    const startAnimation = () => {
+      if (!animationFrame && isVisible && !document.hidden && !reducedMotion.matches) {
+        animationFrame = window.requestAnimationFrame(animate);
+      } else if (reducedMotion.matches) {
+        draw();
+      }
+    };
+
+    const visibilityObserver = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting;
+      if (isVisible) startAnimation();
+      else if (animationFrame) {
+        window.cancelAnimationFrame(animationFrame);
+        animationFrame = 0;
+      }
+    }, { threshold: 0.05 });
+
+    const handleMotionPreference = () => {
+      if (reducedMotion.matches && animationFrame) {
+        window.cancelAnimationFrame(animationFrame);
+        animationFrame = 0;
+        draw();
+      } else {
+        startAnimation();
+      }
+    };
+    const handleDocumentVisibility = () => startAnimation();
+    const resizeObserver = new ResizeObserver(resize);
+
+    resizeObserver.observe(canvas);
+    visibilityObserver.observe(frame);
+    reducedMotion.addEventListener("change", handleMotionPreference);
+    document.addEventListener("visibilitychange", handleDocumentVisibility);
+    resize();
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      if (animationFrame) window.cancelAnimationFrame(animationFrame);
+      resizeObserver.disconnect();
+      visibilityObserver.disconnect();
+      reducedMotion.removeEventListener("change", handleMotionPreference);
+      document.removeEventListener("visibilitychange", handleDocumentVisibility);
     };
-  }, [size]);
+  }, []);
 
-  // Handlers for mouse interaction relative to canvas
-  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    mouseState.current.x = e.clientX - rect.left;
-    mouseState.current.y = e.clientY - rect.top;
+  const updatePointer = (event: ReactPointerEvent<HTMLCanvasElement>) => {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    pointerRef.current.x = event.clientX - bounds.left;
+    pointerRef.current.y = event.clientY - bounds.top;
+    pointerRef.current.active = true;
   };
 
-  const handleMouseEnter = () => {
-    mouseState.current.active = true;
-  };
-
-  const handleMouseLeave = () => {
-    mouseState.current.active = false;
-    mouseState.current.x = -1000;
-    mouseState.current.y = -1000;
-    mouseState.current.isDown = false;
-  };
-
-  const handleMouseDown = () => {
-    mouseState.current.isDown = true;
-  };
-
-  const handleMouseUp = () => {
-    mouseState.current.isDown = false;
-  };
-
-  // Handlers for touch interaction on mobile devices
-  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas || e.touches.length === 0) return;
-    const rect = canvas.getBoundingClientRect();
-    const touch = e.touches[0];
-    mouseState.current.x = touch.clientX - rect.left;
-    mouseState.current.y = touch.clientY - rect.top;
-  };
-
-  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
-    mouseState.current.active = true;
-    mouseState.current.isDown = true;
-    handleTouchMove(e);
-  };
-
-  const handleTouchEnd = () => {
-    mouseState.current.active = false;
-    mouseState.current.x = -1000;
-    mouseState.current.y = -1000;
-    mouseState.current.isDown = false;
+  const resetPointer = () => {
+    pointerRef.current = { x: -1000, y: -1000, active: false, pressed: false };
   };
 
   return (
-    <div 
-      ref={containerRef}
-      className="relative aspect-square w-full max-w-[400px] flex items-center justify-center bg-card rounded-3xl border border-border/80 p-4 shadow-elegant group"
-    >
-      {/* Decorative corners */}
-      <div className="absolute top-4 left-4 w-3.5 h-3.5 border-t-2 border-l-2 border-accent/20 rounded-tl group-hover:border-accent/60 transition-smooth" />
-      <div className="absolute top-4 right-4 w-3.5 h-3.5 border-t-2 border-r-2 border-accent/20 rounded-tr group-hover:border-accent/60 transition-smooth" />
-      <div className="absolute bottom-4 left-4 w-3.5 h-3.5 border-b-2 border-l-2 border-accent/20 rounded-bl group-hover:border-accent/60 transition-smooth" />
-      <div className="absolute bottom-4 right-4 w-3.5 h-3.5 border-b-2 border-r-2 border-accent/20 rounded-br group-hover:border-accent/60 transition-smooth" />
-      
+    <div ref={frameRef} className="group relative aspect-square w-full max-w-[400px] overflow-hidden rounded-3xl border border-border/80 bg-card p-4 shadow-elegant">
+      <div className="pointer-events-none absolute left-4 top-4 h-3.5 w-3.5 rounded-tl border-l-2 border-t-2 border-accent/25 transition-colors group-hover:border-accent/60" />
+      <div className="pointer-events-none absolute right-4 top-4 h-3.5 w-3.5 rounded-tr border-r-2 border-t-2 border-accent/25 transition-colors group-hover:border-accent/60" />
+      <div className="pointer-events-none absolute bottom-4 left-4 h-3.5 w-3.5 rounded-bl border-b-2 border-l-2 border-accent/25 transition-colors group-hover:border-accent/60" />
+      <div className="pointer-events-none absolute bottom-4 right-4 h-3.5 w-3.5 rounded-br border-b-2 border-r-2 border-accent/25 transition-colors group-hover:border-accent/60" />
       <canvas
         ref={canvasRef}
-        onMouseMove={handleMouseMove}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        className="w-full h-full object-contain"
+        className="block aspect-square w-full touch-pan-y"
+        role="img"
+        aria-describedby="signals-animation-description"
+        onPointerEnter={updatePointer}
+        onPointerMove={updatePointer}
+        onPointerDown={(event) => {
+          updatePointer(event);
+          pointerRef.current.pressed = true;
+        }}
+        onPointerUp={() => { pointerRef.current.pressed = false; }}
+        onPointerCancel={resetPointer}
+        onPointerLeave={resetPointer}
       />
+      <p id="signals-animation-description" className="sr-only">
+        An interactive animation contrasts structured Customer Success signals with fragmented inputs. Motion pauses when the graphic is off screen and is disabled when reduced motion is preferred.
+      </p>
     </div>
   );
 };
 
 export const DataOrchestration = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.15 }
-    );
-
-    const currentRef = containerRef.current;
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
-
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
+    const current = containerRef.current;
+    if (!current) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setIsVisible(true);
+        observer.disconnect();
       }
-    };
+    }, { threshold: 0.15 });
+    observer.observe(current);
+    return () => observer.disconnect();
   }, []);
 
   return (
-    <section
-      id="orchestration"
-      ref={containerRef}
-      className="py-24 lg:py-32 bg-[#FFFFFF] border-t border-border/60 overflow-hidden relative"
-    >
+    <section id="orchestration" ref={containerRef} className="py-24 lg:py-32 bg-white border-t border-border/60 overflow-hidden relative">
       <div className="absolute top-1/2 left-0 h-96 w-96 rounded-full bg-accent/5 blur-[100px] -translate-y-1/2 pointer-events-none" />
-
       <div className="container max-w-6xl">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-center">
-          
-          {/* Column 1: Interactive Canvas */}
-          <div
-            className={`lg:col-span-5 flex justify-center order-2 lg:order-1 transition-all duration-1000 transform ${
-              isVisible
-                ? "opacity-100 translate-y-0 scale-100"
-                : "opacity-0 translate-y-8 scale-95"
-            }`}
-          >
-            <SymmetryCanvas size={380} />
+          <div className={`motion-reveal min-w-0 lg:col-span-5 flex justify-center order-2 lg:order-1 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+            <SymmetryGraphic />
           </div>
 
-          {/* Column 2: Content */}
-          <div
-            className={`lg:col-span-7 space-y-8 order-1 lg:order-2 transition-all duration-1000 delay-100 transform ${
-              isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-            }`}
-          >
+          <div className={`motion-reveal min-w-0 lg:col-span-7 space-y-8 order-1 lg:order-2 transition-all duration-700 delay-100 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
             <div className="space-y-4">
-              <div className="text-[10px] uppercase tracking-widest text-accent font-semibold">
-                Symmetry and Order
-              </div>
-              <h2 className="text-4xl md:text-5xl tracking-tight text-foreground text-balance">
-                Bringing symmetry to your Customer Success data
-              </h2>
+              <p className="text-xs uppercase tracking-[0.18em] text-primary font-semibold">Symmetry and order</p>
+              <h2 className="text-4xl md:text-5xl tracking-tight text-foreground text-balance">Bringing symmetry to your Customer Success data</h2>
             </div>
 
             <p className="text-base text-muted-foreground leading-relaxed font-light">
-              Your CRM, support logs, product events, and billing history contain the indicators needed to scale NRR. We turn fragmented data signals into clean, structured playbook executions.
+              Your CRM, support logs, product events and billing history contain the indicators needed to improve retention. We turn fragmented signals into structured health models and usable playbook triggers.
             </p>
 
             <div className="grid sm:grid-cols-2 gap-6 pt-2">
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="h-9 w-9 rounded-xl bg-accent/10 flex items-center justify-center">
-                    <GitMerge className="h-5 w-5 text-accent" />
-                  </div>
-                  <h3 className="font-semibold text-foreground text-sm">Fragmented Inputs</h3>
+                  <div className="h-9 w-9 rounded-xl bg-accent/10 flex items-center justify-center"><GitMerge className="h-5 w-5 text-primary" aria-hidden="true" /></div>
+                  <h3 className="font-semibold text-foreground text-sm">Fragmented inputs</h3>
                 </div>
-                <p className="text-xs text-muted-foreground leading-relaxed font-light">
-                  Ad-hoc customer actions, product usage telemetries, and support tickets wander unpredictably. Unmanaged, they create noise and delay response times.
-                </p>
+                <p className="text-xs text-muted-foreground leading-relaxed font-light">Ad-hoc customer actions, product usage and support tickets create noise when they are not connected to a consistent operating model.</p>
               </div>
 
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="h-9 w-9 rounded-xl bg-accent/10 flex items-center justify-center">
-                    <LayoutGrid className="h-5 w-5 text-accent" />
-                  </div>
-                  <h3 className="font-semibold text-foreground text-sm">Symmetrical Outcomes</h3>
+                  <div className="h-9 w-9 rounded-xl bg-accent/10 flex items-center justify-center"><LayoutGrid className="h-5 w-5 text-primary" aria-hidden="true" /></div>
+                  <h3 className="font-semibold text-foreground text-sm">Structured outcomes</h3>
                 </div>
-                <p className="text-xs text-muted-foreground leading-relaxed font-light">
-                  We build the mapping layers that capture these signals, structuring them into predictable customer health scores and proactive automation triggers.
-                </p>
+                <p className="text-xs text-muted-foreground leading-relaxed font-light">A clear mapping layer turns those signals into health scores, prioritised actions and proactive automation.</p>
               </div>
             </div>
 
             <div className="pt-4">
               <div className="p-5 rounded-2xl border border-border/80 bg-card flex items-start gap-4 shadow-card">
-                <ShieldCheck className="h-5 w-5 text-accent shrink-0 mt-0.5" />
+                <ShieldCheck className="h-5 w-5 text-primary shrink-0 mt-0.5" aria-hidden="true" />
                 <div>
-                  <h4 className="font-medium text-foreground text-sm">Operational Rigour</h4>
-                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed font-light">
-                    By feeding clean signals into tools like Dynamics, Gainsight, or Salesforce, your CSM team shifts from reactive firefighting to high-value expansion motions.
-                  </p>
+                  <h3 className="font-medium text-foreground text-sm">Operational rigour</h3>
+                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed font-light">Clean signals in tools such as Dynamics, Gainsight or Salesforce help CSMs move from reactive work to deliberate retention and expansion motions.</p>
                 </div>
               </div>
             </div>
-
           </div>
-
         </div>
       </div>
     </section>
