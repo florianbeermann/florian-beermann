@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbfdff"/>
+      <stop offset="1" stop-color="#eaf4ff"/>
+    </linearGradient>
+    <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
+      <path d="M64 0H0V64" fill="none" stroke="#168ff3" stroke-opacity="0.08" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#background)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <circle cx="1060" cy="92" r="260" fill="#168ff3" opacity="0.06"/>
+  <circle cx="96" cy="620" r="230" fill="#0057ad" opacity="0.04"/>
+
+  <g transform="translate(92 78)">
+    <text x="0" y="58" fill="#003b76" font-family="Helvetica Neue, Arial, sans-serif" font-size="64" font-weight="600" letter-spacing="-4">ƒb</text>
+    <text x="92" y="34" fill="#003b76" font-family="Helvetica Neue, Arial, sans-serif" font-size="25" font-weight="400" letter-spacing="-0.6">florian beermann</text>
+    <text x="92" y="66" fill="#003b76" font-family="Helvetica Neue, Arial, sans-serif" font-size="20" font-weight="300">&amp; partners</text>
+  </g>
+
+  <g transform="translate(92 250)">
+    <text x="0" y="0" fill="#0057ad" font-family="Helvetica Neue, Arial, sans-serif" font-size="19" font-weight="600" letter-spacing="3">CUSTOMER SUCCESS STRATEGY</text>
+    <text x="0" y="86" fill="#003b76" font-family="Helvetica Neue, Arial, sans-serif" font-size="64" font-weight="300" letter-spacing="-2">Practical strategy for</text>
+    <text x="0" y="158" fill="#003b76" font-family="Helvetica Neue, Arial, sans-serif" font-size="64" font-weight="500" letter-spacing="-2">B2B SaaS retention and expansion.</text>
+    <rect x="0" y="211" width="150" height="6" rx="3" fill="#168ff3"/>
+  </g>
+
+  <text x="92" y="584" fill="#536678" font-family="Helvetica Neue, Arial, sans-serif" font-size="21">Hamburg · Working across Europe</text>
+  <text x="1108" y="584" text-anchor="end" fill="#536678" font-family="Helvetica Neue, Arial, sans-serif" font-size="21">florianbeermann.com</text>
+</svg>

@@ -80,7 +80,7 @@ export const Services = () => {
       <div className="absolute top-0 right-0 h-96 w-96 rounded-full bg-accent/5 blur-[100px] pointer-events-none" />
       <div className="container max-w-6xl relative">
         <div className="max-w-2xl mb-16 text-left">
-          <div className="text-[10px] uppercase tracking-widest text-accent font-semibold mb-3">
+          <div className="text-xs uppercase tracking-[0.18em] text-primary font-semibold mb-3">
             Engagements
           </div>
           <h2 className="text-4xl md:text-5xl text-balance text-foreground">
@@ -93,7 +93,7 @@ export const Services = () => {
             <div
               key={s.title}
               onMouseMove={handleMouseMove}
-              className={`group relative bg-card border border-border/80 rounded-3xl p-8 shadow-card spotlight-card transition-all duration-1000 transform ${
+              className={`motion-reveal group relative bg-card border border-border/80 rounded-3xl p-8 shadow-card spotlight-card transition-all duration-700 transform ${
                 isVisible
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-12"
@@ -107,12 +107,12 @@ export const Services = () => {
               </div>
               
               <div className="h-12 w-12 rounded-2xl bg-accent flex items-center justify-center mb-8 shadow-accent relative z-10">
-                <s.icon className="h-5 w-5 text-accent-foreground" />
+                <s.icon className="h-5 w-5 text-accent-foreground" aria-hidden="true" />
               </div>
               
               <h3 className="text-2xl mb-2 text-foreground relative z-10 font-medium">{s.title}</h3>
               
-              <p className="text-accent text-xs font-semibold uppercase tracking-wider mb-4 relative z-10">
+              <p className="text-primary text-xs font-semibold uppercase tracking-wider mb-4 relative z-10">
                 {s.tagline}
               </p>
               

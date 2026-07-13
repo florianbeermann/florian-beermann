@@ -15,7 +15,7 @@ export const Footer = () => {
           <div className="flex items-center gap-3 shrink-0">
             <img
               src="/logo.png"
-              alt="florian beermann & partners"
+              alt=""
               className="h-10 w-10 object-contain hover:opacity-80 transition-opacity duration-300 pointer-events-none"
             />
             <span
@@ -30,11 +30,11 @@ export const Footer = () => {
           </div>
         </div>
         <div className="flex gap-6 text-sm text-muted-foreground flex-wrap justify-center">
-          <a href={getHref("#about")} className="hover:text-accent transition-smooth">About</a>
-          <a href={getHref("#services")} className="hover:text-accent transition-smooth">Services</a>
-          <a href={getHref("#contact")} className="hover:text-accent transition-smooth">Contact</a>
-          <Link to="/imprint" className="hover:text-accent transition-smooth">Imprint</Link>
-          <Link to="/privacy" className="hover:text-accent transition-smooth">Privacy</Link>
+          <a href={getHref("#about")} className="hover:text-primary transition-colors">About</a>
+          <a href={getHref("#services")} className="hover:text-primary transition-colors">Services</a>
+          <a href={getHref("#contact")} className="hover:text-primary transition-colors">Contact</a>
+          <Link to="/imprint" className="hover:text-primary transition-colors">Imprint</Link>
+          <Link to="/privacy" className="hover:text-primary transition-colors">Privacy</Link>
         </div>
       </div>
     </footer>

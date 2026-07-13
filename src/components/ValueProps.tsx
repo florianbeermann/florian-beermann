@@ -61,7 +61,7 @@ export const ValueProps = () => {
     <section id="value" ref={sectionRef} className="py-24 lg:py-32 bg-gradient-subtle relative">
       <div className="container max-w-6xl">
         <div className="max-w-2xl mb-16 text-left">
-          <div className="text-[10px] uppercase tracking-widest text-accent font-semibold mb-3">
+          <div className="text-xs uppercase tracking-[0.18em] text-primary font-semibold mb-3">
             What I deliver
           </div>
           <h2 className="text-4xl md:text-5xl text-foreground text-balance">
@@ -74,7 +74,7 @@ export const ValueProps = () => {
             <div
               key={v.title}
               onMouseMove={handleMouseMove}
-              className={`group relative bg-card rounded-3xl p-8 border border-border/80 shadow-card spotlight-card transition-all duration-1000 transform ${
+              className={`motion-reveal group relative bg-card rounded-3xl p-8 border border-border/80 shadow-card spotlight-card transition-all duration-700 transform ${
                 isVisible
                   ? "opacity-100 translate-y-0"
                   : "opacity-0 translate-y-12"
@@ -84,7 +84,7 @@ export const ValueProps = () => {
               }}
             >
               <div className="h-12 w-12 rounded-2xl bg-accent/5 flex items-center justify-center mb-8 group-hover:bg-accent/10 group-hover:scale-105 transition-smooth relative z-10">
-                <v.icon className="h-5 w-5 text-accent transition-smooth" />
+                <v.icon className="h-5 w-5 text-primary transition-smooth" aria-hidden="true" />
               </div>
               
               <h3 className="text-xl font-medium text-foreground mb-4 relative z-10">

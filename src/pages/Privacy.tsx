@@ -1,156 +1,75 @@
+import { useEffect } from "react";
+import { Database, Globe, Scale, Shield } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { useEffect } from "react";
-import { Mail, Shield, Scale, Globe, Database } from "lucide-react";
+import { setPageMetadata } from "@/lib/metadata";
 
 export const Privacy = () => {
   useEffect(() => {
-    document.title = "Datenschutzerklärung / Privacy Policy - Florian Beermann";
-    window.scrollTo(0, 0);
+    setPageMetadata({
+      title: "Privacy Policy | florian beermann & partners",
+      description: "Information about how personal data is processed on florianbeermann.com.",
+      path: "/privacy",
+    });
   }, []);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col justify-between">
+    <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      
-      <main className="flex-grow pt-32 pb-24">
-        <div className="container max-w-4xl px-4 sm:px-6">
+      <main id="main-content" className="flex-grow pt-36 pb-24">
+        <div className="container max-w-4xl">
           <div className="space-y-8">
-            {/* Header section */}
-            <div className="space-y-4 border-b border-border pb-8">
-              <div className="inline-flex items-center gap-2 rounded-full border border-accent/20 bg-accent/5 px-3 py-1 text-xs text-accent font-medium">
-                <Shield className="h-3.5 w-3.5" />
-                <span>Datenschutz / Data Protection (GDPR / DSGVO)</span>
+            <header className="space-y-4 border-b border-border pb-8">
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs text-primary font-medium">
+                <Shield className="h-3.5 w-3.5" aria-hidden="true" />
+                Data protection
               </div>
-              <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground">
-                Datenschutzerklärung <span className="text-muted-foreground font-normal">/ Privacy Policy</span>
-              </h1>
-              <p className="text-muted-foreground text-lg leading-relaxed">
-                Informationen über die Erhebung und Verarbeitung personenbezogener Daten. / Information on the collection and processing of personal data.
-              </p>
-            </div>
+              <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight text-foreground">Privacy Policy</h1>
+              <p className="text-muted-foreground text-lg leading-relaxed">How personal data is processed when you visit this website or contact us.</p>
+              <p className="text-xs text-muted-foreground">Last updated: 13 July 2026</p>
+            </header>
 
-            {/* Content sections */}
             <div className="space-y-12 text-sm sm:text-base text-muted-foreground leading-relaxed">
-              
-              {/* Section 1: General Info */}
               <section className="space-y-4">
-                <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
-                  <Scale className="h-5 w-5 text-accent" />
-                  1. Allgemeine Hinweise & Pflichtinformationen / General Info
-                </h2>
-                
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-foreground">Verantwortliche Stelle / Data Controller</h3>
-                  <p>
-                    Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:<br />
-                    <span className="text-foreground font-medium">florian beermann & partners</span><br />
-                    Hegestr. 31<br />
-                    20249 Hamburg<br />
-                    Germany<br />
-                    E-Mail: <a href="mailto:hello@florianbeermann.com" className="text-accent hover:underline">hello@florianbeermann.com</a>
-                  </p>
-                  <p className="text-xs">
-                    Die verantwortliche Stelle ist die natürliche oder juristische Person, die allein oder gemeinsam mit anderen über die Zwecke und Mittel der Verarbeitung von personenbezogenen Daten entscheidet.<br />
-                    The data controller is the natural or legal person who alone or jointly with others determines the purposes and means of processing personal data.
-                  </p>
-                </div>
-              </section>
-
-              {/* Section 2: Hosting */}
-              <section className="space-y-4 border-t border-border pt-8">
-                <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
-                  <Globe className="h-5 w-5 text-accent" />
-                  2. Hosting & Bereitstellung / Hosting
-                </h2>
-                
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-foreground">Hetzner Online</h3>
-                  <p>
-                    Wir hosten unsere Website bei der <strong>Hetzner Online GmbH</strong> (Industriestr. 25, 91710 Gunzenhausen, Deutschland). Details entnehmen Sie der Datenschutzerklärung von Hetzner:{" "}
-                    <a href="https://www.hetzner.com/de/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
-                      Hetzner Privacy Policy
-                    </a>.
-                  </p>
-                  <p>
-                    Die Verwendung von Hetzner erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO. Wir haben ein berechtigtes Interesse an einer möglichst zuverlässigen und sicheren Darstellung unserer Website.
-                  </p>
-                  <p className="text-xs">
-                    Our website is hosted by Hetzner Online GmbH. Processing is based on Art. 6 (1) (f) GDPR to ensure the security, integrity, and reliable delivery of our static web contents.
-                  </p>
-                </div>
-
-                <div className="space-y-3 pt-2">
-                  <h3 className="font-semibold text-foreground">Server-Log-Dateien / Server Log Files</h3>
-                  <p>
-                    Der Provider der Seiten erhebt und speichert automatisch Informationen in sogenannten Server-Log-Dateien, die Ihr Browser automatisch an uns übermittelt:<br />
-                    • Browsertyp und Browserversion<br />
-                    • Verwendetes Betriebssystem<br />
-                    • Referrer URL<br />
-                    • Hostname des zugreifenden Rechners<br />
-                    • Uhrzeit der Serveranfrage<br />
-                    • IP-Adresse
-                  </p>
-                  <p className="text-xs">
-                    These log files are technically necessary and are not merged with other data sources. They are processed on the basis of Art. 6 (1) (f) GDPR to maintain stable server operations.
-                  </p>
-                </div>
-              </section>
-
-              {/* Section 3: Contact Form & Third Party Forms */}
-              <section className="space-y-4 border-t border-border pt-8">
-                <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
-                  <Database className="h-5 w-5 text-accent" />
-                  3. Datenerfassung auf dieser Website / Data Collection
-                </h2>
-                
-                <div className="space-y-3">
-                  <h3 className="font-semibold text-foreground">Kontaktformular / Contact Form</h3>
-                  <p>
-                    Wenn Sie uns per Kontaktformular Anfragen zukommen lassen, werden Ihre Angaben aus dem Anfrageformular inklusive der von Ihnen dort angegebenen Kontaktdaten zwecks Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei uns gespeichert. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter.
-                  </p>
-                  <p>
-                    Die Verarbeitung dieser Daten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO, sofern Ihre Anfrage mit der Erfüllung eines Vertrags zusammenhängt oder zur Durchführung vorvertraglicher Maßnahmen erforderlich ist. In allen übrigen Fällen beruht die Verarbeitung auf unserem berechtigten Interesse an der effektiven Bearbeitung der an uns gerichteten Anfragen (Art. 6 Abs. 1 lit. f DSGVO) oder auf Ihrer Einwilligung (Art. 6 Abs. 1 lit. a DSGVO).
-                  </p>
-                </div>
-
-                <div className="space-y-3 pt-2">
-                  <h3 className="font-semibold text-foreground">Web3Forms</h3>
-                  <p>
-                    Für das Absenden unseres Kontaktformulars nutzen wir den Dienst <strong>Web3Forms</strong> (betrieben von Web3Forms). Wenn Sie das Formular absenden, werden die Formulardaten zur Übertragung an unsere E-Mail-Adresse verschlüsselt an die Server von Web3Forms übertragen. 
-                  </p>
-                  <p>
-                    Die Nutzung dieses Dienstes erfolgt zur sicheren und effizienten Verarbeitung Ihrer Kontaktanfrage auf Grundlage unseres berechtigten Interesses nach Art. 6 Abs. 1 lit. f DSGVO. Die Daten werden nach Bearbeitung Ihrer Anfrage gelöscht, sofern keine gesetzlichen Aufbewahrungspflichten entgegenstehen.
-                  </p>
-                  <p className="text-xs">
-                    We use Web3Forms to securely deliver form submissions to our email. Submitting the form securely transmits your entries to Web3Forms servers. This processing is based on Art. 6 (1) (f) GDPR.
-                  </p>
-                </div>
-              </section>
-
-              {/* Section 4: Data Rights */}
-              <section className="space-y-4 border-t border-border pt-8">
-                <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-accent" />
-                  4. Ihre Rechte / Your Rights under GDPR
-                </h2>
-                
+                <h2 className="text-2xl font-semibold text-foreground flex items-center gap-2"><Scale className="h-5 w-5 text-primary" aria-hidden="true" />1. Controller</h2>
                 <p>
-                  Sie haben im Rahmen der geltenden gesetzlichen Bestimmungen jederzeit das Recht auf unentgeltliche Auskunft über Ihre gespeicherten personenbezogenen Daten, deren Herkunft und Empfänger und den Zweck der Datenverarbeitung und ggf. ein Recht auf Berichtigung oder Löschung dieser Daten.
-                </p>
-                <p>
-                  Hierzu sowie zu weiteren Fragen zum Thema personenbezogene Daten können Sie sich jederzeit unter der im Impressum angegebenen Adresse an uns wenden. Des Weiteren steht Ihnen ein Beschwerderecht bei der zuständigen Aufsichtsbehörde zu.
-                </p>
-                <p className="text-xs">
-                  Under the GDPR, you have the right to request access to, rectification of, or erasure of your personal data. You also have the right to restrict processing, object to processing, and data portability. To exercise these rights, please contact us at hello@florianbeermann.com.
+                  Florian Beermann, trading as <strong className="text-foreground">florian beermann &amp; partners</strong><br />
+                  Hegestr. 31, 20249 Hamburg, Germany<br />
+                  Email: <a href="mailto:hello@florianbeermann.com" className="font-medium text-primary hover:underline">hello@florianbeermann.com</a>
                 </p>
               </section>
 
+              <section className="space-y-4 border-t border-border pt-8">
+                <h2 className="text-2xl font-semibold text-foreground flex items-center gap-2"><Globe className="h-5 w-5 text-primary" aria-hidden="true" />2. Website hosting and server logs</h2>
+                <p>This website is hosted by Hetzner Online GmbH, Industriestr. 25, 91710 Gunzenhausen, Germany. Hetzner may process technical access data including IP address, time of request, requested resource, referrer, browser and operating-system information in server logs.</p>
+                <p>Processing is based on Article 6(1)(f) GDPR. Our legitimate interest is the secure, reliable and efficient delivery of the website. Log retention is governed by the hosting configuration and applicable security and legal requirements.</p>
+                <p><a href="https://www.hetzner.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="font-medium text-primary hover:underline">Hetzner privacy policy</a></p>
+              </section>
+
+              <section className="space-y-4 border-t border-border pt-8">
+                <h2 className="text-2xl font-semibold text-foreground flex items-center gap-2"><Database className="h-5 w-5 text-primary" aria-hidden="true" />3. Contact requests and Web3Forms</h2>
+                <p>When you contact us, we process the information you provide—such as your name, work email, company, optional company context and message—to respond to your request and manage any resulting business relationship.</p>
+                <p>Processing is based on Article 6(1)(b) GDPR where your request concerns pre-contractual measures and otherwise on Article 6(1)(f) GDPR, reflecting our legitimate interest in responding to business enquiries. We retain correspondence only as long as necessary for those purposes and any applicable statutory retention obligations.</p>
+                <p>The website form uses Web3Forms, a service operated by Web3Creative. Form data is transmitted to Web3Forms and forwarded to our email inbox. According to Web3Forms, submissions are not stored as form records, while server logs containing personal data may be retained for up to two months. Web3Forms states that its servers are located in the United States and that its parent business is registered in India. This therefore involves processing outside the European Economic Area.</p>
+                <p>For details, see the <a href="https://docs.web3forms.com/getting-started/faq" target="_blank" rel="noopener noreferrer" className="font-medium text-primary hover:underline">Web3Forms privacy and GDPR information</a>. You can avoid using Web3Forms by contacting us directly by email.</p>
+              </section>
+
+              <section className="space-y-4 border-t border-border pt-8">
+                <h2 className="text-2xl font-semibold text-foreground flex items-center gap-2"><Shield className="h-5 w-5 text-primary" aria-hidden="true" />4. Fonts, external links and cookies</h2>
+                <p>The fonts used by this website are hosted locally and are not loaded from Google or another font provider. This website does not use analytics, advertising trackers or marketing cookies.</p>
+                <p>The website contains an external link to LinkedIn. No data is sent to LinkedIn merely by displaying the link. If you follow it, LinkedIn processes data under its own responsibility and privacy terms.</p>
+              </section>
+
+              <section className="space-y-4 border-t border-border pt-8">
+                <h2 className="text-2xl font-semibold text-foreground">5. Your rights</h2>
+                <p>Subject to the conditions of the GDPR, you may have rights of access, rectification, erasure, restriction, data portability and objection. You may also lodge a complaint with a data protection supervisory authority.</p>
+                <p>The competent local authority is the Hamburg Commissioner for Data Protection and Freedom of Information. More information is available at <a href="https://datenschutz-hamburg.de/" target="_blank" rel="noopener noreferrer" className="font-medium text-primary hover:underline">datenschutz-hamburg.de</a>.</p>
+                <p>To exercise your rights or ask a privacy question, email <a href="mailto:hello@florianbeermann.com" className="font-medium text-primary hover:underline">hello@florianbeermann.com</a>.</p>
+              </section>
             </div>
           </div>
         </div>
       </main>
-
       <Footer />
     </div>
   );

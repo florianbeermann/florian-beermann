@@ -8,7 +8,7 @@ interface RevealTextProps {
 }
 
 export const RevealText = ({ text, className = "", delay = 0, stagger = 60 }: RevealTextProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLSpanElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export const RevealText = ({ text, className = "", delay = 0, stagger = 60 }: Re
   const words = text.split(" ");
 
   return (
-    <div ref={containerRef} className={`flex flex-wrap ${className}`}>
+    <span ref={containerRef} className={`flex flex-wrap ${className}`}>
       {words.map((word, i) => (
         <span key={i} className="reveal-wrapper inline-block mr-[0.2em] py-[0.1em] -my-[0.1em]">
           <span
@@ -44,8 +44,9 @@ export const RevealText = ({ text, className = "", delay = 0, stagger = 60 }: Re
           >
             {word === "" ? "\u00A0" : word}
           </span>
+          {i < words.length - 1 ? " " : null}
         </span>
       ))}
-    </div>
+    </span>
   );
 };

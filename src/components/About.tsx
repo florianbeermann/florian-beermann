@@ -3,7 +3,7 @@ import { CheckCircle2 } from "lucide-react";
 import { RevealText } from "@/components/ui/RevealText";
 
 const highlights = [
-  "Customer Success Account Manager at Microsoft, supporting Strategic 500 enterprise clients on cloud adoption, AI and modern work.",
+  "Customer Success Account Manager at Microsoft, supporting large enterprise accounts across cloud adoption, AI and modern work.",
   "Former Customer Success Manager at Personio, owning a portfolio of large corporate accounts focused on adoption, retention and expansion.",
   "Previously at Spendesk, partnering with high-value fintech clients on data-driven success plans and onboarding optimisation.",
   "Background spanning enterprise sales development at HubSpot and project portfolio management at Capgemini.",
@@ -38,14 +38,14 @@ export const About = () => {
     <section id="about" ref={sectionRef} className="py-24 lg:py-32 bg-background relative">
       <div className="container max-w-4xl space-y-12 text-left">
         <div className="space-y-6">
-          <div className="text-[10px] uppercase tracking-widest text-accent font-semibold">
+          <div className="text-xs uppercase tracking-[0.18em] text-primary font-semibold">
             About me
           </div>
-          <div className="text-4xl md:text-5xl text-foreground text-balance">
+          <h2 className="text-4xl md:text-5xl text-foreground text-balance">
             <RevealText text="Customer Success strategist for B2B SaaS" delay={100} />
-          </div>
+          </h2>
           <p 
-            className={`text-base text-muted-foreground leading-relaxed font-light transition-all duration-1000 delay-300 transform ${
+            className={`motion-reveal text-base text-muted-foreground leading-relaxed font-light transition-all duration-700 delay-200 transform ${
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
             }`}
           >
@@ -56,7 +56,7 @@ export const About = () => {
             a consistent focus on retention, expansion and operational rigour.
           </p>
           <p 
-            className={`text-base text-muted-foreground leading-relaxed font-light transition-all duration-1000 delay-400 transform ${
+            className={`motion-reveal text-base text-muted-foreground leading-relaxed font-light transition-all duration-700 delay-300 transform ${
               isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
             }`}
           >
@@ -71,7 +71,7 @@ export const About = () => {
           {highlights.map((h, i) => (
             <li 
               key={h} 
-              className={`flex gap-4 items-start transition-all duration-1000 transform ${
+              className={`motion-reveal flex gap-4 items-start transition-all duration-700 transform ${
                 isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
               }`}
               style={{
@@ -79,7 +79,7 @@ export const About = () => {
               }}
             >
               <div className="mt-1 h-5 w-5 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
-                <CheckCircle2 className="h-3.5 w-3.5 text-accent" />
+                <CheckCircle2 className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
               </div>
               <span className="text-foreground text-sm leading-relaxed font-light">{h}</span>
             </li>
@@ -87,10 +87,16 @@ export const About = () => {
         </ul>
 
         <div 
-          className={`pt-10 border-t border-border/60 transition-all duration-1000 delay-900 transform ${
+          className={`motion-reveal pt-10 border-t border-border/60 transition-all duration-700 delay-700 transform ${
             isVisible ? "opacity-100" : "opacity-0"
           }`}
         >
+          <div className="mb-8 rounded-2xl border border-primary/15 bg-primary/[0.035] p-5">
+            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Partner model</div>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              A curated network of independent specialists across CS Operations, data, tooling and enablement joins engagements when needed.
+            </p>
+          </div>
           <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold mb-5">
             Tooling fluency
           </div>
@@ -98,7 +104,7 @@ export const About = () => {
             {stack.map((s) => (
               <span
                 key={s}
-                className="px-4 py-2 rounded-full bg-secondary hover:bg-accent hover:text-accent-foreground text-secondary-foreground text-xs font-semibold border border-border/60 transition-smooth"
+                className="px-4 py-2 rounded-full bg-secondary hover:bg-primary hover:text-primary-foreground text-secondary-foreground text-xs font-semibold border border-border/60 transition-smooth"
               >
                 {s}
               </span>

@@ -6,27 +6,32 @@ import { About } from "@/components/About";
 import { Services } from "@/components/Services";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
+import { ExperienceStrip } from "@/components/ExperienceStrip";
 
 import { useEffect } from "react";
+import { setPageMetadata } from "@/lib/metadata";
 
 const Index = () => {
   useEffect(() => {
-    document.title = "florian beermann & partners | Customer Success Consulting";
-    const desc = "Data-driven Customer Success consulting for B2B SaaS. Reduce churn, drive expansion revenue, and operationalise CS with measurable outcomes.";
-    let meta = document.querySelector('meta[name="description"]');
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "description");
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute("content", desc);
+    setPageMetadata({
+      title: "florian beermann & partners | Customer Success Strategy",
+      description: "Practical Customer Success strategy, playbooks and operations for B2B SaaS teams focused on retention and expansion.",
+      path: "/",
+    });
   }, []);
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden select-none">
+    <div className="min-h-screen bg-background relative overflow-x-clip">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only fixed left-4 top-4 z-[100] rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-elegant"
+      >
+        Skip to main content
+      </a>
       <Header />
-      <main>
+      <main id="main-content">
         <Hero />
+        <ExperienceStrip />
         <ValueProps />
         <DataOrchestration />
         <About />
