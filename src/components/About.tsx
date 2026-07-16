@@ -51,7 +51,7 @@ export const About = () => {
           >
             I help SaaS companies turn Customer Success into a measurable
             revenue engine. My career has been built inside category-defining
-            organisations - from hyperscale cloud at Microsoft, to
+            organisations - from hyperscale cloud and AI at Microsoft, to
             high-growth scale-ups like Personio, Spendesk and HubSpot - with
             a consistent focus on retention, expansion and operational rigour.
           </p>
