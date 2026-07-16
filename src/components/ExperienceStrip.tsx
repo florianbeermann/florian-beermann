@@ -1,9 +1,9 @@
 const experience = [
   { name: "Microsoft", logo: "/company-logos/microsoft.png" },
   { name: "Capgemini", logo: "/company-logos/capgemini.png" },
-  { name: "HubSpot", logo: "/company-logos/hubspot.png" },
+  { name: "HubSpot", logo: "/company-logos/hubspot.svg" },
   { name: "Personio", logo: "/company-logos/personio.png" },
-  { name: "Spendesk", logo: "/company-logos/spendesk.png" },
+  { name: "Spendesk", logo: "/company-logos/spendesk.svg" },
 ];
 
 export const ExperienceStrip = () => (
