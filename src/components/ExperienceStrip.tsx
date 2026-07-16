@@ -20,9 +20,6 @@ export const ExperienceStrip = () => (
           ))}
         </ul>
       </div>
-      <p className="mt-5 text-[11px] leading-relaxed text-muted-foreground">
-        Company names refer to previous employment experience and do not imply endorsement of florian beermann &amp; partners.
-      </p>
     </div>
   </section>
 );
