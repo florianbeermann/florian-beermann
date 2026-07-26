@@ -213,14 +213,6 @@
   border-radius: 1.4rem;
 }
 
-.sandbox-portrait figcaption {
-  border-bottom: 1px solid var(--sandbox-line);
-  padding: 0.8rem 0;
-  font-size: 0.78rem;
-  font-weight: 650;
-  text-align: right;
-}
-
 .sandbox-proof {
   border-top: 1px solid var(--sandbox-line);
   border-bottom: 1px solid var(--sandbox-line);
@@ -348,6 +340,12 @@
   color: var(--sandbox-muted);
   font-size: 0.96rem;
   line-height: 1.6;
+}
+
+@media (min-width: 901px) {
+  .sandbox-engagements .sandbox-section-heading > span {
+    padding-top: clamp(1.25rem, 2.25vw, 2.25rem);
+  }
 }
 
 .sandbox-engagement {

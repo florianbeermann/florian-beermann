@@ -30,9 +30,13 @@ describe("design sandbox", () => {
       ),
     ).not.toBeInTheDocument();
     expect(screen.getAllByRole("article")).toHaveLength(3);
+    const portrait = screen.getByAltText(
+      "Florian Beermann, Customer Success consultant",
+    );
+    expect(portrait).toHaveAttribute("src", "/florian-portrait-sharp.png");
     expect(
-      screen.getByAltText("Florian Beermann, Customer Success consultant"),
-    ).toHaveAttribute("src", "/florian-portrait-sharp.png");
+      portrait.closest("figure")?.querySelector("figcaption"),
+    ).not.toBeInTheDocument();
     expect(
       screen.queryByText("Customer Success strategist"),
     ).not.toBeInTheDocument();

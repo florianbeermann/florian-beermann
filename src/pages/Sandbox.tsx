@@ -226,7 +226,6 @@ export default function Sandbox() {
               width="1023"
               height="1537"
             />
-            <figcaption>Florian Beermann</figcaption>
           </figure>
         </section>
 
