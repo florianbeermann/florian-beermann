@@ -346,6 +346,10 @@
   .sandbox-engagements .sandbox-section-heading > span {
     padding-top: clamp(1.25rem, 2.25vw, 2.25rem);
   }
+
+  .sandbox-about-copy {
+    padding-bottom: clamp(2.5rem, 4vw, 4rem);
+  }
 }
 
 .sandbox-engagement {
