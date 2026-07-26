@@ -1,9 +1,9 @@
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import Index from "./pages/Index.tsx";
 import Imprint from "./pages/Imprint.tsx";
 import Privacy from "./pages/Privacy.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import Sandbox from "./pages/Sandbox.tsx";
 import { useEffect } from "react";
 
 // ScrollToTop component to handle scroll restoration and anchor/hash-based navigation
@@ -36,9 +36,10 @@ const App = () => (
   <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
     <ScrollToTop />
     <Routes>
-      <Route path="/" element={<Index />} />
+      <Route path="/" element={<Sandbox />} />
       <Route path="/imprint" element={<Imprint />} />
       <Route path="/privacy" element={<Privacy />} />
+      <Route path="/sandbox" element={<Sandbox />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
     <Sonner />
