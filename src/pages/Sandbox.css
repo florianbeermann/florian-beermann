@@ -489,6 +489,13 @@
   line-height: 1.7;
 }
 
+.sandbox-intro,
+.sandbox-engagement-detail > p,
+.sandbox-about-copy > p:not(.sandbox-about-lead) {
+  text-align: justify;
+  text-justify: inter-word;
+}
+
 .sandbox-about-copy .sandbox-about-lead {
   margin-bottom: 1.8rem;
   color: var(--sandbox-ink);
