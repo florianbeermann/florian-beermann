@@ -479,6 +479,8 @@
 .sandbox-about-copy {
   grid-column: 1;
   grid-row: 1 / span 4;
+  border-top: 1px solid var(--sandbox-ink);
+  padding-top: 1.3rem;
 }
 
 .sandbox-about-copy > p {
