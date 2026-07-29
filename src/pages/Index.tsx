@@ -14,7 +14,7 @@ import { setPageMetadata } from "@/lib/metadata";
 const Index = () => {
   useEffect(() => {
     setPageMetadata({
-      title: "florian beermann & partners | Customer Success Strategy",
+      title: "florian beermann & partners",
       description: "Practical Customer Success strategy, playbooks and operations for B2B SaaS teams focused on retention and expansion.",
       path: "/",
     });

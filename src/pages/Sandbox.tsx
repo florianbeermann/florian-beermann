@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { toast } from "sonner";
@@ -109,6 +109,7 @@ const tools = [
 ];
 
 export default function Sandbox() {
+  const heroRef = useRef<HTMLElement>(null);
   const [submitting, setSubmitting] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [size, setSize] = useState("");
@@ -116,11 +117,107 @@ export default function Sandbox() {
 
   useEffect(() => {
     setPageMetadata({
-      title: "Customer Success Consulting | florian beermann & partners",
+      title: "florian beermann & partners",
       description:
         "Customer Success strategy, lifecycle playbooks and CSM enablement for B2B SaaS teams focused on retention and expansion.",
       path: "/",
     });
+  }, []);
+
+  useEffect(() => {
+    const hero = heroRef.current;
+    if (!hero || typeof window.matchMedia !== "function") return;
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const motionLayout = window.matchMedia("(min-width: 769px)");
+    let animationFrame = 0;
+
+    const updateHero = () => {
+      animationFrame = 0;
+
+      if (reducedMotion.matches || !motionLayout.matches) {
+        delete hero.dataset.phase;
+        hero.style.removeProperty("--hero-opening-opacity");
+        hero.style.removeProperty("--hero-copy-x");
+        hero.style.removeProperty("--hero-copy-y");
+        hero.style.removeProperty("--hero-portrait-x");
+        hero.style.removeProperty("--hero-portrait-scale");
+        hero.style.removeProperty("--hero-reveal-opacity");
+        hero.style.removeProperty("--hero-reveal-scale");
+        hero.style.removeProperty("--hero-reveal-y");
+        hero.style.removeProperty("--hero-scroll-opacity");
+        return;
+      }
+
+      const sticky = hero.querySelector<HTMLElement>(".sandbox-hero-sticky");
+      const travel = Math.max(
+        1,
+        hero.offsetHeight - (sticky?.offsetHeight ?? window.innerHeight),
+      );
+      const progress = Math.min(
+        1,
+        Math.max(0, -hero.getBoundingClientRect().top / travel),
+      );
+      const eased = progress * progress * (3 - 2 * progress);
+      const openingProgress = Math.min(1, progress / 0.42);
+      const openingEase =
+        openingProgress * openingProgress * (3 - 2 * openingProgress);
+      const revealProgress = Math.min(
+        1,
+        Math.max(0, (progress - 0.27) / 0.55),
+      );
+      const revealEase =
+        revealProgress * revealProgress * (3 - 2 * revealProgress);
+
+      hero.dataset.phase = progress > 0.42 ? "reveal" : "opening";
+      hero.style.setProperty(
+        "--hero-opening-opacity",
+        `${1 - openingEase}`,
+      );
+      hero.style.setProperty("--hero-copy-x", `${-5 * openingEase}rem`);
+      hero.style.setProperty("--hero-copy-y", `${-2 * openingEase}rem`);
+      hero.style.setProperty("--hero-portrait-x", `${5 * openingEase}rem`);
+      hero.style.setProperty(
+        "--hero-portrait-scale",
+        `${1 - 0.04 * openingEase}`,
+      );
+      hero.style.setProperty(
+        "--hero-reveal-opacity",
+        `${revealEase}`,
+      );
+      hero.style.setProperty(
+        "--hero-reveal-scale",
+        `${0.86 + 0.14 * revealEase}`,
+      );
+      hero.style.setProperty(
+        "--hero-reveal-y",
+        `${3 * (1 - revealEase)}rem`,
+      );
+      hero.style.setProperty(
+        "--hero-scroll-opacity",
+        `${1 - Math.min(1, eased * 2.5)}`,
+      );
+    };
+
+    const requestUpdate = () => {
+      if (!animationFrame) {
+        animationFrame = window.requestAnimationFrame(updateHero);
+      }
+    };
+
+    updateHero();
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+    reducedMotion.addEventListener("change", requestUpdate);
+    motionLayout.addEventListener("change", requestUpdate);
+
+    return () => {
+      window.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("resize", requestUpdate);
+      reducedMotion.removeEventListener("change", requestUpdate);
+      motionLayout.removeEventListener("change", requestUpdate);
+      if (animationFrame) window.cancelAnimationFrame(animationFrame);
+    };
   }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -198,35 +295,67 @@ export default function Sandbox() {
       </header>
 
       <main id="sandbox-main">
-        <section id="sandbox-top" className="sandbox-hero">
-          <div className="sandbox-hero-copy">
-            <h1>
-              Customer Success systems{" "}
-              <span>that protect revenue.</span>
-            </h1>
-            <p className="sandbox-intro">
-              I help B2B SaaS leaders turn retention and expansion goals into
-              practical operating models, lifecycle playbooks and measurable
-              day-to-day work.
-            </p>
-            <div className="sandbox-actions">
-              <a className="sandbox-primary-action" href="#sandbox-contact">
-                Discuss your priorities
-              </a>
-              <a className="sandbox-text-action" href="#sandbox-engagements">
-                View engagements <span aria-hidden="true">↓</span>
-              </a>
+        <section
+          id="sandbox-top"
+          ref={heroRef}
+          className="sandbox-hero"
+          aria-label="Introduction"
+        >
+          <div className="sandbox-hero-sticky">
+            <div className="sandbox-hero-stage">
+              <div className="sandbox-hero-opening">
+                <div className="sandbox-hero-copy">
+                  <h1>
+                    Customer Success systems{" "}
+                    <span>that protect revenue.</span>
+                  </h1>
+                  <p className="sandbox-intro">
+                    I help B2B SaaS leaders turn retention and expansion goals
+                    into practical operating models, lifecycle playbooks and
+                    measurable day-to-day work.
+                  </p>
+                  <div className="sandbox-actions">
+                    <a
+                      className="sandbox-primary-action"
+                      href="#sandbox-contact"
+                    >
+                      Discuss your priorities
+                    </a>
+                  </div>
+                  <p className="sandbox-hero-proof">
+                    6+ years across enterprise and scale-up B2B SaaS.
+                  </p>
+                </div>
+
+                <figure className="sandbox-portrait">
+                  <div className="sandbox-portrait-frame">
+                    <img
+                      src="/florian-portrait-sharp.png"
+                      alt="Florian Beermann, Customer Success consultant"
+                      width="1023"
+                      height="1537"
+                    />
+                  </div>
+                </figure>
+              </div>
+
+              <div className="sandbox-hero-reveal">
+                <p>The work behind the outcome</p>
+                <strong>
+                  Turn retention goals into a system your team can actually
+                  run.
+                </strong>
+                <span>
+                  Clear operating models. Lifecycle playbooks. Measurable
+                  day-to-day work.
+                </span>
+              </div>
+
+              <span className="sandbox-scroll-cue" aria-hidden="true">
+                Scroll to view engagements
+              </span>
             </div>
           </div>
-
-          <figure className="sandbox-portrait">
-            <img
-              src="/florian-portrait-sharp.png"
-              alt="Florian Beermann, Customer Success consultant"
-              width="1023"
-              height="1537"
-            />
-          </figure>
         </section>
 
         <section className="sandbox-proof" aria-labelledby="sandbox-proof-title">
