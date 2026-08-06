@@ -41,7 +41,7 @@
      width and the asset maps onto the viewport without magnification. The top
      8% of the square original was removed so the skyline sits directly under
      the frame edge — see the Backdrop section in DESIGN.md. */
-  --backdrop-image: url("/hamburg-alster-2560.jpg");
+  --backdrop-image: url("/hamburg-alster-2560.166b423e.jpg");
   --backdrop: var(--backdrop-image);
   /* `top`, not `center`, and load-bearing. Filling the width makes the image
      taller than the viewport, so a centred position would crop the skyline off
@@ -62,7 +62,7 @@
 
 @media (max-width: 900px) {
   :root {
-    --backdrop-image: url("/hamburg-alster-1280.jpg");
+    --backdrop-image: url("/hamburg-alster-1280.4c01ae0e.jpg");
   }
 }
 
@@ -110,9 +110,9 @@ body::after {
        descriptors predate `type()` in image-set, so anything parsing this rule
        supports both. */
     background-image: image-set(
-      url("/hamburg-alster-2560.webp") type("image/webp") 1x,
-      url("/hamburg-alster-3456.webp") type("image/webp") 2x,
-      url("/hamburg-alster-2560.jpg") type("image/jpeg") 1x
+      url("/hamburg-alster-2560.44728293.webp") type("image/webp") 1x,
+      url("/hamburg-alster-3456.bc8365fb.webp") type("image/webp") 2x,
+      url("/hamburg-alster-2560.166b423e.jpg") type("image/jpeg") 1x
     );
   }
 
@@ -120,8 +120,8 @@ body::after {
     body::before,
     body::after {
       background-image: image-set(
-        url("/hamburg-alster-1280.webp") type("image/webp"),
-        url("/hamburg-alster-1280.jpg") type("image/jpeg")
+        url("/hamburg-alster-1280.39d74c8f.webp") type("image/webp"),
+        url("/hamburg-alster-1280.4c01ae0e.jpg") type("image/jpeg")
       );
     }
   }

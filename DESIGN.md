@@ -382,7 +382,12 @@ default for a consultancy site.
 
 Served as WebP with `.jpg` companions behind an `@supports (background-image:
 image-set(...))` guard: `3456` to 2x displays, `2560` to 1x, and `1280` below
-900px. WebP is both smaller and higher quality than the JPEG here, so there is
+900px. **Every filename carries a content hash**, because files in `public/`
+bypass Vite's hashing and the host serves them with `max-age=2592000`. Reusing a
+name for changed pixels strands returning visitors on the old image for thirty
+days while the `no-cache` HTML around it updates — a swap that looks correct
+everywhere except on the machines that have seen the site before. Re-hash on
+every re-encode; never edit an asset in place. WebP is both smaller and higher quality than the JPEG here, so there is
 no trade to weigh.
 
 **Aspect ratio decides effective resolution, not file width.** At 1.20 the image
@@ -580,6 +585,10 @@ decelerating move reads as momentum, not lag.
 - **Don't** use pure white as a background.
 - **Don't** narrow `--frame` or `--frame-top` to gain column width; they are
   what make the backdrop readable.
+- **Don't** reuse a filename in `public/` for changed bytes. Those files are
+  served with a thirty-day `max-age` and are not hashed by the build, so the
+  name is the only cache key there is. Append a content hash and update the
+  references.
 - **Don't** hide anything with `transform` if it lives inside `#root`. The
   intro leaves a transform there, which makes `#root` the containing block for
   every `position: fixed` descendant, so `translateY(-200%)` moves an element

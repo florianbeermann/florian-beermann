@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-06T21:20:00.000Z",
+  "generatedAt": "2026-08-06T21:30:00.000Z",
   "title": "Design System: florian beermann & partners",
   "extensions": {
     "colorMeta": {
@@ -228,7 +228,7 @@
       },
       {
         "name": "The Frame Is Content Rule",
-        "body": "--frame and --frame-top exist so the backdrop is legible, not to create breathing room. Narrowing them to reclaim column width crops the image to noise and removes the reason it is there. The top edge is deepest because it is the only band a skyline can be read in; compose backdrops so their subject sits in the top ~3.5% of the frame, which is what the collapsed band still shows at the ultrawide floor rather than the resting average. The backdrop is shown untinted; if a future image needs seating, reintroduce a scrim under 0.15 rather than darkening the asset. Effective resolution is set by aspect ratio, not file width: the further an asset departs from the viewport aspect the harder cover magnifies it. Only a shallow top crop moves a skyline into the band — cropping the bottom leaves the band covering the same count of source rows, and cropping the sides covers fewer. Size assets to the widest device that will paint them and spend the remainder on quality, since quantisation damage survives downscaling but surplus pixels do not.",
+        "body": "--frame and --frame-top exist so the backdrop is legible, not to create breathing room. Narrowing them to reclaim column width crops the image to noise and removes the reason it is there. The top edge is deepest because it is the only band a skyline can be read in; compose backdrops so their subject sits in the top ~3.5% of the frame, which is what the collapsed band still shows at the ultrawide floor rather than the resting average. The backdrop is shown untinted; if a future image needs seating, reintroduce a scrim under 0.15 rather than darkening the asset. Effective resolution is set by aspect ratio, not file width: the further an asset departs from the viewport aspect the harder cover magnifies it. Only a shallow top crop moves a skyline into the band — cropping the bottom leaves the band covering the same count of source rows, and cropping the sides covers fewer. Size assets to the widest device that will paint them and spend the remainder on quality, since quantisation damage survives downscaling but surplus pixels do not. Assets in public/ bypass the build's hashing but are served with a thirty-day max-age, so every backdrop filename carries a content hash; reusing a name for changed pixels strands returning visitors on the old image.",
         "section": "elevation"
       }
     ],
