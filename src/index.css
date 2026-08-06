@@ -14,14 +14,6 @@
   font-display: swap;
 }
 
-@font-face {
-  font-family: "EB Garamond Variable";
-  src: url("/fonts/eb-garamond-latin-variable-italic.woff2") format("woff2-variations");
-  font-style: italic;
-  font-weight: 400 800;
-  font-display: swap;
-}
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -100,9 +92,6 @@
 }
 
 @layer utilities {
-  .font-garamond {
-    font-family: "EB Garamond Variable", Garamond, Georgia, serif;
-  }
   .bg-gradient-hero {
     background: var(--gradient-hero);
   }

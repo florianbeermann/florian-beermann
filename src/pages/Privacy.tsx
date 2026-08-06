@@ -16,7 +16,7 @@ export const Privacy = () => {
     <LegalPageLayout
       eyebrow="Data protection"
       title="Privacy Policy"
-      description="How personal data is processed when you visit this website or contact us."
+      description="How personal data is processed when you visit this website or contact me."
       updated="Last updated: 13 July 2026"
       contentClassName="legal-privacy"
     >
@@ -54,7 +54,7 @@ export const Privacy = () => {
                 server logs.
               </p>
               <p>
-                Processing is based on Article 6(1)(f) GDPR. Our legitimate
+                Processing is based on Article 6(1)(f) GDPR. My legitimate
                 interest is the secure, reliable and efficient delivery of the
                 website. Log retention is governed by the hosting configuration
                 and applicable security and legal requirements.
@@ -78,23 +78,23 @@ export const Privacy = () => {
             <h2>Contact requests and Web3Forms</h2>
             <div className="legal-section-body">
               <p>
-                When you contact us, we process the information you provide,
-                such as your name, work email, company, optional company context
-                and message, to respond to your request and manage any resulting
-                business relationship.
+                When you contact me, I process the information you provide,
+                such as your name, work email, company, optional company size
+                and tooling, and message, to respond to your request and manage
+                any resulting business relationship.
               </p>
               <p>
                 Processing is based on Article 6(1)(b) GDPR where your request
                 concerns pre-contractual measures and otherwise on Article
-                6(1)(f) GDPR, reflecting our legitimate interest in responding
-                to business enquiries. We retain correspondence only as long as
+                6(1)(f) GDPR, reflecting my legitimate interest in responding
+                to business enquiries. I retain correspondence only as long as
                 necessary for those purposes and any applicable statutory
                 retention obligations.
               </p>
               <p>
                 The website form uses Web3Forms, a service operated by
                 Web3Creative. Form data is transmitted to Web3Forms and
-                forwarded to our email inbox. According to Web3Forms,
+                forwarded to my email inbox. According to Web3Forms,
                 submissions are not stored as form records, while server logs
                 containing personal data may be retained for up to two months.
                 Web3Forms states that its servers are located in the United
@@ -111,7 +111,7 @@ export const Privacy = () => {
                 >
                   Web3Forms privacy and GDPR information
                 </a>
-                . You can avoid using Web3Forms by contacting us directly by
+                . You can avoid using Web3Forms by contacting me directly by
                 email.
               </p>
             </div>

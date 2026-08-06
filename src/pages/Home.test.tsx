@@ -37,10 +37,10 @@ describe("homepage", () => {
     renderHome();
 
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-      "Customer Success systems that protect revenue.",
+      "Your customers changed. Your Customer Success motion didn’t.",
     );
     expect(
-      screen.getByRole("link", { name: "Discuss your priorities" }),
+      screen.getByRole("link", { name: "Start a conversation" }),
     ).toHaveAttribute("href", "#contact");
   });
 
@@ -99,7 +99,7 @@ describe("homepage", () => {
     expect(screen.queryByText("Company size")).not.toBeInTheDocument();
 
     const toggle = screen.getByRole("button", {
-      name: "Add optional company context",
+      name: "Add company size and tooling (optional)",
     });
     fireEvent.click(toggle);
 
@@ -119,7 +119,7 @@ describe("homepage", () => {
 
     renderHome();
     fillRequiredFields();
-    fireEvent.click(screen.getByRole("button", { name: "Send request" }));
+    fireEvent.click(screen.getByRole("button", { name: "Send message" }));
 
     expect(fetchSpy).not.toHaveBeenCalled();
     expect(assign).toHaveBeenCalledTimes(1);
@@ -143,7 +143,7 @@ describe("homepage", () => {
 
     renderHome();
     fillRequiredFields();
-    fireEvent.click(screen.getByRole("button", { name: "Send request" }));
+    fireEvent.click(screen.getByRole("button", { name: "Send message" }));
 
     await waitFor(() => expect(fetchSpy).toHaveBeenCalledTimes(1));
 

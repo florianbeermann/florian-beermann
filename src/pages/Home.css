@@ -66,8 +66,8 @@
 .home-hero-proof {
   margin-top: 1.7rem !important;
   color: var(--muted);
-  font-size: 0.75rem;
-  letter-spacing: 0.025em;
+  font-size: 0.875rem;
+  letter-spacing: 0.01em;
 }
 
 .home-portrait {
@@ -202,18 +202,10 @@
 
 .home-section-heading {
   display: grid;
-  grid-template-columns: 0.38fr 1fr 0.75fr;
+  grid-template-columns: 1fr 0.75fr;
   gap: 3rem;
   align-items: start;
   margin-bottom: 5rem;
-}
-
-.home-section-heading > p,
-.home-method header > p,
-.home-contact-copy > p {
-  color: var(--blue);
-  font-size: 0.91rem;
-  font-weight: 650;
 }
 
 .home-section-heading h2,
@@ -301,13 +293,9 @@
 
 .home-method header {
   display: grid;
-  grid-template-columns: 0.55fr 1.45fr;
+  grid-template-columns: 1fr;
   gap: 3rem;
   align-items: start;
-}
-
-.home-method header > p {
-  color: #80aaff;
 }
 
 .home-method h2 {
@@ -383,6 +371,11 @@
 .home-about-copy > p:not(.home-about-lead) {
   text-align: justify;
   text-justify: inter-word;
+  hyphens: auto;
+}
+
+.home-about-copy > p:not(.home-about-lead) + p {
+  margin-top: 1.15rem;
 }
 
 .home-about-copy .home-about-lead {
@@ -491,7 +484,6 @@
 }
 
 .home-contact h2 {
-  margin-top: 1.4rem;
   max-width: 630px;
 }
 
@@ -668,13 +660,15 @@
 
 .home-form-privacy {
   color: var(--muted);
-  font-size: 0.68rem;
-  line-height: 1.55;
+  font-size: 0.8125rem;
+  line-height: 1.6;
 }
 
-.home-privacy-link {
+.home-form-privacy a.home-privacy-link {
   color: var(--blue);
   font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
 
 .home-privacy-link:hover,
@@ -808,8 +802,8 @@
   }
 
   .home-hero h1 {
-    font-size: clamp(3.4rem, 15vw, 4.6rem);
-    line-height: 0.94;
+    font-size: clamp(2.9rem, 12.5vw, 4rem);
+    line-height: 0.96;
   }
 
   .home-intro {

@@ -127,15 +127,16 @@ export default function Home() {
     setPageMetadata({
       title: "florian beermann & partners",
       description:
-        "Customer Success strategy, lifecycle playbooks and CSM enablement for B2B SaaS teams focused on retention and expansion.",
+        "Customer Success consulting for B2B SaaS companies whose customer base has moved upmarket. Strategy, lifecycle playbooks and CSM enablement.",
       path: "/",
     });
   }, []);
 
+  const buildSubject = (formData: FormData) =>
+    `Customer Success enquiry — ${formData.get("company") || "website"}`;
+
   const openEmailFallback = (formData: FormData) => {
-    const subject = encodeURIComponent(
-      `Customer Success priorities — ${formData.get("company") || "website enquiry"}`,
-    );
+    const subject = encodeURIComponent(buildSubject(formData));
     const body = encodeURIComponent(
       [
         `Name: ${formData.get("name") || ""}`,
@@ -161,7 +162,9 @@ export default function Home() {
     const accessKey = import.meta.env.VITE_WEB3FORMS_KEY?.trim();
 
     if (!accessKey) {
-      toast.info("Opening your email app so you can send this request directly.");
+      toast.info(
+        `Opening your email app with your message ready to send to ${contactEmail}.`,
+      );
       openEmailFallback(formData);
       return;
     }
@@ -171,10 +174,7 @@ export default function Home() {
     formData.set("tooling", tooling);
     formData.set("access_key", accessKey);
     formData.set("from_name", "florian beermann & partners website");
-    formData.set(
-      "subject",
-      `New website enquiry from ${formData.get("name") || "a visitor"}`,
-    );
+    formData.set("subject", buildSubject(formData));
 
     try {
       const response = await fetch("https://api.web3forms.com/submit", {
@@ -191,7 +191,7 @@ export default function Home() {
         throw new Error(result.message || "Form submission failed");
       }
 
-      toast.success("Thank you. I’ll respond within two business days.");
+      toast.success("Message sent. I’ll reply within two business days.");
       form.reset();
       setSize("");
       setTooling("");
@@ -199,7 +199,7 @@ export default function Home() {
     } catch (error) {
       console.error(error);
       toast.error(
-        `Something went wrong. Please email ${contactEmail} directly.`,
+        `Your message wasn’t sent. Your text is still in the form — try again, or email ${contactEmail}.`,
       );
     } finally {
       setSubmitting(false);
@@ -231,20 +231,23 @@ export default function Home() {
         <section id="top" className="home-hero" aria-label="Introduction">
           <div className="home-hero-copy">
             <h1>
-              Customer Success systems <span>that protect revenue.</span>
+              Your customers changed.{" "}
+              <span>Your Customer Success motion didn’t.</span>
             </h1>
             <p className="home-intro">
-              I help B2B SaaS leaders turn retention and expansion goals into
-              practical operating models, lifecycle playbooks and measurable
-              day-to-day work.
+              I rebuild Customer Success for B2B SaaS companies whose customer
+              base has moved — usually upmarket — while the coverage model,
+              health scores and playbooks still assume the customers they used
+              to have.
             </p>
             <div className="home-actions">
               <a className="home-primary-action" href="#contact">
-                Discuss your priorities
+                Start a conversation
               </a>
             </div>
             <p className="home-hero-proof">
-              6+ years across enterprise and scale-up B2B SaaS.
+              I have operated Customer Success from SMB accounts through to
+              DAX40 enterprises.
             </p>
           </div>
 
@@ -266,10 +269,11 @@ export default function Home() {
 
         <section className="home-proof" aria-labelledby="proof-title">
           <div className="home-proof-heading">
-            <h2 id="proof-title">Experience on both sides of scale</h2>
+            <h2 id="proof-title">Where the experience comes from</h2>
             <p>
-              Enterprise discipline, scale-up pace and first-hand ownership of
-              retention and expansion targets.
+              Companies I have worked in, not a client list. Each ran Customer
+              Success for a different kind of customer, which is how I learned
+              what transfers between segments and what quietly breaks.
             </p>
           </div>
 
@@ -285,15 +289,15 @@ export default function Home() {
           <dl className="home-facts">
             <div>
               <dt>6+ years</dt>
-              <dd>in B2B SaaS Customer Success</dd>
-            </div>
-            <div>
-              <dt>Enterprise &amp; scale-up</dt>
-              <dd>operating experience</dd>
+              <dd>operating Customer Success in B2B SaaS</dd>
             </div>
             <div>
               <dt>Retention &amp; expansion</dt>
-              <dd>commercial focus</dd>
+              <dd>targets owned directly, not advised on from outside</dd>
+            </div>
+            <div>
+              <dt>Your team, your tools</dt>
+              <dd>engagements run on the stack you already have</dd>
             </div>
           </dl>
         </section>
@@ -303,11 +307,10 @@ export default function Home() {
           className="home-engagements home-section"
         >
           <header className="home-section-heading">
-            <p>How I help</p>
-            <h2>Three focused engagements</h2>
+            <h2>Three ways I work</h2>
             <span>
-              Each engagement is shaped around the operating problem, not a
-              generic transformation package.
+              Each engagement is scoped around the operating problem in front
+              of you, not sold as a transformation package.
             </span>
           </header>
 
@@ -337,7 +340,6 @@ export default function Home() {
         <section className="home-method">
           <div className="home-method-inner">
             <header>
-              <p>From data to action</p>
               <h2>Customer signals only matter when they change the work.</h2>
             </header>
             <div className="home-signal-flow" role="list">
@@ -367,22 +369,25 @@ export default function Home() {
 
         <section id="about" className="home-about home-section">
           <header className="home-section-heading">
-            <p>About</p>
-            <h2>Pragmatic advice, grounded in operating experience.</h2>
+            <h2>I have been the person who owns the number.</h2>
           </header>
 
           <div className="home-about-grid">
             <div className="home-about-copy">
               <p className="home-about-lead">
-                I have built my career inside organisations ranging from
-                hyperscale technology businesses to fast-moving SaaS
-                scale-ups.
+                I have run Customer Success inside global technology companies
+                and inside fast-moving SaaS scale-ups.
               </p>
               <p>
-                That means I understand the tension between a framework that
-                looks convincing in a presentation and one a busy team can
-                actually use. My work is metrics-led, commercially aware and
-                designed to survive shifting priorities.
+                The two demand completely different things, and most of my work
+                now sits with companies discovering that mid-move — where the
+                coverage model that worked at one customer size quietly stops
+                working at the next.
+              </p>
+              <p>
+                So I know the difference between a framework that presents well
+                and one a busy team will still be using in six months. I build
+                for the second.
               </p>
             </div>
 
@@ -410,7 +415,6 @@ export default function Home() {
 
         <section id="contact" className="home-contact">
           <div className="home-contact-copy">
-            <p>Start a conversation</p>
             <h2>What is getting in the way of better retention?</h2>
             <span>
               Share the challenge you are working through. I will respond with
@@ -491,7 +495,7 @@ export default function Home() {
                 name="message"
                 rows={5}
                 required
-                placeholder="Briefly describe your current Customer Success priority…"
+                placeholder="Where retention or expansion is falling short, and what you have tried so far…"
                 className="home-form-control"
               />
             </div>
@@ -503,7 +507,7 @@ export default function Home() {
               aria-expanded={showDetails}
               aria-controls="optional-details"
             >
-              Add optional company context
+              Add company size and tooling (optional)
               <ChevronDown
                 className={`home-details-icon ${showDetails ? "rotate-180" : ""}`}
                 aria-hidden="true"
@@ -568,18 +572,19 @@ export default function Home() {
               className="home-submit"
               disabled={submitting}
             >
-              {submitting ? "Sending…" : "Send request"}
+              {submitting ? "Sending…" : "Send message"}
             </Button>
 
             <p className="home-form-privacy">
-              Your request is processed through Web3Forms. Read the{" "}
+              This form is processed by Web3Forms in the US. You can email{" "}
+              {contactEmail} instead — the{" "}
               <Link
                 to="/privacy"
                 className="home-privacy-link"
               >
                 privacy policy
               </Link>{" "}
-              for details.
+              explains both.
             </p>
           </form>
         </section>

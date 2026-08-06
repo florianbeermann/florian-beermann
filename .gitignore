@@ -25,3 +25,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# impeccable local tooling cache
+.impeccable/hook.cache.json
+.impeccable/config.local.json
+.impeccable/live/

@@ -80,7 +80,7 @@ export const Imprint = () => {
             <h2>Consumer dispute resolution</h2>
             <div className="legal-section-body">
               <p>
-                We are neither willing nor obliged to participate in dispute
+                I am neither willing nor obliged to participate in dispute
                 resolution proceedings before a consumer arbitration board.
               </p>
             </div>
