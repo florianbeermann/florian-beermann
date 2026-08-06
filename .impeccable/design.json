@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-06T18:35:00.000Z",
+  "generatedAt": "2026-08-06T21:20:00.000Z",
   "title": "Design System: florian beermann & partners",
   "extensions": {
     "colorMeta": {
@@ -49,8 +49,8 @@
       "backdrop-ink": {
         "role": "neutral",
         "displayName": "Backdrop Ink",
-        "canonical": "#766f5f",
-        "tonalRamp": ["#090703", "#27241b", "#4d473b", "#766f5f", "#9e988a", "#bfbaae", "#dcd7cc", "#f5f1e8"]
+        "canonical": "#92785a",
+        "tonalRamp": ["#0f0a04", "#3a2e1e", "#67543c", "#92785a", "#b49d82", "#d0bfa9", "#e6dbcc", "#faf3e9"]
       }
     },
     "typographyMeta": {
@@ -91,17 +91,22 @@
       {
         "name": "toggle-chevron",
         "value": "transform 180ms ease",
-        "purpose": "One of only two motions in the system: the details toggle chevron rotating."
+        "purpose": "One of only three motions in the system: the details toggle chevron rotating."
       },
       {
-        "name": "intro-hold",
-        "value": "600ms",
-        "purpose": "The backdrop painting holds alone before the sheet arrives. The only moment the painting is fully visible, which is why this entrance is sanctioned. Do not push past ~1s."
+        "name": "band-collapse",
+        "value": "--band: --frame-top -> --frame over 240px of scroll, linear",
+        "purpose": "The top band collapses as the page is scrolled, so the mat is top-weighted while the hero is in view and uniform once the visitor is reading. Driven by a scroll timeline on :root, not a scroll listener. --band is registered via @property so it interpolates. Only the fixed matte and the sticky header read it; the sheet margin stays on the static --frame-top so nothing reflows per frame."
+      },
+      {
+        "name": "intro-rise",
+        "value": "calc(var(--frame-top) - var(--frame))",
+        "purpose": "How far below its resting place the sheet starts. The rise uncovers an extra band of backdrop, which is the only moment the painting is fully visible and why this entrance is sanctioned. It is defined as calc(--frame-top - --frame), the exact distance the band later collapses, so load and scroll are one gesture; do not replace it with a literal length."
       },
       {
         "name": "intro-arrive",
-        "value": "700ms cubic-bezier(0.16, 1, 0.3, 1)",
-        "purpose": "The sheet fades up from a 14px offset onto the held backdrop. Applied to #root, once per session, bypassed under prefers-reduced-motion."
+        "value": "850ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The sheet fades up from --intro-rise into place, revealing the backdrop through the travel rather than through a pause. There is no hold. Applied to #root, once per session, bypassed under prefers-reduced-motion. Keep the whole sequence under ~1s."
       }
     ],
     "breakpoints": [
@@ -180,7 +185,7 @@
   ],
   "narrative": {
     "northStar": "The Consultant's Broadsheet",
-    "overview": "This is a printed page that happens to be on screen. The system takes its structure from broadsheet newspapers and consulting reports rather than from SaaS product UI: a warm paper ground, one authoritative ink, hairline rules that divide the page into columns and registers, and headlines set enormous and tight because the argument is the design. There is no card, no drop shadow, no rounded container standing in for hierarchy. Structure is carried entirely by rules, whitespace and type scale.\n\nThe density is deliberately uneven. Display type runs to 7rem with negative tracking and sub-1 line-height so that headlines read as one dense mass, while body copy sits at a calm 1.6 line-height in a muted grey-blue and never exceeds a comfortable measure. That contrast, loud structure and quiet prose, is the whole personality. It signals a senior operator rather than a vendor, which is the positioning PRODUCT.md commits to.\n\nThe one departure from flat paper is the portrait: a single large image carrying the system's only shadow. It is the only human element on the page and it is allowed to be the only thing that lifts off the surface. Its corners are square like everything else, so the lift comes from the shadow alone rather than from shadow and rounding together.\n\nThe page itself is a sheet. It sits inset on a backdrop showing an impressionist painting of Hamburg, the city the practice is run from, which makes the broadsheet metaphor literal: a printed page laid on a surface rather than a canvas that happens to be paper-coloured. The sheet keeps square corners and takes no shadow. Its separation from the backdrop is carried entirely by the tonal and textural difference between a painted ground and flat paper, which is the same mechanism the system already uses between sections.\n\nThe backdrop is chosen for place, not decoration, and it is the only representational imagery in the system besides the portrait.",
+    "overview": "This is a printed page that happens to be on screen. The system takes its structure from broadsheet newspapers and consulting reports rather than from SaaS product UI: a warm paper ground, one authoritative ink, hairline rules that divide the page into columns and registers, and headlines set enormous and tight because the argument is the design. There is no card, no drop shadow, no rounded container standing in for hierarchy. Structure is carried entirely by rules, whitespace and type scale.\n\nThe density is deliberately uneven. Display type runs to 7rem with negative tracking and sub-1 line-height so that headlines read as one dense mass, while body copy sits at a calm 1.6 line-height in a muted grey-blue and never exceeds a comfortable measure. That contrast, loud structure and quiet prose, is the whole personality. It signals a senior operator rather than a vendor, which is the positioning PRODUCT.md commits to.\n\nThe one departure from flat paper is the portrait: a single large image carrying the system's only shadow. It is the only human element on the page and it is allowed to be the only thing that lifts off the surface. Its corners are square like everything else, so the lift comes from the shadow alone rather than from shadow and rounding together.\n\nThe page itself is a sheet. It sits inset on a backdrop showing a golden-hour painting of Hamburg, the city the practice is run from, which makes the broadsheet metaphor literal: a printed page laid on a surface rather than a canvas that happens to be paper-coloured. The sheet keeps square corners and takes no shadow. Its separation from the backdrop is carried entirely by the tonal and textural difference between a worked, painterly ground and flat paper, which is the same mechanism the system already uses between sections.\n\nThe backdrop is chosen for place, not decoration, and it is the only representational imagery in the system besides the portrait.",
     "keyCharacteristics": [
       "Warm paper ground (#f3f0e8), never pure white",
       "One continuous paper sheet, inset on a painted Hamburg backdrop",
@@ -188,7 +193,7 @@
       "Hairline rules as the primary structural device",
       "Enormous, tightly tracked display type",
       "One inverted deep-ink section as the page's spine",
-      "Near-zero motion; the page does not animate to prove it is alive. The one exception is the intro, which exists to show the backdrop, not the interface"
+      "Near-zero motion; the page does not animate to prove it is alive. The exceptions both belong to the frame rather than the interface: the intro that reveals the backdrop, and the top band collapsing as the page is scrolled"
     ],
     "rules": [
       {
@@ -223,7 +228,7 @@
       },
       {
         "name": "The Frame Is Content Rule",
-        "body": "--frame and --frame-top exist so the backdrop painting is legible, not to create breathing room. Narrowing them to reclaim column width crops the image to noise and removes the reason it is there. The top edge is deepest because it is the only band a skyline can be read in; compose backdrops so their subject sits in the top 13% of the frame. The backdrop is shown untinted; if a future image needs seating, reintroduce a scrim under 0.15 rather than darkening the asset. The backdrop is composed for the frame rather than cropped to fit: its effective resolution is set by aspect ratio, not file width, because the further an asset departs from the viewport aspect the harder cover magnifies it.",
+        "body": "--frame and --frame-top exist so the backdrop is legible, not to create breathing room. Narrowing them to reclaim column width crops the image to noise and removes the reason it is there. The top edge is deepest because it is the only band a skyline can be read in; compose backdrops so their subject sits in the top ~3.5% of the frame, which is what the collapsed band still shows at the ultrawide floor rather than the resting average. The backdrop is shown untinted; if a future image needs seating, reintroduce a scrim under 0.15 rather than darkening the asset. Effective resolution is set by aspect ratio, not file width: the further an asset departs from the viewport aspect the harder cover magnifies it. Only a shallow top crop moves a skyline into the band — cropping the bottom leaves the band covering the same count of source rows, and cropping the sides covers fewer. Size assets to the widest device that will paint them and spend the remainder on quality, since quantisation damage survives downscaling but surplus pixels do not.",
         "section": "elevation"
       }
     ],
@@ -243,7 +248,7 @@
       "Don't use pure white as a background.",
       "Don't narrow --frame or --frame-top to gain column width; they are what make the backdrop readable.",
       "Don't add eyebrow/kicker labels above headings.",
-      "Don't add entrance animations, parallax or scroll-triggered reveals. The system has exactly two motions: the once-per-session intro that reveals the backdrop, and a 180ms transform on the details toggle chevron. Both are documented and bounded. A third would make the first two look arbitrary.",
+      "Don't add entrance animations, parallax or scroll-triggered reveals. The system has exactly three motions: the once-per-session intro, the top band collapsing on scroll, and a 180ms transform on the details toggle chevron. The first two are the frame behaving, not the content performing. A motion may map continuously to scroll position, but nothing may fire at a scroll threshold, and no element may travel at a different rate from the page it sits on.",
       "Don't invent new small font sizes. The set below 1rem still holds 12 distinct values, none below the 0.8125rem floor; new work should snap to 0.8125 / 0.875 / 0.96 / 1rem rather than widen it again.",
       "Don't introduce a third blue or a warm accent. The palette is closed."
     ]

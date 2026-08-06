@@ -9,7 +9,7 @@ colors:
   muted: "#52626b"
   line: "rgba(0, 59, 118, 0.22)"
   on-ink: "#ffffff"
-  backdrop-ink: "#766f5f"
+  backdrop-ink: "#92785a"
 typography:
   display:
     fontFamily: "Inter Tight Variable, Inter Variable, sans-serif"
@@ -107,13 +107,13 @@ allowed to be the only thing that lifts off the surface. Its corners are square
 like everything else, so the lift comes from the shadow alone rather than from
 shadow and rounding together.
 
-The page itself is a sheet. It sits inset on a backdrop showing an
-impressionist painting of Hamburg, the city the practice is run from, which
-makes the broadsheet metaphor literal: a printed page laid on a surface rather
-than a canvas that happens to be paper-coloured. The sheet keeps square corners
-and takes no shadow. Its separation from the backdrop is carried entirely by
-the tonal and textural difference between a painted ground and flat paper,
-which is the same mechanism the system already uses between sections.
+The page itself is a sheet. It sits inset on a backdrop showing a painting of
+Hamburg at golden hour, the city the practice is run from, which makes the
+broadsheet metaphor literal: a printed page laid on a surface rather than a
+canvas that happens to be paper-coloured. The sheet keeps square corners and
+takes no shadow. Its separation from the backdrop is carried entirely by the
+tonal and textural difference between a worked, painterly ground and flat
+paper, which is the same mechanism the system already uses between sections.
 
 The backdrop is chosen for place, not decoration, and it is the only
 representational imagery in the system besides the portrait.
@@ -125,8 +125,9 @@ representational imagery in the system besides the portrait.
 - Hairline rules as the primary structural device
 - Enormous, tightly tracked display type
 - One inverted deep-ink section as the page's spine
-- Near-zero motion; the page does not animate to prove it is alive. The one
-  exception is the intro, which exists to show the backdrop, not the interface
+- Near-zero motion; the page does not animate to prove it is alive. The
+  exceptions both belong to the frame rather than the interface: the intro that
+  reveals the backdrop, and the top band collapsing as the page is scrolled
 
 ## Colors
 
@@ -150,10 +151,11 @@ blue reserved for action and emphasis.
   `#fff`. The whole sheet is this one tone; sections are divided by rules, not
   by a change of paper.
 - **Deep Paper** (`#e8e3d7`): The darkest paper step, for subtle fills.
-- **Backdrop Ink** (`#766f5f`): The flat colour behind the sheet, shown before
-  the backdrop image loads and anywhere it cannot. Sampled from the painting's
-  own mean so the load-in resolves into the image rather than correcting away
-  from a colour that was never in it.
+- **Backdrop Ink** (`#92785a`): The flat colour behind the sheet, shown before
+  the backdrop image loads and anywhere it cannot. Sampled from the mean of the
+  regions the sheet does not cover, not from the whole painting, so the
+  load-in resolves into the pixels actually on screen rather than into an
+  average dominated by water the visitor never sees.
 - **Muted Slate** (`#52626b`): All secondary and body prose. Deliberately not
   a tint of the ink; it is a cooler grey that keeps long copy from vibrating
   against the warm ground.
@@ -218,39 +220,48 @@ The sheet is inset from the viewport by `--frame`, set to `clamp(14px, 6vw,
 neither eats reading width on a phone. Everything else in this section describes
 layout *inside* the sheet.
 
-The frame is deliberately generous at desktop. The backdrop is a painting, and
-the sheet covers its entire centre, so only the outer band is ever seen: a thin
-border crops the image to unreadable noise, while a wide one lets the brushwork
-and the skyline register. Frame width is therefore a content decision, not a
+The frame is deliberately generous at desktop. The sheet covers the backdrop's
+entire centre, so only the outer band is ever seen: a thin border crops the
+image to unreadable noise, while a wide one lets the skyline register. Frame width is therefore a content decision, not a
 margin decision, and should not be trimmed for extra column width.
 
 The top edge is deeper than the other three, which is the mat convention of
 weighting one edge, put to work. The top band is the only place a skyline can be
 read — the side strips are too narrow and the bottom is below the fold — and at
-`6vw` it held ~9.6% of the painting's height, a sliver too thin to carry a
-building. At `11vw` it holds 13.2–17.6% across desktop sizes. That range is the
-composition brief for any future backdrop: **anything that must be seen belongs
-in the top 13% of the image.**
+`6vw` it held a sliver too thin to carry a building. At `11vw` it holds
+6.6–13.2% of the image's height across desktop sizes, the low end on ultrawide
+monitors where the same 190px covers proportionally less — and the band then
+collapses to `--frame` on scroll, reaching 3.6% at that same ultrawide floor.
+**That collapsed floor, not the resting average, is the composition brief for
+any future backdrop: anything that must be seen belongs in the top ~3.5% of the
+image.** A backdrop that satisfies only the resting band loses its subject the
+moment the visitor scrolls.
 
-The alternative was cropping the painting to force its skyline upward, and it
+The alternative was cropping the image to force its skyline upward, and it
 was tried and reverted. Deepening the frame costs vertical space in the hero;
 cropping costs resolution everywhere, permanently. Space is the cheaper currency.
 
 Three consequences worth knowing before changing anything here:
 
-- **The sticky header parks at the frame line** (`top: var(--frame-top)`), not at
+- **The sticky header parks at the frame line** (`top: var(--band)`), not at
   the viewport top, and it is fully opaque. A translucent header lets the
   backdrop bleed through and muddies it.
 - **A fixed matte repaints the top band.** Once the sheet scrolls past the
   viewport top its paper would cover the backdrop's top strip, so a fixed layer
-  clipped to `--frame-top` redraws it. The matte and the backdrop share identical
+  clipped to `--band` redraws it. The matte and the backdrop share identical
   fixed geometry so they register exactly.
+- **The matte and the header must read the same variable.** Both define the
+  same edge — the matte paints down to it, the header parks on it. Split them
+  across two values and any drift shows as a strip of paper above the header or
+  a backdrop band that outruns it.
 - **Anchor targets clear the frame as well as the header**, via
-  `scroll-margin-top: calc(var(--frame-top) + var(--header-height) + 12px)`.
+  `scroll-margin-top: calc(var(--frame) + var(--header-height) + 12px)`, using
+  the collapsed band because anchors are always landed on well past the collapse
+  range.
 
 The backdrop is a fixed layer rather than a body background. As a scrolling
 body background, `cover` resolves against full document height and zooms the
-painting to a smear on tall mobile pages.
+image to a smear on tall mobile pages.
 
 ### Inside the sheet
 
@@ -299,10 +310,11 @@ inversion. They do not get a lighter background (see The One Sheet Rule), a
 shadow, or a border radius.
 
 **The Frame Is Content Rule.** `--frame` and `--frame-top` exist so the backdrop
-painting is legible, not to create breathing room. Narrowing them to reclaim
-column width crops the image to noise and removes the reason it is there. The
-top edge is the deepest because it is the only band a skyline can be read in;
-compose backdrops so their subject sits in the top 13% of the frame.
+is legible, not to create breathing room. Narrowing them to reclaim column width
+crops the image to noise and removes the reason it is there. The top edge is the
+deepest because it is the only band a skyline can be read in; compose backdrops
+so their subject sits in the top ~3.5% of the frame, which is what the band
+still shows once it has collapsed.
 
 ## Shapes
 
@@ -361,46 +373,77 @@ carries meaning.
 
 ### Signature Component: The Hamburg Backdrop
 A fixed, viewport-sized layer behind the sheet holding an impressionist painting
-of the Binnenalster at sunset — skyline along the top edge, Elbphilharmonie and
-the Rathaus tower against a gold sky, open water filling the rest. It is
-composed *for this frame* rather than found and cropped to fit, and that is why
-it works.
+of the Binnenalster at golden hour — the Elbphilharmonie's roof waves and the
+Rathaus and church towers along the top edge, the Alster fountain and sailboats
+on open water below. A painting rather than a photograph is the positioning
+choice: paper resting on a painting is a print-and-gallery metaphor, where paper
+over a photograph is a content card over a hero image, which is the category
+default for a consultancy site.
 
 Served as WebP with `.jpg` companions behind an `@supports (background-image:
-image-set(...))` guard, in three sizes: `4096` to 2x displays, `2560` to 1x, and
-`1600` below 900px. WebP is both smaller and higher quality than the JPEG here,
-so there is no trade to weigh.
+image-set(...))` guard: `3456` to 2x displays, `2560` to 1x, and `1280` below
+900px. WebP is both smaller and higher quality than the JPEG here, so there is
+no trade to weigh.
 
-**Aspect ratio is the whole game.** At 1.266 the painting is narrower than any
-desktop viewport, so `cover` fills the *width* and maps all 4096 pixels onto the
-viewport width — 2.84 device pixels per CSS pixel at 1440px, well past the 2.0 a
-retina display can resolve. An asset wider than the viewport gets scaled up
-instead, and the further its aspect departs from the viewport's, the harder
-`cover` magnifies it.
+**Aspect ratio decides effective resolution, not file width.** At 1.20 the image
+is narrower than any desktop viewport, so `cover` fills the *width* and maps the
+asset onto the viewport without magnification. An asset whose aspect is wider
+than the viewport's gets scaled up instead, and the further the two diverge, the
+harder `cover` magnifies.
 
-This was learned the expensive way. An earlier version cropped a 16:9 painting to
-a 2.98:1 skyline strip so the Elbphilharmonie would reach the top band. `cover`
-then scaled it to 2682px across a 1440px viewport, against 1600px for the
-uncropped frame — a 1.7× magnification of brushwork that had only 1290px of
-source height left. The strokes stopped reading as texture and started reading as
-mud, and no re-export could fix it: the pixels were gone at crop time. **A wide
-crop is expensive twice over — it throws away pixels, then enlarges the
-survivors.** The skyline was brought into the band by deepening `--frame-top`
-instead, which costs layout space rather than resolution.
+**Only a top crop moves the skyline into the band.** This is worth stating
+plainly because two plausible alternatives do nothing. With `cover` filling the
+width, the band always shows a fixed *count of source rows* — `--frame-top ×
+(image width ÷ viewport width)`. Cropping the bottom changes the aspect and the
+percentages but not that count, so it cannot pull a landmark into view. Cropping
+the sides makes each source pixel larger on screen, so the band covers *fewer*
+rows and the landmark moves further out. Deepening `--frame-top` works but is
+paid for in layout space: reaching the Elbphilharmonie on the uncropped square
+would have taken a 250px band on a 900px viewport.
+
+So the square 4096px original was cropped 8% off the top, which moved the
+Elbphilharmonie roof from 10% of the image height to 2.4% and put it inside the
+band in *every* state — resting, collapsed, and at the ultrawide floor. The cost
+is that the church spires now meet the top edge instead of sitting under sky.
+That reads as an intentional frame crop rather than damage, and it is the right
+trade: the spires are anonymous at a glance, the Elbphilharmonie is the one
+building that says Hamburg without a caption. The bottom was then trimmed to a
+1.20 aspect, which removes only rows no desktop viewport can display.
+
+The earlier, opposite lesson still stands and is why the crop is *shallow*: a
+previous version cropped a 16:9 image to a 2.98:1 skyline strip, leaving 1290px
+of source height that `cover` then magnified 1.7×. **A wide crop is expensive
+twice over — it throws away pixels, then enlarges the survivors.** A shallow top
+crop is safe precisely because it does not touch the width, which is what sets
+the scale.
 
 `--backdrop-position` is `center top`, and that is load-bearing rather than
 cosmetic. Filling the width makes the image taller than the viewport, so a
 centred position would slide the skyline up out of the band — the one thing the
-band exists to show. Pinned to the top, the band reaches 9.4–14% of the
-painting's height depending on viewport, and the Elbphilharmonie's roofline
-begins 3.2% down. It is one variable shared by both backdrop layers, so the
-matte cannot drift out of register with the layer beneath it.
+band exists to show. Pinned to the top, the band reaches 6.6–13.2% of the image's
+height at rest and 3.6–7.2% collapsed, against an Elbphilharmonie roof starting
+at 2.4%, so the landmark reads at every desktop size and in both band states. It
+is one variable shared by both backdrop layers, so the matte cannot drift out of
+register with the layer beneath it.
 
 Resolution is served by descriptor, not by breakpoint: `image-set()` carries `1x`
-and `2x` entries alongside `type()`, so a 1x display fetches 387KB and only a 2x
-display pays the 699KB. Quality is q72, chosen from an RMSE sweep — q84 costs 51%
-more bytes to move RMSE from 2.38 to 1.77, a difference no one can see on
-brushwork behind a sheet.
+and `2x` entries alongside `type()`, so a 1x display fetches 890KB and only a 2x
+display pays 1.3MB.
+
+**Size the asset to the widest device that will paint it, then spend what is
+left on quality.** Measured at display size rather than 1:1, a 2880px asset at
+q88 beat the full 4096px at q80 while being *smaller* — and at the 3456px target
+(1728 CSS px at 2x, the widest common retina laptop), 3456@q88 beat 4096@q86 on
+both quality and bytes. Pixels beyond what the device can resolve are spent on
+resampling that the browser throws away, whereas quantisation damage survives
+downscaling. Brushwork is the specific reason: dense impasto texture is destroyed
+by coarse quantisation but merely averaged by resampling.
+
+Quality is q88, chosen against a lossless master at the size actually painted.
+The RMSE curve flattens after q80 and at 1:1 q80 is already indistinguishable,
+but q76 visibly smears the sky's brushwork — and since the backdrop is the site's
+entire visual identity, the plateau is the floor here, not the target. **Judge
+compression on the pixels that are visible, at the size they are displayed.**
 
 The guard overrides `background-image` on the backdrop layers directly, not the
 `--backdrop-image` custom property, and that distinction is load-bearing.
@@ -411,15 +454,21 @@ to the JPEG. Overriding the real property also lets autoprefixer emit the
 `-webkit-image-set` variant that pairs with the widened `@supports` test it
 generates.
 
-The painting is shown untinted. An earlier version washed it in a flat
-`rgba(0, 42, 86, 0.22)` scrim to seat it in the site's ink and to guarantee the
-cream sheet stayed legible against a pale sky. On a sunset image that wash reads
-as dirt: it cools the gold the picture exists for and greys the one warm thing
-on the page. It was removed, and the legibility argument was retested rather
-than assumed — across the frame band where sheet meets backdrop, the brightest
-1% of the painting still sits at 1.66:1 against `--paper`, the median at 2.20:1,
+The painting is shown untinted. An earlier version washed the backdrop in a
+flat `rgba(0, 42, 86, 0.22)` scrim to seat it in the site's ink and to guarantee
+the cream sheet stayed legible against a pale sky. On a golden-hour image that
+wash reads as dirt: it cools the gold the picture exists for and greys the one
+warm thing on the page. It was removed, and the legibility argument was retested
+rather than assumed — across the frame band where sheet meets backdrop, the
+brightest 1% of the image sits at 1.87:1 against `--paper`, the median at 2.07:1,
 and nothing at all falls within 1.2:1. The edge is never soft. Separation is
-carried by tone and texture: flat cream against heavy brushwork.
+carried by tone and texture: flat, matte cream against worked, painterly ground.
+
+Side-strip detail energy is a selection criterion when swapping the backdrop,
+not an afterthought. Those strips run the full height of the page directly
+alongside the reading column, and a photograph measured roughly 2.2× the painting
+here on mean horizontal gradient energy. Softer strips are one of the reasons the
+painting is the better ground, independent of the positioning argument.
 
 If a future image ever does need seating, reintroduce a scrim rather than
 darkening the asset, and keep it under about `0.15`. But treat the need as
@@ -431,34 +480,83 @@ Elbphilharmonie without any positional nudge. The 14px band there is too short t
 read architecture at any width worth the fold space, so phones get sky and water
 in the strips and nothing is asked of the top edge.
 
-### Signature Moment: The Intro
-On the first load of a session the backdrop holds alone for `--intro-hold`
-(600ms), then the sheet is laid onto it over `--intro-arrive` (700ms), fading up
-from a 14px offset on a decelerating curve. Roughly 1.3s end to end.
+### Signature Moment: The Band
+The top band is not fixed. It rests at `--frame-top`, opens past that during the
+intro, and collapses to `--frame` over the first `--band-collapse-range` (240px)
+of scroll. Three positions, evenly spaced, at 1440px: **230px open, 158px at
+rest, 86px collapsed.**
 
-This is the system's only entrance animation, and it is permitted because it is
-the one motion that carries information the static page cannot: the sheet's
-whole conceit is that it is paper resting on a painting, and the painting is
-almost entirely hidden once the sheet lands. The hold is the only moment a
-visitor sees what the site is sitting on. Motion here explains the composition;
-motion anywhere else would only decorate it.
+The reasoning is that the band's job changes as the visitor moves. While the
+hero is on screen the backdrop is part of the argument — it says where this
+practice is. Once they start reading, it is furniture, and the page should have
+the space instead. So the mat is top-weighted while the picture is the subject
+and uniform on all four edges once the page is.
+
+The even spacing is not a coincidence to preserve casually: `--intro-rise` is
+defined as `calc(var(--frame-top) - var(--frame))`, the exact distance the band
+later collapses. Load and scroll are therefore one continuous gesture in two
+parts — the band opens past its resting height, settles, then closes as the page
+is read — rather than two effects that happen to sit near each other. On phones
+the two frames are equal, so the rise resolves to `0` and the band never
+collapses: there is nothing there to reveal, and the intro correctly degrades to
+a pure fade.
+
+It is driven by a **scroll timeline**, not a scroll listener, so there is no JS
+on the scroll path and it degrades to a static band where unsupported. `--band`
+is registered with `@property` as a `<length>`; an unregistered custom property
+would jump between the two values instead of interpolating.
+
+Only the matte and the sticky header follow `--band`. `.site-page` keeps its
+margin on the static `--frame-top`, and that separation is load-bearing:
+animating a margin would reflow the document on every frame and shift the very
+scroll offset driving the animation.
+
+### Signature Moment: The Intro
+On the first load of a session the sheet starts `--intro-rise` low and fades up
+into place over `--intro-arrive` (850ms) on a decelerating curve. Nothing is
+held back first: the page is legible from the opening frame.
+
+An earlier version paused on the bare backdrop for 600ms before the sheet
+arrived. It showed the right thing the wrong way — a deliberate pause is
+indistinguishable from a slow site, and it charged every visitor 600ms for
+information the motion could carry for free. Starting the sheet 72px low reveals
+an extra band of backdrop at the top, and the rise uncovers it in the same
+gesture that delivers the page. The reveal is now a by-product of arrival rather
+than a toll paid before it, and the whole sequence finishes in 850ms against the
+old 1.3s.
+
+That is the reason this is the system's only entrance animation. It carries
+information the static page cannot: the sheet's whole conceit is that it is paper
+resting on a painting of Hamburg, and that painting is almost entirely hidden
+once the sheet lands. The rise is the only moment a visitor sees what the site is
+sitting on. Motion here explains the composition; motion anywhere else would only
+decorate it.
 
 Three constraints keep it from becoming a tax:
 
 - **It plays once per session.** An inline script in `index.html` sets a
   `sessionStorage` flag and, on any later load, puts `.intro-done` on `<html>`
-  before first paint. Reloads and direct hits on the legal URLs skip the hold.
+  before first paint. Reloads and direct hits on the legal URLs skip the intro.
 - **It is bypassed entirely under `prefers-reduced-motion`.**
 - **It animates `#root`, not `.site-page`.** `#root` survives client-side
   navigation, so moving between routes cannot replay it. This is also why the
   top matte hangs off `body::after`: a transform on an ancestor would make that
   `fixed` layer resolve against the ancestor instead of the viewport.
 
-The durations are tokens on `:root`, so the pacing is a one-line change. Do not
-push the hold past roughly a second — beyond that a first-time visitor stops
-reading it as authored and starts reading it as broken, and LCP goes with it.
-The backdrop is preloaded at high priority so the hold shows the painting rather
-than the `--backdrop-fallback` flat.
+The travel and duration are tokens on `:root`, so the pacing is a one-line
+change. Keep the whole sequence under roughly a second — beyond that a
+first-time visitor stops reading it as authored and starts reading it as broken.
+The travel is not a free number — it is the frame delta, so changing either
+frame variable retunes the intro automatically. Do not replace it with a literal
+length; that would break the even spacing between the band's three positions and
+let load and scroll drift into two unrelated effects. The backdrop is preloaded at high priority so the
+first frame shows the painting rather than the `--backdrop-fallback` flat.
+
+The easing stays on the house curve, `cubic-bezier(0.16, 1, 0.3, 1)`, even
+though the travel here is five times anything else in the system. A gentler
+curve was measured against it and moved the final 5px only ~100ms sooner, which
+is not worth a second easing in the system. A slow settle at the end of a
+decelerating move reads as momentum, not lag.
 
 ## Do's and Don'ts
 
@@ -482,11 +580,25 @@ than the `--backdrop-fallback` flat.
 - **Don't** use pure white as a background.
 - **Don't** narrow `--frame` or `--frame-top` to gain column width; they are
   what make the backdrop readable.
+- **Don't** hide anything with `transform` if it lives inside `#root`. The
+  intro leaves a transform there, which makes `#root` the containing block for
+  every `position: fixed` descendant, so `translateY(-200%)` moves an element
+  off the top of the *sheet* rather than off the viewport. This is what left the
+  skip link parked visibly over the backdrop band. Hide with `clip-path`, which
+  no ancestor can defeat, and keep fixed layers that must track the viewport —
+  the backdrop and its matte — hanging off `body`, outside the `#root` subtree.
+- **Don't** drive `--band` from anything that reflows the document. It may only
+  feed paint and sticky offsets; putting it on the sheet's margin would relayout
+  the page on every scroll frame and move the scroll position driving it.
 - **Don't** add eyebrow/kicker labels above headings.
 - **Don't** add entrance animations, parallax or scroll-triggered reveals. The
-  system has exactly two motions: the once-per-session intro that reveals the
-  backdrop, and a 180ms transform on the details toggle chevron. Both are
-  documented and bounded. A third would make the first two look arbitrary.
+  system has exactly three motions: the once-per-session intro, the top band
+  collapsing on scroll, and a 180ms transform on the details toggle chevron.
+  The first two are the frame behaving, not the content performing. The line
+  that admits them and bans the rest: a motion may map continuously to scroll
+  position, but nothing may *fire* at a scroll threshold, and no element may
+  travel at a different rate from the page it sits on. That bans parallax and
+  reveal-on-enter while permitting a frame that responds.
 - **Don't** invent new small font sizes. The set below 1rem still holds 12
   distinct values, none below the `0.8125rem` floor; new work should snap to
   `0.8125` / `0.875` / `0.96` / `1rem` rather than widen it again.

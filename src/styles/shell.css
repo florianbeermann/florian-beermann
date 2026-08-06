@@ -5,6 +5,17 @@
    step between backdrop and paper, never from a shadow or a radius, so the
    Flat Paper Rule still holds at page level. The frame is wide because the
    backdrop is a painting of Hamburg: a thin border would crop it to noise. */
+/* The live top band. It starts at `--frame-top` and collapses to `--frame` as
+   the page is scrolled, so the backdrop is fully on show while the hero is
+   being read and progressively covered once the visitor moves past it.
+   Registered so it can interpolate — an unregistered custom property would
+   step between the two values instead of animating. */
+@property --band {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+
 :root {
   --frame: clamp(14px, 6vw, 104px);
   /* The top edge is deliberately deeper than the other three. A mat weighted at
@@ -13,36 +24,45 @@
      a sliver too thin to carry a building. At 11vw it holds ~17.6% of the
      painting's height instead of ~9.6%. */
   --frame-top: clamp(20px, 11vw, 190px);
+  /* Falls back to the resting band where scroll timelines are unsupported. */
+  --band: var(--frame-top);
+  /* How far the page scrolls before the band is fully collapsed. */
+  --band-collapse-range: 240px;
   /* Holds the frame during the intro before the painting decodes, so the first
      frame is the picture's own warm key rather than a colour it has to correct
      away from. Sampled from the source's mean. */
-  --backdrop-fallback: #766f5f;
+  --backdrop-fallback: #92785a;
   /* The painting is shown untinted. An earlier version washed it in navy to
      seat it in the site ink; on a sunset image that reads as dirt, cooling the
      gold it exists for. Separation between sheet and backdrop is carried by
      tone and texture instead. */
-  /* The painting is composed for this frame: skyline along the top edge, Alster
-     water below. At 1.266 its aspect is narrower than any desktop viewport, so
-     `cover` fills the width and the full 4096px maps onto the viewport — 2.84
-     device pixels per CSS pixel at 1440px. A wider asset would have been
-     magnified to fit, which is what ruined the previous one. */
+  /* The painting is cropped for this frame, not merely chosen for it. At 1.20
+     its aspect is narrower than any desktop viewport, so `cover` fills the
+     width and the asset maps onto the viewport without magnification. The top
+     8% of the square original was removed so the skyline sits directly under
+     the frame edge — see the Backdrop section in DESIGN.md. */
   --backdrop-image: url("/hamburg-alster-2560.jpg");
   --backdrop: var(--backdrop-image);
   /* `top`, not `center`, and load-bearing. Filling the width makes the image
      taller than the viewport, so a centred position would crop the skyline off
-     the top — the one thing the band exists to show. The Elbphilharmonie roof
-     starts 3.2% down the painting; the band reaches 9.4–14%. */
+     the top — the one thing the band exists to show. After the crop the
+     Elbphilharmonie roof starts 2.4% down; the band reaches 6.6–13.2% at rest
+     and 3.6–7.2% collapsed, so the roof reads in every state. */
   --backdrop-position: center top;
 
-  /* Intro sequence. The backdrop is CSS, so it paints before React mounts and
-     the hold costs nothing to stage. Tune here, not in the keyframes. */
-  --intro-hold: 600ms;
-  --intro-arrive: 700ms;
+  /* Intro sequence. No hold: the sheet starts low and rises, so the backdrop is
+     revealed by the motion instead of by a pause. The travel is exactly the
+     distance the band later collapses, so load and scroll are one gesture — the
+     band opens past its resting height, settles, then closes as the page is
+     read. On phones the two frames are equal, so this resolves to 0 and the
+     intro is a pure fade: there is no band there to reveal. */
+  --intro-rise: calc(var(--frame-top) - var(--frame));
+  --intro-arrive: 850ms;
 }
 
 @media (max-width: 900px) {
   :root {
-    --backdrop-image: url("/hamburg-alster-1600.jpg");
+    --backdrop-image: url("/hamburg-alster-1280.jpg");
   }
 }
 
@@ -84,12 +104,14 @@ body::after {
   body::before,
   body::after {
     /* Resolution descriptors alongside `type()`: a 1x display gets 2560px
-       (387KB), a 2x display gets the full 4096px (699KB). Only the screens that
-       can resolve the extra pixels pay for them. `x` descriptors predate
-       `type()` in image-set, so anything parsing this rule supports both. */
+       (890KB), a 2x display gets 3456px (1.3MB) — sized to the widest common
+       retina laptop (1728 CSS px), not to the source. Pixels the device cannot
+       paint buy nothing, so that budget is spent on quality instead. `x`
+       descriptors predate `type()` in image-set, so anything parsing this rule
+       supports both. */
     background-image: image-set(
       url("/hamburg-alster-2560.webp") type("image/webp") 1x,
-      url("/hamburg-alster-4096.webp") type("image/webp") 2x,
+      url("/hamburg-alster-3456.webp") type("image/webp") 2x,
       url("/hamburg-alster-2560.jpg") type("image/jpeg") 1x
     );
   }
@@ -98,8 +120,8 @@ body::after {
     body::before,
     body::after {
       background-image: image-set(
-        url("/hamburg-alster-1600.webp") type("image/webp"),
-        url("/hamburg-alster-1600.jpg") type("image/jpeg")
+        url("/hamburg-alster-1280.webp") type("image/webp"),
+        url("/hamburg-alster-1280.jpg") type("image/jpeg")
       );
     }
   }
@@ -118,17 +140,18 @@ body::before {
    this `fixed` layer resolve against that ancestor instead of the viewport. */
 body::after {
   z-index: 31;
-  clip-path: inset(0 0 calc(100% - var(--frame-top)) 0);
+  clip-path: inset(0 0 calc(100% - var(--band)) 0);
 }
 
-/* The intro: the painting holds alone, then the sheet is laid onto it. One
-   motion for the whole sheet, not a stagger — a printed page arrives as a
+/* The intro: the sheet rises into place, uncovering the backdrop on the way.
+   There is no hold — the reveal is carried by the travel, so nothing waits.
+   One motion for the whole sheet, not a stagger: a printed page arrives as a
    single object. `#root` is the target because it persists across routes, so
    client-side navigation cannot replay it. */
 @keyframes sheet-arrive {
   from {
     opacity: 0;
-    transform: translate3d(0, 14px, 0);
+    transform: translate3d(0, var(--intro-rise), 0);
   }
 
   to {
@@ -138,12 +161,11 @@ body::after {
 }
 
 #root {
-  animation: sheet-arrive var(--intro-arrive) cubic-bezier(0.16, 1, 0.3, 1)
-    var(--intro-hold) both;
+  animation: sheet-arrive var(--intro-arrive) cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /* Set by the inline script in index.html on any load after the first in a
-   session, so a reload or a direct hit on a legal URL skips the hold. */
+   session, so a reload or a direct hit on a legal URL skips the intro. */
 .intro-done #root {
   animation: none;
 }
@@ -152,6 +174,39 @@ body::after {
    clear the frame and the header instead of just the header. */
 :where(.site-page) [id] {
   scroll-margin-top: calc(var(--frame-top) + var(--header-height, 76px) + 12px);
+}
+
+/* Scrolling collapses the top band from `--frame-top` to `--frame`, so the mat
+   is top-weighted while the hero is in view and uniform on all four edges once
+   the visitor is reading. The backdrop is uncovered when it is the subject and
+   covered when the page is.
+
+   Driven by a scroll timeline rather than a scroll listener: no JS on the
+   scroll path, and it degrades to a static band where unsupported. Only the
+   matte and the header follow `--band`; `.site-page` keeps its margin on the
+   static `--frame-top`, because animating a margin would reflow the document on
+   every frame and shift the very scroll position driving the animation. */
+@keyframes band-collapse {
+  from {
+    --band: var(--frame-top);
+  }
+
+  to {
+    --band: var(--frame);
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  :root {
+    animation: band-collapse linear both;
+    animation-timeline: scroll();
+    animation-range: 0 var(--band-collapse-range);
+  }
+
+  /* Anchors are always landed on well past the collapse range. */
+  :where(.site-page) [id] {
+    scroll-margin-top: calc(var(--frame) + var(--header-height, 76px) + 12px);
+  }
 }
 
 .site-page {
@@ -199,6 +254,11 @@ body::after {
   text-decoration: none;
 }
 
+/* Hidden until focused, and hidden by clipping rather than by transform. The
+   intro leaves a transform on `#root`, which makes it the containing block for
+   every `position: fixed` descendant — so `translateY(-200%)` moved this off
+   the top of the *sheet*, not off the viewport, and it sat visible over the
+   band. Clipping cannot be defeated by an ancestor, so it holds either way. */
 .site-skip {
   position: fixed;
   left: 1rem;
@@ -207,16 +267,16 @@ body::after {
   padding: 0.75rem 1rem;
   background: var(--ink);
   color: white !important;
-  transform: translateY(-200%);
+  clip-path: inset(50%);
 }
 
 .site-skip:focus {
-  transform: translateY(0);
+  clip-path: none;
 }
 
 .site-header {
   position: sticky;
-  top: var(--frame-top);
+  top: var(--band);
   z-index: 30;
   display: flex;
   min-height: var(--header-height);
