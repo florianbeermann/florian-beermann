@@ -16,6 +16,22 @@
     <link
       rel="preload"
       as="image"
+      type="image/webp"
+      href="/hamburg-alster-1920.webp"
+      media="(min-width: 901px)"
+      fetchpriority="high"
+    />
+    <link
+      rel="preload"
+      as="image"
+      type="image/webp"
+      href="/hamburg-alster-1080.webp"
+      media="(max-width: 900px)"
+      fetchpriority="high"
+    />
+    <link
+      rel="preload"
+      as="image"
       href="/florian-portrait-880.webp"
       imagesrcset="/florian-portrait-440.webp 440w, /florian-portrait-660.webp 660w, /florian-portrait-880.webp 880w"
       imagesizes="(max-width: 768px) 90vw, (max-width: 900px) 290px, 440px"
@@ -61,6 +77,24 @@
         "areaServed": "Europe",
         "serviceType": ["Customer Success Strategy", "Customer Success Playbooks", "CSM Training"]
       }
+    </script>
+
+    <!-- The intro (backdrop holds, then the sheet arrives) plays once per
+         session. This runs before first paint so a repeat load never flashes
+         hidden content. If sessionStorage is unavailable, skip the intro
+         rather than replaying it on every navigation. -->
+    <script>
+      (function () {
+        try {
+          if (sessionStorage.getItem("fb-intro") === "seen") {
+            document.documentElement.classList.add("intro-done");
+          } else {
+            sessionStorage.setItem("fb-intro", "seen");
+          }
+        } catch (e) {
+          document.documentElement.classList.add("intro-done");
+        }
+      })();
     </script>
 </head>
 

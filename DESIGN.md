@@ -124,7 +124,8 @@ representational imagery in the system besides the portrait.
 - Hairline rules as the primary structural device
 - Enormous, tightly tracked display type
 - One inverted deep-ink section as the page's spine
-- Near-zero motion; the page does not animate to prove it is alive
+- Near-zero motion; the page does not animate to prove it is alive. The one
+  exception is the intro, which exists to show the backdrop, not the interface
 
 ## Colors
 
@@ -339,17 +340,58 @@ carries meaning.
 
 ### Signature Component: The Hamburg Backdrop
 A fixed, viewport-sized layer behind the sheet holding an impressionist
-painting of the Binnenalster, served at `/hamburg-alster-1920.jpg` with a
-`1080` variant below 900px. A flat scrim of `rgba(0, 42, 86, 0.22)` sits over
-it, doing two jobs: seating the painting in the site's ink so it reads as art
-direction rather than a stock image, and guaranteeing the cream sheet stays
-legible against a sky that is otherwise very close to `--paper` in tone.
+painting of the Binnenalster, served as WebP at `/hamburg-alster-1920.webp`
+with a `1080` variant below 900px, and matching `.jpg` files as a real fallback
+behind an `@supports (background-image: image-set(...))` guard. WebP here is
+both smaller and higher quality than the JPEG it replaced, so there is no
+trade to weigh.
+
+The guard overrides `background-image` on the backdrop layers directly, not the
+`--backdrop-image` custom property, and that distinction is load-bearing.
+Custom properties accept any token stream at parse time, so an unsupported
+`image-set()` parked in one is not caught until use, where it invalidates
+`background-image` outright and leaves a flat colour rather than falling back
+to the JPEG. Overriding the real property also lets autoprefixer emit the
+`-webkit-image-set` variant that pairs with the widened `@supports` test it
+generates. A flat scrim of `rgba(0, 42, 86, 0.22)` sits over it, doing two
+jobs: seating the painting in the site's ink so it reads as art direction
+rather than a stock image, and guaranteeing the cream sheet stays legible
+against a sky that is otherwise very close to `--paper` in tone.
 
 The scrim is the tuning dial. Heavier than roughly `0.3` and the brushwork goes
 muddy; lighter than roughly `0.15` and the top band stops separating from the
 sheet. The painting's own palette already matches the system, warm ochre
 against `--paper` and deep blues against `--ink`, so it needs seating rather
 than correcting.
+
+### Signature Moment: The Intro
+On the first load of a session the backdrop holds alone for `--intro-hold`
+(600ms), then the sheet is laid onto it over `--intro-arrive` (700ms), fading up
+from a 14px offset on a decelerating curve. Roughly 1.3s end to end.
+
+This is the system's only entrance animation, and it is permitted because it is
+the one motion that carries information the static page cannot: the sheet's
+whole conceit is that it is paper resting on a painting, and the painting is
+almost entirely hidden once the sheet lands. The hold is the only moment a
+visitor sees what the site is sitting on. Motion here explains the composition;
+motion anywhere else would only decorate it.
+
+Three constraints keep it from becoming a tax:
+
+- **It plays once per session.** An inline script in `index.html` sets a
+  `sessionStorage` flag and, on any later load, puts `.intro-done` on `<html>`
+  before first paint. Reloads and direct hits on the legal URLs skip the hold.
+- **It is bypassed entirely under `prefers-reduced-motion`.**
+- **It animates `#root`, not `.site-page`.** `#root` survives client-side
+  navigation, so moving between routes cannot replay it. This is also why the
+  top matte hangs off `body::after`: a transform on an ancestor would make that
+  `fixed` layer resolve against the ancestor instead of the viewport.
+
+The durations are tokens on `:root`, so the pacing is a one-line change. Do not
+push the hold past roughly a second — beyond that a first-time visitor stops
+reading it as authored and starts reading it as broken, and LCP goes with it.
+The backdrop is preloaded at high priority so the hold shows the painting rather
+than the `--backdrop-fallback` flat.
 
 ## Do's and Don'ts
 
@@ -374,8 +416,10 @@ than correcting.
   backdrop readable.
 - **Don't** add eyebrow/kicker labels above headings.
 - **Don't** add entrance animations, parallax or scroll-triggered reveals. The
-  only motion in the system is a 180ms transform on the details toggle chevron.
-- **Don't** invent new small font sizes. The existing set has drifted to 21
-  distinct values below 1rem; new work should snap to `0.8125` / `0.875` /
-  `0.96` / `1rem` rather than extend the sprawl.
+  system has exactly two motions: the once-per-session intro that reveals the
+  backdrop, and a 180ms transform on the details toggle chevron. Both are
+  documented and bounded. A third would make the first two look arbitrary.
+- **Don't** invent new small font sizes. The set below 1rem still holds 12
+  distinct values, none below the `0.8125rem` floor; new work should snap to
+  `0.8125` / `0.875` / `0.96` / `1rem` rather than widen it again.
 - **Don't** introduce a third blue or a warm accent. The palette is closed.

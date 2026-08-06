@@ -14,12 +14,18 @@
     rgba(0, 42, 86, 0.22),
     rgba(0, 42, 86, 0.22)
   );
-  --backdrop: var(--backdrop-scrim), url("/hamburg-alster-1920.jpg");
+  --backdrop-image: url("/hamburg-alster-1920.jpg");
+  --backdrop: var(--backdrop-scrim), var(--backdrop-image);
+
+  /* Intro sequence. The backdrop is CSS, so it paints before React mounts and
+     the hold costs nothing to stage. Tune here, not in the keyframes. */
+  --intro-hold: 600ms;
+  --intro-arrive: 700ms;
 }
 
 @media (max-width: 900px) {
   :root {
-    --backdrop: var(--backdrop-scrim), url("/hamburg-alster-1080.jpg");
+    --backdrop-image: url("/hamburg-alster-1080.jpg");
   }
 }
 
@@ -33,7 +39,7 @@
    sizes to the viewport. As a scrolling body background, `cover` would resolve
    against full document height and zoom the painting to a smear on mobile. */
 body::before,
-.site-page::before {
+body::after {
   content: "";
   position: fixed;
   inset: 0;
@@ -45,16 +51,78 @@ body::before,
   pointer-events: none;
 }
 
+/* WebP is both smaller and higher quality than the JPEG here; the JPEG stays as
+   a real fallback, mirroring the portrait's `src`/`srcSet` pairing.
+
+   This overrides `background-image` directly rather than the `--backdrop-image`
+   custom property. Custom properties accept any token stream at parse time, so
+   an unsupported `image-set()` stored in one would not be caught until use,
+   where it invalidates `background-image` outright and leaves a flat colour
+   instead of falling back. Overriding the real property also lets autoprefixer
+   emit the `-webkit-` variant it pairs with its widened `@supports` test. */
+@supports (background-image: image-set(url("/x.webp") type("image/webp"))) {
+  body::before,
+  body::after {
+    background-image: var(--backdrop-scrim),
+      image-set(
+        url("/hamburg-alster-1920.webp") type("image/webp"),
+        url("/hamburg-alster-1920.jpg") type("image/jpeg")
+      );
+  }
+
+  @media (max-width: 900px) {
+    body::before,
+    body::after {
+      background-image: var(--backdrop-scrim),
+        image-set(
+          url("/hamburg-alster-1080.webp") type("image/webp"),
+          url("/hamburg-alster-1080.jpg") type("image/jpeg")
+        );
+    }
+  }
+}
+
 body::before {
   z-index: 0;
 }
 
 /* Once the sheet scrolls past the viewport top, its paper would cover the top
    band of the backdrop. This matte repaints that band. Same fixed geometry as
-   the layer above, clipped to the frame, so the two register exactly. */
-.site-page::before {
+   the layer above, clipped to the frame, so the two register exactly.
+
+   It hangs off `body`, not `.site-page`, so it stays outside the `#root`
+   subtree that the intro transforms. A transform on an ancestor would make
+   this `fixed` layer resolve against that ancestor instead of the viewport. */
+body::after {
   z-index: 31;
   clip-path: inset(0 0 calc(100% - var(--frame)) 0);
+}
+
+/* The intro: the painting holds alone, then the sheet is laid onto it. One
+   motion for the whole sheet, not a stagger — a printed page arrives as a
+   single object. `#root` is the target because it persists across routes, so
+   client-side navigation cannot replay it. */
+@keyframes sheet-arrive {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+#root {
+  animation: sheet-arrive var(--intro-arrive) cubic-bezier(0.16, 1, 0.3, 1)
+    var(--intro-hold) both;
+}
+
+/* Set by the inline script in index.html on any load after the first in a
+   session, so a reload or a direct hit on a legal URL skips the hold. */
+.intro-done #root {
+  animation: none;
 }
 
 /* The sticky header now parks at the frame line, so anchor targets have to
@@ -80,26 +148,6 @@ body::before {
   font-family: "Inter Variable", "Helvetica Neue", Arial, sans-serif;
   font-weight: 400;
   text-align: left;
-}
-
-/* Once the sheet scrolls past the viewport top its paper would cover the top
-   band of the backdrop. This matte repaints that band. `fixed` attachment on
-   the same image makes it register exactly with the body backdrop. */
-.site-page::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: var(--frame);
-  z-index: 31;
-  background-color: var(--backdrop-fallback);
-  background-image: var(--backdrop);
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  pointer-events: none;
 }
 
 .site-page *,
@@ -288,5 +336,9 @@ body::before {
 @media (prefers-reduced-motion: reduce) {
   .site-page {
     scroll-behavior: auto;
+  }
+
+  #root {
+    animation: none;
   }
 }

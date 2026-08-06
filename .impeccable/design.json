@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-06T09:50:00.000Z",
+  "generatedAt": "2026-08-06T14:10:00.000Z",
   "title": "Design System: florian beermann & partners",
   "extensions": {
     "colorMeta": {
@@ -45,6 +45,12 @@
         "displayName": "Paper White",
         "canonical": "#ffffff",
         "tonalRamp": ["#2e2e2e", "#4a4a4a", "#676767", "#878787", "#a8a8a8", "#c9c9c9", "#e6e6e6", "#ffffff"]
+      },
+      "backdrop-ink": {
+        "role": "neutral",
+        "displayName": "Backdrop Ink",
+        "canonical": "oklch(38.8% 0.081 256.5)",
+        "tonalRamp": ["#000f30", "#0d2a50", "#26456f", "#46658f", "#6785ae", "#89a5cd", "#adc7ec", "#d2eaff"]
       }
     },
     "typographyMeta": {
@@ -85,7 +91,17 @@
       {
         "name": "toggle-chevron",
         "value": "transform 180ms ease",
-        "purpose": "The only motion in the system: the details toggle chevron rotating. No entrance, scroll or parallax animation exists."
+        "purpose": "One of only two motions in the system: the details toggle chevron rotating."
+      },
+      {
+        "name": "intro-hold",
+        "value": "600ms",
+        "purpose": "The backdrop painting holds alone before the sheet arrives. The only moment the painting is fully visible, which is why this entrance is sanctioned. Do not push past ~1s."
+      },
+      {
+        "name": "intro-arrive",
+        "value": "700ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "The sheet fades up from a 14px offset onto the held backdrop. Applied to #root, once per session, bypassed under prefers-reduced-motion."
       }
     ],
     "breakpoints": [
@@ -135,7 +151,7 @@
       "refersTo": "nav-link",
       "description": "Sticky paper header with a bottom rule; links underline on hover via a transparent border that becomes currentColor.",
       "html": "<header class=\"ds-header\"><span class=\"ds-brand\"><strong>florian beermann</strong><small>&amp; partners</small></span><nav class=\"ds-nav\"><a href=\"#a\">Engagements</a><a href=\"#b\">About</a><a href=\"#c\">Contact</a></nav></header>",
-      "css": ".ds-header { display: flex; align-items: center; justify-content: space-between; min-height: 76px; padding: 0 2rem; background: rgba(243,240,232,0.96); border-bottom: 1px solid rgba(0,59,118,0.22); font-family: 'Inter Variable', sans-serif; } .ds-brand { display: flex; flex-direction: column; line-height: 1.05; color: #003b76; } .ds-brand strong, .ds-brand small { font-size: 0.78rem; font-weight: 500; } .ds-brand small { margin-top: 0.2rem; color: #52626b; } .ds-nav { display: flex; align-items: center; gap: 2rem; font-size: 0.84rem; font-weight: 520; } .ds-nav a { display: inline-flex; align-items: center; min-height: 44px; color: #003b76; text-decoration: none; border-bottom: 1px solid transparent; } .ds-nav a:hover, .ds-nav a:focus-visible { border-color: currentColor; }"
+      "css": ".ds-header { display: flex; align-items: center; justify-content: space-between; min-height: 76px; padding: 0 2rem; background: #f3f0e8; border-bottom: 1px solid rgba(0,59,118,0.22); font-family: 'Inter Variable', sans-serif; } .ds-brand { display: flex; flex-direction: column; line-height: 1.05; color: #003b76; } .ds-brand strong, .ds-brand small { font-size: 0.8125rem; font-weight: 500; } .ds-brand small { margin-top: 0.2rem; color: #52626b; } .ds-nav { display: flex; align-items: center; gap: 2rem; font-size: 0.84rem; font-weight: 520; } .ds-nav a { display: inline-flex; align-items: center; min-height: 44px; color: #003b76; text-decoration: none; border-bottom: 1px solid transparent; } .ds-nav a:hover, .ds-nav a:focus-visible { border-color: currentColor; }"
     },
     {
       "name": "Section Heading",
@@ -164,14 +180,15 @@
   ],
   "narrative": {
     "northStar": "The Consultant's Broadsheet",
-    "overview": "This is a printed page that happens to be on screen. The system takes its structure from broadsheet newspapers and consulting reports rather than from SaaS product UI: a warm paper ground, one authoritative ink, hairline rules that divide the page into columns and registers, and headlines set enormous and tight because the argument is the design. There is no card, no drop shadow, no rounded container standing in for hierarchy. Structure is carried entirely by rules, whitespace and type scale.\n\nThe density is deliberately uneven. Display type runs to 7rem with negative tracking and sub-1 line-height so that headlines read as one dense mass, while body copy sits at a calm 1.6 line-height in a muted grey-blue and never exceeds a comfortable measure. That contrast, loud structure and quiet prose, is the whole personality. It signals a senior operator rather than a vendor, which is the positioning PRODUCT.md commits to.\n\nThe one departure from flat paper is the portrait: a single large soft-cornered image with the system's only shadow. It is the only human element on the page and it is allowed to be the only thing that lifts off the surface.",
+    "overview": "This is a printed page that happens to be on screen. The system takes its structure from broadsheet newspapers and consulting reports rather than from SaaS product UI: a warm paper ground, one authoritative ink, hairline rules that divide the page into columns and registers, and headlines set enormous and tight because the argument is the design. There is no card, no drop shadow, no rounded container standing in for hierarchy. Structure is carried entirely by rules, whitespace and type scale.\n\nThe density is deliberately uneven. Display type runs to 7rem with negative tracking and sub-1 line-height so that headlines read as one dense mass, while body copy sits at a calm 1.6 line-height in a muted grey-blue and never exceeds a comfortable measure. That contrast, loud structure and quiet prose, is the whole personality. It signals a senior operator rather than a vendor, which is the positioning PRODUCT.md commits to.\n\nThe one departure from flat paper is the portrait: a single large soft-cornered image with the system's only shadow. It is the only human element on the page and it is allowed to be the only thing that lifts off the surface.\n\nThe page itself is a sheet. It sits inset on a backdrop showing an impressionist painting of Hamburg, the city the practice is run from, which makes the broadsheet metaphor literal: a printed page laid on a surface rather than a canvas that happens to be paper-coloured. The sheet keeps square corners and takes no shadow. Its separation from the backdrop is carried entirely by the tonal and textural difference between a painted ground and flat paper, which is the same mechanism the system already uses between sections.\n\nThe backdrop is chosen for place, not decoration, and it is the only representational imagery in the system besides the portrait.",
     "keyCharacteristics": [
       "Warm paper ground (#f3f0e8), never pure white",
+      "One continuous paper sheet, inset on a painted Hamburg backdrop",
       "Square corners everywhere except the portrait",
       "Hairline rules as the primary structural device",
       "Enormous, tightly tracked display type",
       "One inverted deep-ink section as the page's spine",
-      "Near-zero motion; the page does not animate to prove it is alive"
+      "Near-zero motion; the page does not animate to prove it is alive. The one exception is the intro, which exists to show the backdrop, not the interface"
     ],
     "rules": [
       {
@@ -182,6 +199,11 @@
       {
         "name": "The No Pure White Rule",
         "body": "#ffffff appears only as type on the inverted section and on filled buttons. Backgrounds use --paper or --paper-deep.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Sheet Rule",
+        "body": "The page is a single piece of paper. A section never gets its own lighter or whiter background to set itself apart, because a real sheet does not have patches of different whiteness and the seam is visible once the page is an inset object. Sections are separated by a rule, by vertical space, or by full inversion. A near-white 'raised paper' step existed in an earlier version of this system and was retired when the sheet gained a backdrop.",
         "section": "colors"
       },
       {
@@ -196,7 +218,12 @@
       },
       {
         "name": "The Flat Paper Rule",
-        "body": "New surfaces get a tonal step or a rule. They do not get a shadow, and they do not get a border radius.",
+        "body": "New surfaces get a rule, vertical space, or full inversion. They do not get a lighter background (see The One Sheet Rule), a shadow, or a border radius.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Frame Is Content Rule",
+        "body": "--frame exists so the backdrop painting is legible, not to create breathing room. Narrowing it to reclaim column width crops the image to noise and removes the reason it is there.",
         "section": "elevation"
       }
     ],
@@ -206,15 +233,18 @@
       "Do set body prose in Muted Slate (#52626b) at 1.6 line-height and cap the measure around 580-650px.",
       "Do reserve Signal Blue for actions, links and the single emphasised clause in a headline.",
       "Do keep interactive targets at >=44px, and text at >=0.8125rem.",
-      "Do write in first person singular. This is one person, not a company."
+      "Do write in first person singular. This is one person, not a company.",
+      "Do resolve widths inside the sheet against 100%, never 100vw."
     ],
     "donts": [
-      "Don't add box-shadows to create separation. Use a tonal step or a rule.",
+      "Don't add box-shadows to create separation. Use a rule or vertical space.",
+      "Don't give a section its own lighter background to set it apart. The sheet is one paper.",
       "Don't introduce a border radius on buttons, inputs or panels.",
       "Don't use pure white as a background.",
+      "Don't narrow --frame to gain column width; it is what makes the backdrop readable.",
       "Don't add eyebrow/kicker labels above headings.",
-      "Don't add entrance animations, parallax or scroll-triggered reveals. The only motion in the system is a 180ms transform on the details toggle chevron.",
-      "Don't invent new small font sizes. The existing set has drifted to 21 distinct values below 1rem; new work should snap to 0.8125 / 0.875 / 0.96 / 1rem rather than extend the sprawl.",
+      "Don't add entrance animations, parallax or scroll-triggered reveals. The system has exactly two motions: the once-per-session intro that reveals the backdrop, and a 180ms transform on the details toggle chevron. Both are documented and bounded. A third would make the first two look arbitrary.",
+      "Don't invent new small font sizes. The set below 1rem still holds 12 distinct values, none below the 0.8125rem floor; new work should snap to 0.8125 / 0.875 / 0.96 / 1rem rather than widen it again.",
       "Don't introduce a third blue or a warm accent. The palette is closed."
     ]
   }
