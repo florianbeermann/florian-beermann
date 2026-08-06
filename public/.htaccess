@@ -7,6 +7,14 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # Fallback to index.html for client-side routing
 RewriteRule ^index\.html$ - [L]
+
+# Missing static assets must 404 rather than fall through to the SPA shell.
+# Without this a deleted font or a typo'd image path returns 200 with an HTML
+# body, which hides broken assets from monitoring and confuses the browser.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} \.(?:js|mjs|css|map|woff2?|ttf|otf|eot|webp|avif|jpe?g|png|gif|svg|ico|json|xml|txt|pdf|mp4|webm)$ [NC]
+RewriteRule ^ - [R=404,L]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.html [L]
