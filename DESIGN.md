@@ -9,7 +9,7 @@ colors:
   muted: "#52626b"
   line: "rgba(0, 59, 118, 0.22)"
   on-ink: "#ffffff"
-  backdrop-ink: "#26456f"
+  backdrop-ink: "#928166"
 typography:
   display:
     fontFamily: "Inter Tight Variable, Inter Variable, sans-serif"
@@ -149,9 +149,10 @@ blue reserved for action and emphasis.
   `#fff`. The whole sheet is this one tone; sections are divided by rules, not
   by a change of paper.
 - **Deep Paper** (`#e8e3d7`): The darkest paper step, for subtle fills.
-- **Backdrop Ink** (`#26456f`): The flat colour behind the sheet, shown before
-  the backdrop image loads and anywhere it cannot. Tuned to the painting's
-  scrimmed midtone so the load-in does not flash.
+- **Backdrop Ink** (`#928166`): The flat colour behind the sheet, shown before
+  the backdrop image loads and anywhere it cannot. Sampled from the painting's
+  own mean so the load-in resolves into the image rather than correcting away
+  from a colour that was never in it.
 - **Muted Slate** (`#52626b`): All secondary and body prose. Deliberately not
   a tint of the ink; it is a cooler grey that keeps long copy from vibrating
   against the warm ground.
@@ -340,11 +341,11 @@ carries meaning.
 
 ### Signature Component: The Hamburg Backdrop
 A fixed, viewport-sized layer behind the sheet holding an impressionist
-painting of the Binnenalster, served as WebP at `/hamburg-alster-1920.webp`
-with a `1080` variant below 900px, and matching `.jpg` files as a real fallback
-behind an `@supports (background-image: image-set(...))` guard. WebP here is
-both smaller and higher quality than the JPEG it replaced, so there is no
-trade to weigh.
+painting of the Binnenalster at sunset, served as WebP at
+`/hamburg-alster-dusk-1920.webp` with a `1080` variant below 900px, and matching
+`.jpg` files as a real fallback behind an `@supports (background-image:
+image-set(...))` guard. WebP here is both smaller and higher quality than the
+JPEG it replaced, so there is no trade to weigh.
 
 The guard overrides `background-image` on the backdrop layers directly, not the
 `--backdrop-image` custom property, and that distinction is load-bearing.
@@ -353,16 +354,28 @@ Custom properties accept any token stream at parse time, so an unsupported
 `background-image` outright and leaves a flat colour rather than falling back
 to the JPEG. Overriding the real property also lets autoprefixer emit the
 `-webkit-image-set` variant that pairs with the widened `@supports` test it
-generates. A flat scrim of `rgba(0, 42, 86, 0.22)` sits over it, doing two
-jobs: seating the painting in the site's ink so it reads as art direction
-rather than a stock image, and guaranteeing the cream sheet stays legible
-against a sky that is otherwise very close to `--paper` in tone.
+generates.
 
-The scrim is the tuning dial. Heavier than roughly `0.3` and the brushwork goes
-muddy; lighter than roughly `0.15` and the top band stops separating from the
-sheet. The painting's own palette already matches the system, warm ochre
-against `--paper` and deep blues against `--ink`, so it needs seating rather
-than correcting.
+The painting is shown untinted. An earlier version washed it in a flat
+`rgba(0, 42, 86, 0.22)` scrim to seat it in the site's ink and to guarantee the
+cream sheet stayed legible against a pale sky. On a sunset image that wash reads
+as dirt: it cools the gold the picture exists for and greys the one warm thing
+on the page. It was removed, and the legibility argument was retested rather
+than assumed — across the frame band where sheet meets backdrop, the brightest
+1% of the painting still sits at 1.66:1 against `--paper`, the median at 2.20:1,
+and nothing at all falls within 1.2:1. The edge is never soft. Separation is
+carried by tone and texture: flat cream against heavy brushwork.
+
+If a future image ever does need seating, reintroduce a scrim rather than
+darkening the asset, and keep it under about `0.15`. But treat the need as
+evidence the image is wrong for the slot, not as a routine step.
+
+The source is 16:9, which crops hard on a portrait phone: `cover` leaves only
+the middle ~26% of the width visible, and centred that clips the spire at 35.8%.
+`--backdrop-position` shifts to `46%` below 680px, which holds the spire, the
+Rathaus tower and the Elbphilharmonie in frame together. It is a single variable
+shared by both backdrop layers, so the matte cannot drift out of register with
+the layer beneath it.
 
 ### Signature Moment: The Intro
 On the first load of a session the backdrop holds alone for `--intro-hold`

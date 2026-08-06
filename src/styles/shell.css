@@ -7,15 +7,19 @@
    backdrop is a painting of Hamburg: a thin border would crop it to noise. */
 :root {
   --frame: clamp(14px, 6vw, 104px);
-  --backdrop-fallback: #26456f;
-  /* Light enough to keep the brushwork readable, heavy enough to seat the
-     painting in the site ink and hold the paper sheet legible against it. */
-  --backdrop-scrim: linear-gradient(
-    rgba(0, 42, 86, 0.22),
-    rgba(0, 42, 86, 0.22)
-  );
-  --backdrop-image: url("/hamburg-alster-1920.jpg");
-  --backdrop: var(--backdrop-scrim), var(--backdrop-image);
+  /* Holds the frame during the intro before the painting decodes, so the first
+     frame is the picture's own warm key rather than a colour it has to correct
+     away from. Sampled from the source's mean. */
+  --backdrop-fallback: #928166;
+  /* The painting is shown untinted. An earlier version washed it in navy to
+     seat it in the site ink; on a sunset image that reads as dirt, cooling the
+     gold it exists for. Separation between sheet and backdrop is carried by
+     tone and texture instead. */
+  --backdrop-image: url("/hamburg-alster-dusk-1920.jpg");
+  --backdrop: var(--backdrop-image);
+  /* 16:9 source on a portrait phone leaves only the middle ~26% of the width
+     visible. Centred, that clips the spire at 35.8%; this brings it back. */
+  --backdrop-position: center center;
 
   /* Intro sequence. The backdrop is CSS, so it paints before React mounts and
      the hold costs nothing to stage. Tune here, not in the keyframes. */
@@ -25,7 +29,13 @@
 
 @media (max-width: 900px) {
   :root {
-    --backdrop-image: url("/hamburg-alster-1080.jpg");
+    --backdrop-image: url("/hamburg-alster-dusk-1080.jpg");
+  }
+}
+
+@media (max-width: 680px) {
+  :root {
+    --backdrop-position: 46% center;
   }
 }
 
@@ -46,7 +56,7 @@ body::after {
   background-color: var(--backdrop-fallback);
   background-image: var(--backdrop);
   background-size: cover;
-  background-position: center center;
+  background-position: var(--backdrop-position);
   background-repeat: no-repeat;
   pointer-events: none;
 }
@@ -63,21 +73,19 @@ body::after {
 @supports (background-image: image-set(url("/x.webp") type("image/webp"))) {
   body::before,
   body::after {
-    background-image: var(--backdrop-scrim),
-      image-set(
-        url("/hamburg-alster-1920.webp") type("image/webp"),
-        url("/hamburg-alster-1920.jpg") type("image/jpeg")
-      );
+    background-image: image-set(
+      url("/hamburg-alster-dusk-1920.webp") type("image/webp"),
+      url("/hamburg-alster-dusk-1920.jpg") type("image/jpeg")
+    );
   }
 
   @media (max-width: 900px) {
     body::before,
     body::after {
-      background-image: var(--backdrop-scrim),
-        image-set(
-          url("/hamburg-alster-1080.webp") type("image/webp"),
-          url("/hamburg-alster-1080.jpg") type("image/jpeg")
-        );
+      background-image: image-set(
+        url("/hamburg-alster-dusk-1080.webp") type("image/webp"),
+        url("/hamburg-alster-dusk-1080.jpg") type("image/jpeg")
+      );
     }
   }
 }

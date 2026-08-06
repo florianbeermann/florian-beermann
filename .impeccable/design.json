@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-06T14:10:00.000Z",
+  "generatedAt": "2026-08-06T14:30:00.000Z",
   "title": "Design System: florian beermann & partners",
   "extensions": {
     "colorMeta": {
@@ -49,8 +49,8 @@
       "backdrop-ink": {
         "role": "neutral",
         "displayName": "Backdrop Ink",
-        "canonical": "oklch(38.8% 0.081 256.5)",
-        "tonalRamp": ["#000f30", "#0d2a50", "#26456f", "#46658f", "#6785ae", "#89a5cd", "#adc7ec", "#d2eaff"]
+        "canonical": "#928166",
+        "tonalRamp": ["#140c01", "#322714", "#53452f", "#76664d", "#928166", "#b9a88e", "#dccbb2", "#fbecd5"]
       }
     },
     "typographyMeta": {
@@ -223,7 +223,7 @@
       },
       {
         "name": "The Frame Is Content Rule",
-        "body": "--frame exists so the backdrop painting is legible, not to create breathing room. Narrowing it to reclaim column width crops the image to noise and removes the reason it is there.",
+        "body": "--frame exists so the backdrop painting is legible, not to create breathing room. Narrowing it to reclaim column width crops the image to noise and removes the reason it is there. The backdrop is shown untinted; if a future image needs seating, reintroduce a scrim under 0.15 rather than darkening the asset.",
         "section": "elevation"
       }
     ],
