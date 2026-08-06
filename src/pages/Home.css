@@ -63,13 +63,6 @@
   background: var(--ink);
 }
 
-.home-hero-proof {
-  margin-top: 1.7rem !important;
-  color: var(--muted);
-  font-size: 0.875rem;
-  letter-spacing: 0.01em;
-}
-
 .home-portrait {
   display: flex;
   margin: 0;
@@ -750,11 +743,6 @@
     min-height: 48px;
     padding: 0 1.2rem;
     font-size: 0.8rem;
-  }
-
-  .home-hero-proof {
-    margin-top: 1.2rem !important;
-    font-size: 0.68rem;
   }
 
   .home-portrait {

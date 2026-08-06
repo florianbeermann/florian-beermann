@@ -238,17 +238,14 @@ export default function Home() {
               I rebuild Customer Success for B2B SaaS companies whose customer
               base has moved, usually upmarket. The coverage model, health
               scores and playbooks still assume the customers they used to
-              have.
+              have. I have operated Customer Success myself, from SMB accounts
+              through to DAX40 enterprises.
             </p>
             <div className="home-actions">
               <a className="home-primary-action" href="#contact">
                 Start a conversation
               </a>
             </div>
-            <p className="home-hero-proof">
-              I have operated Customer Success from SMB accounts through to
-              DAX40 enterprises.
-            </p>
           </div>
 
           <figure className="home-portrait">
