@@ -1,22 +1,69 @@
-import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { setPageMetadata } from "@/lib/metadata";
+import "./NotFound.css";
 
 const NotFound = () => {
-  const location = useLocation();
+  const { pathname } = useLocation();
 
   useEffect(() => {
-    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
-  }, [location.pathname]);
+    setPageMetadata({
+      title: "Page not found | florian beermann & partners",
+      description:
+        "The page you requested does not exist on florianbeermann.com.",
+      path: pathname,
+    });
+  }, [pathname]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">404</h1>
-        <p className="mb-4 text-xl text-muted-foreground">Oops! Page not found</p>
-        <a href="/" className="text-primary underline hover:text-primary/90">
-          Return to Home
-        </a>
-      </div>
+    <div className="site-page notfound-page">
+      <a className="site-skip" href="#notfound-main">
+        Skip to main content
+      </a>
+
+      <header className="site-header">
+        <Link className="site-brand" to="/" aria-label="Home">
+          <img src="/logo.png" alt="" width="34" height="34" />
+          <span>
+            <strong>florian beermann</strong>
+            <small>&amp; partners</small>
+          </span>
+        </Link>
+        <nav aria-label="Primary navigation">
+          <Link to="/#engagements">Engagements</Link>
+          <Link to="/#about">About</Link>
+          <Link to="/#contact">Contact</Link>
+        </nav>
+      </header>
+
+      <main id="notfound-main" className="notfound-main">
+        <div className="notfound-inner">
+          <p className="notfound-code">Error 404</p>
+          <div className="notfound-body">
+            <h1>This page does not exist.</h1>
+            <p>
+              The address you followed may be out of date, or the page may have
+              moved. Everything below will get you back on track.
+            </p>
+            <nav className="notfound-links" aria-label="Suggested pages">
+              <Link to="/">Homepage</Link>
+              <Link to="/#engagements">Engagements</Link>
+              <Link to="/#contact">Contact</Link>
+              <a href="mailto:hello@florianbeermann.com">Email directly</a>
+            </nav>
+          </div>
+        </div>
+      </main>
+
+      <footer className="site-footer">
+        <span>
+          florian beermann &amp; partners · © {new Date().getFullYear()}
+        </span>
+        <nav aria-label="Footer navigation">
+          <Link to="/imprint">Imprint</Link>
+          <Link to="/privacy">Privacy</Link>
+        </nav>
+      </footer>
     </div>
   );
 };

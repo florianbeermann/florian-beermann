@@ -8,14 +8,14 @@
   grid-template-columns: 0.32fr 1.12fr 0.72fr;
   gap: clamp(2.5rem, 6vw, 7rem);
   align-items: end;
-  border-bottom: 1px solid var(--sandbox-ink);
+  border-bottom: 1px solid var(--ink);
   padding: clamp(6rem, 10vw, 10rem) 0 clamp(3rem, 5vw, 5rem);
 }
 
 .legal-eyebrow {
   align-self: start;
   padding-top: 0.55rem;
-  color: var(--sandbox-blue);
+  color: var(--blue);
   font-size: 0.86rem;
   font-weight: 680;
 }
@@ -29,13 +29,13 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  color: var(--sandbox-muted);
+  color: var(--muted);
   font-size: 0.96rem;
   line-height: 1.65;
 }
 
 .legal-hero-meta small {
-  color: var(--sandbox-ink);
+  color: var(--ink);
   font-size: 0.72rem;
   font-weight: 620;
   letter-spacing: 0.06em;
@@ -54,13 +54,13 @@
 }
 
 .legal-contact {
-  border-top: 1px solid var(--sandbox-ink);
-  border-bottom: 1px solid var(--sandbox-ink);
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--ink);
   padding: 1.4rem 0;
 }
 
 .legal-contact h2 {
-  color: var(--sandbox-blue);
+  color: var(--blue);
   font-family: "Inter Variable", sans-serif;
   font-size: 0.78rem;
   font-weight: 680;
@@ -72,12 +72,12 @@
 }
 
 .legal-contact dl > div {
-  border-top: 1px solid var(--sandbox-line);
+  border-top: 1px solid var(--line);
   padding: 1rem 0;
 }
 
 .legal-contact dt {
-  color: var(--sandbox-muted);
+  color: var(--muted);
   font-size: 0.7rem;
   font-weight: 620;
   letter-spacing: 0.06em;
@@ -92,31 +92,31 @@
 
 .legal-contact a,
 .legal-section-body a {
-  color: var(--sandbox-blue);
+  color: var(--blue);
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
 }
 
 .legal-sections {
-  border-top: 1px solid var(--sandbox-ink);
+  border-top: 1px solid var(--ink);
 }
 
 .legal-section {
   display: grid;
   grid-template-columns: 54px minmax(0, 1fr);
   gap: clamp(1.5rem, 3vw, 3rem);
-  border-bottom: 1px solid var(--sandbox-line);
+  border-bottom: 1px solid var(--line);
   padding: clamp(2rem, 4vw, 3.5rem) 0;
 }
 
 .legal-section:last-child {
-  border-bottom-color: var(--sandbox-ink);
+  border-bottom-color: var(--ink);
 }
 
 .legal-section-number {
   padding-top: 0.25rem;
-  color: var(--sandbox-muted);
+  color: var(--muted);
   font-size: 0.76rem;
   font-variant-numeric: tabular-nums;
 }
@@ -135,7 +135,7 @@
 
 .legal-section-body {
   max-width: 720px;
-  color: var(--sandbox-muted);
+  color: var(--muted);
   font-size: 0.91rem;
   line-height: 1.75;
 }
@@ -145,7 +145,7 @@
 }
 
 .legal-section-body strong {
-  color: var(--sandbox-ink);
+  color: var(--ink);
   font-weight: 650;
 }
 

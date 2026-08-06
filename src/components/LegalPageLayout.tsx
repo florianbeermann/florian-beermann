@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
-import "@/pages/Sandbox.css";
 import "./LegalPageLayout.css";
 
 interface LegalPageLayoutProps {
@@ -23,23 +22,23 @@ export const LegalPageLayout = ({
   const { pathname } = useLocation();
 
   return (
-    <div className="sandbox-page legal-page">
-      <a className="sandbox-skip" href="#legal-main">
+    <div className="site-page legal-page">
+      <a className="site-skip" href="#legal-main">
         Skip to main content
       </a>
 
-      <header className="sandbox-header">
-        <Link className="sandbox-brand" to="/#sandbox-top" aria-label="Home">
-          <img src="/logo.png" alt="" />
+      <header className="site-header">
+        <Link className="site-brand" to="/#top" aria-label="Home">
+          <img src="/logo.png" alt="" width="34" height="34" />
           <span>
             <strong>florian beermann</strong>
             <small>&amp; partners</small>
           </span>
         </Link>
         <nav aria-label="Primary navigation">
-          <Link to="/#sandbox-engagements">Engagements</Link>
-          <Link to="/#sandbox-about">About</Link>
-          <Link to="/#sandbox-contact">Contact</Link>
+          <Link to="/#engagements">Engagements</Link>
+          <Link to="/#about">About</Link>
+          <Link to="/#contact">Contact</Link>
         </nav>
       </header>
 
@@ -58,7 +57,7 @@ export const LegalPageLayout = ({
         </div>
       </main>
 
-      <footer className="sandbox-footer">
+      <footer className="site-footer">
         <span>
           florian beermann &amp; partners · © {new Date().getFullYear()}
         </span>
