@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-06T09:50:00.000Z",
+  "title": "Design System: florian beermann & partners",
+  "extensions": {
+    "colorMeta": {
+      "paper": {
+        "role": "neutral",
+        "displayName": "Warm Paper",
+        "canonical": "#f3f0e8",
+        "tonalRamp": ["#241f16", "#3f382b", "#5c5342", "#7c7160", "#9e9382", "#c2b8a7", "#ddd6c8", "#f3f0e8"]
+      },
+      "paper-raised": {
+        "role": "neutral",
+        "displayName": "Raised Paper",
+        "canonical": "#fffefa",
+        "tonalRamp": ["#2b2924", "#464339", "#635f52", "#837e6e", "#a59f8c", "#c9c3af", "#e6e1d2", "#fffefa"]
+      },
+      "paper-deep": {
+        "role": "neutral",
+        "displayName": "Deep Paper",
+        "canonical": "#e8e3d7",
+        "tonalRamp": ["#211d15", "#3a352a", "#565040", "#746d59", "#948c74", "#b6ad93", "#d2cab4", "#e8e3d7"]
+      },
+      "ink": {
+        "role": "primary",
+        "displayName": "Deep Navy Ink",
+        "canonical": "#003b76",
+        "tonalRamp": ["#001225", "#001d3b", "#002a54", "#003b76", "#0f5498", "#3b76b8", "#7aa4d3", "#c2d8ec"]
+      },
+      "blue": {
+        "role": "secondary",
+        "displayName": "Signal Blue",
+        "canonical": "#1655d8",
+        "tonalRamp": ["#061633", "#0a2456", "#0f377f", "#1348ab", "#1655d8", "#4c80e6", "#89aef0", "#c8dbf9"]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted Slate",
+        "canonical": "#52626b",
+        "tonalRamp": ["#151a1d", "#232b30", "#333e45", "#43515a", "#52626b", "#7b8992", "#a9b3b9", "#d7dcdf"]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "rgba(0, 59, 118, 0.22)",
+        "tonalRamp": ["rgba(0,59,118,0.9)", "rgba(0,59,118,0.75)", "rgba(0,59,118,0.6)", "rgba(0,59,118,0.45)", "rgba(0,59,118,0.34)", "rgba(0,59,118,0.22)", "rgba(0,59,118,0.12)", "rgba(0,59,118,0.06)"]
+      },
+      "on-ink": {
+        "role": "neutral",
+        "displayName": "Paper White",
+        "canonical": "#ffffff",
+        "tonalRamp": ["#2e2e2e", "#4a4a4a", "#676767", "#878787", "#a8a8a8", "#c9c9c9", "#e6e6e6", "#ffffff"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The hero H1 only. Tracking (-0.067em) and line-height (0.91) are tuned to Inter Tight; re-tune both if the face changes."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section H2s. One per section."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Engagement and method H3s."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "All prose, in Muted Slate, capped at a 580-650px measure."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Form labels, submit button, micro-metadata. The only uppercase in the system."
+      }
+    },
+    "shadows": [
+      {
+        "name": "portrait-lift",
+        "value": "0 28px 70px rgba(0, 59, 118, 0.14)",
+        "purpose": "The single sanctioned shadow, on the hero portrait only. Not available to other surfaces."
+      },
+      {
+        "name": "focus-underline",
+        "value": "0 1px 0 var(--blue)",
+        "purpose": "Thickens a focused field's underline to 2px without shifting layout."
+      }
+    ],
+    "motion": [
+      {
+        "name": "toggle-chevron",
+        "value": "transform 180ms ease",
+        "purpose": "The only motion in the system: the details toggle chevron rotating. No entrance, scroll or parallax animation exists."
+      }
+    ],
+    "breakpoints": [
+      { "name": "wide", "value": "901px" },
+      { "name": "desktop", "value": "900px" },
+      { "name": "tablet", "value": "768px" },
+      { "name": "mobile", "value": "680px" },
+      { "name": "narrow", "value": "360px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The hero call to action. Signal Blue, square, sentence case.",
+      "html": "<a class=\"ds-btn-primary\" href=\"#contact\">Start a conversation</a>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 24px; background: #1655d8; color: #fff; border: 0; border-radius: 0; font-family: 'Inter Variable', 'Helvetica Neue', Arial, sans-serif; font-size: 0.86rem; font-weight: 650; text-decoration: none; cursor: pointer; } .ds-btn-primary:hover { background: #003b76; } .ds-btn-primary:focus-visible { outline: 2px solid #003b76; outline-offset: 3px; }"
+    },
+    {
+      "name": "Submit Button",
+      "kind": "button",
+      "refersTo": "button-submit",
+      "description": "A form's terminal action. Deep ink, uppercase label type; the case change is what separates it from a navigational CTA.",
+      "html": "<button class=\"ds-btn-submit\" type=\"submit\">Send message</button>",
+      "css": ".ds-btn-submit { display: inline-flex; align-items: center; justify-content: center; min-height: 54px; padding: 16px 24px; background: #003b76; color: #fff; border: 0; border-radius: 0; font-family: 'Inter Variable', 'Helvetica Neue', Arial, sans-serif; font-size: 0.72rem; font-weight: 680; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; } .ds-btn-submit:hover { background: #1655d8; } .ds-btn-submit:disabled { opacity: 0.55; cursor: not-allowed; } .ds-btn-submit:focus-visible { outline: 2px solid #1655d8; outline-offset: 3px; }"
+    },
+    {
+      "name": "Underline Input",
+      "kind": "input",
+      "refersTo": "input-underline",
+      "description": "The only field style. Underline only, transparent ground, always-visible uppercase label.",
+      "html": "<div class=\"ds-field\"><label class=\"ds-field-label\" for=\"ds-name\">Name</label><input class=\"ds-field-input\" id=\"ds-name\" type=\"text\" placeholder=\"Your name\" /></div>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 0.45rem; max-width: 420px; } .ds-field-label { color: #003b76; font-family: 'Inter Variable', sans-serif; font-size: 0.7rem; font-weight: 680; letter-spacing: 0.08em; text-transform: uppercase; } .ds-field-input { width: 100%; min-height: 48px; padding: 0.65rem 0; background: transparent; color: #003b76; border: 0; border-bottom: 1px solid rgba(0,59,118,0.22); border-radius: 0; outline: none; font-family: 'Inter Variable', sans-serif; font-size: 0.96rem; } .ds-field-input::placeholder { color: #52626b; opacity: 0.72; } .ds-field-input:focus-visible { border-color: #1655d8; box-shadow: 0 1px 0 #1655d8; }"
+    },
+    {
+      "name": "Textarea",
+      "kind": "input",
+      "refersTo": "input-underline",
+      "description": "The one field that takes a full border rather than an underline, because its height needs bounding.",
+      "html": "<textarea class=\"ds-textarea\" placeholder=\"What is changing in your customer base?\"></textarea>",
+      "css": ".ds-textarea { width: 100%; min-height: 150px; padding: 0.9rem; background: transparent; color: #003b76; border: 1px solid rgba(0,59,118,0.22); border-radius: 0; outline: none; resize: vertical; font-family: 'Inter Variable', sans-serif; font-size: 0.96rem; line-height: 1.5; } .ds-textarea::placeholder { color: #52626b; opacity: 0.72; } .ds-textarea:focus-visible { border-color: #1655d8; box-shadow: 0 1px 0 #1655d8; }"
+    },
+    {
+      "name": "Header Navigation",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Sticky paper header with a bottom rule; links underline on hover via a transparent border that becomes currentColor.",
+      "html": "<header class=\"ds-header\"><span class=\"ds-brand\"><strong>florian beermann</strong><small>&amp; partners</small></span><nav class=\"ds-nav\"><a href=\"#a\">Engagements</a><a href=\"#b\">About</a><a href=\"#c\">Contact</a></nav></header>",
+      "css": ".ds-header { display: flex; align-items: center; justify-content: space-between; min-height: 76px; padding: 0 2rem; background: rgba(243,240,232,0.96); border-bottom: 1px solid rgba(0,59,118,0.22); font-family: 'Inter Variable', sans-serif; } .ds-brand { display: flex; flex-direction: column; line-height: 1.05; color: #003b76; } .ds-brand strong, .ds-brand small { font-size: 0.78rem; font-weight: 500; } .ds-brand small { margin-top: 0.2rem; color: #52626b; } .ds-nav { display: flex; align-items: center; gap: 2rem; font-size: 0.84rem; font-weight: 520; } .ds-nav a { display: inline-flex; align-items: center; min-height: 44px; color: #003b76; text-decoration: none; border-bottom: 1px solid transparent; } .ds-nav a:hover, .ds-nav a:focus-visible { border-color: currentColor; }"
+    },
+    {
+      "name": "Section Heading",
+      "kind": "custom",
+      "refersTo": "headline",
+      "description": "The two-column argument-and-margin-note heading. No eyebrow label above it, ever.",
+      "html": "<div class=\"ds-section-heading\"><h2>Where the experience comes from</h2><p>Companies I have worked in, not a client list.</p></div>",
+      "css": ".ds-section-heading { display: grid; grid-template-columns: 1fr 0.75fr; gap: 3rem; align-items: end; } .ds-section-heading h2 { margin: 0; color: #003b76; font-family: 'Inter Tight Variable', 'Inter Variable', sans-serif; font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 520; line-height: 0.95; letter-spacing: -0.045em; } .ds-section-heading p { margin: 0; color: #52626b; font-family: 'Inter Variable', sans-serif; font-size: 1.02rem; font-weight: 400; line-height: 1.6; } @media (max-width: 680px) { .ds-section-heading { grid-template-columns: 1fr; gap: 1.25rem; } }"
+    },
+    {
+      "name": "Inverted Method Band",
+      "kind": "custom",
+      "refersTo": "ink",
+      "description": "The page's spine: the one place the paper flips to ink. Four columns divided by translucent white rules. Numbers are permitted here because the sequence carries meaning.",
+      "html": "<section class=\"ds-method\"><h2>How the work runs</h2><div class=\"ds-flow\"><div><span>01</span><h3>Signals</h3><p>What the data already says.</p></div><div><span>02</span><h3>Decisions</h3><p>What it should change.</p></div><div><span>03</span><h3>Plays</h3><p>Who does what, when.</p></div><div><span>04</span><h3>Measures</h3><p>How we know it worked.</p></div></div></section>",
+      "css": ".ds-method { background: #003b76; color: #fff; padding: 4rem 2rem; font-family: 'Inter Variable', sans-serif; } .ds-method h2 { margin: 0; font-family: 'Inter Tight Variable', sans-serif; font-size: clamp(2rem, 3.4vw, 3.2rem); font-weight: 520; line-height: 0.98; letter-spacing: -0.045em; } .ds-flow { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 3rem; border-top: 1px solid rgba(255,255,255,0.35); border-bottom: 1px solid rgba(255,255,255,0.35); } .ds-flow > div { padding: 1.75rem 1.25rem; border-right: 1px solid rgba(255,255,255,0.25); } .ds-flow > div:last-child { border-right: 0; } .ds-flow span { font-size: 0.7rem; font-weight: 680; letter-spacing: 0.08em; opacity: 0.7; } .ds-flow h3 { margin: 0.6rem 0 0.4rem; font-family: 'Inter Tight Variable', sans-serif; font-size: 1.3rem; font-weight: 520; letter-spacing: -0.03em; } .ds-flow p { margin: 0; font-size: 0.9rem; line-height: 1.55; opacity: 0.82; } @media (max-width: 680px) { .ds-flow { grid-template-columns: 1fr; } .ds-flow > div { border-right: 0; border-bottom: 1px solid rgba(255,255,255,0.25); } }"
+    },
+    {
+      "name": "Details Toggle",
+      "kind": "custom",
+      "refersTo": "input-underline",
+      "description": "Progressive-disclosure row for optional form fields. Carries the system's only animation.",
+      "html": "<button class=\"ds-toggle\" type=\"button\">Add company size and tooling (optional)<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"m6 9 6 6 6-6\"/></svg></button>",
+      "css": ".ds-toggle { display: flex; width: 100%; min-height: 48px; align-items: center; justify-content: space-between; padding: 0.75rem 0; background: transparent; color: #003b76; border: 0; border-top: 1px solid rgba(0,59,118,0.22); border-bottom: 1px solid rgba(0,59,118,0.22); border-radius: 0; cursor: pointer; font-family: 'Inter Variable', sans-serif; font-size: 0.8rem; font-weight: 560; } .ds-toggle svg { transition: transform 180ms ease; } .ds-toggle[aria-expanded=\"true\"] svg { transform: rotate(180deg); } .ds-toggle:focus-visible { outline: 2px solid #1655d8; outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Consultant's Broadsheet",
+    "overview": "This is a printed page that happens to be on screen. The system takes its structure from broadsheet newspapers and consulting reports rather than from SaaS product UI: a warm paper ground, one authoritative ink, hairline rules that divide the page into columns and registers, and headlines set enormous and tight because the argument is the design. There is no card, no drop shadow, no rounded container standing in for hierarchy. Structure is carried entirely by rules, whitespace and type scale.\n\nThe density is deliberately uneven. Display type runs to 7rem with negative tracking and sub-1 line-height so that headlines read as one dense mass, while body copy sits at a calm 1.6 line-height in a muted grey-blue and never exceeds a comfortable measure. That contrast, loud structure and quiet prose, is the whole personality. It signals a senior operator rather than a vendor, which is the positioning PRODUCT.md commits to.\n\nThe one departure from flat paper is the portrait: a single large soft-cornered image with the system's only shadow. It is the only human element on the page and it is allowed to be the only thing that lifts off the surface.",
+    "keyCharacteristics": [
+      "Warm paper ground (#f3f0e8), never pure white",
+      "Square corners everywhere except the portrait",
+      "Hairline rules as the primary structural device",
+      "Enormous, tightly tracked display type",
+      "One inverted deep-ink section as the page's spine",
+      "Near-zero motion; the page does not animate to prove it is alive"
+    ],
+    "rules": [
+      {
+        "name": "The Two Blues Rule",
+        "body": "The navy is structure; the bright blue is action. They are never interchangeable. If a new element is neither a heading nor an action, it is Muted Slate, not a third blue.",
+        "section": "colors"
+      },
+      {
+        "name": "The No Pure White Rule",
+        "body": "#ffffff appears only as type on the inverted section and on filled buttons. Backgrounds use --paper or --paper-raised.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Display Rule",
+        "body": "Exactly one element per page may use Display size. A second competing headline at that scale collapses the hierarchy.",
+        "section": "typography"
+      },
+      {
+        "name": "The 0.8125rem Floor",
+        "body": "No text renders below 0.8125rem (13px). Legal and privacy microcopy sits at the floor, not beneath it.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Paper Rule",
+        "body": "New surfaces get a tonal step or a rule. They do not get a shadow, and they do not get a border radius.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do use hairline rules (1px solid var(--line)) to divide content.",
+      "Do keep every surface square except the hero portrait.",
+      "Do set body prose in Muted Slate (#52626b) at 1.6 line-height and cap the measure around 580-650px.",
+      "Do reserve Signal Blue for actions, links and the single emphasised clause in a headline.",
+      "Do keep interactive targets at >=44px, and text at >=0.8125rem.",
+      "Do write in first person singular. This is one person, not a company."
+    ],
+    "donts": [
+      "Don't add box-shadows to create separation. Use a tonal step or a rule.",
+      "Don't introduce a border radius on buttons, inputs or panels.",
+      "Don't use pure white as a background.",
+      "Don't add eyebrow/kicker labels above headings.",
+      "Don't add entrance animations, parallax or scroll-triggered reveals. The only motion in the system is a 180ms transform on the details toggle chevron.",
+      "Don't invent new small font sizes. The existing set has drifted to 21 distinct values below 1rem; new work should snap to 0.8125 / 0.875 / 0.96 / 1rem rather than extend the sprawl.",
+      "Don't introduce a third blue or a warm accent. The palette is closed."
+    ]
+  }
+}

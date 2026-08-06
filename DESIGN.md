@@ -1,0 +1,296 @@
+---
+name: florian beermann & partners
+description: Customer Success consulting for B2B SaaS companies whose customer base has moved upmarket.
+colors:
+  paper: "#f3f0e8"
+  paper-raised: "#fffefa"
+  paper-deep: "#e8e3d7"
+  ink: "#003b76"
+  blue: "#1655d8"
+  muted: "#52626b"
+  line: "rgba(0, 59, 118, 0.22)"
+  on-ink: "#ffffff"
+typography:
+  display:
+    fontFamily: "Inter Tight Variable, Inter Variable, sans-serif"
+    fontSize: "clamp(4rem, 6.7vw, 7rem)"
+    fontWeight: 520
+    lineHeight: 0.91
+    letterSpacing: "-0.067em"
+  headline:
+    fontFamily: "Inter Tight Variable, Inter Variable, sans-serif"
+    fontSize: "clamp(2.8rem, 5vw, 5.4rem)"
+    fontWeight: 520
+    lineHeight: 0.95
+    letterSpacing: "-0.045em"
+  title:
+    fontFamily: "Inter Tight Variable, Inter Variable, sans-serif"
+    fontSize: "clamp(1.8rem, 3vw, 3.1rem)"
+    fontWeight: 520
+    lineHeight: 1
+    letterSpacing: "-0.045em"
+  body:
+    fontFamily: "Inter Variable, Helvetica Neue, Arial, sans-serif"
+    fontSize: "clamp(1.02rem, 1.25vw, 1.16rem)"
+    fontWeight: 400
+    lineHeight: 1.6
+    letterSpacing: "normal"
+  label:
+    fontFamily: "Inter Variable, Helvetica Neue, Arial, sans-serif"
+    fontSize: "0.7rem"
+    fontWeight: 680
+    lineHeight: 1.5
+    letterSpacing: "0.08em"
+rounded:
+  none: "0"
+  portrait: "1.75rem"
+spacing:
+  hairline: "1px"
+  xs: "0.65rem"
+  sm: "1.35rem"
+  md: "2.4rem"
+  lg: "4rem"
+  section: "clamp(6rem, 10vw, 10rem)"
+  container: "1240px"
+components:
+  button-primary:
+    backgroundColor: "{colors.blue}"
+    textColor: "{colors.on-ink}"
+    rounded: "{rounded.none}"
+    padding: "0 24px"
+    height: "52px"
+  button-primary-hover:
+    backgroundColor: "{colors.ink}"
+  button-submit:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.on-ink}"
+    typography: "{typography.label}"
+    rounded: "{rounded.none}"
+    padding: "16px 24px"
+    height: "54px"
+  input-underline:
+    backgroundColor: "transparent"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.none}"
+    padding: "0.65rem 0"
+    height: "48px"
+  nav-link:
+    textColor: "{colors.ink}"
+    typography: "{typography.label}"
+    rounded: "{rounded.none}"
+    height: "44px"
+---
+
+# Design System: florian beermann & partners
+
+## Overview
+
+**Creative North Star: "The Consultant's Broadsheet"**
+
+This is a printed page that happens to be on screen. The system takes its
+structure from broadsheet newspapers and consulting reports rather than from
+SaaS product UI: a warm paper ground, one authoritative ink, hairline rules
+that divide the page into columns and registers, and headlines set enormous
+and tight because the argument is the design. There is no card, no drop
+shadow, no rounded container standing in for hierarchy. Structure is carried
+entirely by rules, whitespace and type scale.
+
+The density is deliberately uneven. Display type runs to 7rem with negative
+tracking and sub-1 line-height so that headlines read as one dense mass, while
+body copy sits at a calm 1.6 line-height in a muted grey-blue and never
+exceeds a comfortable measure. That contrast, loud structure and quiet prose,
+is the whole personality. It signals a senior operator rather than a vendor,
+which is the positioning PRODUCT.md commits to.
+
+The one departure from flat paper is the portrait: a single large soft-cornered
+image with the system's only shadow. It is the only human element on the page
+and it is allowed to be the only thing that lifts off the surface.
+
+**Key Characteristics:**
+- Warm paper ground (`#f3f0e8`), never pure white
+- Square corners everywhere except the portrait
+- Hairline rules as the primary structural device
+- Enormous, tightly tracked display type
+- One inverted deep-ink section as the page's spine
+- Near-zero motion; the page does not animate to prove it is alive
+
+## Colors
+
+A three-tone editorial palette: warm paper, deep navy ink, and one saturated
+blue reserved for action and emphasis.
+
+### Primary
+- **Deep Navy Ink** (`#003b76`): All headings, body emphasis, the inverted
+  method section's background, and the submit button. This is the voice of the
+  page; it does the work that black would do in print, but warmer and more
+  specific.
+
+### Secondary
+- **Signal Blue** (`#1655d8`): The action colour. Used on the hero CTA, the
+  second half of the H1, links, and focus states. Its job is to mark the two
+  or three places on a page where the visitor can act or where the argument
+  turns.
+
+### Neutral
+- **Warm Paper** (`#f3f0e8`): The page ground. Warm, slightly yellowed, never
+  `#fff`.
+- **Raised Paper** (`#fffefa`): Near-white bands used to lift the proof strip
+  and the contact section a half-step off the ground without a border or shadow.
+- **Deep Paper** (`#e8e3d7`): The darkest paper step, for subtle fills.
+- **Muted Slate** (`#52626b`): All secondary and body prose. Deliberately not
+  a tint of the ink; it is a cooler grey that keeps long copy from vibrating
+  against the warm ground.
+- **Rule** (`rgba(0, 59, 118, 0.22)`): Every divider, field underline and
+  section boundary. A transparent ink tint, so rules sit in the same colour
+  family as the type instead of reading as grey furniture.
+
+### Named Rules
+**The Two Blues Rule.** The navy is structure; the bright blue is action. They
+are never interchangeable. If a new element is neither a heading nor an action,
+it is Muted Slate, not a third blue.
+
+**The No Pure White Rule.** `#ffffff` appears only as type on the inverted
+section and on filled buttons. Backgrounds use `--paper` or `--paper-raised`.
+
+## Typography
+
+**Display Font:** Inter Tight Variable (fallback: Inter Variable, sans-serif)
+**Body Font:** Inter Variable (fallback: Helvetica Neue, Arial, sans-serif)
+
+**Character:** One superfamily doing two jobs. Inter Tight's narrower fit lets
+display sizes run enormous without wrapping, and its negative tracking at large
+sizes reads as confident rather than cramped. Inter at 400 keeps prose neutral
+and highly legible so the headline carries all the personality. Inter is a
+deliberate, recorded choice here, not a default.
+
+### Hierarchy
+- **Display** (520, `clamp(4rem, 6.7vw, 7rem)`, line-height 0.91,
+  tracking -0.067em): The hero H1 only. Tracking and line-height are tuned to
+  Inter Tight specifically; changing the face requires re-tuning both.
+- **Headline** (520, `clamp(2.8rem, 5vw, 5.4rem)`, line-height 0.95,
+  tracking -0.045em): Section H2s.
+- **Title** (520, `clamp(1.8rem, 3vw, 3.1rem)`, line-height 1): Engagement and
+  method H3s.
+- **Body** (400, `clamp(1.02rem, 1.25vw, 1.16rem)`, line-height 1.6): All
+  prose, in Muted Slate, constrained to 580–650px measure.
+- **Label** (680, `0.7rem`, tracking `0.08em`, uppercase): Form labels, the
+  submit button, and micro-metadata. The only uppercase in the system.
+
+### Named Rules
+**The One Display Rule.** Exactly one element per page may use Display size.
+A second competing headline at that scale collapses the hierarchy.
+
+**The 0.8125rem Floor.** No text renders below `0.8125rem` (13px). Legal and
+privacy microcopy sits at the floor, not beneath it.
+
+## Layout
+
+A single centred column of `min(92%, 1240px)`, with full-bleed section
+backgrounds and inner content constrained to the container. Sections are
+separated by `clamp(6rem, 10vw, 10rem)` of vertical padding and, where the
+background does not change, a 1px rule.
+
+Section headings use a two-column grid (`1fr 0.75fr`) placing the H2 against a
+supporting paragraph, so the page reads as an argument with a margin note
+rather than centred marketing. The method section uses a four-column signal
+flow; engagements use a two-column split of title against detail.
+
+Breakpoints are `900px`, `768px`, `680px` and `360px`. Multi-column grids
+collapse to single column at 680px, and the display clamp switches to a
+steeper viewport-relative curve (`clamp(2.9rem, 12.5vw, 4rem)`) so the H1
+holds at four lines on a 390px screen rather than seven.
+
+Horizontal page padding is `4vw` at desktop and a fixed `1.35rem` below 680px.
+
+## Elevation & Depth
+
+**This system is flat by doctrine.** There are no elevation levels, no card
+shadows, and no layered surfaces. Depth is expressed three ways: by tonal
+change between paper steps (`--paper` → `--paper-raised`), by full inversion
+(the deep-ink method section), and by hairline rules. A shadow used to
+separate a block from its background is a defect in this system, not a choice.
+
+### Shadow Vocabulary
+- **Portrait lift** (`box-shadow: 0 28px 70px rgba(0, 59, 118, 0.14)`): The
+  single sanctioned shadow, on the hero portrait only.
+- **Focus underline** (`box-shadow: 0 1px 0 var(--blue)`): Used on focused form
+  controls to thicken the underline to 2px without shifting layout.
+
+### Named Rules
+**The Flat Paper Rule.** New surfaces get a tonal step or a rule. They do not
+get a shadow, and they do not get a border radius.
+
+## Shapes
+
+Square by default: `border-radius: 0` on buttons, inputs, selects, the details
+toggle, and every panel. The single exception is the hero portrait at
+`1.75rem`, which is what makes it read as a photograph placed on the page
+rather than a UI element.
+
+The recurring geometry is the **rule**: a 1px line at `var(--line)` for
+dividers and field underlines, and at `var(--ink)` for the heavier boundaries
+that open a section. Rules do the work that borders and cards do elsewhere.
+The one accent geometry is a `2px solid var(--blue)` left border used to mark
+a callout.
+
+## Components
+
+### Buttons
+- **Shape:** Square (`border-radius: 0`).
+- **Primary (hero CTA):** Signal Blue background, white text, `0 24px` padding,
+  `52px` min-height, 650 weight at `0.86rem`, sentence case.
+- **Submit:** Deep Navy Ink background, white text, uppercase Label type
+  (`0.72rem`, 680, `0.1em` tracking), `16px 24px` padding, `54px` min-height.
+  The case change is what separates a form's terminal action from a
+  navigational CTA.
+- **Hover / Focus:** Colour swap only (blue → ink). No lift, no scale, no
+  shadow. All interactive targets are ≥44px.
+
+### Inputs / Fields
+- **Style:** Underline only. Transparent background, no border except
+  `border-bottom: 1px solid var(--line)`, `border-radius: 0`, `48px` min-height,
+  `0.96rem` text. Textareas are the exception and take a full 1px border with
+  `0.9rem` padding and a `150px` min-height.
+- **Focus:** Border colour shifts to Signal Blue and `box-shadow: 0 1px 0` adds
+  a second pixel, so the underline thickens without moving the field.
+- **Labels:** Uppercase Label type above the field, always visible. No
+  placeholder-as-label.
+
+### Navigation
+- **Style:** Text links at `0.84rem` / 520, in Deep Navy Ink, `44px` min-height,
+  with a transparent 1px bottom border that becomes `currentColor` on hover and
+  focus-visible. Sticky header on a 96%-opaque paper background with a bottom
+  rule.
+- **Mobile:** Below 680px the wordmark text hides and only the logo mark plus
+  condensed nav remain.
+
+### Signature Component: The Inverted Method Band
+A full-bleed `var(--ink)` section with white type, containing a four-column
+signal flow divided by `rgba(255,255,255,0.25)` rules. It is the page's spine:
+the one place the paper flips to ink, used to mark the shift from what is sold
+to how it is done. Numbers `01–04` are permitted here because the sequence
+carries meaning.
+
+## Do's and Don'ts
+
+### Do:
+- **Do** use hairline rules (`1px solid var(--line)`) to divide content.
+- **Do** keep every surface square except the hero portrait.
+- **Do** set body prose in Muted Slate (`#52626b`) at 1.6 line-height and cap
+  the measure around 580–650px.
+- **Do** reserve Signal Blue for actions, links and the single emphasised
+  clause in a headline.
+- **Do** keep interactive targets at ≥44px, and text at ≥`0.8125rem`.
+- **Do** write in first person singular. This is one person, not a company.
+
+### Don't:
+- **Don't** add box-shadows to create separation. Use a tonal step or a rule.
+- **Don't** introduce a border radius on buttons, inputs or panels.
+- **Don't** use pure white as a background.
+- **Don't** add eyebrow/kicker labels above headings.
+- **Don't** add entrance animations, parallax or scroll-triggered reveals. The
+  only motion in the system is a 180ms transform on the details toggle chevron.
+- **Don't** invent new small font sizes. The existing set has drifted to 21
+  distinct values below 1rem; new work should snap to `0.8125` / `0.875` /
+  `0.96` / `1rem` rather than extend the sprawl.
+- **Don't** introduce a third blue or a warm accent. The palette is closed.
