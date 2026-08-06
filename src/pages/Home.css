@@ -95,7 +95,6 @@
 .home-proof {
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-  background: #fffefa;
   padding: 4rem 4vw;
 }
 
@@ -489,8 +488,7 @@
   grid-template-columns: 0.85fr 1.15fr;
   gap: clamp(4rem, 10vw, 10rem);
   border-top: 1px solid var(--line);
-  background: #fffefa;
-  padding: clamp(6rem, 10vw, 10rem) max(4vw, calc((100vw - 1240px) / 2));
+  padding: clamp(6rem, 10vw, 10rem) max(4vw, calc((100% - 1240px) / 2));
 }
 
 .home-contact h2 {

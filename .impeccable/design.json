@@ -10,12 +10,6 @@
         "canonical": "#f3f0e8",
         "tonalRamp": ["#241f16", "#3f382b", "#5c5342", "#7c7160", "#9e9382", "#c2b8a7", "#ddd6c8", "#f3f0e8"]
       },
-      "paper-raised": {
-        "role": "neutral",
-        "displayName": "Raised Paper",
-        "canonical": "#fffefa",
-        "tonalRamp": ["#2b2924", "#464339", "#635f52", "#837e6e", "#a59f8c", "#c9c3af", "#e6e1d2", "#fffefa"]
-      },
       "paper-deep": {
         "role": "neutral",
         "displayName": "Deep Paper",
@@ -187,7 +181,7 @@
       },
       {
         "name": "The No Pure White Rule",
-        "body": "#ffffff appears only as type on the inverted section and on filled buttons. Backgrounds use --paper or --paper-raised.",
+        "body": "#ffffff appears only as type on the inverted section and on filled buttons. Backgrounds use --paper or --paper-deep.",
         "section": "colors"
       },
       {

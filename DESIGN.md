@@ -3,13 +3,13 @@ name: florian beermann & partners
 description: Customer Success consulting for B2B SaaS companies whose customer base has moved upmarket.
 colors:
   paper: "#f3f0e8"
-  paper-raised: "#fffefa"
   paper-deep: "#e8e3d7"
   ink: "#003b76"
   blue: "#1655d8"
   muted: "#52626b"
   line: "rgba(0, 59, 118, 0.22)"
   on-ink: "#ffffff"
+  backdrop-ink: "#26456f"
 typography:
   display:
     fontFamily: "Inter Tight Variable, Inter Variable, sans-serif"
@@ -106,8 +106,20 @@ The one departure from flat paper is the portrait: a single large soft-cornered
 image with the system's only shadow. It is the only human element on the page
 and it is allowed to be the only thing that lifts off the surface.
 
+The page itself is a sheet. It sits inset on a backdrop showing an
+impressionist painting of Hamburg, the city the practice is run from, which
+makes the broadsheet metaphor literal: a printed page laid on a surface rather
+than a canvas that happens to be paper-coloured. The sheet keeps square corners
+and takes no shadow. Its separation from the backdrop is carried entirely by
+the tonal and textural difference between a painted ground and flat paper,
+which is the same mechanism the system already uses between sections.
+
+The backdrop is chosen for place, not decoration, and it is the only
+representational imagery in the system besides the portrait.
+
 **Key Characteristics:**
 - Warm paper ground (`#f3f0e8`), never pure white
+- One continuous paper sheet, inset on a painted Hamburg backdrop
 - Square corners everywhere except the portrait
 - Hairline rules as the primary structural device
 - Enormous, tightly tracked display type
@@ -133,10 +145,12 @@ blue reserved for action and emphasis.
 
 ### Neutral
 - **Warm Paper** (`#f3f0e8`): The page ground. Warm, slightly yellowed, never
-  `#fff`.
-- **Raised Paper** (`#fffefa`): Near-white bands used to lift the proof strip
-  and the contact section a half-step off the ground without a border or shadow.
+  `#fff`. The whole sheet is this one tone; sections are divided by rules, not
+  by a change of paper.
 - **Deep Paper** (`#e8e3d7`): The darkest paper step, for subtle fills.
+- **Backdrop Ink** (`#26456f`): The flat colour behind the sheet, shown before
+  the backdrop image loads and anywhere it cannot. Tuned to the painting's
+  scrimmed midtone so the load-in does not flash.
 - **Muted Slate** (`#52626b`): All secondary and body prose. Deliberately not
   a tint of the ink; it is a cooler grey that keeps long copy from vibrating
   against the warm ground.
@@ -150,7 +164,15 @@ are never interchangeable. If a new element is neither a heading nor an action,
 it is Muted Slate, not a third blue.
 
 **The No Pure White Rule.** `#ffffff` appears only as type on the inverted
-section and on filled buttons. Backgrounds use `--paper` or `--paper-raised`.
+section and on filled buttons. Backgrounds use `--paper` or `--paper-deep`.
+
+**The One Sheet Rule.** The page is a single piece of paper. A section never
+gets its own lighter or whiter background to set itself apart, because a real
+sheet does not have patches of different whiteness and the seam is visible once
+the page is an inset object. Sections are separated by a rule, by vertical
+space, or by full inversion. A near-white "raised paper" step existed in an
+earlier version of this system and was retired when the sheet gained a
+backdrop.
 
 ## Typography
 
@@ -185,10 +207,45 @@ privacy microcopy sits at the floor, not beneath it.
 
 ## Layout
 
+### The Frame
+
+The sheet is inset from the viewport on all sides by `--frame`, set to
+`clamp(14px, 6vw, 104px)` and flattened to a fixed `14px` below 680px so it
+never eats reading width on a phone. Everything else in this section describes
+layout *inside* the sheet.
+
+The frame is deliberately generous at desktop. The backdrop is a painting, and
+the sheet covers its entire centre, so only the outer band is ever seen: a thin
+border crops the image to unreadable noise, while a wide one lets the brushwork
+and the skyline register. Frame width is therefore a content decision, not a
+margin decision, and should not be trimmed for extra column width.
+
+Three consequences worth knowing before changing anything here:
+
+- **The sticky header parks at the frame line** (`top: var(--frame)`), not at
+  the viewport top, and it is fully opaque. A translucent header lets the
+  backdrop bleed through and muddies it.
+- **A fixed matte repaints the top band.** Once the sheet scrolls past the
+  viewport top its paper would cover the backdrop's top strip, so a fixed layer
+  clipped to `--frame` redraws it. The matte and the backdrop share identical
+  fixed geometry so they register exactly.
+- **Anchor targets clear the frame as well as the header**, via
+  `scroll-margin-top: calc(var(--frame) + var(--header-height) + 12px)`.
+
+The backdrop is a fixed layer rather than a body background. As a scrolling
+body background, `cover` resolves against full document height and zooms the
+painting to a smear on tall mobile pages.
+
+### Inside the sheet
+
 A single centred column of `min(92%, 1240px)`, with full-bleed section
 backgrounds and inner content constrained to the container. Sections are
 separated by `clamp(6rem, 10vw, 10rem)` of vertical padding and, where the
 background does not change, a 1px rule.
+
+Widths inside the sheet resolve against the sheet, not the viewport. Centring
+maths must use `100%`, never `100vw`, or a section drifts off-centre by the
+frame width.
 
 Section headings use a two-column grid (`1fr 0.75fr`) placing the H2 against a
 supporting paragraph, so the page reads as an argument with a margin note
@@ -205,10 +262,14 @@ Horizontal page padding is `4vw` at desktop and a fixed `1.35rem` below 680px.
 ## Elevation & Depth
 
 **This system is flat by doctrine.** There are no elevation levels, no card
-shadows, and no layered surfaces. Depth is expressed three ways: by tonal
-change between paper steps (`--paper` → `--paper-raised`), by full inversion
-(the deep-ink method section), and by hairline rules. A shadow used to
-separate a block from its background is a defect in this system, not a choice.
+shadows, and no layered surfaces. Depth is expressed three ways: by the sheet
+sitting inset on the backdrop, by full inversion (the deep-ink method section),
+and by hairline rules. A shadow used to separate a block from its background is
+a defect in this system, not a choice.
+
+The sheet-on-backdrop separation is the one place the page reads as two planes,
+and it still obeys the doctrine: no shadow, no radius, no border. Tonal and
+textural contrast between painted ground and flat paper does all the work.
 
 ### Shadow Vocabulary
 - **Portrait lift** (`box-shadow: 0 28px 70px rgba(0, 59, 118, 0.14)`): The
@@ -217,15 +278,20 @@ separate a block from its background is a defect in this system, not a choice.
   controls to thicken the underline to 2px without shifting layout.
 
 ### Named Rules
-**The Flat Paper Rule.** New surfaces get a tonal step or a rule. They do not
-get a shadow, and they do not get a border radius.
+**The Flat Paper Rule.** New surfaces get a rule, vertical space, or full
+inversion. They do not get a lighter background (see The One Sheet Rule), a
+shadow, or a border radius.
+
+**The Frame Is Content Rule.** `--frame` exists so the backdrop painting is
+legible, not to create breathing room. Narrowing it to reclaim column width
+crops the image to noise and removes the reason it is there.
 
 ## Shapes
 
 Square by default: `border-radius: 0` on buttons, inputs, selects, the details
-toggle, and every panel. The single exception is the hero portrait at
-`1.75rem`, which is what makes it read as a photograph placed on the page
-rather than a UI element.
+toggle, every panel, and the page sheet itself. The single exception is the
+hero portrait at `1.75rem`, which is what makes it read as a photograph placed
+on the page rather than a UI element.
 
 The recurring geometry is the **rule**: a 1px line at `var(--line)` for
 dividers and field underlines, and at `var(--ink)` for the heavier boundaries
@@ -271,6 +337,20 @@ the one place the paper flips to ink, used to mark the shift from what is sold
 to how it is done. Numbers `01–04` are permitted here because the sequence
 carries meaning.
 
+### Signature Component: The Hamburg Backdrop
+A fixed, viewport-sized layer behind the sheet holding an impressionist
+painting of the Binnenalster, served at `/hamburg-alster-1920.jpg` with a
+`1080` variant below 900px. A flat scrim of `rgba(0, 42, 86, 0.22)` sits over
+it, doing two jobs: seating the painting in the site's ink so it reads as art
+direction rather than a stock image, and guaranteeing the cream sheet stays
+legible against a sky that is otherwise very close to `--paper` in tone.
+
+The scrim is the tuning dial. Heavier than roughly `0.3` and the brushwork goes
+muddy; lighter than roughly `0.15` and the top band stops separating from the
+sheet. The painting's own palette already matches the system, warm ochre
+against `--paper` and deep blues against `--ink`, so it needs seating rather
+than correcting.
+
 ## Do's and Don'ts
 
 ### Do:
@@ -282,11 +362,16 @@ carries meaning.
   clause in a headline.
 - **Do** keep interactive targets at ≥44px, and text at ≥`0.8125rem`.
 - **Do** write in first person singular. This is one person, not a company.
+- **Do** resolve widths inside the sheet against `100%`, never `100vw`.
 
 ### Don't:
-- **Don't** add box-shadows to create separation. Use a tonal step or a rule.
+- **Don't** add box-shadows to create separation. Use a rule or vertical space.
+- **Don't** give a section its own lighter background to set it apart. The
+  sheet is one paper.
 - **Don't** introduce a border radius on buttons, inputs or panels.
 - **Don't** use pure white as a background.
+- **Don't** narrow `--frame` to gain column width; it is what makes the
+  backdrop readable.
 - **Don't** add eyebrow/kicker labels above headings.
 - **Don't** add entrance animations, parallax or scroll-triggered reveals. The
   only motion in the system is a 180ms transform on the details toggle chevron.

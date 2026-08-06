@@ -1,6 +1,68 @@
 /* Page shell shared by the homepage and the legal pages: palette, typography
    reset, skip link, sticky header and footer. */
 
+/* The page sits as a paper sheet on a backdrop. Depth comes from the tonal
+   step between backdrop and paper, never from a shadow or a radius, so the
+   Flat Paper Rule still holds at page level. The frame is wide because the
+   backdrop is a painting of Hamburg: a thin border would crop it to noise. */
+:root {
+  --frame: clamp(14px, 6vw, 104px);
+  --backdrop-fallback: #26456f;
+  /* Light enough to keep the brushwork readable, heavy enough to seat the
+     painting in the site ink and hold the paper sheet legible against it. */
+  --backdrop-scrim: linear-gradient(
+    rgba(0, 42, 86, 0.22),
+    rgba(0, 42, 86, 0.22)
+  );
+  --backdrop: var(--backdrop-scrim), url("/hamburg-alster-1920.jpg");
+}
+
+@media (max-width: 900px) {
+  :root {
+    --backdrop: var(--backdrop-scrim), url("/hamburg-alster-1080.jpg");
+  }
+}
+
+@media (max-width: 680px) {
+  :root {
+    --frame: 14px;
+  }
+}
+
+/* The backdrop is a fixed layer rather than a body background so it always
+   sizes to the viewport. As a scrolling body background, `cover` would resolve
+   against full document height and zoom the painting to a smear on mobile. */
+body::before,
+.site-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-color: var(--backdrop-fallback);
+  background-image: var(--backdrop);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+
+body::before {
+  z-index: 0;
+}
+
+/* Once the sheet scrolls past the viewport top, its paper would cover the top
+   band of the backdrop. This matte repaints that band. Same fixed geometry as
+   the layer above, clipped to the frame, so the two register exactly. */
+.site-page::before {
+  z-index: 31;
+  clip-path: inset(0 0 calc(100% - var(--frame)) 0);
+}
+
+/* The sticky header now parks at the frame line, so anchor targets have to
+   clear the frame and the header instead of just the header. */
+:where(.site-page) [id] {
+  scroll-margin-top: calc(var(--frame) + var(--header-height, 76px) + 12px);
+}
+
 .site-page {
   --paper: #f3f0e8;
   --paper-deep: #e8e3d7;
@@ -9,12 +71,35 @@
   --blue: #1655d8;
   --line: rgba(0, 59, 118, 0.22);
   --header-height: 76px;
-  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+  margin: var(--frame) var(--frame);
+  min-height: calc(100vh - var(--frame) * 2);
   background: var(--paper);
   color: var(--ink);
   font-family: "Inter Variable", "Helvetica Neue", Arial, sans-serif;
   font-weight: 400;
   text-align: left;
+}
+
+/* Once the sheet scrolls past the viewport top its paper would cover the top
+   band of the backdrop. This matte repaints that band. `fixed` attachment on
+   the same image makes it register exactly with the body backdrop. */
+.site-page::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--frame);
+  z-index: 31;
+  background-color: var(--backdrop-fallback);
+  background-image: var(--backdrop);
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  pointer-events: none;
 }
 
 .site-page *,
@@ -60,14 +145,14 @@
 
 .site-header {
   position: sticky;
-  top: 0;
+  top: var(--frame);
   z-index: 30;
   display: flex;
   min-height: var(--header-height);
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--line);
-  background: rgba(243, 240, 232, 0.96);
+  background: var(--paper);
   padding: 0 4vw;
 }
 
