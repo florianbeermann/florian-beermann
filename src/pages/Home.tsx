@@ -38,7 +38,7 @@ const engagements = [
     summary:
       "A clear operating model for teams that have outgrown reactive account management.",
     detail:
-      "We examine segmentation, coverage, health scoring, renewal forecasting and the hand-offs between CS, sales and product. The result is a practical roadmap tied to retention and expansion targets.",
+      "I examine segmentation, coverage, health scoring, renewal forecasting and the hand-offs between CS, sales and product. The result is a practical roadmap tied to retention and expansion targets.",
     deliverables: [
       "Segmentation and coverage model",
       "Health-score architecture",
@@ -52,7 +52,7 @@ const engagements = [
     summary:
       "Repeatable customer motions your team can actually run in its existing tools.",
     detail:
-      "We turn onboarding, adoption, risk, renewal and expansion into explicit plays, with owners, triggers, actions and measures of success.",
+      "I turn onboarding, adoption, risk, renewal and expansion into explicit plays, with owners, triggers, actions and measures of success.",
     deliverables: [
       "Onboarding and time-to-value",
       "Risk and save motions",
@@ -133,7 +133,7 @@ export default function Home() {
   }, []);
 
   const buildSubject = (formData: FormData) =>
-    `Customer Success enquiry — ${formData.get("company") || "website"}`;
+    `Customer Success enquiry: ${formData.get("company") || "website"}`;
 
   const openEmailFallback = (formData: FormData) => {
     const subject = encodeURIComponent(buildSubject(formData));
@@ -199,7 +199,7 @@ export default function Home() {
     } catch (error) {
       console.error(error);
       toast.error(
-        `Your message wasn’t sent. Your text is still in the form — try again, or email ${contactEmail}.`,
+        `Your message wasn’t sent. Your text is still in the form. Try again, or email ${contactEmail}.`,
       );
     } finally {
       setSubmitting(false);
@@ -236,9 +236,9 @@ export default function Home() {
             </h1>
             <p className="home-intro">
               I rebuild Customer Success for B2B SaaS companies whose customer
-              base has moved — usually upmarket — while the coverage model,
-              health scores and playbooks still assume the customers they used
-              to have.
+              base has moved, usually upmarket. The coverage model, health
+              scores and playbooks still assume the customers they used to
+              have.
             </p>
             <div className="home-actions">
               <a className="home-primary-action" href="#contact">
@@ -380,7 +380,7 @@ export default function Home() {
               </p>
               <p>
                 The two demand completely different things, and most of my work
-                now sits with companies discovering that mid-move — where the
+                now sits with companies discovering that mid-move, when the
                 coverage model that worked at one customer size quietly stops
                 working at the next.
               </p>
@@ -577,7 +577,7 @@ export default function Home() {
 
             <p className="home-form-privacy">
               This form is processed by Web3Forms in the US. You can email{" "}
-              {contactEmail} instead — the{" "}
+              {contactEmail} instead. The{" "}
               <Link
                 to="/privacy"
                 className="home-privacy-link"
