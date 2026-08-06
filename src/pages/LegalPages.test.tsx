@@ -38,7 +38,7 @@ describe("legal pages", () => {
     renderPage("/privacy", <Privacy />);
 
     expect(
-      screen.getByRole("heading", { level: 1, name: "Privacy Policy" }),
+      screen.getByRole("heading", { level: 1, name: "Privacy policy" }),
     ).toBeInTheDocument();
     expect(screen.getByText("Last updated: 13 July 2026")).toBeInTheDocument();
     expect(

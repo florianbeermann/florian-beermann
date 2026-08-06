@@ -3,7 +3,6 @@ import { Link, useLocation } from "react-router-dom";
 import "./LegalPageLayout.css";
 
 interface LegalPageLayoutProps {
-  eyebrow: string;
   title: string;
   description: string;
   updated?: string;
@@ -12,7 +11,6 @@ interface LegalPageLayoutProps {
 }
 
 export const LegalPageLayout = ({
-  eyebrow,
   title,
   description,
   updated,
@@ -44,7 +42,6 @@ export const LegalPageLayout = ({
 
       <main id="legal-main" className="legal-main">
         <header className="legal-hero">
-          <p className="legal-eyebrow">{eyebrow}</p>
           <h1>{title}</h1>
           <div className="legal-hero-meta">
             <p>{description}</p>

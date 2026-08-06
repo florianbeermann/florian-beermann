@@ -38,7 +38,7 @@ const engagements = [
     summary:
       "A clear operating model for teams that have outgrown reactive account management.",
     detail:
-      "I examine segmentation, coverage, health scoring, renewal forecasting and the hand-offs between CS, sales and product. The result is a practical roadmap tied to retention and expansion targets.",
+      "I examine segmentation, coverage, health scoring, renewal forecasting and the hand-offs between CS, sales and product. The result is a sequenced roadmap tied to retention and expansion targets.",
     deliverables: [
       "Segmentation and coverage model",
       "Health-score architecture",
@@ -66,7 +66,7 @@ const engagements = [
     summary:
       "Hands-on training for more commercial, credible customer conversations.",
     detail:
-      "Practical workshops help CSMs connect product usage to business value, map stakeholders and lead account planning with better evidence.",
+      "Working sessions help CSMs connect product usage to business value, map stakeholders and lead account planning with better evidence.",
     deliverables: [
       "Commercial conversation framework",
       "Stakeholder mapping workshops",
@@ -85,7 +85,7 @@ const experience = [
   {
     company: "Capgemini",
     context:
-      "Coordinated project portfolios and transformation work across complex organisations.",
+      "Ran delivery across large enterprise programmes, coordinating multiple stakeholders and dependencies.",
   },
   {
     company: "HubSpot",
@@ -100,7 +100,7 @@ const experience = [
   {
     company: "Spendesk",
     context:
-      "Improved fintech onboarding and built data-led customer success plans.",
+      "Improved fintech onboarding and built data-led Customer Success plans.",
   },
 ];
 
@@ -127,7 +127,7 @@ export default function Home() {
     setPageMetadata({
       title: "florian beermann & partners",
       description:
-        "Customer Success consulting for B2B SaaS companies whose customer base has moved upmarket. Strategy, lifecycle playbooks and CSM enablement.",
+        "Customer Success consulting for B2B SaaS companies whose customer base has outgrown the way they serve it. Strategy, lifecycle playbooks and CSM enablement.",
       path: "/",
     });
   }, []);
@@ -236,10 +236,11 @@ export default function Home() {
             </h1>
             <p className="home-intro">
               I rebuild Customer Success for B2B SaaS companies whose customer
-              base has moved, usually upmarket. The coverage model, health
-              scores and playbooks still assume the customers they used to
-              have. I have operated Customer Success myself, from SMB accounts
-              through to DAX40 enterprises.
+              base has outgrown the way they serve it. The coverage model,
+              health scores and playbooks still assume the customers they used
+              to have, whether that shift is just beginning or already behind
+              you. I have operated Customer Success myself, from SMB accounts
+              through to DAX 40 enterprises.
             </p>
             <div className="home-actions">
               <a className="home-primary-action" href="#contact">
@@ -277,24 +278,27 @@ export default function Home() {
           <ul className="home-employers" aria-label="Previous employers">
             {employers.map((employer) => (
               <li key={employer.name}>
-                <img src={employer.logo} alt="" />
+                <img src={employer.logo} alt="" width="20" height="20" />
                 {employer.name}
               </li>
             ))}
           </ul>
 
           <dl className="home-facts">
-            <div>
+            <div className="home-fact-metric">
               <dt>6+ years</dt>
               <dd>operating Customer Success in B2B SaaS</dd>
             </div>
             <div>
-              <dt>Retention &amp; expansion</dt>
-              <dd>targets owned directly, not advised on from outside</dd>
+              <dt>Targets</dt>
+              <dd>
+                I have owned retention and expansion directly, not advised on
+                them from outside.
+              </dd>
             </div>
             <div>
-              <dt>Your team, your tools</dt>
-              <dd>engagements run on the stack you already have</dd>
+              <dt>Tooling</dt>
+              <dd>Engagements run on the stack your team already has.</dd>
             </div>
           </dl>
         </section>
@@ -478,7 +482,7 @@ export default function Home() {
                 name="company"
                 autoComplete="organization"
                 required
-                placeholder="Acme Inc."
+                placeholder="Acme"
                 className="home-form-control"
               />
             </div>
@@ -514,7 +518,7 @@ export default function Home() {
             {showDetails && (
               <div
                 id="optional-details"
-                className="optional-details"
+                className="home-optional-details"
               >
                 <div className="home-form-field">
                   <Label htmlFor="size-field">Company size</Label>
@@ -562,6 +566,10 @@ export default function Home() {
                 </div>
               </div>
             )}
+
+            <p className="home-form-reassure">
+              I read every enquiry myself and reply within two business days.
+            </p>
 
             <Button
               type="submit"

@@ -78,7 +78,7 @@
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 1.75rem;
-  background: #0a2248;
+  background: var(--ink);
   box-shadow: 0 28px 70px rgba(0, 59, 118, 0.14);
 }
 
@@ -175,16 +175,33 @@
 }
 
 .home-facts dt {
+  color: var(--muted);
+  font-size: 0.8125rem;
+  font-weight: 680;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.home-facts dd {
+  margin: 0.6rem 0 0;
+  color: var(--ink);
+  font-size: 0.96rem;
+  line-height: 1.5;
+}
+
+.home-facts .home-fact-metric dt {
+  color: var(--ink);
   font-family: "Inter Tight Variable", sans-serif;
   font-size: clamp(1.45rem, 2.4vw, 2.25rem);
   font-weight: 540;
   letter-spacing: -0.04em;
+  text-transform: none;
 }
 
-.home-facts dd {
-  margin: 0.45rem 0 0;
+.home-facts .home-fact-metric dd {
+  margin-top: 0.45rem;
   color: var(--muted);
-  font-size: 0.82rem;
+  font-size: 0.8125rem;
 }
 
 .home-section {
@@ -233,7 +250,7 @@
 
 .home-engagement-number {
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-variant-numeric: tabular-nums;
 }
 
@@ -321,8 +338,8 @@
 }
 
 .home-signal-flow span {
-  color: #80aaff;
-  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.8125rem;
 }
 
 .home-signal-flow h3 {
@@ -501,7 +518,7 @@
 .home-contact address a {
   display: inline-flex;
   align-items: center;
-  min-height: 24px;
+  min-height: 44px;
   width: fit-content;
   border-bottom: 1px solid currentColor;
 }
@@ -533,7 +550,7 @@
 
 .home-contact-form label {
   color: var(--ink);
-  font-size: 0.7rem;
+  font-size: 0.8125rem;
   font-weight: 680;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -590,7 +607,7 @@
   color: var(--ink);
   cursor: pointer;
   font: inherit;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   font-weight: 650;
   text-align: left;
 }
@@ -639,7 +656,7 @@
   padding: 1rem 1.5rem;
   color: white;
   font: inherit;
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 680;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -649,6 +666,13 @@
 .home-contact-form .home-submit:focus-visible {
   border-color: var(--blue);
   background: var(--blue);
+}
+
+.home-form-reassure {
+  margin: 0 0 -0.85rem;
+  color: var(--ink);
+  font-size: 0.875rem;
+  line-height: 1.6;
 }
 
 .home-form-privacy {
@@ -742,7 +766,7 @@
   .home-primary-action {
     min-height: 48px;
     padding: 0 1.2rem;
-    font-size: 0.8rem;
+    font-size: 0.8125rem;
   }
 
   .home-portrait {
@@ -825,7 +849,7 @@
   }
 
   .home-employers li {
-    font-size: 0.82rem;
+    font-size: 0.8125rem;
   }
 
   .home-facts {

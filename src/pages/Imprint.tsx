@@ -14,7 +14,6 @@ export const Imprint = () => {
 
   return (
     <LegalPageLayout
-      eyebrow="Legal information"
       title="Imprint"
       description="Information pursuant to Section 5 of the German Digital Services Act (DDG)."
       contentClassName="legal-imprint-grid"

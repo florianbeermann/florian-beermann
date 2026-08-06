@@ -5,7 +5,7 @@ import { setPageMetadata } from "@/lib/metadata";
 export const Privacy = () => {
   useEffect(() => {
     setPageMetadata({
-      title: "Privacy Policy | florian beermann & partners",
+      title: "Privacy policy | florian beermann & partners",
       description:
         "Information about how personal data is processed on florianbeermann.com.",
       path: "/privacy",
@@ -14,8 +14,7 @@ export const Privacy = () => {
 
   return (
     <LegalPageLayout
-      eyebrow="Data protection"
-      title="Privacy Policy"
+      title="Privacy policy"
       description="How personal data is processed when you visit this website or contact me."
       updated="Last updated: 13 July 2026"
       contentClassName="legal-privacy"
