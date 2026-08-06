@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-06T14:30:00.000Z",
+  "generatedAt": "2026-08-06T18:35:00.000Z",
   "title": "Design System: florian beermann & partners",
   "extensions": {
     "colorMeta": {
@@ -49,8 +49,8 @@
       "backdrop-ink": {
         "role": "neutral",
         "displayName": "Backdrop Ink",
-        "canonical": "#928166",
-        "tonalRamp": ["#140c01", "#322714", "#53452f", "#76664d", "#928166", "#b9a88e", "#dccbb2", "#fbecd5"]
+        "canonical": "#766f5f",
+        "tonalRamp": ["#090703", "#27241b", "#4d473b", "#766f5f", "#9e988a", "#bfbaae", "#dcd7cc", "#f5f1e8"]
       }
     },
     "typographyMeta": {
@@ -180,11 +180,11 @@
   ],
   "narrative": {
     "northStar": "The Consultant's Broadsheet",
-    "overview": "This is a printed page that happens to be on screen. The system takes its structure from broadsheet newspapers and consulting reports rather than from SaaS product UI: a warm paper ground, one authoritative ink, hairline rules that divide the page into columns and registers, and headlines set enormous and tight because the argument is the design. There is no card, no drop shadow, no rounded container standing in for hierarchy. Structure is carried entirely by rules, whitespace and type scale.\n\nThe density is deliberately uneven. Display type runs to 7rem with negative tracking and sub-1 line-height so that headlines read as one dense mass, while body copy sits at a calm 1.6 line-height in a muted grey-blue and never exceeds a comfortable measure. That contrast, loud structure and quiet prose, is the whole personality. It signals a senior operator rather than a vendor, which is the positioning PRODUCT.md commits to.\n\nThe one departure from flat paper is the portrait: a single large soft-cornered image with the system's only shadow. It is the only human element on the page and it is allowed to be the only thing that lifts off the surface.\n\nThe page itself is a sheet. It sits inset on a backdrop showing an impressionist painting of Hamburg, the city the practice is run from, which makes the broadsheet metaphor literal: a printed page laid on a surface rather than a canvas that happens to be paper-coloured. The sheet keeps square corners and takes no shadow. Its separation from the backdrop is carried entirely by the tonal and textural difference between a painted ground and flat paper, which is the same mechanism the system already uses between sections.\n\nThe backdrop is chosen for place, not decoration, and it is the only representational imagery in the system besides the portrait.",
+    "overview": "This is a printed page that happens to be on screen. The system takes its structure from broadsheet newspapers and consulting reports rather than from SaaS product UI: a warm paper ground, one authoritative ink, hairline rules that divide the page into columns and registers, and headlines set enormous and tight because the argument is the design. There is no card, no drop shadow, no rounded container standing in for hierarchy. Structure is carried entirely by rules, whitespace and type scale.\n\nThe density is deliberately uneven. Display type runs to 7rem with negative tracking and sub-1 line-height so that headlines read as one dense mass, while body copy sits at a calm 1.6 line-height in a muted grey-blue and never exceeds a comfortable measure. That contrast, loud structure and quiet prose, is the whole personality. It signals a senior operator rather than a vendor, which is the positioning PRODUCT.md commits to.\n\nThe one departure from flat paper is the portrait: a single large image carrying the system's only shadow. It is the only human element on the page and it is allowed to be the only thing that lifts off the surface. Its corners are square like everything else, so the lift comes from the shadow alone rather than from shadow and rounding together.\n\nThe page itself is a sheet. It sits inset on a backdrop showing an impressionist painting of Hamburg, the city the practice is run from, which makes the broadsheet metaphor literal: a printed page laid on a surface rather than a canvas that happens to be paper-coloured. The sheet keeps square corners and takes no shadow. Its separation from the backdrop is carried entirely by the tonal and textural difference between a painted ground and flat paper, which is the same mechanism the system already uses between sections.\n\nThe backdrop is chosen for place, not decoration, and it is the only representational imagery in the system besides the portrait.",
     "keyCharacteristics": [
       "Warm paper ground (#f3f0e8), never pure white",
       "One continuous paper sheet, inset on a painted Hamburg backdrop",
-      "Square corners everywhere except the portrait",
+      "Square corners everywhere, without exception",
       "Hairline rules as the primary structural device",
       "Enormous, tightly tracked display type",
       "One inverted deep-ink section as the page's spine",
@@ -223,13 +223,13 @@
       },
       {
         "name": "The Frame Is Content Rule",
-        "body": "--frame exists so the backdrop painting is legible, not to create breathing room. Narrowing it to reclaim column width crops the image to noise and removes the reason it is there. The backdrop is shown untinted; if a future image needs seating, reintroduce a scrim under 0.15 rather than darkening the asset.",
+        "body": "--frame and --frame-top exist so the backdrop painting is legible, not to create breathing room. Narrowing them to reclaim column width crops the image to noise and removes the reason it is there. The top edge is deepest because it is the only band a skyline can be read in; compose backdrops so their subject sits in the top 13% of the frame. The backdrop is shown untinted; if a future image needs seating, reintroduce a scrim under 0.15 rather than darkening the asset. The backdrop is composed for the frame rather than cropped to fit: its effective resolution is set by aspect ratio, not file width, because the further an asset departs from the viewport aspect the harder cover magnifies it.",
         "section": "elevation"
       }
     ],
     "dos": [
       "Do use hairline rules (1px solid var(--line)) to divide content.",
-      "Do keep every surface square except the hero portrait.",
+      "Do keep every surface square, including the hero portrait.",
       "Do set body prose in Muted Slate (#52626b) at 1.6 line-height and cap the measure around 580-650px.",
       "Do reserve Signal Blue for actions, links and the single emphasised clause in a headline.",
       "Do keep interactive targets at >=44px, and text at >=0.8125rem.",
@@ -239,9 +239,9 @@
     "donts": [
       "Don't add box-shadows to create separation. Use a rule or vertical space.",
       "Don't give a section its own lighter background to set it apart. The sheet is one paper.",
-      "Don't introduce a border radius on buttons, inputs or panels.",
+      "Don't introduce a border radius anywhere, including the portrait. The system has no rounded corners left to be consistent with.",
       "Don't use pure white as a background.",
-      "Don't narrow --frame to gain column width; it is what makes the backdrop readable.",
+      "Don't narrow --frame or --frame-top to gain column width; they are what make the backdrop readable.",
       "Don't add eyebrow/kicker labels above headings.",
       "Don't add entrance animations, parallax or scroll-triggered reveals. The system has exactly two motions: the once-per-session intro that reveals the backdrop, and a 180ms transform on the details toggle chevron. Both are documented and bounded. A third would make the first two look arbitrary.",
       "Don't invent new small font sizes. The set below 1rem still holds 12 distinct values, none below the 0.8125rem floor; new work should snap to 0.8125 / 0.875 / 0.96 / 1rem rather than widen it again.",

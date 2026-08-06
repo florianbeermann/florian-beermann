@@ -77,7 +77,6 @@
   aspect-ratio: 2 / 3;
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: 1.75rem;
   background: var(--ink);
   box-shadow: 0 28px 70px rgba(0, 59, 118, 0.14);
 }

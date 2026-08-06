@@ -9,7 +9,7 @@ colors:
   muted: "#52626b"
   line: "rgba(0, 59, 118, 0.22)"
   on-ink: "#ffffff"
-  backdrop-ink: "#928166"
+  backdrop-ink: "#766f5f"
 typography:
   display:
     fontFamily: "Inter Tight Variable, Inter Variable, sans-serif"
@@ -43,7 +43,6 @@ typography:
     letterSpacing: "0.08em"
 rounded:
   none: "0"
-  portrait: "1.75rem"
 spacing:
   hairline: "1px"
   xs: "0.65rem"
@@ -102,9 +101,11 @@ exceeds a comfortable measure. That contrast, loud structure and quiet prose,
 is the whole personality. It signals a senior operator rather than a vendor,
 which is the positioning PRODUCT.md commits to.
 
-The one departure from flat paper is the portrait: a single large soft-cornered
-image with the system's only shadow. It is the only human element on the page
-and it is allowed to be the only thing that lifts off the surface.
+The one departure from flat paper is the portrait: a single large image carrying
+the system's only shadow. It is the only human element on the page and it is
+allowed to be the only thing that lifts off the surface. Its corners are square
+like everything else, so the lift comes from the shadow alone rather than from
+shadow and rounding together.
 
 The page itself is a sheet. It sits inset on a backdrop showing an
 impressionist painting of Hamburg, the city the practice is run from, which
@@ -120,7 +121,7 @@ representational imagery in the system besides the portrait.
 **Key Characteristics:**
 - Warm paper ground (`#f3f0e8`), never pure white
 - One continuous paper sheet, inset on a painted Hamburg backdrop
-- Square corners everywhere except the portrait
+- Square corners everywhere, without exception
 - Hairline rules as the primary structural device
 - Enormous, tightly tracked display type
 - One inverted deep-ink section as the page's spine
@@ -149,7 +150,7 @@ blue reserved for action and emphasis.
   `#fff`. The whole sheet is this one tone; sections are divided by rules, not
   by a change of paper.
 - **Deep Paper** (`#e8e3d7`): The darkest paper step, for subtle fills.
-- **Backdrop Ink** (`#928166`): The flat colour behind the sheet, shown before
+- **Backdrop Ink** (`#766f5f`): The flat colour behind the sheet, shown before
   the backdrop image loads and anywhere it cannot. Sampled from the painting's
   own mean so the load-in resolves into the image rather than correcting away
   from a colour that was never in it.
@@ -211,9 +212,10 @@ privacy microcopy sits at the floor, not beneath it.
 
 ### The Frame
 
-The sheet is inset from the viewport on all sides by `--frame`, set to
-`clamp(14px, 6vw, 104px)` and flattened to a fixed `14px` below 680px so it
-never eats reading width on a phone. Everything else in this section describes
+The sheet is inset from the viewport by `--frame`, set to `clamp(14px, 6vw,
+104px)`, on the left, right and bottom edges — and by `--frame-top`, set to
+`clamp(20px, 11vw, 190px)`, on the top. Both flatten to `14px` below 680px so
+neither eats reading width on a phone. Everything else in this section describes
 layout *inside* the sheet.
 
 The frame is deliberately generous at desktop. The backdrop is a painting, and
@@ -222,17 +224,29 @@ border crops the image to unreadable noise, while a wide one lets the brushwork
 and the skyline register. Frame width is therefore a content decision, not a
 margin decision, and should not be trimmed for extra column width.
 
+The top edge is deeper than the other three, which is the mat convention of
+weighting one edge, put to work. The top band is the only place a skyline can be
+read — the side strips are too narrow and the bottom is below the fold — and at
+`6vw` it held ~9.6% of the painting's height, a sliver too thin to carry a
+building. At `11vw` it holds 13.2–17.6% across desktop sizes. That range is the
+composition brief for any future backdrop: **anything that must be seen belongs
+in the top 13% of the image.**
+
+The alternative was cropping the painting to force its skyline upward, and it
+was tried and reverted. Deepening the frame costs vertical space in the hero;
+cropping costs resolution everywhere, permanently. Space is the cheaper currency.
+
 Three consequences worth knowing before changing anything here:
 
-- **The sticky header parks at the frame line** (`top: var(--frame)`), not at
+- **The sticky header parks at the frame line** (`top: var(--frame-top)`), not at
   the viewport top, and it is fully opaque. A translucent header lets the
   backdrop bleed through and muddies it.
 - **A fixed matte repaints the top band.** Once the sheet scrolls past the
   viewport top its paper would cover the backdrop's top strip, so a fixed layer
-  clipped to `--frame` redraws it. The matte and the backdrop share identical
+  clipped to `--frame-top` redraws it. The matte and the backdrop share identical
   fixed geometry so they register exactly.
 - **Anchor targets clear the frame as well as the header**, via
-  `scroll-margin-top: calc(var(--frame) + var(--header-height) + 12px)`.
+  `scroll-margin-top: calc(var(--frame-top) + var(--header-height) + 12px)`.
 
 The backdrop is a fixed layer rather than a body background. As a scrolling
 body background, `cover` resolves against full document height and zooms the
@@ -284,16 +298,22 @@ textural contrast between painted ground and flat paper does all the work.
 inversion. They do not get a lighter background (see The One Sheet Rule), a
 shadow, or a border radius.
 
-**The Frame Is Content Rule.** `--frame` exists so the backdrop painting is
-legible, not to create breathing room. Narrowing it to reclaim column width
-crops the image to noise and removes the reason it is there.
+**The Frame Is Content Rule.** `--frame` and `--frame-top` exist so the backdrop
+painting is legible, not to create breathing room. Narrowing them to reclaim
+column width crops the image to noise and removes the reason it is there. The
+top edge is the deepest because it is the only band a skyline can be read in;
+compose backdrops so their subject sits in the top 13% of the frame.
 
 ## Shapes
 
-Square by default: `border-radius: 0` on buttons, inputs, selects, the details
-toggle, every panel, and the page sheet itself. The single exception is the
-hero portrait at `1.75rem`, which is what makes it read as a photograph placed
-on the page rather than a UI element.
+Square, without exception: `border-radius: 0` on buttons, inputs, selects, the
+details toggle, every panel, the hero portrait, and the page sheet itself. The
+portrait carried a `1.75rem` radius in an earlier version, on the reasoning that
+rounding made it read as a photograph placed on the page rather than a UI
+element. It was squared once the sheet gained a backdrop: against a real painted
+surface the sheet already reads as paper, so the rounding stopped earning its
+exception and simply looked like the one component that had escaped the system.
+The portrait still lifts, but on its shadow alone.
 
 The recurring geometry is the **rule**: a 1px line at `var(--line)` for
 dividers and field underlines, and at `var(--ink)` for the heavier boundaries
@@ -340,12 +360,47 @@ to how it is done. Numbers `01–04` are permitted here because the sequence
 carries meaning.
 
 ### Signature Component: The Hamburg Backdrop
-A fixed, viewport-sized layer behind the sheet holding an impressionist
-painting of the Binnenalster at sunset, served as WebP at
-`/hamburg-alster-dusk-1920.webp` with a `1080` variant below 900px, and matching
-`.jpg` files as a real fallback behind an `@supports (background-image:
-image-set(...))` guard. WebP here is both smaller and higher quality than the
-JPEG it replaced, so there is no trade to weigh.
+A fixed, viewport-sized layer behind the sheet holding an impressionist painting
+of the Binnenalster at sunset — skyline along the top edge, Elbphilharmonie and
+the Rathaus tower against a gold sky, open water filling the rest. It is
+composed *for this frame* rather than found and cropped to fit, and that is why
+it works.
+
+Served as WebP with `.jpg` companions behind an `@supports (background-image:
+image-set(...))` guard, in three sizes: `4096` to 2x displays, `2560` to 1x, and
+`1600` below 900px. WebP is both smaller and higher quality than the JPEG here,
+so there is no trade to weigh.
+
+**Aspect ratio is the whole game.** At 1.266 the painting is narrower than any
+desktop viewport, so `cover` fills the *width* and maps all 4096 pixels onto the
+viewport width — 2.84 device pixels per CSS pixel at 1440px, well past the 2.0 a
+retina display can resolve. An asset wider than the viewport gets scaled up
+instead, and the further its aspect departs from the viewport's, the harder
+`cover` magnifies it.
+
+This was learned the expensive way. An earlier version cropped a 16:9 painting to
+a 2.98:1 skyline strip so the Elbphilharmonie would reach the top band. `cover`
+then scaled it to 2682px across a 1440px viewport, against 1600px for the
+uncropped frame — a 1.7× magnification of brushwork that had only 1290px of
+source height left. The strokes stopped reading as texture and started reading as
+mud, and no re-export could fix it: the pixels were gone at crop time. **A wide
+crop is expensive twice over — it throws away pixels, then enlarges the
+survivors.** The skyline was brought into the band by deepening `--frame-top`
+instead, which costs layout space rather than resolution.
+
+`--backdrop-position` is `center top`, and that is load-bearing rather than
+cosmetic. Filling the width makes the image taller than the viewport, so a
+centred position would slide the skyline up out of the band — the one thing the
+band exists to show. Pinned to the top, the band reaches 9.4–14% of the
+painting's height depending on viewport, and the Elbphilharmonie's roofline
+begins 3.2% down. It is one variable shared by both backdrop layers, so the
+matte cannot drift out of register with the layer beneath it.
+
+Resolution is served by descriptor, not by breakpoint: `image-set()` carries `1x`
+and `2x` entries alongside `type()`, so a 1x display fetches 387KB and only a 2x
+display pays the 699KB. Quality is q72, chosen from an RMSE sweep — q84 costs 51%
+more bytes to move RMSE from 2.38 to 1.77, a difference no one can see on
+brushwork behind a sheet.
 
 The guard overrides `background-image` on the backdrop layers directly, not the
 `--backdrop-image` custom property, and that distinction is load-bearing.
@@ -370,12 +425,11 @@ If a future image ever does need seating, reintroduce a scrim rather than
 darkening the asset, and keep it under about `0.15`. But treat the need as
 evidence the image is wrong for the slot, not as a routine step.
 
-The source is 16:9, which crops hard on a portrait phone: `cover` leaves only
-the middle ~26% of the width visible, and centred that clips the spire at 35.8%.
-`--backdrop-position` shifts to `46%` below 680px, which holds the spire, the
-Rathaus tower and the Elbphilharmonie in frame together. It is a single variable
-shared by both backdrop layers, so the matte cannot drift out of register with
-the layer beneath it.
+On a portrait phone `cover` flips to filling the height, leaving the middle ~37%
+of the width visible — enough to hold both towers and most of the
+Elbphilharmonie without any positional nudge. The 14px band there is too short to
+read architecture at any width worth the fold space, so phones get sky and water
+in the strips and nothing is asked of the top edge.
 
 ### Signature Moment: The Intro
 On the first load of a session the backdrop holds alone for `--intro-hold`
@@ -410,7 +464,7 @@ than the `--backdrop-fallback` flat.
 
 ### Do:
 - **Do** use hairline rules (`1px solid var(--line)`) to divide content.
-- **Do** keep every surface square except the hero portrait.
+- **Do** keep every surface square, including the hero portrait.
 - **Do** set body prose in Muted Slate (`#52626b`) at 1.6 line-height and cap
   the measure around 580–650px.
 - **Do** reserve Signal Blue for actions, links and the single emphasised
@@ -423,10 +477,11 @@ than the `--backdrop-fallback` flat.
 - **Don't** add box-shadows to create separation. Use a rule or vertical space.
 - **Don't** give a section its own lighter background to set it apart. The
   sheet is one paper.
-- **Don't** introduce a border radius on buttons, inputs or panels.
+- **Don't** introduce a border radius anywhere, including the portrait. The
+  system has no rounded corners left to be consistent with.
 - **Don't** use pure white as a background.
-- **Don't** narrow `--frame` to gain column width; it is what makes the
-  backdrop readable.
+- **Don't** narrow `--frame` or `--frame-top` to gain column width; they are
+  what make the backdrop readable.
 - **Don't** add eyebrow/kicker labels above headings.
 - **Don't** add entrance animations, parallax or scroll-triggered reveals. The
   system has exactly two motions: the once-per-session intro that reveals the
