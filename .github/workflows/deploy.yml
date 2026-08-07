@@ -6,6 +6,13 @@ on:
       - main
   workflow_dispatch:
 
+# The FTPS step syncs into a live directory and keeps its own state file on the
+# server, so two deploys must never run at once. Queue them instead of
+# cancelling: a run cancelled mid-upload would leave the site half-written.
+concurrency:
+  group: deploy-hetzner
+  cancel-in-progress: false
+
 jobs:
   web-deploy:
     name: 🎉 Deploy Website
