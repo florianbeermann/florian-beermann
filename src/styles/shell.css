@@ -28,6 +28,12 @@
   --band: var(--frame-top);
   /* How far the page scrolls before the band is fully collapsed. */
   --band-collapse-range: 240px;
+  /* Where the band lands once the visitor is reading. Deliberately thinner than
+     the side frames: at rest the mat is top-weighted to show the skyline, but
+     once the page is the subject the backdrop earns only a sliver. Kept above
+     zero so the sheet still reads as an object resting on something rather than
+     running off the top of the window. */
+  --band-collapsed: clamp(8px, 2vw, 32px);
   /* Holds the frame during the intro before the painting decodes, so the first
      frame is the picture's own warm key rather than a colour it has to correct
      away from. Sampled from the source's mean. */
@@ -46,17 +52,21 @@
   /* `top`, not `center`, and load-bearing. Filling the width makes the image
      taller than the viewport, so a centred position would crop the skyline off
      the top — the one thing the band exists to show. After the crop the
-     Elbphilharmonie roof starts 2.4% down; the band reaches 6.6–13.2% at rest
-     and 3.6–7.2% collapsed, so the roof reads in every state. */
+     Elbphilharmonie roof starts 2.4% down; the band reaches 6.6–13.2% at rest,
+     so the roof reads while the backdrop is the subject. Collapsed it falls to
+     1.1–2.4%, which is sky and at most the roof's top edge — deliberate, since
+     by then the page is the subject and the backdrop is only a margin. */
   --backdrop-position: center top;
 
   /* Intro sequence. No hold: the sheet starts low and rises, so the backdrop is
      revealed by the motion instead of by a pause. The travel is exactly the
      distance the band later collapses, so load and scroll are one gesture — the
      band opens past its resting height, settles, then closes as the page is
-     read. On phones the two frames are equal, so this resolves to 0 and the
-     intro is a pure fade: there is no band there to reveal. */
-  --intro-rise: calc(var(--frame-top) - var(--frame));
+     read. Keep this expressed as the difference between the two band positions
+     rather than a literal length, or the two halves of that gesture drift apart
+     the next time either end moves. On phones both resolve to the same 14px, so
+     this becomes 0 and the intro is a pure fade: there is no band to reveal. */
+  --intro-rise: calc(var(--frame-top) - var(--band-collapsed));
   --intro-arrive: 850ms;
 }
 
@@ -72,6 +82,9 @@
     /* Phones keep a uniform frame. Their band is too short to read a skyline at
        any width worth the fold space it would cost. */
     --frame-top: 14px;
+    /* Nothing to collapse, so hold the uniform frame. At this size a top edge
+       thinner than the sides reads as a misalignment, not a decision. */
+    --band-collapsed: 14px;
   }
 }
 
@@ -176,23 +189,25 @@ body::after {
   scroll-margin-top: calc(var(--frame-top) + var(--header-height, 76px) + 12px);
 }
 
-/* Scrolling collapses the top band from `--frame-top` to `--frame`, so the mat
-   is top-weighted while the hero is in view and uniform on all four edges once
-   the visitor is reading. The backdrop is uncovered when it is the subject and
-   covered when the page is.
+/* Scrolling collapses the top band from `--frame-top` to `--band-collapsed`, so
+   the mat is top-weighted while the hero is in view and nearly closed once the
+   visitor is reading. The backdrop is uncovered when it is the subject and all
+   but covered when the page is.
 
    Driven by a scroll timeline rather than a scroll listener: no JS on the
    scroll path, and it degrades to a static band where unsupported. Only the
    matte and the header follow `--band`; `.site-page` keeps its margin on the
    static `--frame-top`, because animating a margin would reflow the document on
-   every frame and shift the very scroll position driving the animation. */
+   every frame and shift the very scroll position driving the animation. That
+   also means collapsing the band buys the header room, not layout: the sheet
+   does not move, the strip of backdrop above it just closes. */
 @keyframes band-collapse {
   from {
     --band: var(--frame-top);
   }
 
   to {
-    --band: var(--frame);
+    --band: var(--band-collapsed);
   }
 }
 
@@ -205,7 +220,9 @@ body::after {
 
   /* Anchors are always landed on well past the collapse range. */
   :where(.site-page) [id] {
-    scroll-margin-top: calc(var(--frame) + var(--header-height, 76px) + 12px);
+    scroll-margin-top: calc(
+      var(--band-collapsed) + var(--header-height, 76px) + 12px
+    );
   }
 }
 
@@ -423,5 +440,20 @@ body::after {
 
   #root {
     animation: none;
+  }
+
+  /* Not parallax — this is viewport-fixed frame, not content sliding past
+     content at a mismatched rate. But a 129px edge sweeping the full width of
+     the viewport is a large moving area, and large moving areas are what
+     vestibular sensitivity reacts to whether or not they are content. Parking
+     it at the resting depth is not a degraded state: it is exactly what
+     browsers without scroll timelines already get, so it is a composition the
+     design is built around. The header parks at the frame line there too. */
+  :root {
+    animation: none;
+  }
+
+  :where(.site-page) [id] {
+    scroll-margin-top: calc(var(--frame-top) + var(--header-height, 76px) + 12px);
   }
 }

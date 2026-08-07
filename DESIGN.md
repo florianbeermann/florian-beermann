@@ -230,12 +230,16 @@ weighting one edge, put to work. The top band is the only place a skyline can be
 read — the side strips are too narrow and the bottom is below the fold — and at
 `6vw` it held a sliver too thin to carry a building. At `11vw` it holds
 6.6–13.2% of the image's height across desktop sizes, the low end on ultrawide
-monitors where the same 190px covers proportionally less — and the band then
-collapses to `--frame` on scroll, reaching 3.6% at that same ultrawide floor.
-**That collapsed floor, not the resting average, is the composition brief for
-any future backdrop: anything that must be seen belongs in the top ~3.5% of the
-image.** A backdrop that satisfies only the resting band loses its subject the
-moment the visitor scrolls.
+monitors where the same 190px covers proportionally less. **That resting range
+is the composition brief for any future backdrop: anything that must be seen
+belongs in the top ~6.6% of the image.**
+
+The band then collapses to `--band-collapsed` on scroll, falling to 1.1–2.4%.
+That floor is deliberately *not* a composition target. The band's job changes as
+the visitor moves: while the backdrop is the subject it must carry a building,
+and once the page is the subject it is only a margin, so asking it to still hold
+a skyline would be asking it to serve a reader who has stopped looking at it.
+Compose for the resting band and let the collapsed band be a colour.
 
 The alternative was cropping the image to force its skyline upward, and it
 was tried and reverted. Deepening the frame costs vertical space in the hero;
@@ -255,9 +259,10 @@ Three consequences worth knowing before changing anything here:
   across two values and any drift shows as a strip of paper above the header or
   a backdrop band that outruns it.
 - **Anchor targets clear the frame as well as the header**, via
-  `scroll-margin-top: calc(var(--frame) + var(--header-height) + 12px)`, using
-  the collapsed band because anchors are always landed on well past the collapse
-  range.
+  `scroll-margin-top: calc(var(--band-collapsed) + var(--header-height) + 12px)`,
+  using the collapsed band because anchors are always landed on well past the
+  collapse range. Under `prefers-reduced-motion` the band never collapses, so
+  that same rule reverts to `--frame-top` there or every anchor lands 130px off.
 
 The backdrop is a fixed layer rather than a body background. As a scrolling
 body background, `cover` resolves against full document height and zooms the
@@ -313,8 +318,8 @@ shadow, or a border radius.
 is legible, not to create breathing room. Narrowing them to reclaim column width
 crops the image to noise and removes the reason it is there. The top edge is the
 deepest because it is the only band a skyline can be read in; compose backdrops
-so their subject sits in the top ~3.5% of the frame, which is what the band
-still shows once it has collapsed.
+so their subject sits in the top ~6.6% of the frame, which is what the band
+shows at rest across every desktop width.
 
 ## Shapes
 
@@ -408,7 +413,7 @@ would have taken a 250px band on a 900px viewport.
 
 So the square 4096px original was cropped 8% off the top, which moved the
 Elbphilharmonie roof from 10% of the image height to 2.4% and put it inside the
-band in *every* state — resting, collapsed, and at the ultrawide floor. The cost
+band at rest across *every* desktop width, including the ultrawide floor. The cost
 is that the church spires now meet the top edge instead of sitting under sky.
 That reads as an intentional frame crop rather than damage, and it is the right
 trade: the spires are anonymous at a glance, the Elbphilharmonie is the one
@@ -426,9 +431,11 @@ the scale.
 cosmetic. Filling the width makes the image taller than the viewport, so a
 centred position would slide the skyline up out of the band — the one thing the
 band exists to show. Pinned to the top, the band reaches 6.6–13.2% of the image's
-height at rest and 3.6–7.2% collapsed, against an Elbphilharmonie roof starting
-at 2.4%, so the landmark reads at every desktop size and in both band states. It
-is one variable shared by both backdrop layers, so the matte cannot drift out of
+height at rest, against an Elbphilharmonie roof starting at 2.4%, so the landmark
+reads at every desktop size while the backdrop is the subject. Collapsed it falls
+to 1.1–2.4% — sky and at most the roof's top edge, which is the intended trade:
+by then the reader is in the page and the backdrop has become a margin. It is one
+variable shared by both backdrop layers, so the matte cannot drift out of
 register with the layer beneath it.
 
 Resolution is served by descriptor, not by breakpoint: `image-set()` carries `1x`
@@ -487,24 +494,45 @@ in the strips and nothing is asked of the top edge.
 
 ### Signature Moment: The Band
 The top band is not fixed. It rests at `--frame-top`, opens past that during the
-intro, and collapses to `--frame` over the first `--band-collapse-range` (240px)
-of scroll. Three positions, evenly spaced, at 1440px: **230px open, 158px at
-rest, 86px collapsed.**
+intro, and collapses to `--band-collapsed` over the first `--band-collapse-range`
+(240px) of scroll. Three positions, evenly spaced, at 1440px: **288px open, 158px
+at rest, 29px collapsed.**
 
 The reasoning is that the band's job changes as the visitor moves. While the
 hero is on screen the backdrop is part of the argument — it says where this
 practice is. Once they start reading, it is furniture, and the page should have
 the space instead. So the mat is top-weighted while the picture is the subject
-and uniform on all four edges once the page is.
+and nearly closed once the page is.
+
+`--band-collapsed` is deliberately thinner than the side frames rather than equal
+to them. Matching `--frame` gives a tidy uniform border, but tidiness is not what
+that moment is for: the reader is in the text, and every pixel of backdrop above
+them is a pixel the argument does not get. It stays above zero because a band of
+`0` lets the sheet run off the top of the window, and the sheet reading as a
+discrete object resting on something is the whole conceit. A sliver still says
+"object on a backdrop"; nothing at all says "web page".
 
 The even spacing is not a coincidence to preserve casually: `--intro-rise` is
-defined as `calc(var(--frame-top) - var(--frame))`, the exact distance the band
-later collapses. Load and scroll are therefore one continuous gesture in two
-parts — the band opens past its resting height, settles, then closes as the page
-is read — rather than two effects that happen to sit near each other. On phones
-the two frames are equal, so the rise resolves to `0` and the band never
-collapses: there is nothing there to reveal, and the intro correctly degrades to
-a pure fade.
+defined as `calc(var(--frame-top) - var(--band-collapsed))`, the exact distance
+the band later collapses. Load and scroll are therefore one continuous gesture in
+two parts — the band opens past its resting height, settles, then closes as the
+page is read — rather than two effects that happen to sit near each other. Express
+it as the difference between the two band positions, never as a literal length,
+or the two halves drift apart the next time either end moves. On phones all three
+values are `14px`, so the rise resolves to `0` and the band never collapses:
+there is nothing there to reveal, and the intro degrades to a pure fade.
+
+Under `prefers-reduced-motion` the collapse is switched off and the band parks at
+its resting depth. This is not parallax — the band is viewport-fixed frame, not
+content sliding past content at a mismatched rate — but a 129px edge sweeping
+across the full width of the viewport is a large moving area, and large moving
+areas are what vestibular sensitivity reacts to whether or not they are content.
+Being driven directly by the visitor's own scroll makes it legible, not exempt.
+Parking it
+at rest is not a degraded state invented for the query: it is exactly what
+browsers without scroll timelines already render, so it is a composition the
+design is built around. The anchor rule has to revert with it, or every in-page
+link lands 130px off.
 
 It is driven by a **scroll timeline**, not a scroll listener, so there is no JS
 on the scroll path and it degrades to a static band where unsupported. `--band`
@@ -605,9 +633,12 @@ decelerating move reads as momentum, not lag.
   collapsing on scroll, and a 180ms transform on the details toggle chevron.
   The first two are the frame behaving, not the content performing. The line
   that admits them and bans the rest: a motion may map continuously to scroll
-  position, but nothing may *fire* at a scroll threshold, and no element may
-  travel at a different rate from the page it sits on. That bans parallax and
-  reveal-on-enter while permitting a frame that responds.
+  position, but nothing may *fire* at a scroll threshold, and nothing that
+  scrolls with the page may travel at a rate different from the page. That bans
+  parallax and reveal-on-enter while permitting viewport-fixed frame furniture
+  to resize. The band qualifies only because it is fixed and never scrolls past
+  anything; the moment an effect lives in the content, the rate rule binds it.
+  Anything admitted here still owes `prefers-reduced-motion` an off switch.
 - **Don't** invent new small font sizes. The set below 1rem still holds 12
   distinct values, none below the `0.8125rem` floor; new work should snap to
   `0.8125` / `0.875` / `0.96` / `1rem` rather than widen it again.

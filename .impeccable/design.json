@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-06T21:30:00.000Z",
+  "generatedAt": "2026-08-07T08:20:00.000Z",
   "title": "Design System: florian beermann & partners",
   "extensions": {
     "colorMeta": {
@@ -95,13 +95,13 @@
       },
       {
         "name": "band-collapse",
-        "value": "--band: --frame-top -> --frame over 240px of scroll, linear",
-        "purpose": "The top band collapses as the page is scrolled, so the mat is top-weighted while the hero is in view and uniform once the visitor is reading. Driven by a scroll timeline on :root, not a scroll listener. --band is registered via @property so it interpolates. Only the fixed matte and the sticky header read it; the sheet margin stays on the static --frame-top so nothing reflows per frame."
+        "value": "--band: --frame-top -> --band-collapsed over 240px of scroll, linear",
+        "purpose": "The top band collapses as the page is scrolled, so the mat is top-weighted while the hero is in view and nearly closed once the visitor is reading. --band-collapsed is deliberately thinner than the side frames rather than equal to them, because at that moment every pixel of backdrop is a pixel the argument does not get; it stays above zero so the sheet still reads as an object resting on something. Switched off under prefers-reduced-motion, where the band parks at its resting depth and the anchor rule must revert with it. Driven by a scroll timeline on :root, not a scroll listener. --band is registered via @property so it interpolates. Only the fixed matte and the sticky header read it; the sheet margin stays on the static --frame-top so nothing reflows per frame."
       },
       {
         "name": "intro-rise",
         "value": "calc(var(--frame-top) - var(--frame))",
-        "purpose": "How far below its resting place the sheet starts. The rise uncovers an extra band of backdrop, which is the only moment the painting is fully visible and why this entrance is sanctioned. It is defined as calc(--frame-top - --frame), the exact distance the band later collapses, so load and scroll are one gesture; do not replace it with a literal length."
+        "purpose": "How far below its resting place the sheet starts. The rise uncovers an extra band of backdrop, which is the only moment the painting is fully visible and why this entrance is sanctioned. It is defined as calc(--frame-top - --band-collapsed), the exact distance the band later collapses, so load and scroll are one gesture; do not replace it with a literal length."
       },
       {
         "name": "intro-arrive",
@@ -228,7 +228,7 @@
       },
       {
         "name": "The Frame Is Content Rule",
-        "body": "--frame and --frame-top exist so the backdrop is legible, not to create breathing room. Narrowing them to reclaim column width crops the image to noise and removes the reason it is there. The top edge is deepest because it is the only band a skyline can be read in; compose backdrops so their subject sits in the top ~3.5% of the frame, which is what the collapsed band still shows at the ultrawide floor rather than the resting average. The backdrop is shown untinted; if a future image needs seating, reintroduce a scrim under 0.15 rather than darkening the asset. Effective resolution is set by aspect ratio, not file width: the further an asset departs from the viewport aspect the harder cover magnifies it. Only a shallow top crop moves a skyline into the band — cropping the bottom leaves the band covering the same count of source rows, and cropping the sides covers fewer. Size assets to the widest device that will paint them and spend the remainder on quality, since quantisation damage survives downscaling but surplus pixels do not. Assets in public/ bypass the build's hashing but are served with a thirty-day max-age, so every backdrop filename carries a content hash; reusing a name for changed pixels strands returning visitors on the old image.",
+        "body": "--frame and --frame-top exist so the backdrop is legible, not to create breathing room. Narrowing them to reclaim column width crops the image to noise and removes the reason it is there. The top edge is deepest because it is the only band a skyline can be read in; compose backdrops so their subject sits in the top ~6.6% of the frame, which is what the band shows at rest across every desktop width. The collapsed band (1.1-2.4%) is deliberately not a composition target: the band is a subject at rest and a margin once the reader is in the page. The backdrop is shown untinted; if a future image needs seating, reintroduce a scrim under 0.15 rather than darkening the asset. Effective resolution is set by aspect ratio, not file width: the further an asset departs from the viewport aspect the harder cover magnifies it. Only a shallow top crop moves a skyline into the band — cropping the bottom leaves the band covering the same count of source rows, and cropping the sides covers fewer. Size assets to the widest device that will paint them and spend the remainder on quality, since quantisation damage survives downscaling but surplus pixels do not. Assets in public/ bypass the build's hashing but are served with a thirty-day max-age, so every backdrop filename carries a content hash; reusing a name for changed pixels strands returning visitors on the old image.",
         "section": "elevation"
       }
     ],
@@ -248,7 +248,7 @@
       "Don't use pure white as a background.",
       "Don't narrow --frame or --frame-top to gain column width; they are what make the backdrop readable.",
       "Don't add eyebrow/kicker labels above headings.",
-      "Don't add entrance animations, parallax or scroll-triggered reveals. The system has exactly three motions: the once-per-session intro, the top band collapsing on scroll, and a 180ms transform on the details toggle chevron. The first two are the frame behaving, not the content performing. A motion may map continuously to scroll position, but nothing may fire at a scroll threshold, and no element may travel at a different rate from the page it sits on.",
+      "Don't add entrance animations, parallax or scroll-triggered reveals. The system has exactly three motions: the once-per-session intro, the top band collapsing on scroll, and a 180ms transform on the details toggle chevron. The first two are the frame behaving, not the content performing. A motion may map continuously to scroll position, but nothing may fire at a scroll threshold, and nothing that scrolls with the page may travel at a rate different from the page. That permits viewport-fixed frame furniture to resize; the band qualifies only because it is fixed and never scrolls past anything. Anything admitted still owes prefers-reduced-motion an off switch.",
       "Don't invent new small font sizes. The set below 1rem still holds 12 distinct values, none below the 0.8125rem floor; new work should snap to 0.8125 / 0.875 / 0.96 / 1rem rather than widen it again.",
       "Don't introduce a third blue or a warm accent. The palette is closed."
     ]
