@@ -41,6 +41,16 @@ jobs:
         env:
           VITE_WEB3FORMS_KEY: ${{ secrets.WEB3FORMS_KEY }}
 
+      # Lets anything ask the live site which commit it is serving. The
+      # scheduled drift check reads this to tell "deployed" from "assumed
+      # deployed" — the two looked identical the day Actions dropped our
+      # push events on the floor.
+      - name: 🔖 Stamp the build with its commit
+        run: |
+          printf '{"commit":"%s","builtAt":"%s"}\n' \
+            "$GITHUB_SHA" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > dist/version.json
+          cat dist/version.json
+
       - name: 📂 Sync files to Hetzner
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
@@ -51,3 +61,23 @@ jobs:
           # Change this to public_html/ or similar if your website files reside in a subfolder on Hetzner
           server-dir: ${{ secrets.HETZNER_FTP_DIR || './' }}
           protocol: ftps
+
+      # A green FTPS step means "we uploaded", not "the site changed". Read the
+      # stamp back off the live origin so the run only passes when the deploy
+      # is actually visible to visitors.
+      - name: ✅ Confirm the live site serves this commit
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            live=$(curl -fsS --max-time 20 -H 'Cache-Control: no-cache' \
+              "https://florianbeermann.com/version.json?cb=${GITHUB_RUN_ID}-${attempt}" \
+              | jq -r '.commit') || live="unreachable"
+            if [ "$live" = "$GITHUB_SHA" ]; then
+              echo "Live site is serving ${GITHUB_SHA}."
+              exit 0
+            fi
+            echo "Attempt ${attempt}: live reports '${live}', expected '${GITHUB_SHA}'. Retrying in 15s."
+            sleep 15
+          done
+          echo "::error::Deploy reported success but https://florianbeermann.com is still serving '${live}'. The upload did not land."
+          exit 1

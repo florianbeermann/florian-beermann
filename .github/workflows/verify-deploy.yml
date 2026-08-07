@@ -1,0 +1,58 @@
+name: Verify deployment
+
+# Deploys can fail silently in a way no failure email covers: if GitHub never
+# creates the workflow run, there is nothing to report. That happened on
+# 2026-08-06, when an Actions capacity incident swallowed push events and the
+# live site sat several commits stale until somebody happened to look.
+#
+# This job closes that gap by asking the live site which commit it is serving
+# and comparing it with main. Silent staleness becomes a red X.
+
+on:
+  schedule:
+    # Hourly, offset off the hour because scheduled runs queue behind everyone
+    # else's :00 jobs. GitHub disables schedules after 60 days of repository
+    # inactivity — if this stops reporting, that is the first thing to check.
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  drift:
+    name: 🔎 Live site matches main
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v7
+
+      - name: 🔎 Compare live commit with main
+        run: |
+          set -euo pipefail
+
+          expected=$(git rev-parse HEAD)
+
+          # A commit pushed moments ago is probably mid-deploy, not stale.
+          age=$(( $(date -u +%s) - $(git log -1 --format=%ct) ))
+          if [ "$age" -lt 900 ]; then
+            echo "main is only ${age}s old — a deploy is likely still running. Skipping."
+            exit 0
+          fi
+
+          live=$(curl -fsS --max-time 20 -H 'Cache-Control: no-cache' \
+            "https://florianbeermann.com/version.json?cb=${GITHUB_RUN_ID}" \
+            | jq -r '.commit') || {
+              echo "::error::Could not read https://florianbeermann.com/version.json. Either the site is down or the last deploy predates commit stamping."
+              exit 1
+            }
+
+          if [ "$live" = "$expected" ]; then
+            echo "Live site is serving ${expected}. Up to date."
+            exit 0
+          fi
+
+          echo "::error::Live site is serving ${live} but main is at ${expected}. A deploy was missed — re-run the Deploy to Hetzner workflow."
+          git --no-pager log --oneline "${live}..${expected}" 2>/dev/null \
+            || echo "(Live commit is not an ancestor of main; the site may be ahead or on a different history.)"
+          exit 1
