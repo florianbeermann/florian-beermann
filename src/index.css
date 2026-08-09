@@ -30,13 +30,14 @@
     --popover: 0 0% 100%;
     --popover-foreground: 210 100% 18.6%;
 
-    /* Accessible functional blue + bright decorative accent */
+    /* Accessible functional blue + lapis decorative accent. The accent
+       tracks `--blue` in shell.css; keep the two in step. */
     --primary: 211 100% 34%;
     --primary-foreground: 0 0% 100%;
 
-    --accent: 210 95% 52%;
+    --accent: 212 89% 36%;
     --accent-foreground: 0 0% 100%;
-    --accent-glow: 210 100% 65%;
+    --accent-glow: 212 80% 52%;
 
     --secondary: 210 30% 95%;
     --secondary-foreground: 210 100% 18.6%;
@@ -53,12 +54,12 @@
 
     --radius: 1rem;
 
-    --gradient-hero: radial-gradient(circle at 80% 20%, hsl(210 95% 52% / 0.08) 0%, transparent 50%),
+    --gradient-hero: radial-gradient(circle at 80% 20%, hsl(212 89% 36% / 0.08) 0%, transparent 50%),
                      linear-gradient(180deg, hsl(210 30% 99%) 0%, hsl(0 0% 100%) 100%);
     --gradient-subtle: linear-gradient(180deg, hsl(210 25% 97%) 0%, hsl(0 0% 100%) 100%);
     
     --shadow-elegant: 0 30px 60px -15px rgba(10, 26, 47, 0.06), 0 10px 20px -10px rgba(10, 26, 47, 0.04);
-    --shadow-accent: 0 16px 40px -12px rgba(16, 133, 249, 0.2);
+    --shadow-accent: 0 16px 40px -12px rgba(10, 85, 173, 0.2);
     --shadow-card: 0 2px 8px rgba(10, 26, 47, 0.02), 0 12px 30px -10px rgba(10, 26, 47, 0.04);
 
     --transition-smooth: color 0.35s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
@@ -131,7 +132,7 @@
   /* Spotlight Grid Card */
   .spotlight-card {
     position: relative;
-    background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(16, 133, 249, 0.05), transparent 40%);
+    background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(10, 85, 173, 0.05), transparent 40%);
   }
 
   .spotlight-card::before {
@@ -139,7 +140,7 @@
     position: absolute;
     inset: -1px;
     border-radius: inherit;
-    background: radial-gradient(600px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(16, 133, 249, 0.25), transparent 40%);
+    background: radial-gradient(600px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(10, 85, 173, 0.25), transparent 40%);
     z-index: 0;
     pointer-events: none;
     mask-image: linear-gradient(black, black) exclude, linear-gradient(black, black);
@@ -188,5 +189,5 @@
   border: 2px solid hsl(210 25% 97%);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(210 95% 52%);
+  background: hsl(212 89% 36%);
 }

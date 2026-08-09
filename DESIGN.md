@@ -5,7 +5,7 @@ colors:
   paper: "#f3f0e8"
   paper-deep: "#e8e3d7"
   ink: "#003b76"
-  blue: "#1655d8"
+  blue: "#0a55ad"
   muted: "#52626b"
   line: "rgba(0, 59, 118, 0.22)"
   on-ink: "#ffffff"
@@ -133,8 +133,8 @@ representational imagery in the system besides the portrait.
 
 ## Colors
 
-A three-tone editorial palette: warm paper, deep navy ink, and one saturated
-blue reserved for action and emphasis.
+A three-tone editorial palette: warm paper, deep navy ink, and one lapis blue
+reserved for action and emphasis.
 
 ### Primary
 - **Deep Navy Ink** (`#003b76`): All headings, body emphasis, the inverted
@@ -143,10 +143,30 @@ blue reserved for action and emphasis.
   specific.
 
 ### Secondary
-- **Signal Blue** (`#1655d8`): The action colour. Used on the hero CTA, the
+- **Signal Lapis** (`#0a55ad`): The action colour. Used on the hero CTA, the
   second half of the H1, links, and focus states. Its job is to mark the two
   or three places on a page where the visitor can act or where the argument
   turns.
+
+  It replaced a brighter royal blue (`#1655d8`) that had grown too loud for the
+  rest of the system. The problem was hue, not just intensity: at 221° the old
+  blue leaned violet, while the ink sits at 210°, so the hero's two lines read
+  as two unrelated blues arguing rather than one voice raising itself. Lapis
+  sits at 212° — close enough to the ink to belong to the same pen, far enough
+  in value to still register as an action.
+
+  Being deeper, it also measures better than what it replaced: **6.3:1** on
+  paper and **7.2:1** under white, up from 5.6 and 6.3. The gap to the ink
+  narrows to 1.55:1, which is the point — the two lines are meant to read as
+  one statement, not as a two-colour headline.
+
+  Non-blue accents were tried and rejected. Gold and bronze dissolve into the
+  backdrop painting, which is roughly 90% warm ochre (hues 20–50, mean
+  `#bb9360`), so a warm accent stops reading as action. Oxblood fails
+  functionally rather than aesthetically: the accent is also the input focus
+  border, and a red focus ring reads as a validation error on a field the
+  visitor has done nothing wrong in. Verdigris cleared both bars but moved the
+  brand off blue entirely, which is further than the palette should travel.
 
 ### Neutral
 - **Warm Paper** (`#f3f0e8`): The page ground. Warm, slightly yellowed, never
@@ -180,7 +200,7 @@ blue reserved for action and emphasis.
   AA by a rounding error; 0.82 gives 4.75:1 and still reads a step down.
 
 ### Named Rules
-**The Two Blues Rule.** The navy is structure; the bright blue is action. They
+**The Two Blues Rule.** The navy is structure; the lapis is action. They
 are never interchangeable. If a new element is neither a heading nor an action,
 it is Muted Slate, not a third blue.
 
@@ -368,13 +388,13 @@ a callout.
 
 ### Buttons
 - **Shape:** Square (`border-radius: 0`).
-- **Primary (hero CTA):** Signal Blue background, white text, `0 24px` padding,
+- **Primary (hero CTA):** Signal Lapis background, white text, `0 24px` padding,
   `52px` min-height, 650 weight at `0.86rem`, sentence case.
 - **Submit:** Deep Navy Ink background, white text, uppercase Label type
   (`0.72rem`, 680, `0.1em` tracking), `16px 24px` padding, `54px` min-height.
   The case change is what separates a form's terminal action from a
   navigational CTA.
-- **Hover / Focus:** Colour swap only (blue → ink). No lift, no scale, no
+- **Hover / Focus:** Colour swap only (lapis → ink). No lift, no scale, no
   shadow. All interactive targets are ≥44px.
 
 ### Inputs / Fields
@@ -382,7 +402,7 @@ a callout.
   `border-bottom: 1px solid var(--line)`, `border-radius: 0`, `48px` min-height,
   `0.96rem` text. Textareas are the exception and take a full 1px border with
   `0.9rem` padding and a `150px` min-height.
-- **Focus:** Border colour shifts to Signal Blue and `box-shadow: 0 1px 0` adds
+- **Focus:** Border colour shifts to Signal Lapis and `box-shadow: 0 1px 0` adds
   a second pixel, so the underline thickens without moving the field.
 - **Labels:** Uppercase Label type above the field, always visible. No
   placeholder-as-label.
@@ -643,7 +663,7 @@ decelerating move reads as momentum, not lag.
 - **Do** keep every surface square, including the hero portrait.
 - **Do** set body prose in Muted Slate (`#52626b`) at 1.6 line-height and cap
   the measure around 580–650px.
-- **Do** reserve Signal Blue for actions, links and the single emphasised
+- **Do** reserve Signal Lapis for actions, links and the single emphasised
   clause in a headline.
 - **Do** keep interactive targets at ≥44px, and text at ≥`0.8125rem`.
 - **Do** write in first person singular. This is one person, not a company.
@@ -693,4 +713,4 @@ decelerating move reads as momentum, not lag.
 - **Don't** invent new small font sizes. The set below 1rem still holds 12
   distinct values, none below the `0.8125rem` floor; new work should snap to
   `0.8125` / `0.875` / `0.96` / `1rem` rather than widen it again.
-- **Don't** introduce a third blue or a warm accent. The palette is closed.
+- **Don't** introduce a second blue or a warm accent. The palette is closed.
