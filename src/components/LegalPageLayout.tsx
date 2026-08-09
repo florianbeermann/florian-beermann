@@ -21,10 +21,6 @@ export const LegalPageLayout = ({
 
   return (
     <div className="site-page legal-page">
-      <a className="site-skip" href="#legal-main">
-        Skip to main content
-      </a>
-
       <header className="site-header">
         <Link className="site-brand" to="/#top" aria-label="Home">
           <img src="/logo.png" alt="" width="34" height="34" />

@@ -9,6 +9,8 @@ colors:
   muted: "#52626b"
   line: "rgba(0, 59, 118, 0.22)"
   on-ink: "#ffffff"
+  on-ink-muted: "rgba(255, 255, 255, 0.82)"
+  header-wash: "rgba(0, 59, 118, 0.75)"
   backdrop-ink: "#92785a"
 typography:
   display:
@@ -163,6 +165,20 @@ blue reserved for action and emphasis.
   section boundary. A transparent ink tint, so rules sit in the same colour
   family as the type instead of reading as grey furniture.
 
+### On the Backdrop
+- **Header Wash** (`rgba(0, 59, 118, 0.75)`): The glaze the navigation sits on.
+  `--ink` at 75%, written as a literal rather than mixed from the token: an
+  unsupported `color-mix()` would be invalid at computed-value time, drop
+  `background` entirely, and put white type straight onto the painting.
+  Legibility is not something to leave to feature detection. Measured against
+  every pixel of painting the header can travel over, white holds 6.3:1 at
+  worst and 9.2:1 on average. Alpha is the dial for how much Elbphilharmonie
+  shows: contrast falls roughly a point per 0.05, and 0.62 is the floor.
+- **On Ink Muted** (`rgba(255, 255, 255, 0.82)`): Secondary type on the wash —
+  the `& partners` line. A tint of white rather than a second colour, for the
+  same reason Muted Slate is not a tint of the ink. 0.78 was measured at 4.55:1,
+  AA by a rounding error; 0.82 gives 4.75:1 and still reads a step down.
+
 ### Named Rules
 **The Two Blues Rule.** The navy is structure; the bright blue is action. They
 are never interchangeable. If a new element is neither a heading nor an action,
@@ -248,8 +264,18 @@ cropping costs resolution everywhere, permanently. Space is the cheaper currency
 Three consequences worth knowing before changing anything here:
 
 - **The sticky header parks at the frame line** (`top: var(--band)`), not at
-  the viewport top, and it is fully opaque. A translucent header lets the
-  backdrop bleed through and muddies it.
+  the viewport top, and it is a glaze of ink over the painting rather than a
+  solid. This reverses an earlier decision. The original reading was that a
+  translucent header lets the backdrop bleed through and muddies it — true, but
+  only of a *paper* wash, which turns a sunset painting into dirt. Ink at 75%
+  reads as a coloured plane instead, the Elbphilharmonie's roof and the towers
+  carry straight through it, and the header becomes the third thing showing the
+  backdrop rather than the one thing hiding it.
+- **The header owns a third copy of the backdrop.** It cannot simply be
+  transparent: once the sheet scrolls, the paper behind the header would show
+  the page's own content through it. So the header carries a fixed backdrop
+  layer of its own, clipped to `inset(var(--band) … var(--header-height))`, and
+  the wash sits on top of that. Painting, never content.
 - **A fixed matte repaints the top band.** Once the sheet scrolls past the
   viewport top its paper would cover the backdrop's top strip, so a fixed layer
   clipped to `--band` redraws it. The matte and the backdrop share identical
@@ -362,12 +388,15 @@ a callout.
   placeholder-as-label.
 
 ### Navigation
-- **Style:** Text links at `0.84rem` / 520, in Deep Navy Ink, `44px` min-height,
-  with a transparent 1px bottom border that becomes `currentColor` on hover and
-  focus-visible. Sticky header on a 96%-opaque paper background with a bottom
-  rule.
+- **Style:** Text links at `0.84rem` / 520 in white, `44px` min-height, with a
+  transparent 1px bottom border that becomes `currentColor` on hover and
+  focus-visible. Sticky header, no bottom rule: it sits on a slice of the
+  Hamburg backdrop under a 75% ink glaze, so the painting itself draws the
+  edge. The logo mark is knocked to white with `brightness(0) invert(1)`.
 - **Mobile:** Below 680px the wordmark text hides and only the logo mark plus
-  condensed nav remain.
+  condensed nav remain. `--header-height` drops to `68px` in the same media
+  query as the header's own `min-height` — they are one measurement, and the
+  backdrop slice is clipped from the variable.
 
 ### Signature Component: The Inverted Method Band
 A full-bleed `var(--ink)` section with white type, containing a four-column
@@ -435,8 +464,10 @@ height at rest, against an Elbphilharmonie roof starting at 2.4%, so the landmar
 reads at every desktop size while the backdrop is the subject. Collapsed it falls
 to 1.1–2.4% — sky and at most the roof's top edge, which is the intended trade:
 by then the reader is in the page and the backdrop has become a margin. It is one
-variable shared by both backdrop layers, so the matte cannot drift out of
-register with the layer beneath it.
+variable shared by all three backdrop layers — the backdrop, the matte and the
+header's slice — so they cannot drift out of register with one another. They are
+literally one CSS rule with three selectors, which is the only reliable way to
+keep three copies of the same image in agreement.
 
 Resolution is served by descriptor, not by breakpoint: `image-set()` carries `1x`
 and `2x` entries alongside `type()`, so a 1x display fetches 890KB and only a 2x
@@ -558,6 +589,20 @@ gesture that delivers the page. The reveal is now a by-product of arrival rather
 than a toll paid before it, and the whole sequence finishes in 850ms against the
 old 1.3s.
 
+**The intro's fill mode is load-bearing.** `#root` fills `backwards`, never
+`forwards` or `both`. A filled animation whose end state is `transform: none`
+does not compute to `none` — it computes to `matrix(1, 0, 0, 1, 0, 0)`, and an
+identity matrix is still enough to make the element a containing block for
+every `position: fixed` descendant, permanently, long after the animation has
+finished. That would re-anchor the header's backdrop slice to the document
+instead of the viewport, which shows as a stray band of painting adrift in the
+page. Backwards fill costs nothing here, because the end state is the element's
+natural state. The header's slice is suppressed for the duration of
+`--intro-arrive` for the other half of the same problem: while the sheet is
+genuinely mid-transform, the fixed layer really is misparented, and its clip is
+measured from a `--band` the header has not reached yet. It crossfades in once
+the sheet settles.
+
 That is the reason this is the system's only entrance animation. It carries
 information the static page cannot: the sheet's whole conceit is that it is paper
 resting on a painting of Hamburg, and that painting is almost entirely hidden
@@ -617,13 +662,19 @@ decelerating move reads as momentum, not lag.
   served with a thirty-day `max-age` and are not hashed by the build, so the
   name is the only cache key there is. Append a content hash and update the
   references.
-- **Don't** hide anything with `transform` if it lives inside `#root`. The
-  intro leaves a transform there, which makes `#root` the containing block for
-  every `position: fixed` descendant, so `translateY(-200%)` moves an element
-  off the top of the *sheet* rather than off the viewport. This is what left the
-  skip link parked visibly over the backdrop band. Hide with `clip-path`, which
-  no ancestor can defeat, and keep fixed layers that must track the viewport —
-  the backdrop and its matte — hanging off `body`, outside the `#root` subtree.
+- **Don't** reintroduce a `forwards` or `both` fill on `#root`'s intro. It
+  leaves an identity transform behind, which makes `#root` the containing block
+  for every `position: fixed` descendant — so the header's backdrop slice
+  re-anchors to the document and a stray band of painting appears adrift in the
+  page, and `translateY(-200%)` would move an element off the top of the *sheet*
+  rather than off the viewport. Hide offscreen things with `clip-path`, which no
+  ancestor can defeat.
+- **Don't** assume a `fixed` layer inside `#root` is safe just because it works
+  today. The header's slice only tracks the viewport because nothing in its
+  ancestry is transformed, filtered, or given `will-change` or `contain`. Any of
+  those, anywhere above it, silently re-parents it. The backdrop and the matte
+  hang off `body` for exactly this reason; the header's slice cannot, because it
+  has to sit above the sheet's paper.
 - **Don't** drive `--band` from anything that reflows the document. It may only
   feed paint and sticky offsets; putting it on the sheet's margin would relayout
   the page on every scroll frame and move the scroll position driving it.

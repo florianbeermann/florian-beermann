@@ -145,6 +145,11 @@ material, never with invented or illustrative numbers.
 
 No client-mandated standard has been established. The implementation currently
 maintains, and future work should preserve: WCAG-passing text contrast, minimum
-24px interactive targets, a working skip link, visible focus indicators on every
-tab stop, `prefers-reduced-motion` support, and no horizontal overflow from
-375px upward.
+24px interactive targets, visible focus indicators on every tab stop,
+`prefers-reduced-motion` support, and no horizontal overflow from 375px upward.
+
+There is deliberately **no skip link**. It was removed at the owner's request.
+The bypass it offered is small — the header is a wordmark and three links, so a
+keyboard visitor reaches the first heading in four tabs — but this is a
+conscious trade against WCAG 2.4.1 (Level A), not an oversight. If the header
+ever grows a real menu, reinstate it.

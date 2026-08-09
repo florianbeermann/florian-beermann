@@ -17,10 +17,6 @@ const NotFound = () => {
 
   return (
     <div className="site-page notfound-page">
-      <a className="site-skip" href="#notfound-main">
-        Skip to main content
-      </a>
-
       <header className="site-header">
         <Link className="site-brand" to="/" aria-label="Home">
           <img src="/logo.png" alt="" width="34" height="34" />

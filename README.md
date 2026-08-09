@@ -19,7 +19,7 @@ email client with a pre-addressed, pre-filled message to `hello@florianbeermann.
 | `src/pages/Home.tsx` | The single-page site: hero, proof, engagements, method, about, contact |
 | `src/pages/Imprint.tsx`, `src/pages/Privacy.tsx` | German legal pages, rendered through `LegalPageLayout` |
 | `src/pages/NotFound.tsx` | 404 page |
-| `src/styles/shell.css` | Shared shell: palette tokens, typography, header, footer, skip link |
+| `src/styles/shell.css` | Shared shell: palette tokens, typography, header, footer |
 | `src/pages/Home.css` | Homepage-only styles |
 | `src/components/ui/` | The shadcn/ui primitives actually in use (button, input, label, select, textarea, sonner) |
 | `src/lib/metadata.ts` | Per-route title, description and canonical tag |

@@ -208,10 +208,6 @@ export default function Home() {
 
   return (
     <div className="site-page">
-      <a className="site-skip" href="#site-main">
-        Skip to main content
-      </a>
-
       <header className="site-header">
         <a className="site-brand" href="#top" aria-label="Home">
           <img src="/logo.png" alt="" width="34" height="34" />

@@ -1,5 +1,5 @@
 /* Page shell shared by the homepage and the legal pages: palette, typography
-   reset, skip link, sticky header and footer. */
+   reset, sticky header and footer. */
 
 /* The page sits as a paper sheet on a backdrop. Depth comes from the tonal
    step between backdrop and paper, never from a shadow or a radius, so the
@@ -90,9 +90,16 @@
 
 /* The backdrop is a fixed layer rather than a body background so it always
    sizes to the viewport. As a scrolling body background, `cover` would resolve
-   against full document height and zoom the painting to a smear on mobile. */
+   against full document height and zoom the painting to a smear on mobile.
+
+   Three layers share this declaration and therefore share one geometry: the
+   backdrop itself, the matte that repaints the top band over the scrolled
+   sheet, and the slice that shows through the header. They differ only in
+   `z-index` and in where they are clipped. Registration between them is not a
+   thing to be kept in sync — it is structurally the same rule. */
 body::before,
-body::after {
+body::after,
+.site-header::before {
   content: "";
   position: fixed;
   inset: 0;
@@ -115,7 +122,8 @@ body::after {
    emit the `-webkit-` variant it pairs with its widened `@supports` test. */
 @supports (background-image: image-set(url("/x.webp") type("image/webp"))) {
   body::before,
-  body::after {
+  body::after,
+  .site-header::before {
     /* Resolution descriptors alongside `type()`: a 1x display gets 2560px
        (890KB), a 2x display gets 3456px (1.3MB) — sized to the widest common
        retina laptop (1728 CSS px), not to the source. Pixels the device cannot
@@ -131,7 +139,8 @@ body::after {
 
   @media (max-width: 900px) {
     body::before,
-    body::after {
+    body::after,
+    .site-header::before {
       background-image: image-set(
         url("/hamburg-alster-1280.39d74c8f.webp") type("image/webp"),
         url("/hamburg-alster-1280.4c01ae0e.jpg") type("image/jpeg")
@@ -174,7 +183,16 @@ body::after {
 }
 
 #root {
-  animation: sheet-arrive var(--intro-arrive) cubic-bezier(0.16, 1, 0.3, 1) both;
+  /* `backwards`, deliberately not `both`. The animation's final keyframe is
+     `transform: none`, but a forwards fill keeps *applying* it, and an applied
+     transform computes to an identity matrix rather than to `none` — enough to
+     make `#root` a containing block for every `position: fixed` descendant,
+     permanently. Backwards fill supplies the from-state before the animation
+     starts and then gets out of the way, which is all this needs: the
+     to-state is the element's natural state. The header's backdrop slice
+     depends on that. */
+  animation: sheet-arrive var(--intro-arrive) cubic-bezier(0.16, 1, 0.3, 1)
+    backwards;
 }
 
 /* Set by the inline script in index.html on any load after the first in a
@@ -233,6 +251,18 @@ body::after {
   --muted: #52626b;
   --blue: #1655d8;
   --line: rgba(0, 59, 118, 0.22);
+  --on-ink: #ffffff;
+  /* Secondary type on an inverted surface. A tint of white rather than a
+     second colour, for the same reason `--muted` is not a tint of the ink.
+     Measured against every pixel the wash can travel over: 0.78 came out at
+     4.55:1 — AA by a rounding error. 0.82 buys 4.75:1 and still reads a full
+     step below the wordmark. Do not push it back down without re-measuring. */
+  --on-ink-muted: rgba(255, 255, 255, 0.82);
+  /* `--ink` at 75%. Written literally rather than mixed from the token: an
+     unsupported `color-mix()` here would invalidate `background` outright and
+     drop white type straight onto the painting, and legibility is not
+     something to leave to feature detection. Keep the two in step by hand. */
+  --header-wash: rgba(0, 59, 118, 0.75);
   --header-height: 76px;
   position: relative;
   z-index: 1;
@@ -271,26 +301,6 @@ body::after {
   text-decoration: none;
 }
 
-/* Hidden until focused, and hidden by clipping rather than by transform. The
-   intro leaves a transform on `#root`, which makes it the containing block for
-   every `position: fixed` descendant — so `translateY(-200%)` moved this off
-   the top of the *sheet*, not off the viewport, and it sat visible over the
-   band. Clipping cannot be defeated by an ancestor, so it holds either way. */
-.site-skip {
-  position: fixed;
-  left: 1rem;
-  top: 1rem;
-  z-index: 100;
-  padding: 0.75rem 1rem;
-  background: var(--ink);
-  color: white !important;
-  clip-path: inset(50%);
-}
-
-.site-skip:focus {
-  clip-path: none;
-}
-
 .site-header {
   position: sticky;
   top: var(--band);
@@ -299,9 +309,71 @@ body::after {
   min-height: var(--header-height);
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--line);
-  background: var(--paper);
+  /* Transparent, because the two pseudo-elements below carry the surface: the
+     backdrop slice, then the wash over it. `z-index` here already makes the
+     header a stacking context, which is what keeps both of them behind the
+     wordmark and the nav while still above the sheet's paper. */
+  background: transparent;
+  color: var(--on-ink);
   padding: 0 4vw;
+}
+
+/* The painting, seen through the header. Same fixed geometry as the backdrop
+   and the matte — it is the same rule — clipped to the band the header
+   occupies, so the three layers tile the top of the viewport without a seam.
+   `z-index: -1` puts it behind the header's own content but still in front of
+   the sheet's paper, which is what lets the header sit on the painting without
+   the sheet having to stop short of it. */
+.site-header::before {
+  z-index: -1;
+  clip-path: inset(
+    var(--band) 0 calc(100% - var(--band) - var(--header-height)) 0
+  );
+  /* Suppressed for the length of the intro. While the sheet is arriving,
+     `#root` is mid-transform and therefore the containing block for this fixed
+     layer, so it would resolve against the document rather than the viewport.
+     Nothing is lost by waiting: at the top of the page the real backdrop is
+     directly behind the header anyway, and this slice only starts doing work
+     once content has scrolled up under it.
+
+     The reveal is a fade rather than a cut. Ink over paper and ink over the
+     painting are different enough surfaces that switching between them in one
+     frame reads as a glitch; crossfaded, the skyline develops behind the glass.
+     It cannot start any earlier than `--intro-arrive` — the clip is measured
+     from `--band`, so it is only in register once the sheet has stopped
+     moving — but by then the transform is gone and the whole fade is honest. */
+  opacity: 0;
+  animation: header-backdrop-arm 360ms ease var(--intro-arrive) forwards;
+}
+
+@keyframes header-backdrop-arm {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Returning visitors skip the intro, so there is no transform to wait out and
+   nothing to reveal — the slice is simply already there. */
+.intro-done .site-header::before {
+  animation: none;
+  opacity: 1;
+}
+
+/* The wash. The ink at 75% is the same inversion the method band uses, applied
+   as a glaze rather than a fill: the Elbphilharmonie's roof and the towers read
+   straight through it. Measured against every pixel of painting the header can
+   travel over, white type holds 6.3:1 at its worst and 9.2:1 on average. An
+   earlier version of this system kept the header opaque paper because a *paper*
+   wash over a sunset painting reads as dirt. Ink does not — it reads as a
+   coloured plane, which is why this one works. Lowering the alpha shows more
+   painting and costs contrast roughly a point per 0.05; 0.62 is the floor. */
+.site-header::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--header-wash);
+  pointer-events: none;
 }
 
 .site-brand {
@@ -315,6 +387,11 @@ body::after {
   width: 34px;
   height: 34px;
   object-fit: contain;
+  /* The mark is a single flat ink (`#002f5f`) with an alpha channel, so
+     knocking it to white costs nothing and keeps one asset. `brightness(0)`
+     flattens it to black first; without that, `invert()` alone would return
+     the mark's complement, which is orange. */
+  filter: brightness(0) invert(1);
 }
 
 .site-brand span {
@@ -331,7 +408,7 @@ body::after {
 
 .site-brand small {
   margin-top: 0.2rem;
-  color: var(--muted);
+  color: var(--on-ink-muted);
 }
 
 .site-header nav {
@@ -390,8 +467,16 @@ body::after {
 }
 
 @media (max-width: 680px) {
+  /* The header's box and `--header-height` are one measurement, not two. The
+     variable drives the backdrop slice's clip as well as anchor offsets, so
+     letting the box shrink without it leaves a strip of uncovered painting
+     hanging below the header. */
+  .site-page {
+    --header-height: 68px;
+  }
+
   .site-header {
-    min-height: 68px;
+    min-height: var(--header-height);
     padding: 0 1.35rem;
   }
 
@@ -440,6 +525,13 @@ body::after {
 
   #root {
     animation: none;
+  }
+
+  /* No intro means no transform on `#root`, so the slice is safe immediately —
+     and a crossfade nobody asked for is exactly what this mode excludes. */
+  .site-header::before {
+    animation: none;
+    opacity: 1;
   }
 
   /* Not parallax — this is viewport-fixed frame, not content sliding past
