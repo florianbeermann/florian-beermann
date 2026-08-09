@@ -269,9 +269,14 @@ export default function Home() {
           <div className="home-proof-heading">
             <h2 id="proof-title">Where the experience comes from</h2>
             <p>
-              Companies I have worked in, not a client list. Each ran Customer
-              Success for a different kind of customer, which is how I learned
-              what transfers between segments and what quietly breaks.
+              <span className="home-proof-lede">
+                Every one of these is a company I worked inside.
+              </span>
+              <span className="home-proof-rest">
+                Each ran Customer Success for a different kind of customer. That
+                is where I learned what transfers between segments, and what
+                quietly breaks.
+              </span>
             </p>
           </div>
 
@@ -292,8 +297,8 @@ export default function Home() {
             <div>
               <dt>Targets</dt>
               <dd>
-                I have owned retention and expansion directly, not advised on
-                them from outside.
+                I have owned retention and expansion directly, not only advised
+                on them from outside.
               </dd>
             </div>
             <div>

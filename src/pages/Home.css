@@ -126,6 +126,19 @@
   line-height: 1.6;
 }
 
+.home-proof-lede {
+  display: block;
+  color: var(--ink);
+  font-weight: 520;
+}
+
+.home-proof-rest {
+  display: block;
+  margin-top: 1.15rem;
+  padding-top: 1.15rem;
+  border-top: 1px solid var(--line);
+}
+
 .home-employers {
   display: flex;
   flex-wrap: wrap;
