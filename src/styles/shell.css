@@ -18,12 +18,27 @@
 
 :root {
   --frame: clamp(14px, 6vw, 104px);
+  /* iOS renders the document under the status bar while `fixed` and `sticky`
+     layers stop at the layout viewport, so a scrolled sheet shows through in a
+     strip above the frame — the page reappearing on top of its own backdrop.
+     With `viewport-fit=cover` set in index.html that strip belongs to the page,
+     and these insets are how the shell accounts for it. They resolve to 0px on
+     every other platform, so nothing off an inset display moves. */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
   /* The top edge is deliberately deeper than the other three. A mat weighted at
      the top is a real framing convention, and here it is load-bearing: the band
      is the only place the backdrop's skyline can be read, and at 6vw it showed
      a sliver too thin to carry a building. At 11vw it holds ~17.6% of the
-     painting's height instead of ~9.6%. */
-  --frame-top: clamp(20px, 11vw, 190px);
+     painting's height instead of ~9.6%.
+
+     The safe-area inset is added rather than substituted: the frame keeps its
+     designed depth and the status bar sits above it, over the backdrop, so the
+     painting runs to the physical top of the screen and the header still parks
+     clear of the clock. */
+  --frame-top: calc(clamp(20px, 11vw, 190px) + var(--safe-top));
   /* Falls back to the resting band where scroll timelines are unsupported. */
   --band: var(--frame-top);
   /* How far the page scrolls before the band is fully collapsed. */
@@ -32,8 +47,10 @@
      the side frames: at rest the mat is top-weighted to show the skyline, but
      once the page is the subject the backdrop earns only a sliver. Kept above
      zero so the sheet still reads as an object resting on something rather than
-     running off the top of the window. */
-  --band-collapsed: clamp(8px, 2vw, 32px);
+     running off the top of the window. Carries the same safe-area inset as
+     `--frame-top`, so the band collapses by the same distance it always did and
+     the two ends of the intro gesture stay in step. */
+  --band-collapsed: calc(clamp(8px, 2vw, 32px) + var(--safe-top));
   /* Holds the frame during the intro before the painting decodes, so the first
      frame is the picture's own warm key rather than a colour it has to correct
      away from. Sampled from the source's mean. */
@@ -81,10 +98,10 @@
     --frame: 14px;
     /* Phones keep a uniform frame. Their band is too short to read a skyline at
        any width worth the fold space it would cost. */
-    --frame-top: 14px;
+    --frame-top: calc(14px + var(--safe-top));
     /* Nothing to collapse, so hold the uniform frame. At this size a top edge
        thinner than the sides reads as a misalignment, not a decision. */
-    --band-collapsed: 14px;
+    --band-collapsed: calc(14px + var(--safe-top));
   }
 }
 
@@ -272,8 +289,14 @@ body::after {
   --header-height: 76px;
   position: relative;
   z-index: 1;
-  margin: var(--frame-top) var(--frame) var(--frame);
-  min-height: calc(100vh - var(--frame-top) - var(--frame));
+  /* The other three edges take their own safe-area insets so the sheet clears
+     the home indicator and, in landscape, the notch. The top edge already
+     carries its inset through `--frame-top`. */
+  margin: var(--frame-top) calc(var(--frame) + var(--safe-right))
+    calc(var(--frame) + var(--safe-bottom)) calc(var(--frame) + var(--safe-left));
+  min-height: calc(
+    100vh - var(--frame-top) - var(--frame) - var(--safe-bottom)
+  );
   background: var(--paper);
   color: var(--ink);
   font-family: "Inter Variable", "Helvetica Neue", Arial, sans-serif;

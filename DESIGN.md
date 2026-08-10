@@ -256,6 +256,19 @@ The sheet is inset from the viewport by `--frame`, set to `clamp(14px, 6vw,
 neither eats reading width on a phone. Everything else in this section describes
 layout *inside* the sheet.
 
+**The frame absorbs the device's safe area.** Every edge adds its
+`env(safe-area-inset-*)` on top of its designed depth, and the page declares
+`viewport-fit=cover`. Without covering, iOS keeps the layout viewport below the
+status bar while still scrolling the document *under* it: `fixed` and `sticky`
+layers stop at the frame line, so the scrolled sheet reappears in a strip above
+its own backdrop. Covering hands that strip to the page, and the insets are what
+the shell claims it back with. Adding rather than substituting matters — the
+frame keeps its designed depth, the status bar sits above it over the painting,
+and the header still parks clear of the clock. `--band-collapsed` carries the
+same top inset so the band collapses by the distance it always did and the two
+ends of the intro gesture stay in step. All four insets are `0px` off an inset
+display, so nothing else in this document changes.
+
 The frame is deliberately generous at desktop. The sheet covers the backdrop's
 entire centre, so only the outer band is ever seen: a thin border crops the
 image to unreadable noise, while a wide one lets the skyline register. Frame width is therefore a content decision, not a
