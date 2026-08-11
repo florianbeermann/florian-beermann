@@ -98,7 +98,7 @@ this network; the legal entity is a sole trader.
 - **Name:** florian beermann & partners — set lowercase as a wordmark.
 - **Legal entity:** Florian Beermann, sole trader, Hegestr. 31, 20249 Hamburg,
   Germany.
-- **Contact:** hello@florianbeermann.com · +49 162 918 6291 ·
+- **Contact:** hello@florianbeermann.com · +49 (0)40 89705822 ·
   linkedin.com/in/florian-beermann
 - **Voice:** first-person singular, en-GB spelling ("realisation",
   "organisations"), understated and specific. Avoids transformation-consultancy

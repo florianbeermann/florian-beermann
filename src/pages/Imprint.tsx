@@ -32,7 +32,7 @@ export const Imprint = () => {
           <div>
             <dt>Phone</dt>
             <dd>
-              <a href="tel:+491629186291">+49 162 918 6291</a>
+              <a href="tel:+494089705822">+49 (0)40 89705822</a>
             </dd>
           </div>
         </dl>
