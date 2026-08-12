@@ -322,6 +322,17 @@ Three consequences worth knowing before changing anything here:
   using the collapsed band because anchors are always landed on well past the
   collapse range. Under `prefers-reduced-motion` the band never collapses, so
   that same rule reverts to `--frame-top` there or every anchor lands 130px off.
+- **The document refuses elastic overscroll** (`overscroll-behavior-y: none`).
+  Everything above rests on `fixed` layers and the flow agreeing on where the
+  frame line is. Rubber-banding past the top breaks that agreement by design: it
+  translates the scrolling contents — sheet, and the header stuck to it — while
+  the `fixed` painting layers stay welded to the viewport. The header rides down,
+  its clipped slice does not, and its wash overhangs onto the paper as a flat
+  blue strip that detaches the nav from the hero. No layer is misconfigured; the
+  bounce is simply prising apart two coordinate systems this design treats as
+  one. The frame is meant to be the edge of the window, and a window does not
+  bounce. This costs pull-to-refresh on Android and the bounce on iOS 16+, which
+  is the right trade for a page whose whole premise is a still frame.
 
 The backdrop is a fixed layer rather than a body background. As a scrolling
 body background, `cover` resolves against full document height and zooms the

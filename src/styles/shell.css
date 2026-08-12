@@ -105,6 +105,21 @@
   }
 }
 
+/* Elastic overscroll is incompatible with a fixed frame. Rubber-banding past
+   the top translates the scrolling contents — the sheet and the header that
+   sticks to it — while `position: fixed` layers stay welded to the viewport.
+   The header rides down; the painting slice clipped behind it does not; and the
+   header's wash, which is sized to the header's own box, overhangs onto the
+   paper as a flat blue strip that detaches the nav from the hero.
+
+   Nothing about the layers is wrong: the seam is the bounce prising apart two
+   coordinate systems that the design treats as one. The frame is meant to be
+   the edge of the window, and a window does not bounce. Refusing the gesture is
+   the fix, and it is the honest one. */
+html {
+  overscroll-behavior-y: none;
+}
+
 /* The backdrop is a fixed layer rather than a body background so it always
    sizes to the viewport. As a scrolling body background, `cover` would resolve
    against full document height and zoom the painting to a smear on mobile.
