@@ -436,11 +436,17 @@ a callout.
   transparent 1px bottom border that becomes `currentColor` on hover and
   focus-visible. Sticky header, no bottom rule: it sits on a slice of the
   Hamburg backdrop under a 75% ink glaze, so the painting itself draws the
-  edge. The logo mark is knocked to white with `brightness(0) invert(1)`.
-- **Mobile:** Below 680px the wordmark text hides and only the logo mark plus
-  condensed nav remain. `--header-height` drops to `68px` in the same media
-  query as the header's own `min-height` — they are one measurement, and the
-  backdrop slice is clipped from the variable.
+  edge. The FB&P lockup is knocked to white with `brightness(0) invert(1)`:
+  both of its inks are dark by design, so on the navy wash the letterforms
+  would vanish and the lapis ampersand would sit at 1.55:1. The interlock
+  survives the flattening because the overlaps are drawn as gaps rather than as
+  a lighter colour. The lockup is 3.32:1, so only its height is pinned (`52px`)
+  and the width follows the artwork.
+- **Mobile:** Below 680px a `<picture>` swaps the lockup for the monogram alone
+  (`logo-mark.svg`, 2.02:1 at `38px`) — the lockup's wordmark is 28:1 and its
+  caps fall below a legible size in a narrow header. `--header-height` drops to
+  `68px` in the same media query as the header's own `min-height` — they are
+  one measurement, and the backdrop slice is clipped from the variable.
 
 ### Signature Component: The Inverted Method Band
 A full-bleed `var(--ink)` section with white type, containing a four-column

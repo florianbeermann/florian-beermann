@@ -209,12 +209,15 @@ export default function Home() {
   return (
     <div className="site-page">
       <header className="site-header">
-        <a className="site-brand" href="#top" aria-label="Home">
-          <img src="/logo.png" alt="" width="34" height="34" />
-          <span>
-            <strong>florian beermann</strong>
-            <small>&amp; partners</small>
-          </span>
+        <a className="site-brand" href="#top" aria-label="Florian Beermann &amp; Partners, home">
+          {/* The lockup carries the name itself, so the wordmark that used to sit
+              beside the mark is gone. Below 680px the wordmark's caps would fall
+              under a legible size, so the narrow header takes the monogram alone
+              -- the same swap the old header made by hiding its text. */}
+          <picture>
+            <source media="(max-width: 680px)" srcSet="/logo-mark.svg" />
+            <img src="/logo-lockup.svg" alt="" width="1255" height="378" />
+          </picture>
         </a>
         <nav aria-label="Primary navigation">
           <a href="#engagements">Engagements</a>

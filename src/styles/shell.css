@@ -423,36 +423,24 @@ body::after {
 .site-brand {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
   min-height: 44px;
 }
 
+/* The lockup is 3.32:1, so height is the only dimension worth pinning; the
+   width follows from the artwork's own ratio. 52px is the tallest the mark can
+   go inside the 76px header and still leave the nav room to breathe, and it
+   puts the wordmark's caps just above the size where a hairline sans stops
+   resolving. */
 .site-brand img {
-  width: 34px;
-  height: 34px;
-  object-fit: contain;
-  /* The mark is a single flat ink (`#002f5f`) with an alpha channel, so
-     knocking it to white costs nothing and keeps one asset. `brightness(0)`
-     flattens it to black first; without that, `invert()` alone would return
-     the mark's complement, which is orange. */
+  height: 52px;
+  width: auto;
+  /* Both inks are dark by design -- navy letters and a lapis ampersand, drawn
+     for paper. On the header's navy wash the letters would vanish outright and
+     the ampersand would sit at 1.55:1, so the whole lockup is knocked to white.
+     `brightness(0)` flattens it to black first; without that, `invert()` alone
+     would return each ink's complement, which is orange. The overlaps survive
+     the flattening because they are drawn as gaps, not as a lighter colour. */
   filter: brightness(0) invert(1);
-}
-
-.site-brand span {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.05;
-}
-
-.site-brand strong,
-.site-brand small {
-  font-size: 0.8125rem;
-  font-weight: 500;
-}
-
-.site-brand small {
-  margin-top: 0.2rem;
-  color: var(--on-ink-muted);
 }
 
 .site-header nav {
@@ -524,9 +512,12 @@ body::after {
     padding: 0 1.35rem;
   }
 
-  .site-brand strong,
-  .site-brand small {
-    display: none;
+  /* `<picture>` has already swapped in the monogram at this width. It is
+     2.02:1 rather than 3.32:1, so the same height would make it far heavier
+     than the lockup it replaces -- 38px lands it at the presence the old 34px
+     square had. */
+  .site-brand img {
+    height: 38px;
   }
 
   .site-header nav {
@@ -551,9 +542,10 @@ body::after {
     padding: 0 0.7rem;
   }
 
+  /* The monogram is already narrow enough at this width; it only needs to give
+     the nav a little more room. */
   .site-brand img {
-    width: 28px;
-    height: 28px;
+    height: 32px;
   }
 
   .site-header nav {
