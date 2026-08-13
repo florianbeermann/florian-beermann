@@ -10,7 +10,7 @@ colors:
   line: "rgba(0, 59, 118, 0.22)"
   on-ink: "#ffffff"
   on-ink-muted: "rgba(255, 255, 255, 0.82)"
-  header-wash: "rgba(0, 59, 118, 0.75)"
+  header-wash: "rgba(243, 240, 232, 0.62)"
   backdrop-ink: "#92785a"
 typography:
   display:
@@ -186,18 +186,44 @@ reserved for action and emphasis.
   family as the type instead of reading as grey furniture.
 
 ### On the Backdrop
-- **Header Wash** (`rgba(0, 59, 118, 0.75)`): The glaze the navigation sits on.
-  `--ink` at 75%, written as a literal rather than mixed from the token: an
-  unsupported `color-mix()` would be invalid at computed-value time, drop
-  `background` entirely, and put white type straight onto the painting.
-  Legibility is not something to leave to feature detection. Measured against
-  every pixel of painting the header can travel over, white holds 6.3:1 at
-  worst and 9.2:1 on average. Alpha is the dial for how much Elbphilharmonie
-  shows: contrast falls roughly a point per 0.05, and 0.62 is the floor.
-- **On Ink Muted** (`rgba(255, 255, 255, 0.82)`): Secondary type on the wash —
-  the `& partners` line. A tint of white rather than a second colour, for the
-  same reason Muted Slate is not a tint of the ink. 0.78 was measured at 4.55:1,
-  AA by a rounding error; 0.82 gives 4.75:1 and still reads a step down.
+- **Header Wash** (`rgba(243, 240, 232, 0.62)`): The glaze the navigation sits
+  on — `--paper` at 62%, written as a literal rather than mixed from the token:
+  an unsupported `color-mix()` would be invalid at computed-value time, drop
+  `background` entirely, and put ink type straight onto the painting.
+  Legibility is not something to leave to feature detection. It only works
+  because the painting beneath it is bleached first (see Header Slice); over raw
+  backdrop this same value reads as a stain. Measured against every pixel of
+  painting the header can travel over, ink holds 6.0:1 at worst and 8.3:1 on
+  average. Alpha is the dial for how much Elbphilharmonie shows.
+- **Header Slice** (`saturate(0.34) contrast(0.58) brightness(1.52)`): Not a
+  colour but the filter that makes one possible. Paper laid straight onto a
+  sunset reads as dirt, because the sheet's ground is lighter and far less
+  saturated than anything in the picture; the wash cannot close a gap that
+  large. Bleaching the painting first does — it lands the gold on a warm grey at
+  roughly paper's own chroma, so the glaze reads as vellum. The skyline survives
+  because it is carried by value, not hue: the Elbphilharmonie's roof and the
+  church towers are the darkest things in frame and stay legible once the colour
+  has gone. The header ends up a watermark of Hamburg on the masthead, which is
+  a better description of this practice than either an opaque bar or a blue one.
+
+  The three numbers are measured, and the measurement corrected an instinct. The
+  gap that makes a glaze read as dirt is **lightness, not hue** — the first
+  version sat 23 L units darker than the sheet while already running *warmer*
+  than it (R−B of 18 against the sheet's 8), so the seam looked like grime while
+  the obvious fix, adding sepia, would have made it worse. Brightness is
+  therefore the lever: `1.52` closes the seam to 15 units and, because the wash
+  now lifts off a lighter ground, raises worst-case ink contrast from 5.5:1 to
+  6.0:1 in the same move. Saturation is the weakest of the three — `0.55` down to
+  `0.26` only shifts warmth from 18 to 12, at no contrast cost in either
+  direction — so `0.34` halves the excess and stops short of draining the sunset
+  out of the sky. Re-measure the band against the sheet, not against the
+  painting, if any of this is touched.
+- **On Ink Muted** (`rgba(255, 255, 255, 0.82)`): Secondary type on an inverted
+  surface — the method band and the primary button, both on flat `--ink`. Not
+  the header, which is paper. A tint of white rather than a second colour, for
+  the same reason Muted Slate is not a tint of the ink. It composites to
+  `rgb(209, 220, 230)` and measures 8.00:1 on ink, against white's own 11.13:1,
+  so the figure to protect is the step down from the wordmark, not the floor.
 
 ### Named Rules
 **The Two Blues Rule.** The navy is structure; the lapis is action. They
@@ -296,19 +322,42 @@ cropping costs resolution everywhere, permanently. Space is the cheaper currency
 
 Three consequences worth knowing before changing anything here:
 
-- **The sticky header parks at the frame line** (`top: var(--band)`), not at
-  the viewport top, and it is a glaze of ink over the painting rather than a
-  solid. This reverses an earlier decision. The original reading was that a
-  translucent header lets the backdrop bleed through and muddies it — true, but
-  only of a *paper* wash, which turns a sunset painting into dirt. Ink at 75%
-  reads as a coloured plane instead, the Elbphilharmonie's roof and the towers
-  carry straight through it, and the header becomes the third thing showing the
-  backdrop rather than the one thing hiding it.
+- **The sticky header parks at the frame line** (`top: var(--band)`), not at the
+  viewport top, and it is a glaze of bleached painting under paper rather than a
+  solid. Three versions have shipped and the third is the reconciliation. Opaque
+  paper is honest but hides the one thing the header is standing on. A *paper*
+  glaze over the raw painting reads as dirt — the sheet's ground is too light
+  and too dull to sit on a sunset, so it looks like a stain rather than glass;
+  that reading is correct and is why the first attempt was abandoned. An *ink*
+  glaze avoided it by not pretending to be paper at all, but made the navigation
+  the loudest object on a page whose argument is set in the same navy. Bleaching
+  the painting before the paper lands on it removes the premise of the dirt
+  problem: there is no saturated gold left to muddy. The header becomes paper
+  with Hamburg watermarked into it.
+- **The header carries a masthead rule** (`border-bottom: 1px solid var(--line)`).
+  It is on at every scroll position rather than faded in once the page moves,
+  because it has two jobs: it is the rule a broadsheet prints under its
+  masthead, and it is the edge between the glaze and the sheet. Those two
+  grounds are close by design — that is the whole point of a paper glaze — so
+  the boundary has to be drawn rather than inferred. `box-sizing` is inherited
+  as `border-box`, so the rule is drawn inside `--header-height` and the box
+  stays exactly the measurement the anchor offsets and the slice's clip assume.
 - **The header owns a third copy of the backdrop.** It cannot simply be
   transparent: once the sheet scrolls, the paper behind the header would show
   the page's own content through it. So the header carries a fixed backdrop
-  layer of its own, clipped to `inset(var(--band) … var(--header-height))`, and
-  the wash sits on top of that. Painting, never content.
+  layer of its own, clipped to the header's box, and the glaze sits on top of
+  that. Painting, never content. The filter lives on this layer rather than as a
+  `backdrop-filter` on the glaze for exactly that reason — this layer is only
+  ever painting, so there is nothing else it can accidentally bleach — and
+  because a filter on a fixed layer that does not move is painted once instead
+  of every frame.
+- **That slice is clipped on all four sides, not two.** It is viewport-fixed and
+  full-bleed, which cost nothing while it was an untouched copy of the backdrop:
+  the overhang was pixel-identical to the backdrop beside it and therefore
+  invisible. A filter ends that immediately — anything outside the header's box
+  shows as a bleached band running off both edges of the sheet. The horizontal
+  inset is `--frame`, because the sheet is flush to it with no max-width
+  centring to account for.
 - **A fixed matte repaints the top band.** Once the sheet scrolls past the
   viewport top its paper would cover the backdrop's top strip, so a fixed layer
   clipped to `--band` redraws it. The matte and the backdrop share identical
@@ -327,8 +376,8 @@ Three consequences worth knowing before changing anything here:
   frame line is. Rubber-banding past the top breaks that agreement by design: it
   translates the scrolling contents — sheet, and the header stuck to it — while
   the `fixed` painting layers stay welded to the viewport. The header rides down,
-  its clipped slice does not, and its wash overhangs onto the paper as a flat
-  blue strip that detaches the nav from the hero. No layer is misconfigured; the
+  its clipped slice does not, and the glaze overhangs onto the paper as a flat
+  strip that detaches the nav from the hero. No layer is misconfigured; the
   bounce is simply prising apart two coordinate systems this design treats as
   one. The frame is meant to be the edge of the window, and a window does not
   bounce. This costs pull-to-refresh on Android and the bounce on iOS 16+, which
@@ -432,24 +481,37 @@ a callout.
   placeholder-as-label.
 
 ### Navigation
-- **Style:** Text links at `0.84rem` / 520 in white, `44px` min-height, with a
+- **Style:** Text links at `0.84rem` / 520 in `--ink`, `44px` min-height, with a
   transparent 1px bottom border that becomes `currentColor` on hover and
-  focus-visible. Sticky header, no bottom rule: it sits on a slice of the
-  Hamburg backdrop under a 75% ink glaze, so the painting itself draws the
-  edge. The FB&P lockup ships in two cuts rather than being knocked to white by
-  a filter, because its two inks have to move differently on ink: the navy
-  letterforms would vanish into the wash and so go white, while the ampersand
-  keeps Signal Lapis — the same blue the hero's second line is set in, so the
-  mark and the headline agree. It sits low against the wash by design; the
-  white letterforms carry the name and the lapis reads as depth. A filter
-  cannot tell the two apart, which is why the recolour lives in the file. The
-  lockup is 3.32:1, so only its height is pinned (`52px`) and the width follows
-  the artwork.
-- **Mobile:** Below 680px a `<picture>` swaps the lockup for the monogram alone
-  (`logo-mark-on-ink.svg`, 2.02:1 at `38px`) — the lockup's wordmark is 28:1 and
-  its caps fall below a legible size in a narrow header. `--header-height` drops
-  to `68px` in the same media query as the header's own `min-height` — they are
-  one measurement, and the backdrop slice is clipped from the variable.
+  focus-visible. Sticky header on a paper glaze over a bleached slice of the
+  Hamburg backdrop, with a `--line` rule beneath it — the grounds on either side
+  of that edge are close by design, so the rule draws a boundary that would
+  otherwise have to be inferred. Ink type clears 6.0:1 against the darkest
+  ground the header can travel over.
+- **The mark:** The monogram alone (`logo-mark.svg`), at every width, `52px`
+  tall and `84.9px` wide — 1.632:1, so only the height is pinned and the width
+  follows the artwork. It is the standard cut: navy letterforms, and an
+  ampersand knocked out of a solid Signal Lapis tile in paper. The lapis is the
+  same blue the hero's second line is set in, so the mark and the headline
+  agree.
+
+  The full lockup is *not* used here, and the reason is arithmetic rather than
+  taste. Since the artwork was redrawn stacked, its wordmark runs on two centred
+  lines and the monogram is only 53% of the total height. Pinned to this
+  header's `52px` the lockup renders `191.7 × 52`, which puts the monogram at
+  ~27px, the wordmark's caps at ~6.8px, and shrinks the lapis tile until it
+  disappears entirely. That tile is the one piece of colour the mark owns, so a
+  size that throws it away is the wrong size. The brand link's `aria-label`
+  carries the full name, so nothing is lost by dropping the wordmark.
+- **Never filter the mark.** The cut carries three inks — navy, lapis, and the
+  paper the ampersand is knocked out in — and a filter cannot tell them apart.
+  `brightness(0) invert(1)` flattens all three into one flat shape. Recolour in
+  the file instead; that is why a separate `-on-ink` cut exists even though this
+  header does not use it.
+- **Mobile:** Below 680px the mark drops to `38px` and `--header-height` to
+  `68px`, in the same media query as the header's own `min-height` — they are one
+  measurement, and the slice's clip is taken from the variable. There is no
+  `<picture>` swap: one asset serves every width.
 
 ### Signature Component: The Inverted Method Band
 A full-bleed `var(--ink)` section with white type, containing a four-column
@@ -728,6 +790,15 @@ decelerating move reads as momentum, not lag.
   those, anywhere above it, silently re-parents it. The backdrop and the matte
   hang off `body` for exactly this reason; the header's slice cannot, because it
   has to sit above the sheet's paper.
+- **Don't** glaze the header with paper without bleaching the painting under it
+  first. That combination has been tried on its own and it reads as dirt, not as
+  glass. The filter is not a finish — it is the load-bearing half of the effect.
+- **Don't** widen the header slice's clip back to the full viewport. It is fixed
+  and full-bleed, so an unclipped filtered copy paints a bleached band straight
+  across the backdrop on both sides of the sheet.
+- **Don't** drop the header's bottom rule. The glaze and the sheet are close
+  grounds on purpose, and without a drawn edge the header has no boundary — text
+  scrolling under it simply stops existing.
 - **Don't** drive `--band` from anything that reflows the document. It may only
   feed paint and sticky offsets; putting it on the sheet's margin would relayout
   the page on every scroll frame and move the scroll position driving it.

@@ -210,15 +210,14 @@ export default function Home() {
     <div className="site-page">
       <header className="site-header">
         <a className="site-brand" href="#top" aria-label="Florian Beermann &amp; Partners, home">
-          {/* The lockup carries the name itself, so the wordmark that used to sit
-              beside the mark is gone. Below 680px the wordmark's caps would fall
-              under a legible size, so the narrow header takes the monogram alone
-              -- the same swap the old header made by hiding its text. The
-              `on-ink` cuts are recoloured for the navy wash; see the files. */}
-          <picture>
-            <source media="(max-width: 680px)" srcSet="/logo-mark-on-ink.svg" />
-            <img src="/logo-lockup-on-ink.svg" alt="" width="1255" height="378" />
-          </picture>
+          {/* Monogram alone at every width. The lockup was redrawn stacked, so its
+              wordmark now runs on two centred lines and the mark is only 53% of
+              the total height: pinned to the header's 52px it renders 191.7x52
+              with caps near 6.8px and the lapis ampersand tile disappears
+              entirely. The tile is the mark's one piece of colour, so the header
+              takes the cut that keeps it. The link's aria-label carries the name.
+              The header is paper, so this is the standard navy-and-lapis cut. */}
+          <img src="/logo-mark.svg" alt="" width="320" height="196" />
         </a>
         <nav aria-label="Primary navigation">
           <a href="#engagements">Engagements</a>

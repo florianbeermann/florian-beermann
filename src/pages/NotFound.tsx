@@ -19,10 +19,7 @@ const NotFound = () => {
     <div className="site-page notfound-page">
       <header className="site-header">
         <Link className="site-brand" to="/" aria-label="Florian Beermann &amp; Partners, home">
-          <picture>
-            <source media="(max-width: 680px)" srcSet="/logo-mark-on-ink.svg" />
-            <img src="/logo-lockup-on-ink.svg" alt="" width="1255" height="378" />
-          </picture>
+          <img src="/logo-mark.svg" alt="" width="320" height="196" />
         </Link>
         <nav aria-label="Primary navigation">
           <Link to="/#engagements">Engagements</Link>
