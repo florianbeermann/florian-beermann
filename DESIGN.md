@@ -504,15 +504,21 @@ a callout.
   size that throws it away is the wrong size.
 - **The name is a second cut of the same drawing, not type.** `logo-wordmark.svg`
   carries both lines — `FLORIAN BEERMANN` over `& PARTNERS` — trimmed to its own
-  ink and shifted flush left, since the master centres the two lines under a
-  stacked mark and centred lines read as broken beside one. Type was tried twice
-  and both attempts were wrong for a reason that measures: the artwork's wordmark
-  has a width-to-cap-height ratio of `29.9`, where Inter at `0.28em` gives `20.2`.
-  That is roughly `0.72em` of tracking *and* a lighter weight than Inter carries.
-  No letter-spacing value closes a 48% gap while the weight is still wrong, so
-  the header uses the drawing. It costs one more request; it buys the actual
-  brand. Both images are `alt=""` — the brand link's `aria-label` carries the
-  full name, and a screen reader should hear it once.
+  ink, with the second line centred under the first exactly as the artwork draws
+  it. Flushing them left was tried and rejected: the two lines are a stacked
+  unit, and setting the shorter one against the mark makes it read as a stray
+  third element rather than the continuation of the name. The cut carries a
+  `-0.295` unit nudge, which is the whole of the correction — line 1 centres on
+  `749.985` and line 2 on `750.28`, so the drawing was already centred to within
+  a third of a unit and the nudge only puts the two axes exactly on top of each
+  other. Type was tried twice and both attempts were wrong for a reason that
+  measures: the artwork's wordmark has a width-to-cap-height ratio of `29.9`,
+  where Inter at `0.28em` gives `20.2`. That is roughly `0.72em` of tracking
+  *and* a lighter weight than Inter carries. No letter-spacing value closes a
+  48% gap while the weight is still wrong, so the header uses the drawing. It
+  costs one more request; it buys the actual brand. Both images are `alt=""` —
+  the brand link's `aria-label` carries the full name, and a screen reader
+  should hear it once.
 - **The name is aligned to the mark's ink, not to its box, and the correction is
   a constant.** Both cuts are trimmed to their own ink, so flex centres them
   honestly — but the mark's box is not its letterforms: the lapis tile runs the
