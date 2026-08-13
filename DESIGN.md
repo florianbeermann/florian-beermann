@@ -501,8 +501,26 @@ a callout.
   header's `52px` the lockup renders `191.7 × 52`, which puts the monogram at
   ~27px, the wordmark's caps at ~6.8px, and shrinks the lapis tile until it
   disappears entirely. That tile is the one piece of colour the mark owns, so a
-  size that throws it away is the wrong size. The brand link's `aria-label`
-  carries the full name, so nothing is lost by dropping the wordmark.
+  size that throws it away is the wrong size.
+- **The name is set in live type, not cut from the artwork.** `Florian Beermann`
+  / `& Partners` sits beside the mark at `0.78rem` / 500 / `0.28em`, two lines,
+  uppercase, in the same ink as the links. Three reasons it is type. The
+  lockup's own wordmark is *centre*-aligned, because it was drawn to sit under a
+  mark rather than beside one; set flush left against a monogram it reads as
+  broken. The face is the same grotesque as Inter — rendered side by side at
+  matched size the letterforms are indistinguishable — so nothing is lost in
+  translation. And type costs no second request, scales with the type ramp, and
+  stands down at mobile without a `<picture>` swap. It is `aria-hidden`: the
+  brand link already carries the full name in its `aria-label`, and a screen
+  reader should hear it once.
+- **The name is aligned to the mark's ink, not to its box.** Flex centring puts
+  the two boxes within a hundredth of a pixel of each other and still looks
+  wrong, because neither box is its own ink — the monogram's letterforms occupy
+  only 4.9%–74.6% of the artwork's height, the lapis tile hanging below the
+  baseline, while the name's line boxes carry descender space its caps never
+  use. Uncorrected the name sits `6.63px` low. `.site-brand-name` is pulled up
+  by that measured amount. Recompute it if either the mark's `52px` or the
+  name's size changes; it is not a round number and it is not a guess.
 - **Never filter the mark.** The cut carries three inks — navy, lapis, and the
   paper the ampersand is knocked out in — and a filter cannot tell them apart.
   `brightness(0) invert(1)` flattens all three into one flat shape. Recolour in
@@ -510,8 +528,11 @@ a callout.
   header does not use it.
 - **Mobile:** Below 680px the mark drops to `38px` and `--header-height` to
   `68px`, in the same media query as the header's own `min-height` — they are one
-  measurement, and the slice's clip is taken from the variable. There is no
-  `<picture>` swap: one asset serves every width.
+  measurement, and the slice's clip is taken from the variable. The name stands
+  down here: at `393px` the mark and three links already fill the strip, and a
+  two-line wordmark between them would either wrap the nav or crowd it. The mark
+  alone carries the brand at that width. There is no `<picture>` swap: one asset
+  serves every width.
 
 ### Signature Component: The Inverted Method Band
 A full-bleed `var(--ink)` section with white type, containing a four-column

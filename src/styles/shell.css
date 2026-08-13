@@ -474,7 +474,40 @@ body::after {
 .site-brand {
   display: flex;
   align-items: center;
+  gap: 0.85rem;
   min-height: 44px;
+}
+
+/* The name set live rather than cut into the artwork. The supplied lockup does
+   carry a wordmark, but it is centred on two lines under the monogram, which is
+   right for a stacked lockup and wrong beside a mark — flush left is the only
+   alignment that reads as one object here. Set against the artwork at the same
+   size, Inter is the same grotesque the wordmark is drawn in, so nothing is
+   lost by setting it in type: it gains flush-left, it scales with the header,
+   and it can stand down at narrow widths without a second asset or a
+   `<picture>` swap. `aria-hidden` because the link's `aria-label` already
+   names it — otherwise the name would be announced twice. */
+.site-brand-name {
+  display: flex;
+  flex-direction: column;
+  gap: 0.22em;
+  font-family: "Inter Variable", "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  /* Optical, not arbitrary. Flex centres the two boxes to within a hundredth of
+     a pixel, but neither box is its own ink: the monogram's letterforms occupy
+     only 4.9%-74.6% of the artwork's height because the lapis tile hangs below
+     the baseline, and the name's two line boxes carry descender space the caps
+     never use. Centring the boxes therefore leaves the name sitting 6.63px low
+     against the FB&P it is paired with, which reads as a slip rather than as a
+     lockup. Measured, not estimated -- recompute both terms if the mark's 52px
+     or this font-size changes. */
+  position: relative;
+  top: -6.6px;
 }
 
 /* The monogram is 1.632:1, so height is the only dimension worth pinning; the
@@ -561,12 +594,18 @@ body::after {
     padding: 0 1.35rem;
   }
 
-  /* `<picture>` has already swapped in the monogram at this width. It is
-     2.02:1 rather than 3.32:1, so the same height would make it far heavier
-     than the lockup it replaces -- 38px lands it at the presence the old 34px
-     square had. */
+  /* 38px lands the monogram at the presence the old 34px square had. */
   .site-brand img {
     height: 38px;
+  }
+
+  /* The name stands down and the monogram carries the brand alone. Below this
+     width the header cannot hold both the name and three nav links without one
+     of them wrapping, and the monogram is the half that still reads at 38px.
+     Nothing is lost to assistive tech: the link's `aria-label` is unchanged and
+     was always what got announced. */
+  .site-brand-name {
+    display: none;
   }
 
   .site-header nav {

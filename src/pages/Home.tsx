@@ -218,6 +218,10 @@ export default function Home() {
               takes the cut that keeps it. The link's aria-label carries the name.
               The header is paper, so this is the standard navy-and-lapis cut. */}
           <img src="/logo-mark.svg" alt="" width="320" height="196" />
+          <span className="site-brand-name" aria-hidden="true">
+            <span>Florian Beermann</span>
+            <span>&amp; Partners</span>
+          </span>
         </a>
         <nav aria-label="Primary navigation">
           <a href="#engagements">Engagements</a>
