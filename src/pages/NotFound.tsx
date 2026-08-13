@@ -20,8 +20,8 @@ const NotFound = () => {
       <header className="site-header">
         <Link className="site-brand" to="/" aria-label="Florian Beermann &amp; Partners, home">
           <picture>
-            <source media="(max-width: 680px)" srcSet="/logo-mark.svg" />
-            <img src="/logo-lockup.svg" alt="" width="1255" height="378" />
+            <source media="(max-width: 680px)" srcSet="/logo-mark-on-ink.svg" />
+            <img src="/logo-lockup-on-ink.svg" alt="" width="1255" height="378" />
           </picture>
         </Link>
         <nav aria-label="Primary navigation">

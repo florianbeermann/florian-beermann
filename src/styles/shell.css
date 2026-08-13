@@ -434,13 +434,12 @@ body::after {
 .site-brand img {
   height: 52px;
   width: auto;
-  /* Both inks are dark by design -- navy letters and a lapis ampersand, drawn
-     for paper. On the header's navy wash the letters would vanish outright and
-     the ampersand would sit at 1.55:1, so the whole lockup is knocked to white.
-     `brightness(0)` flattens it to black first; without that, `invert()` alone
-     would return each ink's complement, which is orange. The overlaps survive
-     the flattening because they are drawn as gaps, not as a lighter colour. */
-  filter: brightness(0) invert(1);
+  /* No knockout filter here. The header cut is recoloured in the file instead,
+     because the two inks have to move differently: the navy letterforms would
+     vanish into the wash and go white, while the ampersand keeps Signal Lapis
+     so it stays the blue the hero's second line is set in. A filter cannot tell
+     them apart -- `brightness(0) invert(1)` flattens both to white and the
+     accent is lost. */
 }
 
 .site-header nav {

@@ -213,10 +213,11 @@ export default function Home() {
           {/* The lockup carries the name itself, so the wordmark that used to sit
               beside the mark is gone. Below 680px the wordmark's caps would fall
               under a legible size, so the narrow header takes the monogram alone
-              -- the same swap the old header made by hiding its text. */}
+              -- the same swap the old header made by hiding its text. The
+              `on-ink` cuts are recoloured for the navy wash; see the files. */}
           <picture>
-            <source media="(max-width: 680px)" srcSet="/logo-mark.svg" />
-            <img src="/logo-lockup.svg" alt="" width="1255" height="378" />
+            <source media="(max-width: 680px)" srcSet="/logo-mark-on-ink.svg" />
+            <img src="/logo-lockup-on-ink.svg" alt="" width="1255" height="378" />
           </picture>
         </a>
         <nav aria-label="Primary navigation">
