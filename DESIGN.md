@@ -555,6 +555,25 @@ a callout.
   measurement, and the slice's clip is taken from the variable. The name is
   already gone by then. There is no `<picture>` swap at any width: two assets,
   each served at every size that shows it.
+- **The brand never shrinks, because a logo may be crowded but not deformed.**
+  The header is `space-between`, so once its content exceeded its box the flex
+  algorithm compressed the brand — and an `img` with `width: auto` compressed
+  *below its aspect ratio*. On the Galaxy Fold's 280px outer screen the monogram
+  rendered `43.3 × 32` against an artwork ratio of 1.763: a 23% horizontal crush,
+  41% once a classic scrollbar took its 10px. `flex-shrink: 0` on `.site-brand`
+  is the fix, and it has to sit on the wrapper — the shrinking item is the link,
+  so the same rule on the `img` is a no-op. Worth knowing why no check caught
+  this: the page never overflowed and nothing collided. The mark deformed
+  *inside* a header that still fitted, which is invisible to any test that
+  measures overflow or clearance. The ratio is now asserted directly.
+- **Below 320px the header eases rather than steps.** The `360px` block's values
+  are clamps whose ceilings are the flat values they replaced, so at `320px` each
+  is already at its cap and nothing changes at or above an iPhone SE. Below that
+  the padding, nav gap, nav size and mark height give ground continuously
+  (`28px` is the mark's floor, where the lapis tile still reads as a square). A
+  second breakpoint at `~300px` was the alternative and was rejected: this range
+  is one continuous squeeze — 280px wanted 13px more than it had — and a
+  breakpoint would hand it all back at a single width instead of spreading it.
 
 ### Signature Component: The Inverted Method Band
 A full-bleed `var(--ink)` section with white type, containing a four-column

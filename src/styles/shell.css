@@ -471,11 +471,23 @@ body::after {
   pointer-events: none;
 }
 
+/* `flex-shrink: 0` is load-bearing, not defensive. The header is
+   `space-between`, so once its content exceeds its box the flex algorithm
+   picks something to compress -- and it picked the brand, squeezing the img
+   below its own aspect ratio rather than merely crowding it. Measured on the
+   Galaxy Fold's 280px outer screen the monogram rendered 43.3x32 against an
+   artwork ratio of 1.763: a 23% horizontal crush, and 41% once a classic
+   scrollbar took its 10px. Nothing caught it because the page never
+   overflowed -- the mark deformed inside a header that still fitted. Note the
+   rule has to sit here and not on `.site-brand-mark`: the shrinking item is
+   this wrapper, so `flex-shrink` on the img is a no-op. A logo is allowed to
+   be crowded; it is never allowed to be the wrong shape. */
 .site-brand {
   display: flex;
   align-items: center;
   gap: 0.85rem;
   min-height: 44px;
+  flex-shrink: 0;
 }
 
 /* The name is a cut of the same drawing as the mark, not type. Two earlier
@@ -630,19 +642,30 @@ body::after {
 }
 
 @media (max-width: 360px) {
+  /* Everything here is fluid rather than fixed, and the clamps are tuned so
+     their ceilings are exactly the values this block used to set flat: at
+     320px each one is already at its cap, so nothing changes on an iPhone SE
+     or anything above it. They only ease off below that, which is the range
+     that needed the room. The alternative was a second breakpoint at ~300px,
+     but a breakpoint is a cliff and this range is one continuous squeeze --
+     at 280px the header wanted 13px more than it had, so the nav sat flush
+     against the sheet's edge with the brand jammed against it. Continuous
+     values give that back gradually instead of all at once at one width. */
   .site-header {
-    padding: 0 0.7rem;
+    padding: 0 clamp(0.5rem, 3.5vw, 0.7rem);
   }
 
   /* The monogram is already narrow enough at this width; it only needs to give
-     the nav a little more room. */
+     the nav a little more room. Below 320px it gives back a few more pixels --
+     28px is the floor, where the lapis tile is still legibly a square rather
+     than a speck. */
   .site-brand-mark {
-    height: 32px;
+    height: clamp(28px, 10vw, 32px);
   }
 
   .site-header nav {
-    gap: 0.45rem;
-    font-size: 0.8125rem;
+    gap: clamp(0.3rem, 2.25vw, 0.45rem);
+    font-size: clamp(0.75rem, 4.1vw, 0.8125rem);
   }
 }
 
