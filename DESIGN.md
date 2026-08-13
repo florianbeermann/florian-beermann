@@ -489,7 +489,7 @@ a callout.
   otherwise have to be inferred. Ink type clears 6.0:1 against the darkest
   ground the header can travel over.
 - **The mark:** The monogram alone (`logo-mark.svg`), at every width, `52px`
-  tall and `84.9px` wide — 1.632:1, so only the height is pinned and the width
+  tall and `91.7px` wide — 1.763:1, so only the height is pinned and the width
   follows the artwork. It is the standard cut: navy letterforms, and an
   ampersand knocked out of a solid Signal Lapis tile in paper. The lapis is the
   same blue the hero's second line is set in, so the mark and the headline
@@ -502,37 +502,53 @@ a callout.
   ~27px, the wordmark's caps at ~6.8px, and shrinks the lapis tile until it
   disappears entirely. That tile is the one piece of colour the mark owns, so a
   size that throws it away is the wrong size.
-- **The name is set in live type, not cut from the artwork.** `Florian Beermann`
-  / `& Partners` sits beside the mark at `0.78rem` / 500 / `0.28em`, two lines,
-  uppercase, in the same ink as the links. Three reasons it is type. The
-  lockup's own wordmark is *centre*-aligned, because it was drawn to sit under a
-  mark rather than beside one; set flush left against a monogram it reads as
-  broken. The face is the same grotesque as Inter — rendered side by side at
-  matched size the letterforms are indistinguishable — so nothing is lost in
-  translation. And type costs no second request, scales with the type ramp, and
-  stands down at mobile without a `<picture>` swap. It is `aria-hidden`: the
-  brand link already carries the full name in its `aria-label`, and a screen
-  reader should hear it once.
-- **The name is aligned to the mark's ink, not to its box.** Flex centring puts
-  the two boxes within a hundredth of a pixel of each other and still looks
-  wrong, because neither box is its own ink — the monogram's letterforms occupy
-  only 4.9%–74.6% of the artwork's height, the lapis tile hanging below the
-  baseline, while the name's line boxes carry descender space its caps never
-  use. Uncorrected the name sits `6.63px` low. `.site-brand-name` is pulled up
-  by that measured amount. Recompute it if either the mark's `52px` or the
-  name's size changes; it is not a round number and it is not a guess.
+- **The name is a second cut of the same drawing, not type.** `logo-wordmark.svg`
+  carries both lines — `FLORIAN BEERMANN` over `& PARTNERS` — trimmed to its own
+  ink and shifted flush left, since the master centres the two lines under a
+  stacked mark and centred lines read as broken beside one. Type was tried twice
+  and both attempts were wrong for a reason that measures: the artwork's wordmark
+  has a width-to-cap-height ratio of `29.9`, where Inter at `0.28em` gives `20.2`.
+  That is roughly `0.72em` of tracking *and* a lighter weight than Inter carries.
+  No letter-spacing value closes a 48% gap while the weight is still wrong, so
+  the header uses the drawing. It costs one more request; it buys the actual
+  brand. Both images are `alt=""` — the brand link's `aria-label` carries the
+  full name, and a screen reader should hear it once.
+- **The name is aligned to the mark's ink, not to its box, and the correction is
+  a constant.** Both cuts are trimmed to their own ink, so flex centres them
+  honestly — but the mark's box is not its letterforms: the lapis tile runs the
+  full height while `F`, `B` and `P` occupy only 4.59%–74.97% of it, putting
+  their centre at 39.78% rather than 50%. The name must meet the letterforms, not
+  the tile, so it lifts by the mark's own asymmetry: `(0.5 − 0.3978) × 52px =
+  5.31px`. It is independent of the name's height, because both boxes are
+  centred and only the mark's skew is off — recompute it only if the mark's
+  `52px` changes or the artwork is redrawn.
+- **The name is fluid, and its stand-down is not the mark's breakpoint.** At
+  10.5:1 the name is `353px` wide at its natural size, and brand plus nav needs
+  `837px` before the two touch — a fixed height collided everywhere between
+  `680px` and `~880px`. `clamp(24px, 2.34vw, 33.7px)` meets the artwork's own
+  proportion exactly at `1440` and eases off below. The `24px` floor is a
+  legibility limit rather than a fitting one: caps are 35% of the box, so `24px`
+  puts them at `8.4px`, which these widely-tracked letterforms still hold.
+  Measured, the brand and nav touch at `690px` with the name at that floor, so
+  the name stands down at `760px` — 80px above the mark's own breakpoint, buying
+  ~33px of clearance at the last width that shows it. Past that the monogram
+  alone reads better than a name too faint to finish.
 - **Never filter the mark.** The cut carries three inks — navy, lapis, and the
   paper the ampersand is knocked out in — and a filter cannot tell them apart.
   `brightness(0) invert(1)` flattens all three into one flat shape. Recolour in
   the file instead; that is why a separate `-on-ink` cut exists even though this
   header does not use it.
+- **The gap between `F` and `B` is spacing, not a redrawn glyph.** The arms were
+  interlocked by 9.30 units in the original drawing. The fix moved the `B` right
+  by 15.116 units of tracking, leaving the `F` path byte-identical and its arms
+  full, for a 5.81-unit gap. Shortening the arms instead would have un-fused a
+  deliberate ligature to solve what was a spacing problem. The mark's ratio moved
+  from 1.632 to 1.763 with it, so the width hint moved too.
 - **Mobile:** Below 680px the mark drops to `38px` and `--header-height` to
   `68px`, in the same media query as the header's own `min-height` — they are one
-  measurement, and the slice's clip is taken from the variable. The name stands
-  down here: at `393px` the mark and three links already fill the strip, and a
-  two-line wordmark between them would either wrap the nav or crowd it. The mark
-  alone carries the brand at that width. There is no `<picture>` swap: one asset
-  serves every width.
+  measurement, and the slice's clip is taken from the variable. The name is
+  already gone by then. There is no `<picture>` swap at any width: two assets,
+  each served at every size that shows it.
 
 ### Signature Component: The Inverted Method Band
 A full-bleed `var(--ink)` section with white type, containing a four-column

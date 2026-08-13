@@ -210,18 +210,13 @@ export default function Home() {
     <div className="site-page">
       <header className="site-header">
         <a className="site-brand" href="#top" aria-label="Florian Beermann &amp; Partners, home">
-          {/* Monogram alone at every width. The lockup was redrawn stacked, so its
-              wordmark now runs on two centred lines and the mark is only 53% of
-              the total height: pinned to the header's 52px it renders 191.7x52
-              with caps near 6.8px and the lapis ampersand tile disappears
-              entirely. The tile is the mark's one piece of colour, so the header
-              takes the cut that keeps it. The link's aria-label carries the name.
-              The header is paper, so this is the standard navy-and-lapis cut. */}
-          <img src="/logo-mark.svg" alt="" width="320" height="196" />
-          <span className="site-brand-name" aria-hidden="true">
-            <span>Florian Beermann</span>
-            <span>&amp; Partners</span>
-          </span>
+          {/* Two cuts of one drawing, not a lockup file: the supplied artwork
+              stacks the name under the mark, and the header needs it alongside.
+              Splitting them lets each be sized on its own and lets the name
+              stand down at narrow widths without a second asset. Both are
+              decorative -- the link's aria-label carries the name once. */}
+          <img className="site-brand-mark" src="/logo-mark.svg" alt="" width="342" height="194" />
+          <img className="site-brand-name" src="/logo-wordmark.svg" alt="" width="1319" height="126" />
         </a>
         <nav aria-label="Primary navigation">
           <a href="#engagements">Engagements</a>

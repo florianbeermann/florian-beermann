@@ -23,11 +23,8 @@ export const LegalPageLayout = ({
     <div className="site-page legal-page">
       <header className="site-header">
         <Link className="site-brand" to="/#top" aria-label="Florian Beermann &amp; Partners, home">
-          <img src="/logo-mark.svg" alt="" width="320" height="196" />
-          <span className="site-brand-name" aria-hidden="true">
-            <span>Florian Beermann</span>
-            <span>&amp; Partners</span>
-          </span>
+          <img className="site-brand-mark" src="/logo-mark.svg" alt="" width="342" height="194" />
+          <img className="site-brand-name" src="/logo-wordmark.svg" alt="" width="1319" height="126" />
         </Link>
         <nav aria-label="Primary navigation">
           <Link to="/#engagements">Engagements</Link>
