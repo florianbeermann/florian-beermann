@@ -519,26 +519,44 @@ a callout.
   costs one more request; it buys the actual brand. Both images are `alt=""` —
   the brand link's `aria-label` carries the full name, and a screen reader
   should hear it once.
-- **The name is aligned to the mark's ink, not to its box, and the correction is
-  a constant.** Both cuts are trimmed to their own ink, so flex centres them
-  honestly — but the mark's box is not its letterforms: the lapis tile runs the
-  full height while `F`, `B` and `P` occupy only 4.59%–74.97% of it, putting
-  their centre at 39.78% rather than 50%. The name must meet the letterforms, not
-  the tile, so it lifts by the mark's own asymmetry: `(0.5 − 0.3978) × 52px =
-  5.31px`. It is independent of the name's height, because both boxes are
-  centred and only the mark's skew is off — recompute it only if the mark's
-  `52px` changes or the artwork is redrawn.
-- **The name is fluid, and its stand-down is not the mark's breakpoint.** At
-  10.5:1 the name is `353px` wide at its natural size, and brand plus nav needs
-  `837px` before the two touch — a fixed height collided everywhere between
-  `680px` and `~880px`. `clamp(24px, 2.34vw, 33.7px)` meets the artwork's own
-  proportion exactly at `1440` and eases off below. The `24px` floor is a
-  legibility limit rather than a fitting one: caps are 35% of the box, so `24px`
-  puts them at `8.4px`, which these widely-tracked letterforms still hold.
-  Measured, the brand and nav touch at `690px` with the name at that floor, so
-  the name stands down at `760px` — 80px above the mark's own breakpoint, buying
-  ~33px of clearance at the last width that shows it. Past that the monogram
-  alone reads better than a name too faint to finish.
+- **The name sits between the mark's two centres, and that half-step is the only
+  chosen number in the header.** Both cuts are trimmed to their own ink, so flex
+  centres them honestly — but the mark's box is not its letterforms: the lapis
+  tile runs the full height while `F`, `B` and `P` occupy only 4.59%–74.97% of
+  it, putting their centre at 39.78% rather than 50%. So there are two
+  defensible anchors, `(0.5 − 0.3978) × 52px = 5.31px` apart. Aligning to the
+  letterforms (`−5.31px`) leaves the tile hanging unbalanced below the name;
+  aligning to the box (`0`) is geometrically right but reads a shade low,
+  because the mark's weight is in the navy letterforms rather than the flat
+  tile, so its optical centre sits above its box centre. `top: −2.66px` is the
+  half-step, picked from rendered comparisons — no measurement settles where a
+  shape's visual centre is, and pretending otherwise is how the earlier constant
+  came to look more derived than it was. It is independent of the name's height,
+  because both boxes are centred and only the mark's skew is off; it is tied to
+  the mark's `52px`, but the name only ever shows above `760px`, where the mark
+  is always `52px`. Recompute it only if that `52px` changes or the artwork is
+  redrawn.
+- **The name is fluid, sits a step under the drawing's own proportion, and its
+  stand-down is not the mark's breakpoint.** At 10.5:1 every pixel of height
+  costs ten of width, and brand plus nav needs `837px` before the two touch — a
+  fixed height collided everywhere between the stand-down and `~880px`. In the
+  lockup the wordmark is `125.89` units to the mark's `194.07`, so beside a
+  `52px` mark the artwork asks for `33.73px`. That is what it was, and it read
+  heavy: the name came out 92% as tall as the mark's letterforms and stopped
+  being the junior element. `clamp(24px, 2.083vw, 30px)` is 88.9% of the
+  drawing's proportion — `353px` of width becomes `314px` — and like the `2.34vw`
+  before it the rounded-down coefficient reaches its ceiling just above `1440`
+  rather than at it (`29.995px` at `1440`). The `24px` floor is a legibility
+  limit rather than a fitting one: caps are 35% of the box, so `24px` puts them
+  at `8.4px`, which these widely-tracked letterforms still hold. It is
+  deliberately *not* scaled down with the ceiling — a proportional floor would be
+  `21.4px` and put caps at `7.5px`, which is the thing the floor exists to
+  prevent. The cost is that it binds from `1152px` rather than `1026px`, so the
+  name is flat at `24px` across a wider band. Measured, the brand and nav touch
+  at `690px` with the name at that floor, so the name stands down at `760px` —
+  80px above the mark's own breakpoint, buying ~33px of clearance at the last
+  width that shows it. Past that the monogram alone reads better than a name too
+  faint to finish.
 - **Never filter the mark.** The cut carries three inks — navy, lapis, and the
   paper the ampersand is knocked out in — and a filter cannot tell them apart.
   `brightness(0) invert(1)` flattens all three into one flat shape. Recolour in

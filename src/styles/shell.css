@@ -497,27 +497,48 @@ body::after {
    spacing value closes a gap that wide without distorting the letterforms,
    because the weight is wrong too. So the header uses the drawing. It costs one
    more request; it buys the actual brand. */
-/* Fluid because the name is 10.5:1 -- at its natural 33.7px it is 353px wide,
+/* Fluid because the name is 10.5:1 -- every pixel of height costs ten of width,
    and the brand plus the nav needs 837px before the two touch. A fixed height
-   would have collided everywhere between the 680px stand-down and ~880px. The
-   ceiling is the artwork's own proportion beside a 52px mark; 2.34vw meets it
-   exactly at 1440 and eases off below. The 24px floor is a legibility limit,
-   not a fitting one: the caps are 35% of the box, so 24px puts them at 8.4px,
-   which these widely-tracked letterforms still hold. Below 680px the name
-   stands down entirely rather than shrinking past that. */
+   would have collided everywhere between the stand-down and ~880px.
+   The ceiling is a deliberate step under the drawing rather than the drawing's
+   own figure. In the lockup the wordmark is 125.89 units to the mark's 194.07,
+   so beside a 52px mark the artwork asks for 33.73px -- which is what this was,
+   and it read heavy: at that size the name is 92% as tall as the mark's
+   letterforms and stops being the junior element. 30px is 88.9% of the drawing's
+   proportion and 353px of width becomes 314px. 2.083vw is the rounded-down
+   coefficient, so like the 2.34vw before it the ceiling is reached just above
+   1440 rather than at it: 29.995px at 1440 itself, a 0.005px shortfall costing
+   0.05px of width.
+   The 24px floor is a legibility limit, not a fitting one: the caps are 35% of
+   the box, so 24px puts them at 8.4px, which these widely-tracked letterforms
+   still hold. It is deliberately not scaled with the ceiling -- a proportional
+   floor would be 21.4px and put the caps at 7.5px, and the floor exists to stop
+   exactly that. The cost is that it now binds from 1152px rather than 1026px,
+   so the name is flat at 24px across a wider band; shrinking only ever adds
+   clearance, so nothing that fitted before stops fitting. Below 760px the name
+   stands down entirely rather than shrinking past the floor. */
 .site-brand-name {
-  height: clamp(24px, 2.34vw, 33.7px);
+  height: clamp(24px, 2.083vw, 30px);
   width: auto;
-  /* Optical, and a constant. Both cuts are trimmed to their own ink, so flex
-     centres them honestly -- but the mark's box is not its letterforms: the
-     lapis tile runs the full height while F, B and P occupy only 4.59%-74.97%
-     of it, putting their centre at 39.78% rather than 50%. The name must meet
-     the letterforms, not the tile, so it lifts by the mark's own asymmetry:
-     (0.5 - 0.3978) x 52px = 5.31px. Independent of the name's height -- both
-     boxes are centred, so only the mark's skew matters. Recompute if the mark's
-     52px changes or the artwork is redrawn. */
+  /* Optical, and the one number in this file that is chosen rather than
+     derived. Both cuts are trimmed to their own ink, so flex centres them
+     honestly -- but the mark's box is not its letterforms: the lapis tile runs
+     the full height while F, B and P occupy only 4.59%-74.97% of it, putting
+     their centre at 39.78% rather than 50%. That gives two defensible anchors
+     and they are 5.31px apart, (0.5 - 0.3978) x 52px. Aligning to the
+     letterforms (-5.31px) is what this was, and it leaves the tile hanging
+     unbalanced below the name. Aligning to the box (0) is geometrically
+     correct and reads a shade low, because the mark's weight is in the navy
+     letterforms rather than the flat tile, so its optical centre sits above its
+     box centre. This is the half-step between them, picked from rendered
+     comparisons rather than calculated -- there is no measurement that settles
+     where a shape's visual centre is. Independent of the name's height: both
+     boxes are centred, so only the mark's skew matters. It is tied to the
+     mark's 52px, though, and the name is only ever shown above 760px where the
+     mark is always 52px -- so one constant covers its whole visible range.
+     Recompute both halves if that 52px changes or the artwork is redrawn. */
   position: relative;
-  top: -5.31px;
+  top: -2.66px;
 }
 
 /* The monogram is 1.763:1 since the F/B gap was drawn in -- wider than the
