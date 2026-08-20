@@ -23,7 +23,8 @@ export const LegalPageLayout = ({
     <div className="site-page legal-page">
       <header className="site-header">
         <Link className="site-brand" to="/#top" aria-label="Florian Beermann &amp; Partners, home">
-          <img className="site-brand-name" src="/logo-wordmark.svg" alt="" width="925" height="131" />
+          {/* `?v=2` must match the other three references — see Home.tsx. */}
+          <img className="site-brand-name" src="/logo-wordmark.svg?v=2" alt="" width="2335" height="198" />
         </Link>
         <nav aria-label="Primary navigation">
           <Link to="/#engagements">Engagements</Link>

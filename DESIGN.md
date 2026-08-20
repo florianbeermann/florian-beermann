@@ -325,9 +325,24 @@ ASCII plate. There is no exception, and no token for one.
 - Sticky paper header docked at `top: 0` with a `--line` rule beneath it. It
   reads as a paper bar floating on blue whenever an inverted section is behind
   it.
-- **The mark:** the wordmark alone — "FLORIAN BEERMANN & PARTNERS" set as
-  letterspaced type. There is no monogram; the previous "FB&P" lockup was
-  retired and should not be reintroduced.
+- **The mark:** the wordmark alone — "FLORIAN BEERMANN" letterspaced at 0.92em
+  above "& PARTNERS", the second line centred on the first line's *ink* rather
+  than its advance width, with the ampersand knocked out of a square tile of
+  1.60 cap heights. Cut from Outfit 200 (OFL) and shipped as outlines, so the
+  masthead never waits on a webfont. There is no monogram; the previous "FB&P"
+  lockup was retired and should not be reintroduced.
+
+  Two properties of the file are load-bearing. The ampersand is a genuine hole
+  under `fill-rule="evenodd"`, not paper painted on top, so the artwork is one
+  colour and composites over either ground — the ink and paper variants differ
+  in a single attribute. And the caps occupy 34.5% of the box against the
+  previous drawing's 28.7%, which is why the header sizes it by cap share rather
+  than by height alone.
+
+  It is 11.81:1, wide enough that a phone cannot give it both its width and its
+  height: below about 500px the name's caps fall under the nav's own size. That
+  is a known, accepted cost of this cut, recorded in `shell.css` beside the rule
+  that would otherwise look under-tuned.
 
 ### The Logo Wall
 Employer marks arrive as a mix of full-colour PNG and SVG. They are rendered as

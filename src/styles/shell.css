@@ -560,11 +560,11 @@ body::before {
    Fold's 280px outer screen the old monogram rendered 43.3x32 against an
    artwork ratio of 1.763: a 23% horizontal crush, and 41% once a classic
    scrollbar took its 10px. Nothing caught it because the page never overflowed
-   -- the mark deformed inside a header that still fitted. The wordmark is 10.5:1
-   and therefore far more exposed to the same failure, so the rule matters more
-   now, not less. Note it has to sit here and not on the img: the shrinking item
-   is this wrapper, so `flex-shrink` on the child is a no-op. A logo is allowed
-   to be crowded; it is never allowed to be the wrong shape. */
+   -- the mark deformed inside a header that still fitted. The wordmark is
+   11.81:1 and therefore far more exposed to the same failure, so the rule
+   matters more now, not less. Note it has to sit here and not on the img: the
+   shrinking item is this wrapper, so `flex-shrink` on the child is a no-op. A
+   logo is allowed to be crowded; it is never allowed to be the wrong shape. */
 .site-brand {
   display: flex;
   align-items: center;
@@ -573,42 +573,38 @@ body::before {
 }
 
 /* The name is a cut of the drawing, not type. Two earlier attempts set it in
-   Inter; both were wrong, and the reason is measurable. The artwork's wordmark
-   is tracked at roughly 0.72em and drawn light -- its width-to-cap-height ratio
-   is 29.9, where Inter at 0.28em gives 20.2. No spacing value closes a gap that
-   wide without distorting the letterforms, because the weight is wrong too. So
-   the header uses the drawing. It costs one request; it buys the actual brand.
+   Inter; both were wrong, and the reason is measurable: the artwork is tracked
+   at 0.92em and drawn at Outfit 200, a geometric hairline no Inter weight
+   reaches. Setting it live would also mean loading a third family for sixteen
+   glyphs and reflowing the masthead whenever that font was slow. So the header
+   uses the drawing, shipped as outlines. It costs one request; it buys the
+   actual brand.
 
    It is now the entire logo, and that changes what size it wants. It used to be
    the junior half of a lockup, sized at 88.9% of the proportion the artwork
    asks for beside a 52px monogram so it could not out-shout the mark, and it
    stood down entirely below 760px because the mark could carry the header
    alone. Neither constraint survives the monogram: there is nothing left to
-   defer to and nothing left to stand down in favour of.
-
-   At the inherited 30px it was measurably too quiet. The drawing is two lines
-   -- baselines 81.75 units apart inside a 125.89-unit box -- so each line's caps
-   are 41.19 units, 32.7% of the height. A 30px box therefore set the caps at
-   9.8px against a 14px nav, and a masthead that renders smaller than its own
-   navigation has the hierarchy upside down. 44px puts the caps at 14.4px, just
-   past the nav, which is the least it can be and still read as the thing the
-   nav belongs to. */
+   defer to and nothing left to stand down in favour of. */
 .site-brand-name {
-  /* 7.07:1 in the current drawing, down from 10.48:1 in the one before it: the
-     second line reads "&PARTNERS" set tight rather than "& PARTNERS" spread to
-     the full measure, so the block is a third narrower at the same height.
+  /* 11.81:1, and the ratio is only half the story -- what actually sets this
+     clamp is the share of the box the caps occupy. This drawing gives them
+     68.2 of its 197.78 units, 34.5%, where the drawing before it gave 28.7%.
+     Per pixel of height the name now prints 20% larger, which is what pays for
+     the extra width.
 
-     Height is still what is rationed, not width. What caps it is the 76px
-     header box, which leaves 16px of clearance above and below at 44px and
-     starts to feel crowded past it; 3.1vw reaches that ceiling just above
-     1419px. The 38px floor is where the hierarchy stops working rather than
-     where the pixels stop fitting -- caps land at about 12px there against a
-     13px nav, and below that the name stops reading as the senior element.
+     The floor is derived, not chosen. The rule this header has always followed
+     is that the masthead may not render smaller than the navigation it governs,
+     so the caps have to clear the nav's own 14px: 14 / 0.345 = 40.6px, taken up
+     to 41. At the 44px ceiling the caps reach 15.2px, comfortably senior, and
+     the ceiling is still the 76px header box, which leaves 16px of clearance
+     above and below and starts to feel crowded past it.
 
-     The narrower artwork is pure headroom: at the 44px ceiling it now spends
-     311px of the row instead of 461px, so the name and the nav have 150px more
-     air between them at every width. */
-  height: clamp(38px, 3.1vw, 44px);
+     The old clamp floored at 38px. On the previous artwork that was 10.9px of
+     cap; on this one it is 13.1px, and both sit under the nav. The number moved
+     because the constraint was always the caps and never the box. 3.4vw joins
+     the two ends across the band where the header still has room to spare. */
+  height: clamp(41px, 3.4vw, 44px);
   width: auto;
 }
 
@@ -665,14 +661,19 @@ body::before {
 
 /* Below this the wordmark and the nav cannot share a line on any terms worth
    having, and the number is measured rather than estimated. The name is
-   10.48:1, so at its 38px floor it takes 398px of the header to itself and the
-   nav takes 234px. At 901px of viewport the sheet's frame and the header's own
-   4vw padding have already eaten 190px, leaving 711px of content and 79px of
-   clear air between the name and the first nav item. One step narrower the nav
-   drops to 13px and claws 25px back, but the frame and padding keep taking more
-   than that, and by 761px the two are overlapping by 8px. There is no band
-   below this where one row is comfortable, so the header takes a second row
-   instead.
+   11.81:1, so at its 41px floor it takes 484px of the header to itself and the
+   nav takes about 233px. At 901px of viewport the header's own 4vw padding has
+   eaten 72px, leaving 829px of content and 112px of clear air between the name
+   and the first nav item. The nav narrows as the viewport does, but never fast
+   enough to keep up: by 790px the two are touching, and by 768px they overlap.
+   There is no band below this where one row is comfortable, so the header takes
+   a second row instead.
+
+   901px is inherited rather than re-derived, and it is worth saying why it
+   survived a much wider drawing. The previous artwork ran out of room at 761px
+   and this one runs out at 790px, so the same breakpoint clears both -- it was
+   never sitting at the true limit, and moving it down to chase the last 30px
+   would spend the header's remaining air to save one narrow band of widths.
 
    The old system dropped the name at 760px and let the monogram carry the
    header alone. That is the option that no longer exists: with no monogram
@@ -698,9 +699,15 @@ body::before {
     --header-height: 100px;
     /* The masthead's own width once it has a row to itself. Shared by the
        wordmark and the nav below it so the two stay in step. The ceiling is the
-       44px desktop cap expressed in the other axis -- 44 x 7.07 -- so the name
-       never renders larger on a phone than it does on a desktop. */
-    --masthead: min(100%, 311px);
+       44px desktop cap expressed in the other axis -- 44 x 11.81 is 519.6, taken
+       down to 519 so the derived height lands at 43.9px and stays inside the
+       44px row rather than 0.1px over it. That margin is the whole reason the
+       row above can claim the name costs the header nothing.
+
+       It was 311px against the previous 7.07:1 drawing; the artwork changed, so
+       the derived number had to change with it, or the mark would have been
+       pinned to two thirds of the width it is entitled to. */
+    --masthead: min(100%, 519px);
   }
 
   .site-header {
@@ -726,8 +733,19 @@ body::before {
      one-row layout could not give it. The name is therefore larger at 900px
      than it is at 901px, which looks like a mistake and is the point: the break
      exists because the row was the constraint, so crossing it has to buy
-     something. Below roughly 340px of content the 100% arm takes over and the
-     name simply tracks the sheet. */
+     something. Below roughly 560px of content the 100% arm takes over and the
+     name simply tracks the sheet.
+
+     That last band is where this artwork asks for something the previous one
+     did not. At 11.81:1 a phone cannot give the name both its width and its
+     height: 375px of sheet leaves 322px of content, which is 27px of box and
+     9.4px of cap against a 13px nav. The masthead is therefore quieter than its
+     own navigation below about 500px, and no value here fixes it -- the mark
+     is already taking every pixel of width the sheet has. What carries the
+     hierarchy instead is position and measure: the name spans the full sheet on
+     the first row, the nav is a short centred row beneath it. If that ever
+     stops reading, the answer is a narrower cut of the artwork, not a bigger
+     number in this rule. */
   .site-brand-name {
     width: var(--masthead);
     height: auto;

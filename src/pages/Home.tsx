@@ -224,11 +224,23 @@ export default function Home() {
       <header className="site-header">
         <a className="site-brand" href="#top" aria-label="Florian Beermann &amp; Partners, home">
           {/* The wordmark is the whole brand now; the FB&P monogram it used to
-              sit beside has been retired. Still a cut of the drawing rather
-              than live type, because the artwork is tracked at roughly 0.72em
-              and drawn lighter than any weight Inter offers. Decorative — the
-              link's aria-label carries the name once. */}
-          <img className="site-brand-name" src="/logo-wordmark.svg" alt="" width="925" height="131" />
+              sit beside has been retired. Shipped as outlines rather than live
+              type: the drawing is Outfit 200 tracked at 0.92em, so setting it
+              in the page would mean loading a third family for sixteen glyphs
+              and reflowing the masthead if it failed. Decorative — the link's
+              aria-label carries the name once.
+
+              The `?v=2` is load-bearing and must stay in step across all four
+              places this file is referenced. `.htaccess` serves .svg with
+              `max-age=2592000` and no revalidation, while the stylesheet that
+              sizes it is content-hashed and the HTML is `no-cache`. Without the
+              query a visitor who loaded the site in the previous thirty days
+              gets the new CSS with the old 7.05:1 artwork, and because the
+              stacked header derives the mark's height from its width, the
+              masthead renders 73.6px instead of 43.9px and the header box grows
+              28px past `--header-height` — which every anchor offset subtracts.
+              Bump it whenever the artwork changes. */}
+          <img className="site-brand-name" src="/logo-wordmark.svg?v=2" alt="" width="2335" height="198" />
         </a>
         <nav aria-label="Primary navigation">
           <a href="#engagements">Engagements</a>

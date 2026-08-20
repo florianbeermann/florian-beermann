@@ -15,6 +15,11 @@
        far enough away, the field is all that is left.
 
        No geometry to regenerate and nothing to keep in step with the logo
-       drawing. Keep the fill equal to `--ink` in shell.css. -->
+       drawing. Keep the fill equal to the `ink` token in shell.css.
+
+       Note the prose above avoids a double hyphen on purpose: XML forbids one
+       inside a comment, and an SVG that breaks that rule is rejected outright
+       rather than rendered with the comment ignored. This file carried a bare
+       token name here and was silently failing to parse. -->
   <rect width="512" height="512" fill="#202FD6"/>
 </svg>

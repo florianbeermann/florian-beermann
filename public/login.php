@@ -190,11 +190,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         align-items: center;
         min-height: 44px;
         flex-shrink: 0;
+        /* Width, not height, is what rations this mark. The wordmark is
+           11.81:1, so a height clamp that floors at 41px asks for 484px of
+           width and simply takes it: `flex-shrink: 0` means nothing can pull it
+           back, and the gate overflowed by 110px at 390px and 215px at 280px.
+
+           The site's own header only needs its width-driven treatment below
+           900px, because above that the mark shares a row with the nav and
+           height is the scarce axis. This header has no nav, so the mark can
+           take the row at every width and derive its height from it. 519px is
+           the 44px ceiling expressed in the other axis (44 x 11.81), so the
+           name never renders larger here than it does in the site proper.
+
+           The width sits on this wrapper rather than on the img because the
+           percentage has to resolve against something definite: the wrapper is
+           a flex item with `width: auto`, so an img asking for `100%` of it
+           would be resolving against a box that is itself sized by that img. */
+        width: min(100%, 519px);
       }
 
       .gate-brand img {
-        height: clamp(38px, 3.1vw, 44px);
-        width: auto;
+        width: 100%;
+        height: auto;
       }
 
       .gate-main {
@@ -387,11 +404,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <body>
     <header class="gate-header">
       <span class="gate-brand">
+        <!-- ?v=2 must match the three references in the React shell; see the
+             note in src/pages/Home.tsx. The .htaccess allow-list matches on
+             filename, so the query does not affect this page's access. -->
         <img
-          src="/logo-wordmark.svg"
+          src="/logo-wordmark.svg?v=2"
           alt="Florian Beermann &amp; Partners"
-          width="925"
-          height="131"
+          width="2335"
+          height="198"
         />
       </span>
     </header>

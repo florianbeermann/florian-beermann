@@ -95,9 +95,9 @@ this network; the legal entity is a sole trader.
 
 ## Brand Commitments
 
-- **Name:** Florian Beermann & Partners — set as a two-line wordmark, the
-  name letterspaced above "&PARTNERS", with the ampersand reversed out of a
-  solid tile. Written in title case everywhere it appears as text.
+- **Name:** Florian Beermann & Partners — set as a two-line wordmark, the name
+  letterspaced above "& PARTNERS", with the ampersand knocked out of a solid
+  square tile. Written in title case everywhere it appears as text.
 - **Legal entity:** Florian Beermann, sole trader, Hegestr. 31, 20249 Hamburg,
   Germany.
 - **Contact:** hello@florianbeermann.com · +49 (0)40 89705822 ·
@@ -106,9 +106,12 @@ this network; the legal entity is a sole trader.
   "organisations"), understated and specific. Avoids transformation-consultancy
   vocabulary.
 - **Assets:** portrait rendered as ASCII art (`src/assets/portrait-ascii.txt`,
-  generated from `scripts/assets/portrait-source.jpg`), logo
-  (`public/logo.png`), self-hosted licensed Inter / Inter Tight variable font
-  subsets (`public/fonts/`, licences committed).
+  generated from `scripts/assets/portrait-source.jpg`), the wordmark as outlined
+  SVG in ink and paper variants (`public/logo-wordmark.svg`,
+  `public/logo-wordmark-on-ink.svg`), self-hosted licensed Inter / Inter Tight
+  variable font subsets (`public/fonts/`, licences committed, including
+  `LICENSE-OUTFIT.txt` for the face the wordmark was cut from). `public/logo.png`
+  is the retired "fb" monogram and is referenced by nothing.
 
 ## Evidence on Hand
 

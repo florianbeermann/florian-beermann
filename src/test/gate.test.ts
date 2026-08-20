@@ -32,7 +32,15 @@ const loginPageAssets = () => {
   const refs = [
     ...[...markup.matchAll(/(?:href|src)="([^"]+)"/g)].map(([, ref]) => ref),
     ...[...markup.matchAll(/url\("([^")]+)"\)/g)].map(([, ref]) => ref),
-  ];
+  ]
+    // Drop the query and fragment before anything downstream treats the
+    // reference as a filename. The wordmark is requested as
+    // `/logo-wordmark.svg?v=2` to defeat its own 30-day cache entry, and both
+    // checks below are about the file on disk: `<FilesMatch>` matches the
+    // basename Apache resolves the request to, and existsSync needs a real
+    // path. Keeping the query here would fail this test for a page that is
+    // in fact served correctly.
+    .map((ref) => ref.split(/[?#]/)[0]);
 
   // "/" is where a successful sign-in goes, and it is supposed to stay refused
   // until then. login.php posts to itself and is exempt as the page it is.
