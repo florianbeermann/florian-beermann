@@ -1,108 +1,84 @@
 /* Page shell shared by the homepage and the legal pages: palette, typography
    reset, sticky header and footer. */
 
-/* The page sits as a paper sheet on a backdrop. Depth comes from the tonal
-   step between backdrop and paper, never from a shadow or a radius, so the
-   Flat Paper Rule still holds at page level. The frame is wide because the
-   backdrop is a painting of Hamburg: a thin border would crop it to noise. */
-/* The live top band. It starts at `--frame-top` and collapses to `--frame` as
-   the page is scrolled, so the backdrop is fully on show while the hero is
-   being read and progressively covered once the visitor moves past it.
-   Registered so it can interpolate — an unregistered custom property would
-   step between the two values instead of animating. */
-@property --band {
-  syntax: "<length>";
-  inherits: true;
-  initial-value: 0px;
-}
+/* The page runs full-bleed and changes ground instead of sitting inside a
+   frame: paper sections and blue sections butt straight against the viewport
+   edges. Depth comes from the tonal step between the two grounds, never from a
+   shadow or a radius, so the Flat Paper Rule holds at page level. */
 
 :root {
-  --frame: clamp(14px, 6vw, 104px);
   /* iOS renders the document under the status bar while `fixed` and `sticky`
-     layers stop at the layout viewport, so a scrolled sheet shows through in a
-     strip above the frame — the page reappearing on top of its own backdrop.
-     With `viewport-fit=cover` set in index.html that strip belongs to the page,
-     and these insets are how the shell accounts for it. They resolve to 0px on
-     every other platform, so nothing off an inset display moves. */
+     layers stop at the layout viewport, so a scrolled page can show through in a
+     strip above the header. With `viewport-fit=cover` set in index.html that
+     strip belongs to the page, and these insets are how the shell accounts for
+     it. They resolve to 0px on every other platform, so nothing off an inset
+     display moves. */
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
-  /* The top edge is deliberately deeper than the other three. A mat weighted at
-     the top is a real framing convention, and here it is load-bearing: the band
-     is the only place the backdrop's skyline can be read, and at 6vw it showed
-     a sliver too thin to carry a building. At 11vw it holds ~17.6% of the
-     painting's height instead of ~9.6%.
+  /* The page used to be a sheet inset on all four sides by a blue field, with a
+     deeper band at the top that collapsed as the visitor scrolled. Both existed
+     to show a painting of Hamburg behind the page. Once the painting became a
+     flat colour there was nothing behind the sheet left to reveal, so the margin
+     was spending real estate and an opening gesture on a plain fill.
 
-     The safe-area inset is added rather than substituted: the frame keeps its
-     designed depth and the status bar sits above it, over the backdrop, so the
-     painting runs to the physical top of the screen and the header still parks
-     clear of the clock. */
-  --frame-top: calc(clamp(20px, 11vw, 190px) + var(--safe-top));
-  /* Falls back to the resting band where scroll timelines are unsupported. */
-  --band: var(--frame-top);
-  /* How far the page scrolls before the band is fully collapsed. */
-  --band-collapse-range: 240px;
-  /* Where the band lands once the visitor is reading. Deliberately thinner than
-     the side frames: at rest the mat is top-weighted to show the skyline, but
-     once the page is the subject the backdrop earns only a sliver. Kept above
-     zero so the sheet still reads as an object resting on something rather than
-     running off the top of the window. Carries the same safe-area inset as
-     `--frame-top`, so the band collapses by the same distance it always did and
-     the two ends of the intro gesture stay in step. */
-  --band-collapsed: calc(clamp(8px, 2vw, 32px) + var(--safe-top));
-  /* Holds the frame during the intro before the painting decodes, so the first
-     frame is the picture's own warm key rather than a colour it has to correct
-     away from. Sampled from the source's mean. */
-  --backdrop-fallback: #92785a;
-  /* The painting is shown untinted. An earlier version washed it in navy to
-     seat it in the site ink; on a sunset image that reads as dirt, cooling the
-     gold it exists for. Separation between sheet and backdrop is carried by
-     tone and texture instead. */
-  /* The painting is cropped for this frame, not merely chosen for it. At 1.20
-     its aspect is narrower than any desktop viewport, so `cover` fills the
-     width and the asset maps onto the viewport without magnification. The top
-     8% of the square original was removed so the skyline sits directly under
-     the frame edge — see the Backdrop section in DESIGN.md. */
-  --backdrop-image: url("/hamburg-alster-2560.166b423e.jpg");
-  --backdrop: var(--backdrop-image);
-  /* `top`, not `center`, and load-bearing. Filling the width makes the image
-     taller than the viewport, so a centred position would crop the skyline off
-     the top — the one thing the band exists to show. After the crop the
-     Elbphilharmonie roof starts 2.4% down; the band reaches 6.6–13.2% at rest,
-     so the roof reads while the backdrop is the subject. Collapsed it falls to
-     1.1–2.4%, which is sky and at most the roof's top edge — deliberate, since
-     by then the page is the subject and the backdrop is only a margin. */
-  --backdrop-position: center top;
+     Sections now run edge to edge and change ground instead — paper, then blue,
+     then paper. Same two colours, no frame, and the blue is a surface the
+     content sits on rather than a mount it is hung in. */
+  /* The ground the inverted sections and the page's outer edges are painted in.
+     It replaced a painting of Hamburg at golden hour, and the swap is the whole
+     redesign — the page used to sit on a place, and now it sits on a colour.
 
-  /* Intro sequence. No hold: the sheet starts low and rises, so the backdrop is
-     revealed by the motion instead of by a pause. The travel is exactly the
-     distance the band later collapses, so load and scroll are one gesture — the
-     band opens past its resting height, settles, then closes as the page is
-     read. Keep this expressed as the difference between the two band positions
-     rather than a literal length, or the two halves of that gesture drift apart
-     the next time either end moves. On phones both resolve to the same 14px, so
-     this becomes 0 and the intro is a pure fade: there is no band to reveal. */
-  --intro-rise: calc(var(--frame-top) - var(--band-collapsed));
+     Being flat rather than photographic is what lets it be this loud. A
+     saturated field with no detail in it recedes to a plane the eye stops
+     reading after the first second, so it carries type instead of competing with
+     it; a painting at this chroma would not. It also removes every reason the
+     ground used to need art direction — no responsive cuts, no format
+     negotiation, no decode to wait on, no fallback colour to sample, and the
+     first frame is already the final one. */
+  --backdrop: #202FD6;
+
+  /* Print grain, laid over every blue surface — the field, the inverted bands,
+     the portrait plate. #202FD6 is a deep, slightly violet blue held at full
+     strength across whole sections, and any unbroken expanse of a colour that
+     saturated reads as a swatch rather than as something printed. Grain is what
+     separates ink on paper from a fill, and it is the cheapest way to buy the
+     surface a material.
+
+     Two passes, because one direction reads as dust rather than as tooth. The
+     first lays white flecks and the second black ones, at different seeds, so
+     the field gains both denser and thinner ink instead of an even haze. Alpha
+     is driven from the noise's own luminance with a negative intercept, so the
+     quiet areas clamp to fully transparent and the grain stays sparse.
+
+     `stitchTiles` makes the tile wrap seamlessly; at two octaves the noise is
+     close enough to white noise that the 180px repeat is not detectable. It is
+     a data URI rather than an asset because it must never cost a request, and
+     resolution-independent because it is generated per device pixel. */
+  --grain:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 .05 .05 .05 0 -.02'/%3E%3C/filter%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch' seed='19'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .05 .05 .05 0 -.02'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23a)'/%3E%3Crect width='180' height='180' filter='url(%23b)'/%3E%3C/svg%3E");
+
+  /* The second typographic register. The page had exactly one voice — a
+     grotesque running from body size to the hero — and a single voice is what
+     makes a layout read as a template no matter how well it is set. A
+     monospace at label size supplies the other half: it reads as annotation,
+     specification, a drawing's margin note, and it is the register that makes
+     the display type look chosen rather than merely large.
+
+     System faces rather than a webfont. A third family would cost ~40KB on a
+     page whose job is to be read once by a busy executive, and every monospace
+     in this stack shares the 0.6em advance the portrait grid is drawn against,
+     so the ASCII plate keeps its proportions on every platform. */
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+
+  /* Intro sequence. A short rise and fade on load, in place of the taller one
+     the framed layout used — that travel was tuned to reveal the band above the
+     sheet, and with no band there is nothing to uncover, so the page only needs
+     enough motion to arrive rather than appear. */
+  --intro-rise: 18px;
   --intro-arrive: 850ms;
-}
-
-@media (max-width: 900px) {
-  :root {
-    --backdrop-image: url("/hamburg-alster-1280.4c01ae0e.jpg");
-  }
-}
-
-@media (max-width: 680px) {
-  :root {
-    --frame: 14px;
-    /* Phones keep a uniform frame. Their band is too short to read a skyline at
-       any width worth the fold space it would cost. */
-    --frame-top: calc(14px + var(--safe-top));
-    /* Nothing to collapse, so hold the uniform frame. At this size a top edge
-       thinner than the sides reads as a misalignment, not a decision. */
-    --band-collapsed: calc(14px + var(--safe-top));
-  }
 }
 
 /* Elastic overscroll is incompatible with a fixed frame. Rubber-banding past
@@ -120,89 +96,29 @@ html {
   overscroll-behavior-y: none;
 }
 
-/* The backdrop is a fixed layer rather than a body background so it always
-   sizes to the viewport. As a scrolling body background, `cover` would resolve
-   against full document height and zoom the painting to a smear on mobile.
+/* The page runs edge to edge, so the only ground behind it is the blue the
+   inverted sections are painted in. Fixed rather than a scrolling background so
+   it sizes to the viewport, and it carries the grain that every blue surface
+   shares — including the strip an elastic overscroll exposes past either end.
 
-   Three layers share this declaration and therefore share one geometry: the
-   backdrop itself, the matte that repaints the top band over the scrolled
-   sheet, and the slice that shows through the header. They differ only in
-   `z-index`, in where they are clipped, and in the header slice's case a
-   filter. Registration between them is not a thing to be kept in sync — it is
-   structurally the same rule. */
-body::before,
-body::after,
-.site-header::before {
+   Two layers used to live here: this one and a matte that repainted the top band
+   over the scrolled sheet. There is no band and no sheet edge now, so the matte,
+   its clip and the scroll timeline that drove it are gone. Before that a third
+   layer showed a bleached slice of a painting through the header. */
+body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background-color: var(--backdrop-fallback);
-  background-image: var(--backdrop);
-  background-size: cover;
-  background-position: var(--backdrop-position);
-  background-repeat: no-repeat;
+  z-index: 0;
+  background-color: var(--backdrop);
+  background-image: var(--grain);
   pointer-events: none;
 }
 
-/* WebP is both smaller and higher quality than the JPEG here; the JPEG stays as
-   a real fallback, mirroring the portrait's `src`/`srcSet` pairing.
-
-   This overrides `background-image` directly rather than the `--backdrop-image`
-   custom property. Custom properties accept any token stream at parse time, so
-   an unsupported `image-set()` stored in one would not be caught until use,
-   where it invalidates `background-image` outright and leaves a flat colour
-   instead of falling back. Overriding the real property also lets autoprefixer
-   emit the `-webkit-` variant it pairs with its widened `@supports` test. */
-@supports (background-image: image-set(url("/x.webp") type("image/webp"))) {
-  body::before,
-  body::after,
-  .site-header::before {
-    /* Resolution descriptors alongside `type()`: a 1x display gets 2560px
-       (890KB), a 2x display gets 3456px (1.3MB) — sized to the widest common
-       retina laptop (1728 CSS px), not to the source. Pixels the device cannot
-       paint buy nothing, so that budget is spent on quality instead. `x`
-       descriptors predate `type()` in image-set, so anything parsing this rule
-       supports both. */
-    background-image: image-set(
-      url("/hamburg-alster-2560.44728293.webp") type("image/webp") 1x,
-      url("/hamburg-alster-3456.bc8365fb.webp") type("image/webp") 2x,
-      url("/hamburg-alster-2560.166b423e.jpg") type("image/jpeg") 1x
-    );
-  }
-
-  @media (max-width: 900px) {
-    body::before,
-    body::after,
-    .site-header::before {
-      background-image: image-set(
-        url("/hamburg-alster-1280.39d74c8f.webp") type("image/webp"),
-        url("/hamburg-alster-1280.4c01ae0e.jpg") type("image/jpeg")
-      );
-    }
-  }
-}
-
-body::before {
-  z-index: 0;
-}
-
-/* Once the sheet scrolls past the viewport top, its paper would cover the top
-   band of the backdrop. This matte repaints that band. Same fixed geometry as
-   the layer above, clipped to the frame, so the two register exactly.
-
-   It hangs off `body`, not `.site-page`, so it stays outside the `#root`
-   subtree that the intro transforms. A transform on an ancestor would make
-   this `fixed` layer resolve against that ancestor instead of the viewport. */
-body::after {
-  z-index: 31;
-  clip-path: inset(0 0 calc(100% - var(--band)) 0);
-}
-
-/* The intro: the sheet rises into place, uncovering the backdrop on the way.
-   There is no hold — the reveal is carried by the travel, so nothing waits.
-   One motion for the whole sheet, not a stagger: a printed page arrives as a
-   single object. `#root` is the target because it persists across routes, so
-   client-side navigation cannot replay it. */
+/* The intro: the page settles into place. One motion for the whole document,
+   not a stagger — a printed page arrives as a single object. `#root` is the
+   target because it persists across routes, so client-side navigation cannot
+   replay it. */
 @keyframes sheet-arrive {
   from {
     opacity: 0;
@@ -223,9 +139,9 @@ body::after {
      permanently. Backwards fill supplies the from-state before the animation
      starts and then gets out of the way, which is all this needs: the
      to-state is the element's natural state. This is load-bearing, not
-     hygiene: `.site-header::before` is `position: fixed` and lives inside
-     `#root`, so a forwards fill would trap it in the sheet's coordinate
-     space and the painting slice would scroll away with the page. */
+     hygiene: the sheet has fixed-position descendants, so a forwards fill
+     would trap them in its coordinate space and they would scroll away with
+     the page. */
   animation: sheet-arrive var(--intro-arrive) cubic-bezier(0.16, 1, 0.3, 1)
     backwards;
 }
@@ -236,112 +152,299 @@ body::after {
   animation: none;
 }
 
-/* The sticky header now parks at the frame line, so anchor targets have to
-   clear the frame and the header instead of just the header. */
+/* The sticky header docks at the viewport top, so anchor targets only have to
+   clear the header. */
 :where(.site-page) [id] {
-  scroll-margin-top: calc(var(--frame-top) + var(--header-height, 76px) + 12px);
+  scroll-margin-top: calc(var(--header-height, 76px) + 12px);
 }
 
-/* Scrolling collapses the top band from `--frame-top` to `--band-collapsed`, so
-   the mat is top-weighted while the hero is in view and nearly closed once the
-   visitor is reading. The backdrop is uncovered when it is the subject and all
-   but covered when the page is.
+/* Scroll reveal. The page is a long single column of bands, and a document that
+   arrives all at once gives the scroll nothing to do — the reference this
+   direction came from spends a WebGL runtime on exactly this problem. It does
+   not need one. A view-progress timeline ties the transition to the element's
+   own position in the viewport, so it is scrubbed by the scroll rather than
+   fired by an observer and then playing on its own clock. Nothing runs on the
+   main thread, and there is no library.
 
-   Driven by a scroll timeline rather than a scroll listener: no JS on the
-   scroll path, and it degrades to a static band where unsupported. Only the
-   matte and the header follow `--band`; `.site-page` keeps its margin on the
-   static `--frame-top`, because animating a margin would reflow the document on
-   every frame and shift the very scroll position driving the animation. That
-   also means collapsing the band buys the header room, not layout: the sheet
-   does not move, the strip of backdrop above it just closes. */
-@keyframes band-collapse {
+   Deliberately small: a fifth of a line of upward travel and a fade. At this
+   size it reads as the page settling as you reach it. Anything larger becomes
+   an effect the visitor watches instead of copy they read, which on a page
+   whose job is to be believed is a straight loss. */
+/* Cover-scroll. Each section pins once it has been read and the next one slides
+   up over it, so the page reads as a stack of plates being dealt rather than as
+   one continuous ribbon of content. It is the single change that makes the
+   scroll feel like a mechanism instead of a scrollbar.
+
+   Worth recording what this is *not*: it is not what the reference site does.
+   Measured frame by frame, that page scrolls normally — between 2.79s and 3.07s
+   of the reference capture its hero headline moves -135px and the incoming
+   section's top edge moves -130px, which is one document moving as a unit. Its
+   drama comes from an animated hero and from text arriving progressively, both
+   of which this project now has as well. The stacking here is an addition, not
+   a reproduction, and it should be judged on its own merits.
+
+   The offset is the whole trick. `top: 0` pins a panel's top edge, which is
+   right only while the panel fits the window; a taller one would park with its
+   overflow stranded below the fold. A negative offset equal to the overflow
+   parks the *bottom* edge at the bottom of the window instead, so a tall panel
+   scrolls fully into view and only then holds. `--panel-h` is published by
+   lib/panel-scroll.ts on layout — never on scroll — and its fallback is
+   deliberately absurd so that an unmeasured panel resolves to a `top` far
+   outside the document and simply never pins.
+
+   Panels must be opaque. A transparent one shows the panel pinned beneath it,
+   which reads as a rendering fault rather than as depth. Paper sections take
+   `--paper` explicitly here; inverted ones already resolve it to blue. */
+.site-panel {
+  position: sticky;
+  /* Pinned at the header line, not the top of the window, so a panel never
+     moves once it has arrived. The second arm is the escape hatch: a panel too
+     tall for the screen resolves to a smaller (often negative) offset and so
+     scrolls far enough to show its own bottom before it parks, rather than
+     pinning instantly and stranding its last screenful. */
+  top: min(
+    var(--header-height),
+    calc(100svh - var(--panel-h, 9999px))
+  );
+  /* Every panel fills the window below the masthead — not the whole window.
+     Panels pin under an opaque header, so the header's own band is not theirs
+     to fill, and a panel sized to the full viewport would hang its last
+     header's-worth past the fold.
+
+     The floor itself is not a nicety. A panel shorter than the window pins with
+     the *next* one already occupying the rest of the screen, so the visitor
+     never sees one plate at a time — they see two, with the upper one frozen,
+     which is exactly what a broken sticky element looks like. */
+  min-height: calc(100svh - var(--header-height));
+  background: var(--paper);
+}
+
+/* Panels that grew to meet that minimum centre their content rather than
+   stranding it at the top of a screen of empty paper. Excluded from the hero,
+   whose grid must keep stretching so the blue plate runs the full height. */
+.site-panel:not(.home-hero) {
+  align-content: center;
+}
+
+/* The hero is held *to* that budget, not merely started at it. `min-height` is a floor:
+   the row still grows if a column asks for more, and the portrait column does —
+   the plate carries the artwork's aspect ratio, so it derives a height from its
+   width and will happily be taller than the window. Measured at 1440x735 that
+   made the figure 754px against 659px of room, and the panel scrolled again
+   even though the copy beside it fitted with 78px to spare.
+
+   Capping the row makes the plate the thing that gives: it is a flex child with
+   `min-height: 0`, so it shrinks into whatever is left and the character grid
+   is re-fitted to that box. Only where the hero is two columns — once it stacks,
+   the copy and the portrait are additive and no single screen can hold both, so
+   there the panel is allowed to grow and be scrolled through. */
+@media (min-width: 769px) {
+  .home-hero.site-panel {
+    max-height: calc(100svh - var(--header-height));
+    /* A capped grid container is not a capped grid. Left as an auto track the
+       row still sizes to its tallest column and simply overflows the box it was
+       told to fit, which is what kept the portrait 754px tall inside a 659px
+       hero. `minmax(0, 1fr)` binds the track to the container instead, and the
+       `0` floor is what lets it go under its content's size at all. */
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  /* Grid items refuse to shrink below their content unless told they may. */
+  .home-hero.site-panel > * {
+    min-height: 0;
+  }
+}
+
+/* The edge of the incoming plate. Two of the five transitions are paper onto
+   paper, and with no edge the cover has nothing to show there: one section
+   simply stops moving while the next slides up in the same colour, which reads
+   as a stuck page rather than as a plate being dealt. The rule is what makes
+   the gesture legible when the grounds do not change. */
+.site-panel:not(:first-child) {
+  border-top: 1px solid var(--line);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Not a decorative flourish that can simply be turned off: pinning changes
+     what scrolling *does*, and a visitor who has asked for reduced motion has
+     asked for the plain behaviour. The full-height minimum goes with it, since
+     its only purpose is to make the pinning legible. */
+  .site-panel {
+    position: static;
+    min-height: 0;
+  }
+}
+
+@keyframes reveal-rise {
   from {
-    --band: var(--frame-top);
+    opacity: 0;
+    transform: translateY(1.4rem);
   }
 
   to {
-    --band: var(--band-collapsed);
+    opacity: 1;
+    transform: none;
   }
 }
 
-@supports (animation-timeline: scroll()) {
-  :root {
-    animation: band-collapse linear both;
-    animation-timeline: scroll();
-    animation-range: 0 var(--band-collapse-range);
+/* `view()` is a scroll-progress timeline, so both of the transitions below are
+   scrubbed by the scroll rather than fired by an observer and then playing on
+   their own clock. Without support every element simply renders in its final
+   state, which is the design with the motion removed rather than a broken
+   version of it. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .site-reveal {
+      animation: reveal-rise linear both;
+      animation-timeline: view();
+      /* Both endpoints are in `entry`, and that is load-bearing rather than a
+         preference. A `cover` endpoint runs past the moment its panel pins, and
+         a pinned panel's contents stop moving relative to the scrollport — so
+         view progress freezes and the element is left half-revealed for good.
+         Measured at 1920x1080 this stranded the proof heading at opacity 0.61
+         permanently. Ending inside `entry` means the transition is finished
+         before the panel can pin, whatever the panel's height. */
+      animation-range: entry 8% entry 78%;
+    }
+
+    .site-sweep {
+      -webkit-mask-image: var(--sweep-mask);
+      mask-image: var(--sweep-mask);
+      animation: sweep-reveal linear both;
+      animation-timeline: view();
+      /* Longer than the block reveal on purpose — this one is meant to be
+         *read* while it resolves — but still ending inside `entry`, for the
+         pinning reason above. */
+      animation-range: entry 12% entry 96%;
+    }
+  }
+}
+
+/* The reading sweep: a paragraph resolves top-down, a line or two ahead of the
+   eye, as the visitor scrolls it into place.
+
+   This is the effect the reference site is actually built around. Measured
+   frame by frame, its sections do not stack or cover each other — the page
+   scrolls normally and the whole impression comes from text arriving
+   progressively instead of all at once. The reference splits every paragraph
+   into line elements at runtime and drives them from a scroll library.
+
+   A gradient mask gets the same read with no DOM surgery and no library, and it
+   has the better failure mode: nothing to re-split on resize, on a font swap or
+   when a paragraph reflows, because the mask is geometry over the rendered box
+   rather than a snapshot of where the lines happened to break.
+
+   `--sweep-band` is the depth of the soft edge. It is a length, not a fraction
+   of the box: these blocks run from two lines to a dozen, and a percentage band
+   would fade a short paragraph over half a line and a long one over eight. At
+   6rem roughly three lines are mid-fade whatever the block's height, which is
+   what makes it read as text arriving rather than as a wipe passing over it.
+
+   Only ever put this on copy that starts below the fold. An element already on
+   screen at rest has no scroll behind it to scrub, so it would sit permanently
+   half-masked — which is exactly what the hero's opening paragraph did before
+   the class came back off it. */
+@property --sweep {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+
+.site-sweep {
+  --sweep-band: 6rem;
+  --sweep-mask: linear-gradient(
+    to bottom,
+    #000 var(--sweep),
+    transparent calc(var(--sweep) + var(--sweep-band))
+  );
+}
+
+/* Starts one full band above the box so the first line is already mid-fade
+   rather than fully hidden, and ends one band past the bottom so the last line
+   finishes clean. */
+@keyframes sweep-reveal {
+  from {
+    --sweep: calc(var(--sweep-band) * -1);
   }
 
-  /* Anchors are always landed on well past the collapse range. */
-  :where(.site-page) [id] {
-    scroll-margin-top: calc(
-      var(--band-collapsed) + var(--header-height, 76px) + 12px
-    );
+  to {
+    --sweep: 100%;
   }
 }
 
 .site-page {
   --paper: #f3f0e8;
   --paper-deep: #e8e3d7;
-  --ink: #003b76;
-  --muted: #52626b;
-  /* The action colour. A deep lapis that sits in the ink's own hue family
-     (212° against the ink's 210°), so the hero's two lines read as one voice
-     at two intensities rather than as two competing blues. It replaces
-     #1655d8, which leaned violet at 221° and read as software-bright against
-     a warm paper. Deeper and less electric, it also measures better:
-     6.3:1 on paper and 7.2:1 under white, up from 5.6 and 6.3. */
-  --blue: #0a55ad;
-  --line: rgba(0, 59, 118, 0.22);
-  /* Type on an inverted surface: the method band and the primary button, both
-     of which sit on flat `--ink`. Not the header — the header is paper now, so
-     nothing here is measured against a translucent wash any more. */
+  /* One blue. It is structure and action at once: every heading, the inverted
+     band, the filled buttons, the rules, and the field the sheet is laid on. The
+     system that preceded it ran a navy (#003b76) for structure against a lapis
+     (#0a55ad) for action, and that split was the right answer while the sheet
+     sat on a painting of Hamburg — two blues could be told apart against a warm,
+     worked ground. Against a flat blue field they could not: both read as the
+     same blue seen through the frame, so the distinction cost a colour and
+     bought nothing.
+
+     Hierarchy is carried by scale, weight and rule instead of by a second hue,
+     and emphasis is carried by inversion. That is the whole discipline of this
+     palette: two colours, and everything else is typography.
+
+     235° at 74% saturation, a little off the sRGB primary and a long way off a
+     corporate blue. The primary itself was the first version of this and it was
+     too raw — an unmixed channel maximum reads as a default rather than as a
+     choice. Pulling a little green in and a little brightness out keeps the
+     voltage and gains an ink.
+
+     It measures well for something this loud, because blue carries almost none
+     of sRGB's luminance: at 7.2% it holds 7.56:1 against paper, better than the
+     lapis it replaced (6.3:1), and white on it holds 8.61:1. */
+  --ink: #202FD6;
+  /* Body prose, and deliberately still not a tint of the ink — a saturated tint
+     of #202FD6 at text size fringes badly, because the eye focuses blue poorly
+     and there is no other channel carrying the letterform. This is a desaturated
+     blue-grey at 232°, which reads as calm next to the ink while belonging to
+     its family. It replaced #52626b, a 203° slate that was right against a navy
+     and read faintly teal once the ink moved into the 230s. Holds 5.9:1 on
+     paper, a shade better than the slate's 5.6:1. */
+  --muted: #565a75;
+  /* Every divider, field underline and section boundary: the ink at 26%.
+     The alpha is up from the navy's 22% because a tint of a colour this
+     saturated lightens faster than a tint of navy — at 22% this composites to a
+     pale lavender that reads as a printing fault rather than as a rule. 26%
+     lands it back on a line that is legibly blue. */
+  --line: rgba(32, 47, 214, 0.26);
+  /* Type on an inverted surface: the method band and the filled buttons, all of
+     which sit on flat `--ink`. White holds 8.61:1 on the new blue, down from
+     11.13:1 on the navy — a real drop, but the floor was never the constraint
+     here and the step down to the muted tint below still reads. */
   --on-ink: #ffffff;
   /* Secondary type on an inverted surface. A tint of white rather than a
      second colour, for the same reason `--muted` is not a tint of the ink.
-     0.82 composites to rgb(209, 220, 230) and measures 8.00:1 on flat `--ink`
-     against white's own 11.13:1, so it has room; the figure to protect is the
-     step down from the wordmark, not the floor. The 4.55:1 near-miss this
-     comment used to record was measured against the old ink header wash
-     travelling over the painting, and that surface no longer exists. */
+     0.82 composites to rgb(209, 209, 255) on the blue and measures 5.84:1,
+     which clears the body-text floor with room; the figure to protect is the
+     step down from the wordmark, not the floor. */
   --on-ink-muted: rgba(255, 255, 255, 0.82);
-  /* The header glaze — `--paper` at 62%, written literally rather than mixed
-     from the token because an unsupported `color-mix()` would invalidate
-     `background` outright and drop ink type onto raw painting. Legibility is
-     not something to leave to feature detection. Keep the two in step by hand.
-     Alpha is the dial for how much Elbphilharmonie shows; see the slice below
-     for why paper can be used as a glaze at all. */
-  --header-wash: rgba(243, 240, 232, 0.62);
-  /* Applied to the painting behind the glaze, not to the glaze. Paper laid
-     straight onto a sunset reads as dirt, because the sheet's own ground is
-     lighter and far less saturated than anything in the picture. Bleaching the
-     slice first closes that gap: the gold drops to a warm grey at roughly
-     paper's own chroma, so the wash lands on it as vellum rather than as a
-     stain. The skyline survives because it is carried by value, not hue — the
-     Elbphilharmonie's roof and the church towers are the darkest things in the
-     frame and stay legible after the chroma has gone.
-
-     The three numbers were measured against the sheet, not guessed. The gap
-     that makes a glaze read as dirt is lightness, not hue: at brightness 1.38
-     the band came out 23 L units darker than the sheet below it, while already
-     sitting *warmer* than the sheet (R−B of 18 against the sheet's 8). So the
-     fix was to lift, not to warm — sepia made it worse. 1.52 closes the seam to
-     15 units and, because the wash is lifting off a lighter ground, raises
-     worst-case ink contrast from 5.54:1 to 5.99:1 at the same time. Saturation
-     is the weakest lever of the three (0.55 → 0.26 only moves warmth 18 → 12,
-     at no contrast cost either way), so 0.34 halves the excess warmth and stops
-     short of draining the sunset out of the sky entirely. */
-  --header-slice: saturate(0.34) contrast(0.58) brightness(1.52);
   --header-height: 76px;
+  /* The rhythm between a full-screen section's edge and its content, paid for
+     out of its height rather than its width. At `10vw` the old value spent
+     288px of a 659px screen on padding alone — 44% of the section, before a
+     word of it was set. Driving it from `vh` means the air scales with the room
+     there is to give; the 10rem ceiling is what it used to reach on a wide
+     desktop.
+
+     Declared here rather than on `.site-panel` because the engagements track is
+     not a panel and needs the same measure. When it lived on the panel, the
+     track's `padding` shorthand referenced an undefined variable, which makes
+     the whole declaration invalid at computed-value time — the section lost its
+     side margins entirely and ran edge to edge. */
+  --panel-pad: clamp(1.5rem, 5.5vh, 10rem);
   position: relative;
   z-index: 1;
-  /* The other three edges take their own safe-area insets so the sheet clears
-     the home indicator and, in landscape, the notch. The top edge already
-     carries its inset through `--frame-top`. */
-  margin: var(--frame-top) calc(var(--frame) + var(--safe-right))
-    calc(var(--frame) + var(--safe-bottom)) calc(var(--frame) + var(--safe-left));
-  min-height: calc(
-    100vh - var(--frame-top) - var(--frame) - var(--safe-bottom)
-  );
+  /* Edge to edge. The safe-area insets become padding rather than margin, so the
+     paper still runs under the notch and the home indicator while the content
+     inside it clears them. */
+  margin: 0;
+  padding: 0 var(--safe-right) var(--safe-bottom) var(--safe-left);
+  min-height: 100vh;
   background: var(--paper);
   color: var(--ink);
   font-family: "Inter Variable", "Helvetica Neue", Arial, sans-serif;
@@ -375,186 +478,138 @@ body::after {
   text-decoration: none;
 }
 
+/* Inversion scope. The palette is two colours, so emphasis cannot come from a
+   third — it comes from swapping which side of the ink the page is printed on.
+   Every band that does this used to restate the swap by hand in hardcoded
+   whites, which meant each new one drifted; here the tokens themselves flip, so
+   any subtree dropped inside this class inverts wholesale. Buttons keep working
+   without a single override, because their fill is `--ink` and their label is
+   `--paper` in both directions.
+
+   The blue is a surface here, not a frame. That is the point of the class: a
+   sheet of paper floating on a colour field is a template, while a page that
+   alternates between paper and ink is a printed object. The field around the
+   sheet and these bands are the same material, and the grain is what says so —
+   when a band meets the frame, the two register as one continuous plane. */
+.site-inverted,
+.site-footer {
+  --paper: #202FD6;
+  --paper-deep: #1A27B0;
+  --ink: #f3f0e8;
+  /* Secondary type on blue. A tint of the paper rather than of white, so the
+     warmth survives the inversion; at 0.84 it composites to rgb(209, 209, 229)
+     and measures 5.73:1 on the blue, which clears the body floor with room. */
+  --muted: rgba(243, 240, 232, 0.84);
+  --line: rgba(243, 240, 232, 0.32);
+  /* Nested inversions — a filled button sitting inside a blue band — resolve
+     back to blue type on paper, which is the same relationship one level in. */
+  --on-ink: #202FD6;
+  --on-ink-muted: rgba(32, 47, 214, 0.78);
+  background-color: var(--paper);
+  background-image: var(--grain);
+  color: var(--ink);
+}
+
+/* The mono register: section numbers, eyebrows, field labels, captions. Kept
+   small and tracked open — uppercase monospace closes up badly at label size —
+   and never used above 13px, where it stops reading as annotation and starts
+   competing with the prose it is annotating. */
+.site-label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
 .site-header {
   position: sticky;
-  top: var(--band);
+  top: 0;
   z-index: 30;
   display: flex;
   min-height: var(--header-height);
   align-items: center;
   justify-content: space-between;
-  /* Transparent, because the two pseudo-elements below carry the surface: the
-     bleached backdrop slice, then the paper glaze over it. `z-index` here
-     already makes the header a stacking context, which is what keeps both of
-     them behind the wordmark and the nav while still above the sheet's paper. */
-  background: transparent;
+  /* Opaque paper. It used to be transparent so two pseudo-elements could carry
+     the surface — a bleached slice of the painting, then a paper glaze over it
+     — and the point of that stack was to let the Elbphilharmonie's roofline
+     read faintly behind the masthead. There is no painting behind the header
+     any more, so a translucent paper would only tint the flat field lilac,
+     which reads as a printing fault rather than as a glaze. One flat ground is
+     both the honest answer and the cheap one: no filter, no fixed layer, no
+     crossfade to arm after the intro. */
+  background: var(--paper);
   /* The masthead rule. It does two jobs at once, which is why it is on at every
      scroll position rather than faded in when the page moves: it is the rule a
-     broadsheet prints under its masthead, and it is the edge between the glaze
-     and the sheet. Those two grounds are close by design, so the boundary needs
-     drawing rather than inferring. `box-sizing: border-box` is inherited, so
-     the rule sits inside `--header-height` and the box stays exactly the
-     measurement the anchor offsets and the slice's clip assume. */
+     broadsheet prints under its masthead, and it is the edge between the header
+     and the sheet. Those two grounds are now the same paper, so the boundary
+     has to be drawn rather than inferred. `box-sizing: border-box` is
+     inherited, so the rule sits inside `--header-height` and the box stays
+     exactly the measurement the anchor offsets assume. */
   border-bottom: 1px solid var(--line);
   color: var(--ink);
   padding: 0 4vw;
 }
 
-/* The painting, seen through the header. Same fixed geometry as the backdrop
-   and the matte — it is the same rule — clipped to the band the header
-   occupies, so the three layers tile the top of the viewport without a seam.
-   `z-index: -1` puts it behind the header's own content but still in front of
-   the sheet's paper, which is what lets the header sit on the painting without
-   the sheet having to stop short of it.
-
-   The filter is what makes a *paper* glaze possible at all; it is documented on
-   `--header-slice`. It is applied here rather than as a `backdrop-filter` on
-   the glaze for two reasons: this layer is painting and only ever painting, so
-   there is no risk of bleaching the page's own content when it scrolls under,
-   and a filter on a fixed layer that does not move is painted once instead of
-   every frame. */
-.site-header::before {
-  z-index: -1;
-  filter: var(--header-slice);
-  /* Clipped to the header's box on all four sides, not just top and bottom.
-     This layer is viewport-fixed and full-bleed, which cost nothing while it
-     was an untouched copy of the backdrop — the overhang was pixel-identical to
-     the backdrop beside it. The filter ends that: anything outside the header's
-     box would show as a bleached band running off both edges of the sheet. The
-     horizontal inset is `--frame` because the sheet is flush to it, with no
-     max-width centring to account for. */
-  clip-path: inset(
-    var(--band) var(--frame) calc(100% - var(--band) - var(--header-height))
-      var(--frame)
-  );
-  /* Suppressed for the length of the intro. While the sheet is arriving,
-     `#root` is mid-transform and therefore the containing block for this fixed
-     layer, so it would resolve against the document rather than the viewport.
-     Nothing is lost by waiting: at the top of the page the real backdrop is
-     directly behind the header anyway, and this slice only starts doing work
-     once content has scrolled up under it.
-
-     The reveal is a fade rather than a cut. The glaze over paper and the glaze
-     over the bleached painting are close, but not close enough to switch
-     between in one frame without it reading as a flicker; crossfaded, the
-     skyline develops behind the vellum. It cannot start any earlier than
-     `--intro-arrive` — the clip is measured from `--band`, so it is only in
-     register once the sheet has stopped moving. */
-  opacity: 0;
-  animation: header-backdrop-arm 360ms ease var(--intro-arrive) forwards;
-}
-
-@keyframes header-backdrop-arm {
-  to {
-    opacity: 1;
-  }
-}
-
-/* Returning visitors skip the intro, so there is no transform to wait out and
-   nothing to reveal — the slice is simply already there. */
-.intro-done .site-header::before {
-  animation: none;
-  opacity: 1;
-}
-
-/* The glaze. Paper at 66% over the bleached slice, which is the sheet's own
-   ground behaving like vellum: the Elbphilharmonie's roof and the towers read
-   straight through it as pale ghosts, and the header still belongs to the paper
-   rather than to the painting. Lowering the alpha shows more skyline and costs
-   contrast; raising it walks back toward the opaque header this replaced. */
-.site-header::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: var(--header-wash);
-  pointer-events: none;
-}
-
 /* `flex-shrink: 0` is load-bearing, not defensive. The header is
-   `space-between`, so once its content exceeds its box the flex algorithm
-   picks something to compress -- and it picked the brand, squeezing the img
-   below its own aspect ratio rather than merely crowding it. Measured on the
-   Galaxy Fold's 280px outer screen the monogram rendered 43.3x32 against an
+   `space-between`, so once its content exceeds its box the flex algorithm picks
+   something to compress -- and it picks the brand, squeezing the img below its
+   own aspect ratio rather than merely crowding it. Measured on the Galaxy
+   Fold's 280px outer screen the old monogram rendered 43.3x32 against an
    artwork ratio of 1.763: a 23% horizontal crush, and 41% once a classic
-   scrollbar took its 10px. Nothing caught it because the page never
-   overflowed -- the mark deformed inside a header that still fitted. Note the
-   rule has to sit here and not on `.site-brand-mark`: the shrinking item is
-   this wrapper, so `flex-shrink` on the img is a no-op. A logo is allowed to
-   be crowded; it is never allowed to be the wrong shape. */
+   scrollbar took its 10px. Nothing caught it because the page never overflowed
+   -- the mark deformed inside a header that still fitted. The wordmark is 10.5:1
+   and therefore far more exposed to the same failure, so the rule matters more
+   now, not less. Note it has to sit here and not on the img: the shrinking item
+   is this wrapper, so `flex-shrink` on the child is a no-op. A logo is allowed
+   to be crowded; it is never allowed to be the wrong shape. */
 .site-brand {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
   min-height: 44px;
   flex-shrink: 0;
 }
 
-/* The name is a cut of the same drawing as the mark, not type. Two earlier
-   attempts set it in Inter; both were wrong, and the reason is measurable. The
-   artwork's wordmark is tracked at roughly 0.72em and drawn light -- its
-   width-to-cap-height ratio is 29.9, where Inter at 0.28em gives 20.2. No
-   spacing value closes a gap that wide without distorting the letterforms,
-   because the weight is wrong too. So the header uses the drawing. It costs one
-   more request; it buys the actual brand. */
-/* Fluid because the name is 10.5:1 -- every pixel of height costs ten of width,
-   and the brand plus the nav needs 837px before the two touch. A fixed height
-   would have collided everywhere between the stand-down and ~880px.
-   The ceiling is a deliberate step under the drawing rather than the drawing's
-   own figure. In the lockup the wordmark is 125.89 units to the mark's 194.07,
-   so beside a 52px mark the artwork asks for 33.73px -- which is what this was,
-   and it read heavy: at that size the name is 92% as tall as the mark's
-   letterforms and stops being the junior element. 30px is 88.9% of the drawing's
-   proportion and 353px of width becomes 314px. 2.083vw is the rounded-down
-   coefficient, so like the 2.34vw before it the ceiling is reached just above
-   1440 rather than at it: 29.995px at 1440 itself, a 0.005px shortfall costing
-   0.05px of width.
-   The 24px floor is a legibility limit, not a fitting one: the caps are 35% of
-   the box, so 24px puts them at 8.4px, which these widely-tracked letterforms
-   still hold. It is deliberately not scaled with the ceiling -- a proportional
-   floor would be 21.4px and put the caps at 7.5px, and the floor exists to stop
-   exactly that. The cost is that it now binds from 1152px rather than 1026px,
-   so the name is flat at 24px across a wider band; shrinking only ever adds
-   clearance, so nothing that fitted before stops fitting. Below 760px the name
-   stands down entirely rather than shrinking past the floor. */
-.site-brand-name {
-  height: clamp(24px, 2.083vw, 30px);
-  width: auto;
-  /* Optical, and the one number in this file that is chosen rather than
-     derived. Both cuts are trimmed to their own ink, so flex centres them
-     honestly -- but the mark's box is not its letterforms: the lapis tile runs
-     the full height while F, B and P occupy only 4.59%-74.97% of it, putting
-     their centre at 39.78% rather than 50%. That gives two defensible anchors
-     and they are 5.31px apart, (0.5 - 0.3978) x 52px. Aligning to the
-     letterforms (-5.31px) is what this was, and it leaves the tile hanging
-     unbalanced below the name. Aligning to the box (0) is geometrically
-     correct and reads a shade low, because the mark's weight is in the navy
-     letterforms rather than the flat tile, so its optical centre sits above its
-     box centre. This is the half-step between them, picked from rendered
-     comparisons rather than calculated -- there is no measurement that settles
-     where a shape's visual centre is. Independent of the name's height: both
-     boxes are centred, so only the mark's skew matters. It is tied to the
-     mark's 52px, though, and the name is only ever shown above 760px where the
-     mark is always 52px -- so one constant covers its whole visible range.
-     Recompute both halves if that 52px changes or the artwork is redrawn. */
-  position: relative;
-  top: -2.66px;
-}
+/* The name is a cut of the drawing, not type. Two earlier attempts set it in
+   Inter; both were wrong, and the reason is measurable. The artwork's wordmark
+   is tracked at roughly 0.72em and drawn light -- its width-to-cap-height ratio
+   is 29.9, where Inter at 0.28em gives 20.2. No spacing value closes a gap that
+   wide without distorting the letterforms, because the weight is wrong too. So
+   the header uses the drawing. It costs one request; it buys the actual brand.
 
-/* The monogram is 1.763:1 since the F/B gap was drawn in -- wider than the
-   1.632 it was before, so the width hint moved with it. Height is the only
-   dimension worth pinning; the width follows the artwork and lands at 91.7px.
-   52px is the tallest the mark can go inside the 76px header and still leave
-   the nav room to breathe. */
-.site-brand-mark {
-  height: 52px;
+   It is now the entire logo, and that changes what size it wants. It used to be
+   the junior half of a lockup, sized at 88.9% of the proportion the artwork
+   asks for beside a 52px monogram so it could not out-shout the mark, and it
+   stood down entirely below 760px because the mark could carry the header
+   alone. Neither constraint survives the monogram: there is nothing left to
+   defer to and nothing left to stand down in favour of.
+
+   At the inherited 30px it was measurably too quiet. The drawing is two lines
+   -- baselines 81.75 units apart inside a 125.89-unit box -- so each line's caps
+   are 41.19 units, 32.7% of the height. A 30px box therefore set the caps at
+   9.8px against a 14px nav, and a masthead that renders smaller than its own
+   navigation has the hierarchy upside down. 44px puts the caps at 14.4px, just
+   past the nav, which is the least it can be and still read as the thing the
+   nav belongs to. */
+.site-brand-name {
+  /* 7.07:1 in the current drawing, down from 10.48:1 in the one before it: the
+     second line reads "&PARTNERS" set tight rather than "& PARTNERS" spread to
+     the full measure, so the block is a third narrower at the same height.
+
+     Height is still what is rationed, not width. What caps it is the 76px
+     header box, which leaves 16px of clearance above and below at 44px and
+     starts to feel crowded past it; 3.1vw reaches that ceiling just above
+     1419px. The 38px floor is where the hierarchy stops working rather than
+     where the pixels stop fitting -- caps land at about 12px there against a
+     13px nav, and below that the name stops reading as the senior element.
+
+     The narrower artwork is pure headroom: at the 44px ceiling it now spends
+     311px of the row instead of 461px, so the name and the nav have 150px more
+     air between them at every width. */
+  height: clamp(38px, 3.1vw, 44px);
   width: auto;
-  /* Never put a filter here. The cut carries three inks -- navy letterforms,
-     a Signal Lapis ampersand tile, and the paper the ampersand is knocked out
-     in -- and a filter cannot tell them apart. `brightness(0) invert(1)` would
-     flatten all three into one flat shape and the tile, the only colour the
-     mark owns, would be gone. Recolour in the file instead: that is why a
-     separate on-ink cut exists even though this header never uses it. */
 }
 
 .site-header nav {
@@ -585,7 +640,10 @@ body::after {
   gap: 2rem;
   border-top: 1px solid var(--line);
   padding: 2.4rem 4vw;
-  font-size: 0.8125rem;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
 .site-footer nav {
@@ -605,44 +663,94 @@ body::after {
   border-color: currentColor;
 }
 
+/* Below this the wordmark and the nav cannot share a line on any terms worth
+   having, and the number is measured rather than estimated. The name is
+   10.48:1, so at its 38px floor it takes 398px of the header to itself and the
+   nav takes 234px. At 901px of viewport the sheet's frame and the header's own
+   4vw padding have already eaten 190px, leaving 711px of content and 79px of
+   clear air between the name and the first nav item. One step narrower the nav
+   drops to 13px and claws 25px back, but the frame and padding keep taking more
+   than that, and by 761px the two are overlapping by 8px. There is no band
+   below this where one row is comfortable, so the header takes a second row
+   instead.
+
+   The old system dropped the name at 760px and let the monogram carry the
+   header alone. That is the option that no longer exists: with no monogram
+   there is nothing to drop to, and a masthead cannot stand down.
+
+   Deliberately not `flex-wrap`, which would find this threshold on its own and
+   without a magic number. `--header-height` is what anchor targets subtract to
+   clear the sticky header, so the box has to be a value the stylesheet knows
+   rather than one the flex algorithm discovers: a wrapped header that grew past
+   its declared height would leave every in-page link landing about 30px under
+   the masthead.
+
+   This block sets `padding-block` rather than the `padding` shorthand, and the
+   narrower blocks below set `padding-inline`, so the two never clobber each
+   other regardless of source order. */
 @media (max-width: 900px) {
+  .site-page {
+    /* Two 44px rows, which is the brand link's and the nav links' touch target,
+       plus the vertical padding. Nothing here is the wordmark's own height --
+       at 44px and below it sits inside the row the tap target already demands,
+       so the name costs the header nothing that accessibility was not charging
+       it anyway. */
+    --header-height: 100px;
+    /* The masthead's own width once it has a row to itself. Shared by the
+       wordmark and the nav below it so the two stay in step. The ceiling is the
+       44px desktop cap expressed in the other axis -- 44 x 7.07 -- so the name
+       never renders larger on a phone than it does on a desktop. */
+    --masthead: min(100%, 311px);
+  }
+
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    /* 0.3rem and not 0.35: the two 44px rows plus the 1px masthead rule come to
+       89px, and `box-sizing: border-box` means the padding and the rule both
+       have to fit inside the declared 100px. 0.35rem overshot it by 0.2px and
+       the box quietly grew past the height the anchor offsets assume. */
+    padding-block: 0.3rem;
+  }
+
+  .site-brand {
+    width: 100%;
+  }
+
+  /* Width-driven rather than height-driven, which is the right way round once
+     the name has a row to itself: it takes the width it is given and derives
+     its height, so it fits by construction at every size down to the 280px
+     Galaxy Fold instead of by a clamp tuned per breakpoint. The ceiling is
+     reached immediately, at 900px, because a full row is exactly what the
+     one-row layout could not give it. The name is therefore larger at 900px
+     than it is at 901px, which looks like a mistake and is the point: the break
+     exists because the row was the constraint, so crossing it has to buy
+     something. Below roughly 340px of content the 100% arm takes over and the
+     name simply tracks the sheet. */
+  .site-brand-name {
+    width: var(--masthead);
+    height: auto;
+  }
+
+  /* Centred under the name rather than flush to the sheet's edge. The artwork
+     is a centred two-line lockup -- "& PARTNERS" sits centred beneath "FLORIAN
+     BEERMANN" -- so a left-aligned nav reads as hanging off the corner of a
+     block that is plainly balanced about its own middle. Giving the nav the
+     masthead's width and centring inside it lines the two centres up exactly;
+     below roughly 500px both arms resolve to 100% and the pair simply centres
+     in the header together. */
   .site-header nav {
+    width: var(--masthead);
+    justify-content: center;
     gap: 1.15rem;
     font-size: 0.8125rem;
   }
 }
 
-/* The name stands down 80px above the mark's own breakpoint, and the two are
-   deliberately not the same number. Measured, the brand and the nav touch at
-   690px with the name at its 24px floor; 760px buys ~44px of clearance at the
-   moment before it disappears, so the name is never the thing that crushes the
-   nav. Dropping it here rather than shrinking it further is the right trade:
-   past this the caps fall under 8px and the monogram alone reads better than a
-   name too faint to finish. Nothing is lost to assistive tech -- the link's
-   `aria-label` carries the full name and was always what got announced. */
-@media (max-width: 760px) {
-  .site-brand-name {
-    display: none;
-  }
-}
-
 @media (max-width: 680px) {
-  /* The header's box and `--header-height` are one measurement, not two. The
-     variable drives the backdrop slice's clip as well as anchor offsets, so
-     letting the box shrink without it leaves a strip of uncovered painting
-     hanging below the header. */
-  .site-page {
-    --header-height: 68px;
-  }
-
   .site-header {
-    min-height: var(--header-height);
-    padding: 0 1.35rem;
-  }
-
-  /* 38px lands the monogram at the presence the old 34px square had. */
-  .site-brand-mark {
-    height: 38px;
+    padding-inline: 1.35rem;
   }
 
   .site-header nav {
@@ -673,15 +781,7 @@ body::after {
      against the sheet's edge with the brand jammed against it. Continuous
      values give that back gradually instead of all at once at one width. */
   .site-header {
-    padding: 0 clamp(0.5rem, 3.5vw, 0.7rem);
-  }
-
-  /* The monogram is already narrow enough at this width; it only needs to give
-     the nav a little more room. Below 320px it gives back a few more pixels --
-     28px is the floor, where the lapis tile is still legibly a square rather
-     than a speck. */
-  .site-brand-mark {
-    height: clamp(28px, 10vw, 32px);
+    padding-inline: clamp(0.5rem, 3.5vw, 0.7rem);
   }
 
   .site-header nav {
@@ -697,27 +797,5 @@ body::after {
 
   #root {
     animation: none;
-  }
-
-  /* No intro means no transform on `#root`, so the slice is safe immediately —
-     and a crossfade nobody asked for is exactly what this mode excludes. */
-  .site-header::before {
-    animation: none;
-    opacity: 1;
-  }
-
-  /* Not parallax — this is viewport-fixed frame, not content sliding past
-     content at a mismatched rate. But a 129px edge sweeping the full width of
-     the viewport is a large moving area, and large moving areas are what
-     vestibular sensitivity reacts to whether or not they are content. Parking
-     it at the resting depth is not a degraded state: it is exactly what
-     browsers without scroll timelines already get, so it is a composition the
-     design is built around. The header parks at the frame line there too. */
-  :root {
-    animation: none;
-  }
-
-  :where(.site-page) [id] {
-    scroll-margin-top: calc(var(--frame-top) + var(--header-height, 76px) + 12px);
   }
 }

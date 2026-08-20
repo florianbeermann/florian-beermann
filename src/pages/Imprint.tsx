@@ -5,9 +5,9 @@ import { setPageMetadata } from "@/lib/metadata";
 export const Imprint = () => {
   useEffect(() => {
     setPageMetadata({
-      title: "Imprint | florian beermann & partners",
+      title: "Imprint | Florian Beermann & Partners",
       description:
-        "Legal information and contact details for florian beermann & partners.",
+        "Legal information and contact details for Florian Beermann & Partners.",
       path: "/imprint",
     });
   }, []);
@@ -47,7 +47,7 @@ export const Imprint = () => {
               <p>
                 <strong>Florian Beermann</strong>
                 <br />
-                trading as florian beermann &amp; partners
+                trading as Florian Beermann &amp; Partners
                 <br />
                 Hegestr. 31
                 <br />

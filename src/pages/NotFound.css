@@ -22,7 +22,7 @@
 }
 
 .notfound-code {
-  color: var(--blue);
+  color: var(--ink);
   font-size: 0.86rem;
   font-weight: 680;
   padding-top: 0.7rem;
@@ -62,7 +62,7 @@
 .notfound-links a:hover,
 .notfound-links a:focus-visible {
   border-bottom-color: currentColor;
-  color: var(--blue);
+  color: var(--ink);
 }
 
 @media (max-width: 768px) {

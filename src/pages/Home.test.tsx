@@ -44,21 +44,15 @@ describe("homepage", () => {
     ).toHaveAttribute("href", "#contact");
   });
 
-  it("serves the portrait as a responsive WebP with a JPEG fallback", () => {
+  it("labels the ASCII portrait for assistive technology without reading the grid", () => {
     renderHome();
 
-    const portrait = screen.getByAltText(
-      "Florian Beermann, Customer Success consultant",
-    );
-    expect(portrait).toHaveAttribute("src", "/florian-portrait-880.jpg");
-    expect(portrait.getAttribute("srcset")).toContain(
-      "/florian-portrait-440.webp 440w",
-    );
-    expect(portrait.getAttribute("srcset")).toContain(
-      "/florian-portrait-880.webp 880w",
-    );
-    expect(portrait).toHaveAttribute("width", "880");
-    expect(portrait).toHaveAttribute("height", "1322");
+    const portrait = screen.getByRole("img", { name: "Florian Beermann" });
+    const grid = portrait.querySelector("pre");
+
+    expect(grid).not.toBeNull();
+    expect(grid).toHaveAttribute("aria-hidden", "true");
+    expect(grid?.textContent?.length ?? 0).toBeGreaterThan(1000);
   });
 
   it("lists the three engagements with their deliverables", () => {

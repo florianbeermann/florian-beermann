@@ -5,7 +5,7 @@ import { setPageMetadata } from "@/lib/metadata";
 export const Privacy = () => {
   useEffect(() => {
     setPageMetadata({
-      title: "Privacy policy | florian beermann & partners",
+      title: "Privacy policy | Florian Beermann & Partners",
       description:
         "Information about how personal data is processed on florianbeermann.com.",
       path: "/privacy",
@@ -27,7 +27,7 @@ export const Privacy = () => {
             <div className="legal-section-body">
               <p>
                 Florian Beermann, trading as{" "}
-                <strong>florian beermann &amp; partners</strong>
+                <strong>Florian Beermann &amp; Partners</strong>
                 <br />
                 Hegestr. 31, 20249 Hamburg, Germany
                 <br />

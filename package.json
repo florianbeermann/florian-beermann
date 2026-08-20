@@ -12,8 +12,10 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
+    "portrait": "node scripts/generate-portrait-ascii.mjs",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "halftone": "node scripts/generate-halftone.mjs"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.7",

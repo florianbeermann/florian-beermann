@@ -8,7 +8,7 @@ const NotFound = () => {
 
   useEffect(() => {
     setPageMetadata({
-      title: "Page not found | florian beermann & partners",
+      title: "Page not found | Florian Beermann & Partners",
       description:
         "The page you requested does not exist on florianbeermann.com.",
       path: pathname,
@@ -19,8 +19,7 @@ const NotFound = () => {
     <div className="site-page notfound-page">
       <header className="site-header">
         <Link className="site-brand" to="/" aria-label="Florian Beermann &amp; Partners, home">
-          <img className="site-brand-mark" src="/logo-mark.svg" alt="" width="342" height="194" />
-          <img className="site-brand-name" src="/logo-wordmark.svg" alt="" width="1319" height="126" />
+          <img className="site-brand-name" src="/logo-wordmark.svg" alt="" width="925" height="131" />
         </Link>
         <nav aria-label="Primary navigation">
           <Link to="/#engagements">Engagements</Link>
@@ -50,7 +49,7 @@ const NotFound = () => {
 
       <footer className="site-footer">
         <span>
-          florian beermann &amp; partners · © {new Date().getFullYear()}
+          Florian Beermann &amp; Partners · © {new Date().getFullYear()}
         </span>
         <nav aria-label="Footer navigation">
           <Link to="/imprint">Imprint</Link>

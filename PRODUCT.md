@@ -95,7 +95,9 @@ this network; the legal entity is a sole trader.
 
 ## Brand Commitments
 
-- **Name:** florian beermann & partners — set lowercase as a wordmark.
+- **Name:** Florian Beermann & Partners — set as a two-line wordmark, the
+  name letterspaced above "&PARTNERS", with the ampersand reversed out of a
+  solid tile. Written in title case everywhere it appears as text.
 - **Legal entity:** Florian Beermann, sole trader, Hegestr. 31, 20249 Hamburg,
   Germany.
 - **Contact:** hello@florianbeermann.com · +49 (0)40 89705822 ·
@@ -103,7 +105,8 @@ this network; the legal entity is a sole trader.
 - **Voice:** first-person singular, en-GB spelling ("realisation",
   "organisations"), understated and specific. Avoids transformation-consultancy
   vocabulary.
-- **Assets:** portrait photograph (`public/florian-portrait-*.webp`), logo
+- **Assets:** portrait rendered as ASCII art (`src/assets/portrait-ascii.txt`,
+  generated from `scripts/assets/portrait-source.jpg`), logo
   (`public/logo.png`), self-hosted licensed Inter / Inter Tight variable font
   subsets (`public/fonts/`, licences committed).
 

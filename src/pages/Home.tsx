@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { toast } from "sonner";
@@ -14,14 +14,27 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { setPageMetadata } from "@/lib/metadata";
+import { startAsciiMotion } from "@/lib/ascii-motion";
+import { startPanelScroll } from "@/lib/panel-scroll";
+import { startSectionScroll } from "@/lib/section-scroll";
+import portraitAscii from "@/assets/portrait-ascii.txt?raw";
 import "./Home.css";
 
-const portraitSrcSet = [
-  "/florian-portrait-440.webp 440w",
-  "/florian-portrait-660.webp 660w",
-  "/florian-portrait-880.webp 880w",
-].join(", ");
-const portraitFallback = "/florian-portrait-880.jpg";
+/* The portrait is a character grid, generated from the photograph by
+   `npm run portrait` and inlined at build time. The site ships no photography:
+   the face is set in the same ink as everything else, which is the only way an
+   image belongs on a page whose entire depth model is figure and ground. It
+   also costs 4.7KB in place of 189KB of responsive image files, and no decode.
+   Regenerate rather than edit — see scripts/generate-portrait-ascii.mjs.
+
+   The plate is measured against the artwork's own dimensions rather than
+   numbers typed twice, so regenerating at any size stays correct. Both axes are
+   published: the columns size the grid to the panel's width, and the rows let
+   it also be sized against the height it has been given, which the hero needs
+   because it is the one panel with a fixed height budget. */
+const portraitLines = portraitAscii.replace(/\n+$/, "").split("\n");
+const portraitColumns = Math.max(...portraitLines.map((line) => line.length));
+const portraitRows = portraitLines.length;
 
 const employers = [
   { name: "Microsoft", logo: "/company-logos/microsoft.png" },
@@ -122,15 +135,26 @@ export default function Home() {
   const [showDetails, setShowDetails] = useState(false);
   const [size, setSize] = useState("");
   const [tooling, setTooling] = useState("");
+  const portraitRef = useRef<HTMLPreElement>(null);
 
   useEffect(() => {
     setPageMetadata({
-      title: "florian beermann & partners",
+      title: "Florian Beermann & Partners",
       description:
         "Customer Success consulting for B2B SaaS companies whose customer base has outgrown the way they serve it. Strategy, lifecycle playbooks and CSM enablement.",
       path: "/",
     });
   }, []);
+
+  useEffect(() => {
+    if (!portraitRef.current) return;
+    const motion = startAsciiMotion(portraitRef.current, portraitAscii);
+    return () => motion.stop();
+  }, []);
+
+  useEffect(() => startPanelScroll(), []);
+  useEffect(() => startSectionScroll(), []);
+
 
   const buildSubject = (formData: FormData) =>
     `Customer Success enquiry: ${formData.get("company") || "website"}`;
@@ -173,7 +197,7 @@ export default function Home() {
     formData.set("size", size);
     formData.set("tooling", tooling);
     formData.set("access_key", accessKey);
-    formData.set("from_name", "florian beermann & partners website");
+    formData.set("from_name", "Florian Beermann & Partners website");
     formData.set("subject", buildSubject(formData));
 
     try {
@@ -210,13 +234,12 @@ export default function Home() {
     <div className="site-page">
       <header className="site-header">
         <a className="site-brand" href="#top" aria-label="Florian Beermann &amp; Partners, home">
-          {/* Two cuts of one drawing, not a lockup file: the supplied artwork
-              stacks the name under the mark, and the header needs it alongside.
-              Splitting them lets each be sized on its own and lets the name
-              stand down at narrow widths without a second asset. Both are
-              decorative -- the link's aria-label carries the name once. */}
-          <img className="site-brand-mark" src="/logo-mark.svg" alt="" width="342" height="194" />
-          <img className="site-brand-name" src="/logo-wordmark.svg" alt="" width="1319" height="126" />
+          {/* The wordmark is the whole brand now; the FB&P monogram it used to
+              sit beside has been retired. Still a cut of the drawing rather
+              than live type, because the artwork is tracked at roughly 0.72em
+              and drawn lighter than any weight Inter offers. Decorative — the
+              link's aria-label carries the name once. */}
+          <img className="site-brand-name" src="/logo-wordmark.svg" alt="" width="925" height="131" />
         </a>
         <nav aria-label="Primary navigation">
           <a href="#engagements">Engagements</a>
@@ -226,7 +249,9 @@ export default function Home() {
       </header>
 
       <main id="site-main">
-        <section id="top" className="home-hero" aria-label="Introduction">
+        {/* Snap stop. See `.site-stop` in Home.css. */}
+        <span className="site-stop" aria-hidden="true" />
+        <section id="top" className="home-hero site-panel" aria-label="Introduction">
           <div className="home-hero-copy">
             <h1>
               Your customers changed.{" "}
@@ -247,30 +272,46 @@ export default function Home() {
             </div>
           </div>
 
-          <figure className="home-portrait">
-            <div className="home-portrait-frame">
-              <img
-                src={portraitFallback}
-                srcSet={portraitSrcSet}
-                sizes="(max-width: 768px) 90vw, (max-width: 900px) 290px, 440px"
-                alt="Florian Beermann, Customer Success consultant"
-                width="880"
-                height="1322"
-                decoding="async"
-                {...{ fetchpriority: "high" }}
-              />
+          <figure className="home-portrait site-inverted">
+            <div
+              className="home-portrait-plate"
+              role="img"
+              aria-label="Florian Beermann"
+              style={
+                {
+                  "--ascii-columns": portraitColumns,
+                  "--ascii-rows": portraitRows,
+                } as React.CSSProperties
+              }
+            >
+              {/* Hidden from assistive tech: read out, the grid is several
+                  thousand punctuation marks. The name is carried by the
+                  `role="img"` label above and the caption below. */}
+              <pre
+                className="home-portrait-ascii"
+                aria-hidden="true"
+                ref={portraitRef}
+              >
+                {portraitAscii}
+              </pre>
             </div>
+            <figcaption className="home-portrait-caption">
+              <span className="site-label">Fig. 01</span>
+              <span className="site-label">Florian Beermann</span>
+            </figcaption>
           </figure>
         </section>
 
-        <section className="home-proof" aria-labelledby="proof-title">
-          <div className="home-proof-heading">
+        {/* Snap stop. See `.site-stop` in Home.css. */}
+        <span className="site-stop" aria-hidden="true" />
+        <section className="home-proof site-panel" aria-labelledby="proof-title">
+          <div className="home-proof-heading site-reveal">
             <h2 id="proof-title">Where the experience comes from</h2>
             <p>
               <span className="home-proof-lede">
                 Every one of these is a company I worked inside.
               </span>
-              <span className="home-proof-rest">
+              <span className="home-proof-rest site-sweep">
                 Each ran Customer Success for a different kind of customer. That
                 is where I learned what transfers between segments, and what
                 quietly breaks.
@@ -281,7 +322,15 @@ export default function Home() {
           <ul className="home-employers" aria-label="Previous employers">
             {employers.map((employer) => (
               <li key={employer.name}>
-                <img src={employer.logo} alt="" width="20" height="20" />
+                <span
+                  className="home-employer-mark"
+                  aria-hidden="true"
+                  style={
+                    {
+                      "--employer-logo": `url("${employer.logo}")`,
+                    } as React.CSSProperties
+                  }
+                />
                 {employer.name}
               </li>
             ))}
@@ -306,43 +355,79 @@ export default function Home() {
           </dl>
         </section>
 
+        {/* The three engagements share one frame. "Three ways I work" and its
+            lede are the constant; only the engagement under them changes as the
+            track is scrolled, so the section reads as one idea examined three
+            times rather than three sections in a row.
+
+            The track is three screens tall and the stage inside it is sticky, so
+            the frame holds while the reel behind it advances. It is deliberately
+            not a `.site-panel`: panels hold still and are covered, this one is
+            meant to be scrubbed. */}
         <section
           id="engagements"
-          className="home-engagements home-section"
+          className="home-engagements-track"
+          aria-labelledby="engagements-title"
         >
-          <header className="home-section-heading">
-            <h2>Three ways I work</h2>
-            <span>
-              Each engagement is scoped around the operating problem in front
-              of you, not sold as a transformation package.
-            </span>
-          </header>
+          {/* Snap points, one per engagement. Nothing is drawn: they exist only
+              to give the scroller somewhere to catch inside a section that is
+              three screens tall. CSS-only — see `Home.css`. */}
+          <div className="home-engagement-steps" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
 
-          <div className="home-engagement-list">
-            {engagements.map((engagement) => (
-              <article className="home-engagement" key={engagement.number}>
-                <span className="home-engagement-number">
-                  {engagement.number}
-                </span>
-                <div className="home-engagement-title">
-                  <h3>{engagement.title}</h3>
-                  <p>{engagement.summary}</p>
-                </div>
-                <div className="home-engagement-detail">
-                  <p>{engagement.detail}</p>
-                  <ul>
-                    {engagement.deliverables.map((deliverable) => (
-                      <li key={deliverable}>{deliverable}</li>
-                    ))}
-                  </ul>
-                </div>
-              </article>
-            ))}
+          <div className="home-engagements-stage">
+            <header className="home-section-heading">
+              <h2 id="engagements-title">Three ways I work</h2>
+              <span>
+                Each engagement is scoped around the operating problem in front
+                of you, not sold as a transformation package.
+              </span>
+            </header>
+
+            <div className="home-engagement-viewport">
+              <div className="home-engagement-reel">
+                {engagements.map((engagement) => (
+                  <article className="home-engagement" key={engagement.number}>
+                    <div className="home-engagement-title">
+                      <h3>{engagement.title}</h3>
+                      <p>{engagement.summary}</p>
+                    </div>
+                    <div className="home-engagement-detail">
+                      <p>{engagement.detail}</p>
+                      <ul>
+                        {engagement.deliverables.map((deliverable) => (
+                          <li key={deliverable}>{deliverable}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+
+            {/* Position within the sub-scroll. Hidden from assistive tech: it
+                says nothing the three engagements below it do not already say,
+                and it only exists where the scrub does. */}
+            <div className="home-engagement-progress" aria-hidden="true">
+              <span className="home-engagement-progress-rail">
+                <span className="home-engagement-progress-bar" />
+              </span>
+              <ol>
+                {engagements.map((engagement) => (
+                  <li key={engagement.number}>{engagement.number}</li>
+                ))}
+              </ol>
+            </div>
           </div>
         </section>
 
-        <section className="home-method">
-          <div className="home-method-inner">
+        {/* Snap stop. See `.site-stop` in Home.css. */}
+        <span className="site-stop" aria-hidden="true" />
+        <section className="home-method site-inverted site-panel">
+          <div className="home-method-inner site-reveal">
             <header>
               <h2>Customer signals only matter when they change the work.</h2>
             </header>
@@ -371,13 +456,19 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="about" className="home-about home-section">
-          <header className="home-section-heading">
+        {/* The about section is two panels for the same reason the engagements are
+            three: at 1219px it needed almost twice the height a screen has. The
+            argument sits on the first, the evidence on the second, which is the
+            seam the content already had. */}
+        {/* Snap stop. See `.site-stop` in Home.css. */}
+        <span className="site-stop" aria-hidden="true" />
+        <section id="about" className="home-about home-section site-panel">
+          <header className="home-section-heading site-reveal">
             <h2>I have been the person who owns the number.</h2>
           </header>
 
           <div className="home-about-grid">
-            <div className="home-about-copy">
+            <div className="home-about-copy site-sweep">
               <p className="home-about-lead">
                 I have run Customer Success inside global technology companies
                 and inside fast-moving SaaS scale-ups.
@@ -400,16 +491,23 @@ export default function Home() {
               enablement expertise, I bring in a small network of independent
               specialists.
             </aside>
-
-            <ol className="home-experience-list">
-              {experience.map((item) => (
-                <li key={item.company}>
-                  <span>{item.company}</span>
-                  <p>{item.context}</p>
-                </li>
-              ))}
-            </ol>
           </div>
+        </section>
+
+        {/* Snap stop. See `.site-stop` in Home.css. */}
+        <span className="site-stop" aria-hidden="true" />
+        <section
+          className="home-about home-about-record home-section site-panel"
+          aria-label="Where I have worked"
+        >
+          <ol className="home-experience-list site-reveal">
+            {experience.map((item) => (
+              <li key={item.company}>
+                <span>{item.company}</span>
+                <p>{item.context}</p>
+              </li>
+            ))}
+          </ol>
 
           <div className="home-tools">
             <strong>Tooling fluency</strong>
@@ -417,8 +515,10 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="contact" className="home-contact">
-          <div className="home-contact-copy">
+        {/* Snap stop. See `.site-stop` in Home.css. */}
+        <span className="site-stop" aria-hidden="true" />
+        <section id="contact" className="home-contact site-inverted site-panel">
+          <div className="home-contact-copy site-reveal">
             <h2>What is getting in the way of better retention?</h2>
             <span>
               Share the challenge you are working through. I will respond with
@@ -532,7 +632,7 @@ export default function Home() {
                     >
                       <SelectValue placeholder="Select size" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="home-select-content">
                       <SelectItem value="1-50">1–50 employees</SelectItem>
                       <SelectItem value="51-200">51–200 employees</SelectItem>
                       <SelectItem value="201-1000">
@@ -555,7 +655,7 @@ export default function Home() {
                     >
                       <SelectValue placeholder="Select tooling" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="home-select-content">
                       <SelectItem value="gainsight">Gainsight</SelectItem>
                       <SelectItem value="churnzero">ChurnZero</SelectItem>
                       <SelectItem value="salesforce">Salesforce</SelectItem>
@@ -599,7 +699,7 @@ export default function Home() {
       </main>
 
       <footer className="site-footer">
-        <span>florian beermann &amp; partners · © {new Date().getFullYear()}</span>
+        <span>Florian Beermann &amp; Partners · © {new Date().getFullYear()}</span>
         <nav aria-label="Footer navigation">
           <Link to="/imprint">Imprint</Link>
           <Link to="/privacy">Privacy</Link>
