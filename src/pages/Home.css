@@ -646,7 +646,21 @@
       border-top: 0;
       padding-block: 0;
       padding-inline: var(--gutter);
-      animation: linear both;
+      /* Longhands, and they have to stay longhands. Written as the shorthand
+         `animation: linear both` this is a nameless animation, which means
+         `animation-name: none` — and a minifier that sees a rule whose
+         animation can never run is entitled to collapse the whole declaration
+         to `animation: none`, taking `linear` and `both` with it. The names
+         arrive from the `:nth-child` rules below, which it cannot see from
+         here, so the optimisation is locally valid and globally wrong.
+
+         Losing `both` is what breaks: with no fill mode each engagement
+         reverts to its untransformed position outside the animation's active
+         range, and since all three share one grid cell they land on top of one
+         another. It only happens in a production build, so a dev server shows
+         the reel working perfectly right up until it is deployed. */
+      animation-timing-function: linear;
+      animation-fill-mode: both;
       animation-timeline: --engagement-reel;
       animation-range: contain 0% contain 100%;
     }
@@ -717,7 +731,11 @@
        readout that dissolves between states is harder to read than one that
        switches. */
     .home-engagement-progress li {
-      animation: linear both;
+      /* Longhands for the same reason as `.home-engagement` above: the name
+         comes from the `:nth-child` rules, so the shorthand here would be
+         nameless and a minifier may reduce it to `animation: none`. */
+      animation-timing-function: linear;
+      animation-fill-mode: both;
       animation-timeline: --engagement-reel;
       animation-range: contain 0% contain 100%;
     }
