@@ -52,104 +52,104 @@ jobs:
           cat dist/version.json
 
       # The gate is built here rather than committed, because this repository is
-      # public: the password would be readable in the source, and so would a
-      # bcrypt hash of it. `public/.htaccess` ships a `__HTPASSWD_PATH__`
-      # placeholder that only this step can resolve.
+      # public: both the password hash and the access token derived from it would
+      # otherwise be readable in the source. `public/.htaccess` ships an
+      # `__ACCESS_TOKEN__` placeholder that only this step can resolve, and
+      # `gate-secrets.php` is written here and exists nowhere in git.
       #
       # The .htaccess is what decides whether the site is gated, not this
       # workflow and not the presence of a secret. Delete the gate block from
       # that file and this step stands down on its own; leave the block in and
       # every failure below stops the deploy before a single byte is uploaded.
       # That asymmetry is the point: going public has to be a reviewed change to
-      # the file whose job is protection, while a missing secret or a mistyped
-      # path can only ever cost a deploy, never open the site.
+      # the file whose job is protection, while a missing secret can only ever
+      # cost a deploy, never open the site.
       - name: 🔒 Build the pre-launch gate
         env:
-          SITE_USERNAME: ${{ secrets.SITE_USERNAME }}
           SITE_PASSWORD: ${{ secrets.SITE_PASSWORD }}
-          HTPASSWD_PATH: ${{ secrets.HETZNER_HTPASSWD_PATH }}
         run: |
           set -euo pipefail
 
-          if ! grep -q '^AuthUserFile __HTPASSWD_PATH__$' dist/.htaccess; then
-            # Half a gate is worse than either whole: Apache answers a
-            # `Require valid-user` it cannot match against a password file with
-            # a 500 for every page. Fail here, where the message can say so,
-            # rather than on the server where it cannot.
-            if grep -q '^Require valid-user' dist/.htaccess; then
-              echo "::error::.htaccess still requires credentials but no longer names a password file, which Apache serves as a 500 for the whole site. Remove the entire PRE-LAUNCH GATE block to publish, or restore the AuthUserFile line."
+          if ! grep -q '__ACCESS_TOKEN__' dist/.htaccess; then
+            # Half a gate is worse than either whole. `Require env FB_ACCESS`
+            # with nothing left to set that variable denies every request
+            # including the owner's, so the site is down rather than open --
+            # safe, but a failure nobody chose. Say so here, where the message
+            # can explain it, rather than on the server where it cannot.
+            if grep -q '^Require env FB_ACCESS' dist/.htaccess; then
+              echo "::error::.htaccess still requires the access cookie but no longer carries the token placeholder, so nothing can ever set it and the site is closed to everyone. Remove the entire PRE-LAUNCH GATE block to publish, or restore the SetEnvIf line."
               exit 1
             fi
             echo "No pre-launch gate in .htaccess. Publishing the site openly."
+            rm -f dist/login.php
             exit 0
           fi
 
-          username="${SITE_USERNAME:-preview}"
-
           if [ -z "${SITE_PASSWORD}" ]; then
-            echo "::error::SITE_PASSWORD is not set, so the gate cannot be built and the deploy is stopping. Add it under Settings > Secrets and variables > Actions. Set SITE_USERNAME too if you want something other than '${username}'."
+            echo "::error::SITE_PASSWORD is not set, so the gate cannot be built and the deploy is stopping. Add it under Settings > Secrets and variables > Actions."
             exit 1
           fi
 
-          if [ -z "${HTPASSWD_PATH}" ]; then
-            echo "::error::HETZNER_HTPASSWD_PATH is not set. Apache needs to know where the password file lives on the server. konsoleH shows the document root under Webserver configuration; paste that, or the full path to the file — either is understood."
+          if ! command -v php >/dev/null 2>&1; then
+            echo "::error::PHP is not available on the runner, so the password hash cannot be generated."
             exit 1
           fi
 
-          # The secret may hold the document root konsoleH displays, or the full
-          # path to the file itself. Both are honest readings of "the path to
-          # the password file", and the difference between them is not worth a
-          # failed deploy, so normalise instead of insisting: drop a trailing
-          # slash, then add the filename unless it is already there.
-          htpasswd_path="${HTPASSWD_PATH%/}"
-          case "${htpasswd_path}" in
-            */.htpasswd) : ;;
-            *) htpasswd_path="${htpasswd_path}/.htpasswd" ;;
-          esac
+          # The cookie's value. Derived from the password rather than random so
+          # it is stable across deploys -- a fresh token every deploy would sign
+          # everyone out on every push. Deriving it also means rotating the
+          # password rotates the token, which signs everyone out exactly when
+          # that is the intention.
+          #
+          # It is an HMAC rather than a plain hash so the token cannot be
+          # confirmed against a guessed password by anyone who only has the
+          # token, and hex so it is safe inside both a regex and a cookie.
+          token=$(printf '%s' "${SITE_PASSWORD}" | openssl dgst -sha256 -hmac 'fb-gate-v1' | awk '{print $NF}')
 
-          # Actions masks the secret itself, but not a value derived from it, and
-          # this repository's logs are public. Mask the derived path explicitly
-          # or the first error message below publishes the server's directory
-          # layout to anyone reading the run.
-          echo "::add-mask::${htpasswd_path}"
+          # Actions masks a secret's exact value but nothing computed from it,
+          # and this repository's logs are public. The token is password-
+          # equivalent -- anyone holding it can set the cookie themselves -- so
+          # it must never be printable, including by an error message below.
+          echo "::add-mask::${token}"
 
-          case "${htpasswd_path}" in
-            /*) : ;;
-            *)
-              echo "::error::HETZNER_HTPASSWD_PATH must be an absolute filesystem path beginning with /, not a URL and not a path relative to the document root. konsoleH shows the absolute one under Webserver configuration; it usually starts /usr/www/users/."
-              exit 1
-              ;;
-          esac
+          # Read from the environment, never from argv: a password on a command
+          # line is visible in the runner's process list.
+          hash=$(php -r 'echo password_hash(getenv("SITE_PASSWORD"), PASSWORD_BCRYPT);')
+          echo "::add-mask::${hash}"
 
-          if ! command -v htpasswd >/dev/null 2>&1; then
-            sudo apt-get update -qq
-            sudo apt-get install -y -qq apache2-utils
-          fi
+          # Single-quoted PHP literals: a bcrypt hash is full of `$`, which
+          # would be interpolated inside double quotes and silently corrupt the
+          # hash into something no password matches. bcrypt's alphabet contains
+          # no single quote or backslash, so single quotes need no escaping.
+          printf "<?php\ndefine('FB_PASSWORD_HASH', '%s');\ndefine('FB_ACCESS_TOKEN', '%s');\n" \
+            "${hash}" "${token}" > dist/gate-secrets.php
 
-          # `-i` reads the password from stdin rather than argv, so it never
-          # appears in the runner's process list. `-B` is bcrypt: the file ships
-          # inside the directory it protects, and while .htaccess denies it over
-          # HTTP, the hash should still be worth nothing if that ever slips.
-          printf '%s' "${SITE_PASSWORD}" | htpasswd -ciB dist/.htpasswd "${username}"
+          sed -i "s|__ACCESS_TOKEN__|${token}|" dist/.htaccess
 
-          # Anchored to the directive so the placeholder survives in the comment
-          # above it. A server-side .htaccess whose comment claims a real path
-          # is "substituted at deploy time" is exactly the sort of thing that
-          # misleads whoever is reading it during an outage.
-          sed -i "s|^AuthUserFile __HTPASSWD_PATH__$|AuthUserFile ${htpasswd_path}|" dist/.htaccess
-
-          if ! grep -qF "AuthUserFile ${htpasswd_path}" dist/.htaccess; then
-            echo "::error::The AuthUserFile placeholder was not substituted. Apache would return 500 for the whole site."
+          if grep -q '__ACCESS_TOKEN__' dist/.htaccess; then
+            echo "::error::The access token placeholder survived substitution, so nothing can satisfy the gate and the site would be closed to everyone."
             exit 1
           fi
 
-          if ! grep -q '^Require valid-user' dist/.htaccess; then
-            echo "::error::dist/.htaccess names a password file but never requires credentials. Refusing to deploy a gate that does not close."
+          if ! grep -q '^Require env FB_ACCESS' dist/.htaccess; then
+            echo "::error::dist/.htaccess sets the access environment variable but never requires it. Refusing to deploy a gate that does not close."
             exit 1
           fi
+
+          # login.php is the one file served to the unauthenticated, so it is the
+          # one file that must not contain what it is protecting.
+          if grep -qE "\\\$2[aby]\\\$|${token}" dist/login.php; then
+            echo "::error::login.php contains the password hash or the access token. It is readable without credentials by design, so neither can live in it -- they belong in gate-secrets.php, which .htaccess denies."
+            exit 1
+          fi
+
+          # A syntax error here is a site nobody can sign in to, and it would only
+          # surface after the upload. The runner has PHP; use it.
+          php -l dist/login.php
+          php -l dist/gate-secrets.php
 
           echo "GATE_ACTIVE=1" >> "$GITHUB_ENV"
-          echo "Gate built for user '${username}'."
+          echo "Gate built."
 
       - name: 📂 Sync files to Hetzner
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
@@ -182,76 +182,99 @@ jobs:
           echo "::error::Deploy reported success but https://florianbeermann.com is still serving '${live}'. The upload did not land."
           exit 1
 
-      # A gate that is configured is not a gate that is closed. The AuthUserFile
-      # path is the one piece of this that cannot be verified anywhere but on
-      # the live server, and getting it wrong fails in two opposite directions:
-      # a path Apache cannot read takes the whole site down with a 500, while an
-      # .htaccess that never made it up leaves the site wide open. Both are
-      # cheap to detect and expensive to discover later, so the deploy asks the
-      # site directly.
+      # A gate that is configured is not a gate that is closed. Every check here
+      # is one the deploy cannot make locally: whether Apache applied the
+      # .htaccess, whether the host actually executes PHP, and whether the
+      # password in the secret is the one that opens the site. The whole login
+      # flow is exercised rather than inspected, because the parts that can fail
+      # are the joins between them.
       - name: 🔒 Confirm the gate is closed
         if: env.GATE_ACTIVE == '1'
         env:
-          SITE_USERNAME: ${{ secrets.SITE_USERNAME }}
           SITE_PASSWORD: ${{ secrets.SITE_PASSWORD }}
         run: |
           set -euo pipefail
 
-          username="${SITE_USERNAME:-preview}"
-          url="https://florianbeermann.com/?cb=${GITHUB_RUN_ID}"
+          origin="https://florianbeermann.com"
+          url="${origin}/?cb=${GITHUB_RUN_ID}"
 
           anon=$(curl -s -o /tmp/gate.html -w '%{http_code}' --max-time 20 \
             -H 'Cache-Control: no-cache' "$url") || anon="000"
 
           case "$anon" in
-            401)
+            403)
               echo "Anonymous visitors are refused."
               ;;
             200)
-              echo "::error::The site answered an anonymous request with 200. It is public. The .htaccess gate is not in force on the server — check that the upload included .htaccess and that no directory protection configured in konsoleH is overriding it."
-              exit 1
-              ;;
-            500)
-              echo "::error::The site returns 500, which is what Apache does when it cannot read AuthUserFile. HETZNER_HTPASSWD_PATH is almost certainly wrong: it must be the absolute path of the document root this deploy uploads into, with /.htpasswd on the end."
+              echo "::error::The site answered an anonymous request with 200. It is public. Either the upload did not include .htaccess, or the host is not applying it -- check that AllowOverride permits Require directives."
               exit 1
               ;;
             *)
-              echo "::error::Expected 401 from an anonymous request, got '${anon}'."
+              echo "::error::Expected 403 from an anonymous request, got '${anon}'."
               exit 1
               ;;
           esac
 
-          # Apache silently falls back to its own grey error page whenever it
-          # cannot serve the error document without authenticating it, so the
-          # only proof the branded page works is reading it back off the wire.
           if ! grep -q 'This site is not public yet' /tmp/gate.html; then
-            echo "::error::The 401 is Apache's default page, not ours. Either 401.html is missing from the build or it is not exempted from Require valid-user in .htaccess."
+            echo "::error::The 403 body is not the login page. Either login.php is missing from the build or it is not exempted from Require env FB_ACCESS in .htaccess."
             exit 1
           fi
 
-          auth=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 \
-            -H 'Cache-Control: no-cache' -u "${username}:${SITE_PASSWORD}" "$url") || auth="000"
-
-          # A password file Apache cannot read shows up here rather than above:
-          # it prompts an anonymous visitor perfectly well and only fails once
-          # someone answers the prompt, so the 401 alone proves nothing about
-          # the path.
-          if [ "$auth" = "500" ]; then
-            echo "::error::The password produced a 500, which is what Apache does when it cannot read AuthUserFile. HETZNER_HTPASSWD_PATH is almost certainly wrong: it must be the absolute path of the document root this deploy uploads into, with /.htpasswd on the end."
+          # If the host stops executing PHP, login.php is served as source. It
+          # deliberately holds no secrets, so this is a broken door rather than
+          # an open one -- but it is still a site nobody can sign in to.
+          if grep -q '<?php' /tmp/gate.html; then
+            echo "::error::The login page came back as PHP source instead of being executed. The host is not running PHP for this directory, so nobody can sign in."
             exit 1
           fi
+
+          # Keep the password out of argv, which is readable from the runner's
+          # process list; curl reads the field from the file instead.
+          pw=$(mktemp); chmod 600 "$pw"
+          printf '%s' "${SITE_PASSWORD}" > "$pw"
+          jar=$(mktemp); badjar=$(mktemp)
+
+          login=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 -c "$jar" \
+            --data-urlencode "password@${pw}" --data-urlencode 'next=/' \
+            "${origin}/login.php") || login="000"
+
+          if [ "$login" != "302" ]; then
+            echo "::error::The password did not sign in: expected a 302 from login.php, got '${login}'. The gate is closed to everyone, including its intended audience."
+            exit 1
+          fi
+
+          auth=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 -b "$jar" "$url") || auth="000"
 
           if [ "$auth" != "200" ]; then
-            echo "::error::The password did not open the site: expected 200 for user '${username}', got '${auth}'. The gate is closed to everyone, including its intended audience."
+            echo "::error::Signing in succeeded but the cookie it set does not open the site: expected 200, got '${auth}'. The token in .htaccess and the one in gate-secrets.php disagree."
+            exit 1
+          fi
+
+          # The half that matters most, and the half a happy-path check misses:
+          # that a wrong password is actually refused.
+          bad=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 -c "$badjar" \
+            --data-urlencode "password=not-the-password-${GITHUB_RUN_ID}" \
+            "${origin}/login.php") || bad="000"
+
+          if [ "$bad" = "302" ]; then
+            echo "::error::login.php accepted a password that is not the password. The gate is open to anyone who submits the form."
+            exit 1
+          fi
+
+          badauth=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 -b "$badjar" "$url") || badauth="000"
+
+          if [ "$badauth" = "200" ]; then
+            echo "::error::A failed login still produced a cookie that opens the site."
             exit 1
           fi
 
           secret=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 \
-            "https://florianbeermann.com/.htpasswd?cb=${GITHUB_RUN_ID}") || secret="000"
+            "${origin}/gate-secrets.php?cb=${GITHUB_RUN_ID}") || secret="000"
 
           if [ "$secret" = "200" ]; then
-            echo "::error::The password file is downloadable at /.htpasswd. The deny rule in .htaccess is not being applied."
+            echo "::error::gate-secrets.php is reachable over HTTP. The deny rule in .htaccess is not being applied, and it holds the token that opens the site."
             exit 1
           fi
 
-          echo "Gate is closed to the public, open to '${username}', and the password file is unreachable."
+          rm -f "$pw" "$jar" "$badjar"
+          echo "Gate refuses the public, opens with the password, and rejects a wrong one."

@@ -4,18 +4,19 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 /**
- * The pre-launch gate lives in Apache config, which no amount of running the
- * site locally will exercise: `npm run dev` serves everything openly, so the
- * gate is only ever real on the deployed server. These tests cover the parts of
- * it that can break silently and would only surface as a visitor seeing either
- * Apache's grey default page or, far worse, the whole site.
+ * The pre-launch gate lives in Apache config and one PHP file, neither of which
+ * running the site locally will exercise: `npm run dev` serves everything
+ * openly and does not run PHP at all, so the gate is only ever real on the
+ * deployed server. These tests cover the parts that can break silently — the
+ * ones whose failure is either a site nobody can enter or, far worse, a site
+ * anybody can.
  */
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const htaccess = readFileSync(path.join(root, "public/.htaccess"), "utf8");
-const gatePage = readFileSync(path.join(root, "public/401.html"), "utf8");
+const loginPage = readFileSync(path.join(root, "public/login.php"), "utf8");
 
-/** The `<Files>` and `<FilesMatch>` blocks that hand out unauthenticated access. */
+/** The `<Files>` and `<FilesMatch>` blocks that grant access without the cookie. */
 const exemptions = () => {
   const names = [...htaccess.matchAll(/<Files\s+"([^"]+)"\s*>\s*Require all granted/g)];
   const patterns = [...htaccess.matchAll(/<FilesMatch\s+"([^"]+)"\s*>\s*Require all granted/g)];
@@ -25,54 +26,107 @@ const exemptions = () => {
     patterns.some(([, pattern]) => new RegExp(pattern).test(basename));
 };
 
-/** Every same-origin asset 401.html asks the server for. */
-const gatePageAssets = () => {
+/** Every same-origin asset the login page asks the server for. */
+const loginPageAssets = () => {
+  const markup = loginPage.slice(loginPage.indexOf("<!doctype html>"));
   const refs = [
-    ...[...gatePage.matchAll(/(?:href|src)="([^"]+)"/g)].map(([, ref]) => ref),
-    ...[...gatePage.matchAll(/url\("([^")]+)"\)/g)].map(([, ref]) => ref),
+    ...[...markup.matchAll(/(?:href|src)="([^"]+)"/g)].map(([, ref]) => ref),
+    ...[...markup.matchAll(/url\("([^")]+)"\)/g)].map(([, ref]) => ref),
   ];
 
-  // "/" is the sign-in link. It is supposed to 401 — that is the whole point of
-  // the page — so it is the one reference that must not be exempted.
-  return refs.filter((ref) => ref.startsWith("/") && ref !== "/");
+  // "/" is where a successful sign-in goes, and it is supposed to stay refused
+  // until then. login.php posts to itself and is exempt as the page it is.
+  return refs.filter(
+    (ref) => ref.startsWith("/") && ref !== "/" && !ref.startsWith("/login.php"),
+  );
 };
 
 describe("pre-launch gate", () => {
-  it("refuses the site to anyone without credentials", () => {
-    expect(htaccess).toMatch(/^AuthType Basic$/m);
-    expect(htaccess).toMatch(/^Require valid-user$/m);
+  it("denies by default rather than redirecting the unauthorised", () => {
+    // The load-bearing choice in the whole design. A mod_rewrite gate that
+    // fails to match serves the site to everyone; `Require` denies unless
+    // something grants, so the same mistake locks everyone out instead.
+    expect(htaccess).toMatch(/^Require env FB_ACCESS$/m);
+    expect(htaccess).toMatch(/^SetEnvIf Cookie .*fb_access=__ACCESS_TOKEN__.* FB_ACCESS$/m);
 
-    // The literal path is substituted at deploy time from a secret. If it ever
-    // gets committed instead, a public repository is advertising where the
-    // password file lives.
-    expect(htaccess).toMatch(/^AuthUserFile __HTPASSWD_PATH__$/m);
+    const gateBlock = htaccess.slice(0, htaccess.indexOf("ErrorDocument 403"));
+    expect(gateBlock).not.toMatch(/RewriteRule.*login\.php/);
   });
 
-  it("keeps the password file and the deploy manifest off the web", () => {
+  it("anchors the cookie match so a lookalike value cannot pass", () => {
+    const match = htaccess.match(/^SetEnvIf Cookie "([^"]+)"/m);
+    expect(match).not.toBeNull();
+    const pattern = match![1];
+
+    // Without the leading boundary a cookie merely *named* something ending in
+    // `fb_access` satisfies it; without the trailing one, the token followed by
+    // any suffix does.
+    expect(pattern.startsWith("(^|;")).toBe(true);
+    expect(pattern.endsWith(";|$)")).toBe(true);
+  });
+
+  it("keeps the token out of the repository", () => {
+    expect(htaccess).toContain("__ACCESS_TOKEN__");
+    // The real one is 64 hex characters. Nothing that shape belongs in git.
+    expect(htaccess).not.toMatch(/fb_access=[0-9a-f]{32,}/);
+  });
+
+  it("never lets the login page carry what it protects", () => {
+    // login.php is served to anyone, so the hash and the token have to live in
+    // the file .htaccess denies instead.
+    expect(loginPage).toContain("require __DIR__ . '/gate-secrets.php'");
+    expect(loginPage).not.toMatch(/\$2[aby]\$/);
+    expect(loginPage).not.toMatch(/define\(\s*'FB_(PASSWORD_HASH|ACCESS_TOKEN)'/);
+
+    expect(/<Files "gate-secrets\.php">\s*Require all denied/.test(htaccess)).toBe(true);
+  });
+
+  it("compares the password and the cookie in constant time", () => {
+    // `==` on a token leaks its prefix through timing, and PHP's loose equality
+    // additionally treats two numeric-looking strings as equal numbers.
+    expect(loginPage).toMatch(/hash_equals\(/);
+    expect(loginPage).toMatch(/password_verify\(/);
+    expect(loginPage).not.toMatch(/\$_COOKIE\[[^\]]*\]\s*===?\s*FB_ACCESS_TOKEN/);
+  });
+
+  it("refuses to be turned into an open redirect", () => {
+    // A leading slash alone is not the test: `//evil.com` and `/\evil.com` are
+    // both browser-legal ways off the origin, so the second character matters.
+    const guard = loginPage.match(/preg_match\('#\^\/\[\^([^\]]*)\]#'/);
+    expect(guard, "safe_path() should reject a second character that leaves the origin").not.toBeNull();
+    expect(guard![1]).toContain("/");
+    expect(guard![1]).toContain("\\");
+  });
+
+  it("sets the cookie with every flag that matters", () => {
+    for (const flag of ["'secure' => true", "'httponly' => true", "'samesite' => 'Lax'"]) {
+      expect(loginPage).toContain(flag);
+    }
+  });
+
+  it("keeps the deploy manifest and any leftover password file unreachable", () => {
     for (const file of [".htpasswd", ".ftp-deploy-sync-state.json"]) {
-      expect(htaccess).toContain(`<Files "${file}">`);
       expect(
         new RegExp(`<Files "${file.replace(/\./g, "\\.")}">\\s*Require all denied`).test(htaccess),
+        `${file} should be denied over HTTP`,
       ).toBe(true);
     }
   });
 
-  it("hands 401s to the branded page rather than Apache's default", () => {
-    // A full URL here is accepted by Apache and then quietly breaks the
-    // credential prompt, so the leading slash is load-bearing.
-    expect(htaccess).toMatch(/^ErrorDocument 401 \/401\.html$/m);
-    expect(exemptions()("401.html")).toBe(true);
+  it("sends refused requests to the login page", () => {
+    // A local path, not an absolute URL: a full URL makes Apache redirect
+    // rather than serve, which loses the path the visitor asked for.
+    expect(htaccess).toMatch(/^ErrorDocument 403 \/login\.php$/m);
+    expect(exemptions()("login.php")).toBe(true);
   });
 
   it("leaves version.json readable so the deploy checks keep working", () => {
-    // Both workflows read it anonymously. Gating it does not fail loudly; it
-    // just turns the drift check into a permanent red X.
     expect(exemptions()("version.json")).toBe(true);
   });
 
-  it("exempts every asset the 401 page loads, and only real ones", () => {
+  it("exempts every asset the login page loads, and only real ones", () => {
     const isExempt = exemptions();
-    const assets = gatePageAssets();
+    const assets = loginPageAssets();
 
     expect(assets.length).toBeGreaterThan(0);
 
@@ -81,25 +135,24 @@ describe("pre-launch gate", () => {
 
       expect(
         isExempt(basename),
-        `401.html loads ${asset}, which is still behind the gate. Add it to the Require-all-granted list in public/.htaccess or it will 401 and the page will render without it.`,
+        `login.php loads ${asset}, which is still behind the gate. Add it to the Require-all-granted list in public/.htaccess or it will be refused and the page will render without it.`,
       ).toBe(true);
 
       expect(
         existsSync(path.join(root, "public", asset)),
-        `401.html loads ${asset}, which does not exist in public/.`,
+        `login.php loads ${asset}, which does not exist in public/.`,
       ).toBe(true);
     }
   });
 
   it("keeps the sentence the deploy greps for to prove the page is live", () => {
-    // deploy.yml reads the 401 body back off the wire and looks for this
-    // string, because Apache silently falls back to its own error page when it
-    // cannot serve ours. Rewording the headline without updating the workflow
-    // turns a working deploy into a failing one.
-    expect(gatePage).toContain("This site is not public yet");
+    // deploy.yml reads the 403 body back off the wire and looks for this
+    // string. Rewording the headline without updating the workflow turns a
+    // working deploy into a failing one.
+    expect(loginPage).toContain("This site is not public yet");
   });
 
   it("stays out of the index while it is the only reachable page", () => {
-    expect(gatePage).toMatch(/<meta name="robots" content="noindex, nofollow" \/>/);
+    expect(loginPage).toMatch(/<meta name="robots" content="noindex, nofollow" \/>/);
   });
 });

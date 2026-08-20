@@ -2,35 +2,32 @@
 # PRE-LAUNCH GATE — delete this whole block to publish the site.
 #
 # The site is not public yet, so the server refuses to hand over a single byte
-# of it without credentials. This has to happen here rather than in the app: a
-# React login screen cannot protect a static site, because the bundle, the copy
-# and the images are all still sitting there for anyone who opens the network
-# tab, and the password would be in the JavaScript. Basic auth is the only gate
-# on this stack that is actually a gate.
+# of it without a valid access cookie. This has to happen here rather than in
+# the app: a React login screen cannot protect a static site, because the
+# bundle, the copy and the images are all still sitting there for anyone who
+# opens the network tab, and the password would be in the JavaScript.
 #
-# `__HTPASSWD_PATH__` is substituted by .github/workflows/deploy.yml from the
-# HETZNER_HTPASSWD_PATH secret. It is a placeholder rather than a literal
-# because AuthUserFile takes an absolute server path that is specific to the
-# hosting account, and because the password file it points at is generated at
-# deploy time from a secret — this repository is public, so neither the
-# password nor its hash can be committed.
+# Authorisation is expressed with `Require`, not with a `mod_rewrite` rule, and
+# that is the load-bearing decision in this block. The obvious way to gate on a
+# cookie is to rewrite unauthenticated requests to the login page — but a
+# rewrite that fails to match lets the request through, so any mistake in the
+# pattern serves the site to everyone. `Require` inverts that: access is denied
+# unless something grants it, so the same mistake locks everyone out instead.
+# A gate is allowed to break. It is not allowed to break open.
 #
-# If that substitution never happens Apache has no password file to check
-# against: anonymous visitors still get the prompt, and anyone who answers it
-# gets a 500. Nothing is served either way, which is the right way round — a
-# broken gate must fail shut, not fall open.
-AuthType Basic
-AuthName "Florian Beermann & Partners - private preview"
-AuthUserFile __HTPASSWD_PATH__
-Require valid-user
+# `__ACCESS_TOKEN__` is substituted by .github/workflows/deploy.yml, which
+# derives it from the SITE_PASSWORD secret. It is a placeholder rather than a
+# literal because this repository is public. Rotating the password changes the
+# token, which signs everyone out — which is what rotating a password should do.
+SetEnvIf Cookie "(^|;[[:space:]]*)fb_access=__ACCESS_TOKEN__([[:space:]]*;|$)" FB_ACCESS
+Require env FB_ACCESS
 
-# The 401 page and the handful of assets it is built from have to be readable
-# without credentials, or the branded page cannot render at all — Apache
-# detects that it would have to authenticate its own error document, gives up
-# and falls back to its grey default. Nothing here discloses anything: two
-# open-licensed fonts, the favicons, a logo that is already on every social
-# card, and a page whose entire content is the sentence "this is private".
-<FilesMatch "^(401\.html|favicon\.(ico|svg|png)|apple-touch-icon\.png|logo-wordmark\.svg)$">
+# The login page and the handful of assets it is built from have to be readable
+# without the cookie, or the page a visitor is sent to in order to obtain the
+# cookie cannot render. Nothing here discloses anything: two open-licensed
+# fonts, the favicons, a logo that is already on every social card, and a page
+# whose entire content is the sentence "this is private".
+<FilesMatch "^(login\.php|favicon\.(ico|svg|png)|apple-touch-icon\.png|logo-wordmark\.svg)$">
   Require all granted
 </FilesMatch>
 
@@ -47,10 +44,18 @@ Require valid-user
   Require all granted
 </Files>
 
-# The password file is deployed into the directory it protects, so it has to be
-# unreachable over HTTP in its own right. It holds bcrypt hashes rather than
-# plaintext, but a hash handed to an attacker is an offline cracking job, not a
-# non-event.
+# The password hash and the access token live here. PHP is never served as
+# source, so this is belt and braces — but the file is one typo in a handler
+# mapping away from being a plain-text download, and it is the one file on the
+# server that would hand over the gate outright.
+<Files "gate-secrets.php">
+  Require all denied
+</Files>
+
+# Insurance against a password file left behind by the Basic Auth gate this
+# replaced. The build no longer produces one, so the FTP sync should have
+# removed it; Apache also denies `.ht*` by default. Neither is a reason to stop
+# saying so here.
 <Files ".htpasswd">
   Require all denied
 </Files>
@@ -62,10 +67,11 @@ Require valid-user
   Require all denied
 </Files>
 
-# Must be a local path, not an absolute URL: Apache only serves a 401 error
-# document from the same server, and a full URL here silently breaks the
-# credential prompt.
-ErrorDocument 401 /401.html
+# Every refused request lands on the login page rather than on Apache's grey
+# default. A local path, not an absolute URL: a full URL makes Apache issue a
+# redirect instead of serving the document, which loses the original path and
+# with it the ability to return the visitor where they were going.
+ErrorDocument 403 /login.php
 # ===========================================================================
 
 RewriteEngine On
