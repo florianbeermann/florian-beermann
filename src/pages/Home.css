@@ -595,20 +595,6 @@
       top: calc(2 * (100svh - var(--header-height)));
     }
 
-    /* The footer is a snap target too, aligned to the bottom of the window.
-       Without it the last panel's stop is the only one near the end of the
-       document, so the scroller settles there and the footer can never be fully
-       seen.
-    
-       No `scroll-snap-stop` here, deliberately. Contact is the last panel and
-       the footer follows immediately, so the two stops sit close together; a
-       forced stop on both turns the end of the page into a tug of war between
-       them. As an ordinary target the footer is still reachable, and the last
-       stretch reads as one movement. */
-    .site-footer {
-      scroll-snap-align: end;
-    }
-
     /* The rule belongs to the heading now, not to the window.
     
        It used to sit on the window's top edge because that was also the edge
@@ -1094,12 +1080,25 @@
 .home-contact {
   display: grid;
   grid-template-columns: 0.85fr 1.15fr;
-  gap: clamp(4rem, 10vw, 10rem);
+  /* Two rows, the first taking the slack. The form spans both, so the panel is
+     as tall as the form alone and the legal block settles into the empty space
+     the copy column already had rather than adding its own height to the
+     panel. That matters beyond tidiness: a panel taller than the window stops
+     the whole page being paced one section at a time, and contact was the
+     panel closest to that limit before this block existed. */
+  grid-template-rows: 1fr auto;
+  gap: clamp(0.75rem, 2vh, 1.5rem) clamp(4rem, 10vw, 10rem);
   padding: var(--panel-pad) max(4vw, calc((100% - 1240px) / 2));
 }
 
 .home-contact h2 {
   max-width: 630px;
+}
+
+.home-contact-copy {
+  display: flex;
+  grid-area: 1 / 1;
+  flex-direction: column;
 }
 
 .home-contact-copy > span {
@@ -1128,9 +1127,60 @@
   border-bottom: 1px solid currentColor;
 }
 
+/* The legal block, at the foot of the contact panel.
+   
+   Placed into the first column's second row while the panel has two columns, so
+   it sits under the address and lines up with the bottom of the form. The copy
+   column and the form both start in row one, so neither has to know about it.
+   
+   Set quieter than the address above it — mono, small, muted — so it reads as
+   the notice it is and does not compete with the email address, which is the
+   thing that column exists to offer. */
+.home-contact-legal {
+  display: flex;
+  grid-area: 2 / 1;
+  flex-wrap: wrap;
+  align-items: baseline;
+  align-self: end;
+  gap: 0.4rem 1.5rem;
+  padding-top: clamp(0.6rem, 1.8vh, 1.25rem);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.home-contact-legal nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+/* The links keep a full touch target without the block growing by two rows of
+   it: the box stays the height of the text and the reach extends past it. */
+.home-contact-legal a {
+  position: relative;
+  border-bottom: 1px solid currentColor;
+}
+
+.home-contact-legal a::after {
+  content: "";
+  position: absolute;
+  inset: -14px -6px;
+}
+
+.home-contact-legal a:hover,
+.home-contact-legal a:focus-visible {
+  color: var(--on-ink);
+}
+
 .home-contact-form {
   display: flex;
   align-self: start;
+  /* Spans both rows so the panel's height is the form's, and the legal block
+     beside it costs nothing. */
+  grid-area: 1 / 2 / 3 / 3;
   flex-direction: column;
   gap: clamp(0.8rem, 2.4vh, 1.75rem);
   width: 100%;
@@ -1360,6 +1410,19 @@
   .home-method header,
   .home-contact {
     grid-template-columns: 1fr;
+  }
+
+  /* One column, so the copy, the form and the legal block simply follow one
+     another. The explicit placements are for the two-column case only; left in
+     place they would stack on top of each other. */
+  .home-contact {
+    grid-template-rows: none;
+  }
+
+  .home-contact-copy,
+  .home-contact-form,
+  .home-contact-legal {
+    grid-area: auto;
   }
 
   .home-proof-heading p {

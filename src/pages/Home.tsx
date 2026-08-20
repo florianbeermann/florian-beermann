@@ -695,16 +695,29 @@ export default function Home() {
               explains both.
             </p>
           </form>
+
+          {/* The imprint and privacy links, and the copyright, used to live in
+              a footer below this panel. Contact is the last panel and fills the
+              window, so reaching them meant one more scroll past the end of the
+              page for two links that have to be reachable. They sit in the
+              contact panel instead, and the page ends where its last section
+              does.
+
+              A direct child of the panel's grid rather than of the copy column:
+              placed at the foot of the first column while there are two, and
+              genuinely last once the panel stacks — inside the copy column it
+              would have come between the address and the form. */}
+          <div className="home-contact-legal">
+            <nav aria-label="Legal">
+              <Link to="/imprint">Imprint</Link>
+              <Link to="/privacy">Privacy</Link>
+            </nav>
+            <span>
+              Florian Beermann &amp; Partners · © {new Date().getFullYear()}
+            </span>
+          </div>
         </section>
       </main>
-
-      <footer className="site-footer">
-        <span>Florian Beermann &amp; Partners · © {new Date().getFullYear()}</span>
-        <nav aria-label="Footer navigation">
-          <Link to="/imprint">Imprint</Link>
-          <Link to="/privacy">Privacy</Link>
-        </nav>
-      </footer>
     </div>
   );
 }
