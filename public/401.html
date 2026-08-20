@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <!-- Nothing behind the gate is published, and this page is the only part of
+         the site a crawler can reach. Keeping it out of the index stops
+         florianbeermann.com from being listed as a password prompt for however
+         long the pre-launch period lasts. -->
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Private site | Florian Beermann &amp; Partners</title>
+    <meta
+      name="description"
+      content="florianbeermann.com is not published yet and is available to invited visitors only."
+    />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#202FD6" />
+
+    <!--
+      Apache serves this file for every 401 on the site, which makes it the one
+      page that has to stand up entirely on its own. It cannot import the app's
+      CSS, because the bundle is behind the gate this page exists to explain,
+      and a stylesheet that 401s would leave the visitor looking at unstyled
+      text. So the shell is restated here in full rather than referenced.
+
+      Everything it does load — the two fonts, the favicons, the wordmark — is
+      named in the exemption list in .htaccess. Adding an asset to this page
+      means adding it there too, or it will 401 and vanish. The test in
+      src/test/gate.test.ts enforces exactly that, because the failure is
+      invisible from a local preview: on a dev server there is no gate, so the
+      page looks perfect right up until it is deployed.
+    -->
+    <style>
+      @font-face {
+        font-family: "Inter Variable";
+        src: url("/fonts/inter-latin-variable.woff2") format("woff2-variations");
+        font-style: normal;
+        font-weight: 100 900;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "Inter Tight Variable";
+        src: url("/fonts/inter-tight-latin-variable.woff2")
+          format("woff2-variations");
+        font-style: normal;
+        font-weight: 100 900;
+        font-display: swap;
+      }
+
+      :root {
+        --safe-top: env(safe-area-inset-top, 0px);
+        --safe-right: env(safe-area-inset-right, 0px);
+        --safe-bottom: env(safe-area-inset-bottom, 0px);
+        --safe-left: env(safe-area-inset-left, 0px);
+        --paper: #f3f0e8;
+        --ink: #202fd6;
+        --muted: #565a75;
+        --line: rgba(32, 47, 214, 0.26);
+        --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+          "Liberation Mono", monospace;
+        --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 .05 .05 .05 0 -.02'/%3E%3C/filter%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch' seed='19'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .05 .05 .05 0 -.02'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23a)'/%3E%3Crect width='180' height='180' filter='url(%23b)'/%3E%3C/svg%3E");
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        overscroll-behavior-y: none;
+      }
+
+      body {
+        display: flex;
+        min-height: 100svh;
+        flex-direction: column;
+        margin: 0;
+        padding: 0 var(--safe-right) var(--safe-bottom) var(--safe-left);
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Inter Variable", "Helvetica Neue", Arial, sans-serif;
+        font-weight: 400;
+        text-align: left;
+      }
+
+      h1,
+      p {
+        margin: 0;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .gate-header {
+        display: flex;
+        align-items: center;
+        min-height: 76px;
+        border-bottom: 1px solid var(--line);
+        padding: 0 4vw;
+      }
+
+      /* Never allowed to be the wrong shape, so it refuses to be the thing the
+         header compresses when the row runs out of room. */
+      .gate-brand {
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+        flex-shrink: 0;
+      }
+
+      .gate-brand img {
+        height: clamp(38px, 3.1vw, 44px);
+        width: auto;
+      }
+
+      .gate-main {
+        display: flex;
+        width: min(100% - 8vw, 1240px);
+        flex: 1;
+        align-items: center;
+        margin: 0 auto;
+        padding: clamp(5rem, 12vw, 11rem) 0;
+      }
+
+      /* The 404's proportions, deliberately. A visitor who hits both should not
+         be able to tell that one of these pages is a static file and the other
+         is the app. */
+      .gate-inner {
+        display: grid;
+        width: 100%;
+        grid-template-columns: 0.32fr 1.12fr;
+        gap: clamp(2.5rem, 6vw, 7rem);
+        align-items: start;
+      }
+
+      /* Matches .notfound-code rather than the shell's mono .site-label. The
+         404 sets its error code in the sans at 680, and these two pages are
+         supposed to be indistinguishable in everything but their sentence. */
+      .gate-code {
+        display: block;
+        padding-top: 0.7rem;
+        color: var(--ink);
+        font-size: 0.86rem;
+        font-weight: 680;
+      }
+
+      .gate-body h1 {
+        font-family: "Inter Tight Variable", "Inter Variable", sans-serif;
+        font-size: clamp(3.4rem, 7.5vw, 6.4rem);
+        font-weight: 520;
+        letter-spacing: -0.045em;
+        line-height: 0.88;
+      }
+
+      .gate-body > p {
+        max-width: 46ch;
+        margin-top: 2rem;
+        color: var(--muted);
+        font-size: clamp(1rem, 1.2vw, 1.12rem);
+        line-height: 1.65;
+      }
+
+      .gate-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0 2.5rem;
+        margin-top: 3rem;
+        border-top: 1px solid var(--ink);
+        padding-top: 1.4rem;
+        font-size: 0.92rem;
+        font-weight: 560;
+      }
+
+      .gate-links a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        border-bottom: 1px solid transparent;
+      }
+
+      .gate-links a:hover,
+      .gate-links a:focus-visible {
+        border-bottom-color: currentColor;
+      }
+
+      /* The inverted band, restated: the footer is the one place on a paper
+         page where the ink becomes the ground, and the grain is what keeps it
+         reading as printed rather than as a fill. */
+      .gate-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+        border-top: 1px solid var(--line);
+        padding: 2.4rem 4vw;
+        background-color: #202fd6;
+        background-image: var(--grain);
+        color: #f3f0e8;
+        font-family: var(--mono);
+        font-size: 0.6875rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .gate-footer a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        border-bottom: 1px solid transparent;
+      }
+
+      .gate-footer a:hover,
+      .gate-footer a:focus-visible {
+        border-bottom-color: currentColor;
+      }
+
+      @media (max-width: 768px) {
+        .gate-inner {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+        }
+
+        .gate-code {
+          padding-top: 0;
+        }
+
+        .gate-links {
+          flex-direction: column;
+          gap: 0;
+        }
+      }
+
+      /* The shell stacks its footer at 680px, not 768px. Two breakpoints rather
+         than one rounded to the nearer value, because each is matched to the
+         rule it is copying: the grid above comes from NotFound.css, this comes
+         from shell.css, and collapsing them would put this page's footer on a
+         different band from every other page's. */
+      @media (max-width: 680px) {
+        .gate-footer {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 0.4rem;
+          padding: 2.4rem 1.35rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="gate-header">
+      <span class="gate-brand">
+        <img
+          src="/logo-wordmark.svg"
+          alt="Florian Beermann &amp; Partners"
+          width="925"
+          height="131"
+        />
+      </span>
+    </header>
+
+    <main class="gate-main">
+      <div class="gate-inner">
+        <p class="gate-code">Error 401</p>
+        <div class="gate-body">
+          <h1>This site is not public yet.</h1>
+          <p>
+            florianbeermann.com is behind a password while it is being built. If
+            you have been given a username and password, sign in to continue. If
+            you have not, there is nothing here to read yet — but there will be.
+          </p>
+          <nav class="gate-links" aria-label="What to do next">
+            <!-- Reloading is what re-opens the credential prompt: the browser
+                 only shows this page once the visitor has dismissed or failed
+                 it, and it will not offer it again until the page is
+                 requested afresh. -->
+            <a href="/">Sign in</a>
+            <a href="mailto:hello@florianbeermann.com">Request access</a>
+          </nav>
+        </div>
+      </div>
+    </main>
+
+    <footer class="gate-footer">
+      <span
+        >Florian Beermann &amp; Partners · ©
+        <span id="gate-year">2026</span></span
+      >
+      <a href="mailto:hello@florianbeermann.com">hello@florianbeermann.com</a>
+    </footer>
+
+    <!-- The app keeps the footer year honest with `new Date()`; this page has
+         no app, and a hardcoded year on the only reachable page is exactly the
+         kind of small staleness that reads as an abandoned site. The markup
+         carries a correct year on its own, so this only matters after the turn
+         of the year and costs nothing if scripting is off. -->
+    <script>
+      document.getElementById("gate-year").textContent =
+        new Date().getFullYear();
+    </script>
+  </body>
+</html>

@@ -40,12 +40,26 @@ jobs:
             exit 0
           fi
 
-          live=$(curl -fsS --max-time 20 -H 'Cache-Control: no-cache' \
-            "https://florianbeermann.com/version.json?cb=${GITHUB_RUN_ID}" \
-            | jq -r '.commit') || {
-              echo "::error::Could not read https://florianbeermann.com/version.json. Either the site is down or the last deploy predates commit stamping."
-              exit 1
-            }
+          # version.json is deliberately exempt from the pre-launch gate so this
+          # check can keep running without holding the site password. That makes
+          # a 401 here a real finding rather than a transport error: it means the
+          # exemption is missing from the deployed .htaccess and the monitoring
+          # has been switched off by accident.
+          url="https://florianbeermann.com/version.json?cb=${GITHUB_RUN_ID}"
+          code=$(curl -s -o /tmp/version.json -w '%{http_code}' --max-time 20 \
+            -H 'Cache-Control: no-cache' "$url") || code="000"
+
+          if [ "$code" = "401" ]; then
+            echo "::error::version.json is behind the pre-launch gate, so this check can no longer see which commit is live. Restore the <Files \"version.json\"> exemption in public/.htaccess, or confirm the deployed .htaccess is the one from this repository."
+            exit 1
+          fi
+
+          if [ "$code" != "200" ]; then
+            echo "::error::Could not read ${url} (HTTP ${code}). Either the site is down or the last deploy predates commit stamping."
+            exit 1
+          fi
+
+          live=$(jq -r '.commit' /tmp/version.json)
 
           if [ "$live" = "$expected" ]; then
             echo "Live site is serving ${expected}. Up to date."

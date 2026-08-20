@@ -51,6 +51,89 @@ jobs:
             "$GITHUB_SHA" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > dist/version.json
           cat dist/version.json
 
+      # The gate is built here rather than committed, because this repository is
+      # public: the password would be readable in the source, and so would a
+      # bcrypt hash of it. `public/.htaccess` ships a `__HTPASSWD_PATH__`
+      # placeholder that only this step can resolve.
+      #
+      # The .htaccess is what decides whether the site is gated, not this
+      # workflow and not the presence of a secret. Delete the gate block from
+      # that file and this step stands down on its own; leave the block in and
+      # every failure below stops the deploy before a single byte is uploaded.
+      # That asymmetry is the point: going public has to be a reviewed change to
+      # the file whose job is protection, while a missing secret or a mistyped
+      # path can only ever cost a deploy, never open the site.
+      - name: 🔒 Build the pre-launch gate
+        env:
+          SITE_USERNAME: ${{ secrets.SITE_USERNAME }}
+          SITE_PASSWORD: ${{ secrets.SITE_PASSWORD }}
+          HTPASSWD_PATH: ${{ secrets.HETZNER_HTPASSWD_PATH }}
+        run: |
+          set -euo pipefail
+
+          if ! grep -q '^AuthUserFile __HTPASSWD_PATH__$' dist/.htaccess; then
+            # Half a gate is worse than either whole: Apache answers a
+            # `Require valid-user` it cannot match against a password file with
+            # a 500 for every page. Fail here, where the message can say so,
+            # rather than on the server where it cannot.
+            if grep -q '^Require valid-user' dist/.htaccess; then
+              echo "::error::.htaccess still requires credentials but no longer names a password file, which Apache serves as a 500 for the whole site. Remove the entire PRE-LAUNCH GATE block to publish, or restore the AuthUserFile line."
+              exit 1
+            fi
+            echo "No pre-launch gate in .htaccess. Publishing the site openly."
+            exit 0
+          fi
+
+          username="${SITE_USERNAME:-preview}"
+
+          if [ -z "${SITE_PASSWORD}" ]; then
+            echo "::error::SITE_PASSWORD is not set, so the gate cannot be built and the deploy is stopping. Add it under Settings > Secrets and variables > Actions. Set SITE_USERNAME too if you want something other than '${username}'."
+            exit 1
+          fi
+
+          if [ -z "${HTPASSWD_PATH}" ]; then
+            echo "::error::HETZNER_HTPASSWD_PATH is not set. Apache needs the absolute path of the password file on the server, which konsoleH shows under Webserver configuration; it is the document root this deploy uploads into, with /.htpasswd on the end (typically /usr/www/users/<user>/<ftp-dir>/.htpasswd)."
+            exit 1
+          fi
+
+          case "${HTPASSWD_PATH}" in
+            /*/.htpasswd) : ;;
+            *)
+              echo "::error::HETZNER_HTPASSWD_PATH must be an absolute path ending in /.htpasswd, not '${HTPASSWD_PATH}'. The file is deployed into the document root, so the path is that directory with /.htpasswd appended."
+              exit 1
+              ;;
+          esac
+
+          if ! command -v htpasswd >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq apache2-utils
+          fi
+
+          # `-i` reads the password from stdin rather than argv, so it never
+          # appears in the runner's process list. `-B` is bcrypt: the file ships
+          # inside the directory it protects, and while .htaccess denies it over
+          # HTTP, the hash should still be worth nothing if that ever slips.
+          printf '%s' "${SITE_PASSWORD}" | htpasswd -ciB dist/.htpasswd "${username}"
+
+          # Anchored to the directive so the placeholder survives in the comment
+          # above it. A server-side .htaccess whose comment claims a real path
+          # is "substituted at deploy time" is exactly the sort of thing that
+          # misleads whoever is reading it during an outage.
+          sed -i "s|^AuthUserFile __HTPASSWD_PATH__$|AuthUserFile ${HTPASSWD_PATH}|" dist/.htaccess
+
+          if ! grep -qF "AuthUserFile ${HTPASSWD_PATH}" dist/.htaccess; then
+            echo "::error::The AuthUserFile placeholder was not substituted. Apache would return 500 for the whole site."
+            exit 1
+          fi
+
+          if ! grep -q '^Require valid-user' dist/.htaccess; then
+            echo "::error::dist/.htaccess names a password file but never requires credentials. Refusing to deploy a gate that does not close."
+            exit 1
+          fi
+
+          echo "GATE_ACTIVE=1" >> "$GITHUB_ENV"
+          echo "Gate built for user '${username}', reading ${HTPASSWD_PATH}."
+
       - name: 📂 Sync files to Hetzner
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
@@ -81,3 +164,77 @@ jobs:
           done
           echo "::error::Deploy reported success but https://florianbeermann.com is still serving '${live}'. The upload did not land."
           exit 1
+
+      # A gate that is configured is not a gate that is closed. The AuthUserFile
+      # path is the one piece of this that cannot be verified anywhere but on
+      # the live server, and getting it wrong fails in two opposite directions:
+      # a path Apache cannot read takes the whole site down with a 500, while an
+      # .htaccess that never made it up leaves the site wide open. Both are
+      # cheap to detect and expensive to discover later, so the deploy asks the
+      # site directly.
+      - name: 🔒 Confirm the gate is closed
+        if: env.GATE_ACTIVE == '1'
+        env:
+          SITE_USERNAME: ${{ secrets.SITE_USERNAME }}
+          SITE_PASSWORD: ${{ secrets.SITE_PASSWORD }}
+        run: |
+          set -euo pipefail
+
+          username="${SITE_USERNAME:-preview}"
+          url="https://florianbeermann.com/?cb=${GITHUB_RUN_ID}"
+
+          anon=$(curl -s -o /tmp/gate.html -w '%{http_code}' --max-time 20 \
+            -H 'Cache-Control: no-cache' "$url") || anon="000"
+
+          case "$anon" in
+            401)
+              echo "Anonymous visitors are refused."
+              ;;
+            200)
+              echo "::error::The site answered an anonymous request with 200. It is public. The .htaccess gate is not in force on the server — check that the upload included .htaccess and that no directory protection configured in konsoleH is overriding it."
+              exit 1
+              ;;
+            500)
+              echo "::error::The site returns 500, which is what Apache does when it cannot read AuthUserFile. HETZNER_HTPASSWD_PATH is almost certainly wrong: it must be the absolute path of the document root this deploy uploads into, with /.htpasswd on the end."
+              exit 1
+              ;;
+            *)
+              echo "::error::Expected 401 from an anonymous request, got '${anon}'."
+              exit 1
+              ;;
+          esac
+
+          # Apache silently falls back to its own grey error page whenever it
+          # cannot serve the error document without authenticating it, so the
+          # only proof the branded page works is reading it back off the wire.
+          if ! grep -q 'This site is not public yet' /tmp/gate.html; then
+            echo "::error::The 401 is Apache's default page, not ours. Either 401.html is missing from the build or it is not exempted from Require valid-user in .htaccess."
+            exit 1
+          fi
+
+          auth=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 \
+            -H 'Cache-Control: no-cache' -u "${username}:${SITE_PASSWORD}" "$url") || auth="000"
+
+          # A password file Apache cannot read shows up here rather than above:
+          # it prompts an anonymous visitor perfectly well and only fails once
+          # someone answers the prompt, so the 401 alone proves nothing about
+          # the path.
+          if [ "$auth" = "500" ]; then
+            echo "::error::The password produced a 500, which is what Apache does when it cannot read AuthUserFile. HETZNER_HTPASSWD_PATH is almost certainly wrong: it must be the absolute path of the document root this deploy uploads into, with /.htpasswd on the end."
+            exit 1
+          fi
+
+          if [ "$auth" != "200" ]; then
+            echo "::error::The password did not open the site: expected 200 for user '${username}', got '${auth}'. The gate is closed to everyone, including its intended audience."
+            exit 1
+          fi
+
+          secret=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 \
+            "https://florianbeermann.com/.htpasswd?cb=${GITHUB_RUN_ID}") || secret="000"
+
+          if [ "$secret" = "200" ]; then
+            echo "::error::The password file is downloadable at /.htpasswd. The deny rule in .htaccess is not being applied."
+            exit 1
+          fi
+
+          echo "Gate is closed to the public, open to '${username}', and the password file is unreachable."

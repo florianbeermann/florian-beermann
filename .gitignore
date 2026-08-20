@@ -15,6 +15,10 @@ dist-ssr
 .env.*
 !.env.example
 
+# The pre-launch gate's password file. Generated at deploy time from a secret;
+# this repository is public, so neither it nor a local experiment belongs here.
+.htpasswd
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

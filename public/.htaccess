@@ -1,3 +1,73 @@
+# ===========================================================================
+# PRE-LAUNCH GATE — delete this whole block to publish the site.
+#
+# The site is not public yet, so the server refuses to hand over a single byte
+# of it without credentials. This has to happen here rather than in the app: a
+# React login screen cannot protect a static site, because the bundle, the copy
+# and the images are all still sitting there for anyone who opens the network
+# tab, and the password would be in the JavaScript. Basic auth is the only gate
+# on this stack that is actually a gate.
+#
+# `__HTPASSWD_PATH__` is substituted by .github/workflows/deploy.yml from the
+# HETZNER_HTPASSWD_PATH secret. It is a placeholder rather than a literal
+# because AuthUserFile takes an absolute server path that is specific to the
+# hosting account, and because the password file it points at is generated at
+# deploy time from a secret — this repository is public, so neither the
+# password nor its hash can be committed.
+#
+# If that substitution never happens Apache has no password file to check
+# against: anonymous visitors still get the prompt, and anyone who answers it
+# gets a 500. Nothing is served either way, which is the right way round — a
+# broken gate must fail shut, not fall open.
+AuthType Basic
+AuthName "Florian Beermann & Partners - private preview"
+AuthUserFile __HTPASSWD_PATH__
+Require valid-user
+
+# The 401 page and the handful of assets it is built from have to be readable
+# without credentials, or the branded page cannot render at all — Apache
+# detects that it would have to authenticate its own error document, gives up
+# and falls back to its grey default. Nothing here discloses anything: two
+# open-licensed fonts, the favicons, a logo that is already on every social
+# card, and a page whose entire content is the sentence "this is private".
+<FilesMatch "^(401\.html|favicon\.(ico|svg|png)|apple-touch-icon\.png|logo-wordmark\.svg)$">
+  Require all granted
+</FilesMatch>
+
+<FilesMatch "\.woff2$">
+  Require all granted
+</FilesMatch>
+
+# The deploy and the hourly drift check read this to tell "we uploaded" from
+# "the site actually changed". It carries a commit SHA of a public repository
+# and a timestamp, so it stays readable rather than handing the site password
+# to two workflows that have no other reason to hold it. Keeping it open is
+# also what stops the gate from silently disabling the monitoring.
+<Files "version.json">
+  Require all granted
+</Files>
+
+# The password file is deployed into the directory it protects, so it has to be
+# unreachable over HTTP in its own right. It holds bcrypt hashes rather than
+# plaintext, but a hash handed to an attacker is an offline cracking job, not a
+# non-event.
+<Files ".htpasswd">
+  Require all denied
+</Files>
+
+# The FTP action keeps its state file next to the site, and that file is a
+# complete manifest of the deployed tree. Harmless behind the gate; an
+# invitation once the gate comes down, so it is denied on its own terms.
+<Files ".ftp-deploy-sync-state.json">
+  Require all denied
+</Files>
+
+# Must be a local path, not an absolute URL: Apache only serves a 401 error
+# document from the same server, and a full URL here silently breaks the
+# credential prompt.
+ErrorDocument 401 /401.html
+# ===========================================================================
+
 RewriteEngine On
 RewriteBase /
 
