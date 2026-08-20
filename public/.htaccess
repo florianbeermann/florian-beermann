@@ -47,14 +47,6 @@ Require valid-user
   Require all granted
 </Files>
 
-# TEMPORARY — removed in the commit immediately after this one, together with
-# whereami.php itself. The probe has to answer without credentials because the
-# credentials are exactly what is broken: AuthUserFile points somewhere Apache
-# cannot read, so every authenticated request is a 500 and there is no way in.
-<Files "whereami.php">
-  Require all granted
-</Files>
-
 # The password file is deployed into the directory it protects, so it has to be
 # unreachable over HTTP in its own right. It holds bcrypt hashes rather than
 # plaintext, but a hash handed to an attacker is an offline cracking job, not a
