@@ -30,21 +30,24 @@
      It replaced a painting of Hamburg at golden hour, and the swap is the whole
      redesign — the page used to sit on a place, and now it sits on a colour.
 
-     Being flat rather than photographic is what lets it be this loud. A
-     saturated field with no detail in it recedes to a plane the eye stops
-     reading after the first second, so it carries type instead of competing with
-     it; a painting at this chroma would not. It also removes every reason the
-     ground used to need art direction — no responsive cuts, no format
-     negotiation, no decode to wait on, no fallback colour to sample, and the
-     first frame is already the final one. */
-  --backdrop: #202FD6;
+     Being flat rather than photographic is what lets it be this loud. A field
+     with no detail in it recedes to a plane the eye stops reading after the
+     first second, so it carries type instead of competing with it; a painting
+     would not. It also removes every reason the ground used to need art
+     direction — no responsive cuts, no format negotiation, no decode to wait
+     on, no fallback colour to sample, and the first frame is already the final
+     one. */
+  --backdrop: #503D42;
 
-  /* Print grain, laid over every blue surface — the field, the inverted bands,
-     the portrait plate. #202FD6 is a deep, slightly violet blue held at full
-     strength across whole sections, and any unbroken expanse of a colour that
-     saturated reads as a swatch rather than as something printed. Grain is what
-     separates ink on paper from a fill, and it is the cheapest way to buy the
-     surface a material.
+  /* Print grain, laid over every inked surface — the field, the inverted bands,
+     the portrait plate, the chartreuse statement. Any unbroken expanse of a
+     single value reads as a swatch rather than as something printed. Grain is
+     what separates ink on paper from a fill, and it is the cheapest way to buy
+     the surface a material.
+
+     It matters more on the plum than it did on the blue it replaced. A dark
+     warm brown at this size is exactly the value range where banding shows on
+     an 8-bit display, and the noise dithers it away for free.
 
      Two passes, because one direction reads as dust rather than as tooth. The
      first lays white flecks and the second black ones, at different seeds, so
@@ -373,56 +376,52 @@ body::before {
 }
 
 .site-page {
-  --paper: #f3f0e8;
-  --paper-deep: #e8e3d7;
-  /* One blue. It is structure and action at once: every heading, the inverted
-     band, the filled buttons, the rules, and the field the sheet is laid on. The
-     system that preceded it ran a navy (#003b76) for structure against a lapis
-     (#0a55ad) for action, and that split was the right answer while the sheet
-     sat on a painting of Hamburg — two blues could be told apart against a warm,
-     worked ground. Against a flat blue field they could not: both read as the
-     same blue seen through the frame, so the distinction cost a colour and
-     bought nothing.
+  /* The stock the page is printed on, and it is dark. The system did not change
+     shape to get here — `--paper` still means "the ground" and `--ink` still
+     means "what is printed on it"; the sheet simply changed colour and the ink
+     went light, the way a page printed on charcoal card does. Every component
+     reads the tokens and none of them needed touching.
 
-     Hierarchy is carried by scale, weight and rule instead of by a second hue,
-     and emphasis is carried by inversion. That is the whole discipline of this
-     palette: two colours, and everything else is typography.
+     What did change is which side is the exception. The page used to be ivory
+     with plum bands cut into it; it is now plum with ivory bands, so the light
+     is the thing that arrives rather than the thing that recedes — and it
+     arrives on the two surfaces that matter, the portrait plate and the form. */
+  --paper: #503d42;
+  --paper-deep: #453337;
+  /* The ink, and it is the paper colour of the old system. 9.55:1 on the stock:
+     the palette measures identically in both directions, which is the whole
+     reason this flip is a swap and not a redesign. */
+  --ink: #f5fbef;
+  /* Secondary prose. A tint of the ink rather than a second colour, and never
+     below 0.84 — at that alpha it composites to rgb(219, 220, 211) and holds
+     7.34:1. The olive that does this job on the light bands is far too dark to
+     read against the stock, which is why the two scopes derive `--muted`
+     differently instead of sharing one value. */
+  --muted: rgba(245, 251, 239, 0.84);
+  --line: rgba(245, 251, 239, 0.32);
+  /* Type on a filled control, which on this ground is an ivory fill. */
+  --on-ink: #503d42;
+  --on-ink-muted: rgba(80, 61, 66, 0.78);
+  /* The voltage. One colour in the palette carries current, and the system
+     spends it in exactly two places: the statement band it paints edge to edge,
+     and the primary call to action. It is never a chip, a tag, an icon or a
+     highlight on neutral UI — the moment it becomes a garnish it stops being a
+     signal and the page acquires the brand-colour-sprinkled look this whole
+     system exists to avoid.
 
-     235° at 74% saturation, a little off the sRGB primary and a long way off a
-     corporate blue. The primary itself was the first version of this and it was
-     too raw — an unmixed channel maximum reads as a default rather than as a
-     choice. Pulling a little green in and a little brightness out keeps the
-     voltage and gains an ink.
+     The sRGB primary, unmixed. It is the one value in the system that is not
+     drawn from the logo palette, and it is deliberately the rawest colour a
+     screen can make: against a warm plum stock and an ivory sheet, a pure
+     channel maximum is unmistakably an instrument reading rather than a
+     decoration.
 
-     It measures well for something this loud, because blue carries almost none
-     of sRGB's luminance: at 7.2% it holds 7.56:1 against paper, better than the
-     lapis it replaced (6.3:1), and white on it holds 8.61:1. */
-  --ink: #202FD6;
-  /* Body prose, and deliberately still not a tint of the ink — a saturated tint
-     of #202FD6 at text size fringes badly, because the eye focuses blue poorly
-     and there is no other channel carrying the letterform. This is a desaturated
-     blue-grey at 232°, which reads as calm next to the ink while belonging to
-     its family. It replaced #52626b, a 203° slate that was right against a navy
-     and read faintly teal once the ink moved into the 230s. Holds 5.9:1 on
-     paper, a shade better than the slate's 5.6:1. */
-  --muted: #565a75;
-  /* Every divider, field underline and section boundary: the ink at 26%.
-     The alpha is up from the navy's 22% because a tint of a colour this
-     saturated lightens faster than a tint of navy — at 22% this composites to a
-     pale lavender that reads as a printing fault rather than as a rule. 26%
-     lands it back on a line that is legibly blue. */
-  --line: rgba(32, 47, 214, 0.26);
-  /* Type on an inverted surface: the method band and the filled buttons, all of
-     which sit on flat `--ink`. White holds 8.61:1 on the new blue, down from
-     11.13:1 on the navy — a real drop, but the floor was never the constraint
-     here and the step down to the muted tint below still reads. */
-  --on-ink: #ffffff;
-  /* Secondary type on an inverted surface. A tint of white rather than a
-     second colour, for the same reason `--muted` is not a tint of the ink.
-     0.82 composites to rgb(209, 209, 255) on the blue and measures 5.84:1,
-     which clears the body-text floor with room; the figure to protect is the
-     step down from the wordmark, not the floor. */
-  --on-ink-muted: rgba(255, 255, 255, 0.82);
+     It carries the ivory, not the plum. This is the one hard constraint on it —
+     plum on this blue measures 1.17:1 and is illegible, where the ivory holds
+     8.15:1. The chartreuse it replaced had the opposite polarity (it was a
+     light, and took dark type), so anything printed on the voltage flipped when
+     this value changed. */
+  --voltage: #0000ff;
+  --on-voltage: #f5fbef;
   --header-height: 76px;
   /* The rhythm between a full-screen section's edge and its content, paid for
      out of its height rather than its width. At `10vw` the old value spent
@@ -445,9 +444,10 @@ body::before {
   margin: 0;
   padding: 0 var(--safe-right) var(--safe-bottom) var(--safe-left);
   min-height: 100vh;
-  background: var(--paper);
+  background-color: var(--paper);
+  background-image: var(--grain);
   color: var(--ink);
-  font-family: "Inter Variable", "Helvetica Neue", Arial, sans-serif;
+  font-family: "Outfit Variable", "Helvetica Neue", Arial, sans-serif;
   font-weight: 400;
   text-align: left;
 }
@@ -468,9 +468,9 @@ body::before {
 .site-page h1,
 .site-page h2,
 .site-page h3 {
-  font-family: "Inter Tight Variable", "Inter Variable", sans-serif;
+  font-family: "Outfit Variable", sans-serif;
   font-weight: 520;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.03em;
 }
 
 .site-page a {
@@ -478,33 +478,67 @@ body::before {
   text-decoration: none;
 }
 
-/* Inversion scope. The palette is two colours, so emphasis cannot come from a
-   third — it comes from swapping which side of the ink the page is printed on.
-   Every band that does this used to restate the swap by hand in hardcoded
-   whites, which meant each new one drifted; here the tokens themselves flip, so
-   any subtree dropped inside this class inverts wholesale. Buttons keep working
-   without a single override, because their fill is `--ink` and their label is
-   `--paper` in both directions.
+/* Inversion scope, and after the flip it is the light one. The palette is small,
+   so emphasis cannot come from adding a colour — it comes from swapping which
+   side of the ink a section is printed on. Every band that does this used to
+   restate the swap by hand in hardcoded whites, which meant each new one
+   drifted; here the tokens themselves flip, so any subtree dropped inside this
+   class re-prints wholesale. Buttons keep working without a single override,
+   because their fill is `--ink` and their label is `--on-ink` in both
+   directions.
 
-   The blue is a surface here, not a frame. That is the point of the class: a
-   sheet of paper floating on a colour field is a template, while a page that
-   alternates between paper and ink is a printed object. The field around the
-   sheet and these bands are the same material, and the grain is what says so —
-   when a band meets the frame, the two register as one continuous plane. */
+   These bands are the arrival, not the frame. On a dark page a light section
+   reads as something switched on, which is why the two that carry it are the
+   portrait plate and the contact form: the face, and the thing you are asked to
+   do. No grain here — grain is what stops a large flat inked field reading as a
+   swatch, and these are the sheet, not the ink. */
 .site-inverted,
 .site-footer {
-  --paper: #202FD6;
-  --paper-deep: #1A27B0;
-  --ink: #f3f0e8;
-  /* Secondary type on blue. A tint of the paper rather than of white, so the
-     warmth survives the inversion; at 0.84 it composites to rgb(209, 209, 229)
-     and measures 5.73:1 on the blue, which clears the body floor with room. */
-  --muted: rgba(243, 240, 232, 0.84);
-  --line: rgba(243, 240, 232, 0.32);
-  /* Nested inversions — a filled button sitting inside a blue band — resolve
-     back to blue type on paper, which is the same relationship one level in. */
-  --on-ink: #202FD6;
-  --on-ink-muted: rgba(32, 47, 214, 0.78);
+  --paper: #f5fbef;
+  --paper-deep: #e6eee0;
+  --ink: #503d42;
+  /* Secondary prose on the light bands. Not a tint of the plum — diluted plum
+     turns into a dead warm grey and takes the palette's character with it. This
+     is the dusty olive taken down until it holds text: #748b75 itself measures
+     only 3.50:1 here and fails the body floor, so it stays a rule colour and
+     this darker cut does the reading. 4.87:1. */
+  --muted: #5e735f;
+  /* The muted teal at full strength rather than the ink at an alpha, so the
+     hairline stays a colour instead of compositing to grey. 2.31:1. */
+  --line: #92ad94;
+  /* Nested inversions — a filled button inside a light band — resolve back to
+     ivory type on plum, which is the page's own relationship one level in. */
+  --on-ink: #f5fbef;
+  --on-ink-muted: rgba(245, 251, 239, 0.82);
+  background-color: var(--paper);
+  background-image: none;
+  color: var(--ink);
+}
+
+/* The voltage scope: the one band on the page that is printed in the blue. It
+   is the same mechanic as `.site-inverted` — the tokens flip and the subtree
+   follows — but it is deliberately not a class any section may reach for. There
+   is one of these on the site and there should stay one, because a second one
+   halves the value of the first.
+
+   The polarity is the opposite of the chartreuse band this replaced. That green
+   was a light and took dark type; the blue is a dark and takes the ivory, which
+   holds 8.15:1 on it. The plum measures 1.17:1 here and must never appear.
+
+   It still goes on a statement, never on a form, but for a different reason
+   than before. The headroom is no longer the problem — the ivory has plenty —
+   it is that the band is the loudest surface on the site, and a form asks the
+   visitor to concentrate rather than to look. `--muted` resolves to the ink
+   itself so secondary text steps down by scale rather than by tone, which keeps
+   the whole band at full strength. */
+.site-voltage {
+  --paper: #0000ff;
+  --paper-deep: #0000d6;
+  --ink: #f5fbef;
+  --muted: #f5fbef;
+  --line: rgba(245, 251, 239, 0.42);
+  --on-ink: #0000ff;
+  --on-ink-muted: rgba(0, 0, 255, 0.78);
   background-color: var(--paper);
   background-image: var(--grain);
   color: var(--ink);
@@ -572,13 +606,18 @@ body::before {
   flex-shrink: 0;
 }
 
-/* The name is a cut of the drawing, not type. Two earlier attempts set it in
-   Inter; both were wrong, and the reason is measurable: the artwork is tracked
-   at 0.92em and drawn at Outfit 200, a geometric hairline no Inter weight
-   reaches. Setting it live would also mean loading a third family for sixteen
-   glyphs and reflowing the masthead whenever that font was slow. So the header
-   uses the drawing, shipped as outlines. It costs one request; it buys the
-   actual brand.
+/* The name is a cut of the drawing, not type — and it stays that way now that
+   the page is set in the same face. Two earlier attempts set it in Inter; both
+   were wrong, and the reason was measurable: the artwork is tracked at 0.92em
+   and drawn at Outfit 200, a geometric hairline no Inter weight reaches. The
+   site now loads Outfit, so that particular objection is gone and one of the
+   two reasons with it — there is no third family to pay for any more.
+
+   The remaining reason is enough on its own. Live text would reflow the
+   masthead the moment the font was slow, and it would leave the brand's
+   letterspacing at the mercy of a CSS value any future edit could round off.
+   The drawing is the artwork; setting it live would be a reproduction of the
+   artwork. It costs one request; it buys the actual brand.
 
    It is now the entire logo, and that changes what size it wants. It used to be
    the junior half of a lockup, sized at 88.9% of the proportion the artwork
@@ -612,7 +651,7 @@ body::before {
   display: flex;
   align-items: center;
   gap: clamp(1.1rem, 2.7vw, 2.6rem);
-  font-size: 0.875rem;
+  font-size: 0.95rem;
   font-weight: 520;
 }
 
@@ -762,7 +801,7 @@ body::before {
     width: var(--masthead);
     justify-content: center;
     gap: 1.15rem;
-    font-size: 0.8125rem;
+    font-size: 0.89rem;
   }
 }
 
@@ -773,7 +812,7 @@ body::before {
 
   .site-header nav {
     gap: 0.7rem;
-    font-size: 0.8125rem;
+    font-size: 0.89rem;
   }
 
   .site-footer {
@@ -804,7 +843,7 @@ body::before {
 
   .site-header nav {
     gap: clamp(0.3rem, 2.25vw, 0.45rem);
-    font-size: clamp(0.75rem, 4.1vw, 0.8125rem);
+    font-size: clamp(0.82rem, 4.47vw, 0.89rem);
   }
 }
 

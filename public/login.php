@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <meta name="theme-color" content="#202FD6" />
+    <meta name="theme-color" content="#503D42" />
 
     <!--
       Self-contained for the reason given at the top of this file. Everything it
@@ -114,17 +114,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     -->
     <style>
       @font-face {
-        font-family: "Inter Variable";
-        src: url("/fonts/inter-latin-variable.woff2") format("woff2-variations");
-        font-style: normal;
-        font-weight: 100 900;
-        font-display: swap;
-      }
-
-      @font-face {
-        font-family: "Inter Tight Variable";
-        src: url("/fonts/inter-tight-latin-variable.woff2")
-          format("woff2-variations");
+        font-family: "Outfit Variable";
+        src: url("/fonts/outfit-latin-variable.woff2") format("woff2-variations");
         font-style: normal;
         font-weight: 100 900;
         font-display: swap;
@@ -134,11 +125,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         --safe-right: env(safe-area-inset-right, 0px);
         --safe-bottom: env(safe-area-inset-bottom, 0px);
         --safe-left: env(safe-area-inset-left, 0px);
-        --paper: #f3f0e8;
-        --ink: #202fd6;
-        --on-ink: #ffffff;
-        --muted: #565a75;
-        --line: rgba(32, 47, 214, 0.26);
+        --paper: #503d42;
+        --ink: #f5fbef;
+        --on-ink: #503d42;
+        --muted: rgba(245, 251, 239, 0.84);
+        --line: rgba(245, 251, 239, 0.32);
         --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
           "Liberation Mono", monospace;
         --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 .05 .05 .05 0 -.02'/%3E%3C/filter%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch' seed='19'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .05 .05 .05 0 -.02'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23a)'/%3E%3Crect width='180' height='180' filter='url(%23b)'/%3E%3C/svg%3E");
@@ -160,9 +151,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         flex-direction: column;
         margin: 0;
         padding: 0 var(--safe-right) var(--safe-bottom) var(--safe-left);
-        background: var(--paper);
+        background-color: var(--paper);
+        background-image: var(--grain);
         color: var(--ink);
-        font-family: "Inter Variable", "Helvetica Neue", Arial, sans-serif;
+        font-family: "Outfit Variable", "Helvetica Neue", Arial, sans-serif;
         font-weight: 400;
         text-align: left;
       }
@@ -238,15 +230,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         display: block;
         padding-top: 0.7rem;
         color: var(--ink);
-        font-size: 0.86rem;
+        font-size: 0.94rem;
         font-weight: 680;
       }
 
       .gate-body h1 {
-        font-family: "Inter Tight Variable", "Inter Variable", sans-serif;
+        font-family: "Outfit Variable", sans-serif;
         font-size: clamp(3rem, 6.5vw, 5.6rem);
         font-weight: 520;
-        letter-spacing: -0.045em;
+        letter-spacing: -0.03em;
         line-height: 0.88;
       }
 
@@ -254,7 +246,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         max-width: 46ch;
         margin-top: 1.8rem;
         color: var(--muted);
-        font-size: clamp(1rem, 1.2vw, 1.12rem);
+        font-size: clamp(1.09rem, 1.31vw, 1.22rem);
         line-height: 1.65;
       }
 
@@ -290,7 +282,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         padding: 0.65rem 0;
         color: var(--ink);
         font: inherit;
-        font-size: 0.96rem;
+        font-size: 1.05rem;
       }
 
       .gate-form input:focus-visible {
@@ -322,7 +314,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         color: var(--on-ink);
         cursor: pointer;
         font: inherit;
-        font-size: 0.86rem;
+        font-size: 0.94rem;
         font-weight: 650;
         /* An inset rule rather than a border, so the box is identical in both
            states and the hover inversion costs no layout. */
@@ -350,15 +342,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
 
       .gate-footer {
+        /* The light band, matching `.site-footer` on the site: the tokens flip
+           inside it so the rule stays a rule instead of an ivory hairline on an
+           ivory ground. */
+        --line: #92ad94;
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 2rem;
         border-top: 1px solid var(--line);
         padding: 2.4rem 4vw;
-        background-color: #202fd6;
-        background-image: var(--grain);
-        color: #f3f0e8;
+        background-color: #f5fbef;
+        background-image: none;
+        color: #503d42;
         font-family: var(--mono);
         font-size: 0.6875rem;
         letter-spacing: 0.16em;

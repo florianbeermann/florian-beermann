@@ -1,14 +1,17 @@
-@font-face {
-  font-family: "Inter Variable";
-  src: url("/fonts/inter-latin-variable.woff2") format("woff2-variations");
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-}
+/* One family for the whole page, and it is the one the logo is cut from. The
+   wordmark is drawn in Outfit 200 tracked at 0.92em, so every earlier attempt to
+   set the site in Inter left the masthead speaking a different language from the
+   sentence under it — a geometric hairline above a neutral grotesque. Adopting
+   the logo's own face closes that gap: the header is no longer an exception to
+   the typography, it is the loudest statement of it.
 
+   It also costs less than what it replaced. Inter and Inter Tight were 93KB of
+   variable font between them because the display register needed a narrower cut
+   than the body; Outfit carries both jobs at 32KB, since a geometric face
+   already tightens as it grows and the weight axis supplies the rest. */
 @font-face {
-  font-family: "Inter Tight Variable";
-  src: url("/fonts/inter-tight-latin-variable.woff2") format("woff2-variations");
+  font-family: "Outfit Variable";
+  src: url("/fonts/outfit-latin-variable.woff2") format("woff2-variations");
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
@@ -20,53 +23,66 @@
 
 @layer base {
   :root {
-    /* Premium High-Contrast Light Theme */
-    --background: 210 40% 98%;
-    --foreground: 235 74% 48%;
+    /* The component library's mirror of the design system. Nothing here draws
+       the page — the shell and the page stylesheets own every visible surface —
+       but Radix's portalled menus and the toaster resolve their defaults from
+       these, so a value left stale here is a blue popover on a plum site. Keep
+       them in step with shell.css.
 
-    --card: 0 0% 100%;
-    --card-foreground: 235 74% 48%;
+       Every value is one of the five palette colours, stated in HSL because
+       Tailwind composes them with an alpha channel. */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 235 74% 48%;
+    /* --chocolate-plum: the stock the page is printed on. */
+    --background: 344 13% 28%;
+    /* --ivory: the ink. */
+    --foreground: 90 60% 96%;
 
-    /* One blue, not two. `235 74% 48%` is `#202FD6` -- the same ink
-       `--ink` carries in shell.css, which is the only blue the design system
-       has left. Primary and accent used to be a functional navy and a
-       decorative lapis; collapsing them here keeps this mirror honest rather
-       than leaving a second blue alive in a layer the broadsheet never
-       shows. Keep all of these in step with shell.css's `--ink`. */
-    --primary: 235 74% 48%;
-    --primary-foreground: 0 0% 100%;
+    --card: 344 13% 28%;
+    --card-foreground: 90 60% 96%;
 
-    --accent: 235 74% 48%;
-    --accent-foreground: 0 0% 100%;
-    --accent-glow: 235 74% 60%;
+    --popover: 344 13% 28%;
+    --popover-foreground: 90 60% 96%;
 
-    --secondary: 210 30% 95%;
-    --secondary-foreground: 235 74% 48%;
+    /* Primary is the ink and accent is the voltage — the one place in the
+       system where the two are genuinely different jobs rather than the same
+       colour twice. A filled control is ivory with plum on it; the thing that
+       asks to be pressed is the blue with ivory on it (8.15:1). */
+    --primary: 90 60% 96%;
+    --primary-foreground: 344 13% 28%;
 
-    --muted: 210 25% 94%;
-    --muted-foreground: 232 15% 40%;
+    /* The voltage: the sRGB primary, unmixed. It takes the ivory, never the
+       plum — plum on this blue is 1.17:1. */
+    --accent: 240 100% 50%;
+    --accent-foreground: 90 60% 96%;
 
+    /* Inset grounds: the stock taken a step deeper. */
+    --secondary: 344 13% 24%;
+    --secondary-foreground: 90 60% 96%;
+
+    --muted: 344 13% 24%;
+    /* The ink at 0.84 over the stock, stated flat because Tailwind composes
+       these with its own alpha channel. 7.34:1, and it matches `--muted` in
+       shell.css. */
+    --muted-foreground: 67 11% 85%;
+
+    /* The one deliberate exception to the palette, and it stays an exception on
+       purpose: an error has to be unmistakable, and a brand-coloured error is a
+       missed one. Nothing renders it today — the toaster paints every variant as
+       stock and ink — so it is an unused affordance rather than a sixth colour
+       on the page. */
     --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive-foreground: 90 60% 96%;
 
-    --border: 215 20% 90%;
-    --input: 215 20% 90%;
-    --ring: 235 74% 48%;
+    /* The rule on the dark stock: the ink at 0.32, stated flat. */
+    --border: 5 5% 50%;
+    --input: 5 5% 50%;
+    /* The focus ring is the ink, not the voltage. The blue holds 8.15:1 on a
+       light band but only 1.17:1 on the page's own plum stock, and a focus
+       indicator whose reliability changes by section is not an indicator. The
+       ivory holds 9.55:1 on the stock. */
+    --ring: 90 60% 96%;
 
-    --radius: 1rem;
-
-    --gradient-hero: radial-gradient(circle at 80% 20%, hsl(235 74% 48% / 0.08) 0%, transparent 50%),
-                     linear-gradient(180deg, hsl(210 30% 99%) 0%, hsl(0 0% 100%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(210 25% 97%) 0%, hsl(0 0% 100%) 100%);
-    
-    --shadow-elegant: 0 30px 60px -15px rgba(10, 26, 47, 0.06), 0 10px 20px -10px rgba(10, 26, 47, 0.04);
-    --shadow-accent: 0 16px 40px -12px rgba(32, 47, 214, 0.2);
-    --shadow-card: 0 2px 8px rgba(10, 26, 47, 0.02), 0 12px 30px -10px rgba(10, 26, 47, 0.04);
-
-    --transition-smooth: color 0.35s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    --radius: 0;
   }
 }
 
@@ -81,81 +97,27 @@
 
   body {
     @apply bg-background text-foreground antialiased font-light;
-    font-family: "Inter Variable", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: "Outfit Variable", "Helvetica Neue", Helvetica, Arial, sans-serif;
   }
 
+  /* The one place the voltage is allowed to touch paper: as a ground behind
+     text, never as the text itself. Selected copy sits on the flat blue at
+     8.15:1 — the same relationship the statement band uses, borrowed for the
+     length of a drag. */
   ::selection {
-    background: hsl(var(--accent) / 0.22);
-    color: hsl(var(--foreground));
+    background: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
   }
 
   h1, h2, h3, h4, h5, h6 {
     @apply tracking-tight font-normal;
-    font-family: "Inter Tight Variable", "Inter Variable", sans-serif;
-    font-feature-settings: 'ss01';
+    font-family: "Outfit Variable", sans-serif;
   }
 }
 
 @layer utilities {
-  .bg-gradient-hero {
-    background: var(--gradient-hero);
-  }
-  .bg-gradient-accent {
-    background: var(--gradient-accent);
-  }
-  .bg-gradient-subtle {
-    background: var(--gradient-subtle);
-  }
-  .shadow-elegant {
-    box-shadow: var(--shadow-elegant);
-  }
-  .shadow-accent {
-    box-shadow: var(--shadow-accent);
-  }
-  .shadow-card {
-    box-shadow: var(--shadow-card);
-  }
-  .transition-smooth {
-    transition: var(--transition-smooth);
-  }
   .text-balance {
     text-wrap: balance;
-  }
-
-  /* Reveal line styles */
-  .reveal-wrapper {
-    overflow: hidden;
-    display: block;
-  }
-
-  .reveal-item {
-    transform: translateY(100%);
-    animation: reveal-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-
-  /* Spotlight Grid Card */
-  .spotlight-card {
-    position: relative;
-    background: radial-gradient(800px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(32, 47, 214, 0.05), transparent 40%);
-  }
-
-  .spotlight-card::before {
-    content: "";
-    position: absolute;
-    inset: -1px;
-    border-radius: inherit;
-    background: radial-gradient(600px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(32, 47, 214, 0.25), transparent 40%);
-    z-index: 0;
-    pointer-events: none;
-    mask-image: linear-gradient(black, black) exclude, linear-gradient(black, black);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-  }
-}
-
-@keyframes reveal-up {
-  to {
-    transform: translateY(0);
   }
 }
 
@@ -173,25 +135,28 @@
     transition-duration: 0.01ms !important;
   }
 
-  .reveal-item,
   .motion-reveal {
     opacity: 1 !important;
     transform: none !important;
   }
 }
 
-/* Custom Scrollbar */
+/* The scrollbar is part of the sheet, not part of the browser. Painted in the
+   page's own values so the gutter does not sit beside a dark page as a strip of
+   system grey. Square, like everything else. The thumb takes the palette's two
+   greens rather than a lighter plum: on this stock they are the only values
+   quiet enough not to read as a second piece of content. */
 ::-webkit-scrollbar {
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: hsl(210 25% 97%);
+  background: #453337;
 }
 ::-webkit-scrollbar-thumb {
-  background: hsl(210 15% 82%);
-  border-radius: 5px;
-  border: 2px solid hsl(210 25% 97%);
+  background: #748b75;
+  border-radius: 0;
+  border: 2px solid #453337;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(212 89% 36%);
+  background: #92ad94;
 }

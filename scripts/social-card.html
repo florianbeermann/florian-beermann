@@ -14,30 +14,28 @@
         open http://localhost:5199/scripts/social-card.html
         # capture the 1200x630 viewport to public/social-preview.jpg
 
-      The card it replaced still carried the retired "fb" monogram, the old navy
-      and lapis inks, rounded blob shapes and a white ground — an entire
+      The card it replaced still carried the retired "fb" monogram, the old blue
+      inks, rounded blob shapes and a white ground — an entire
       identity the site had already stopped using.
     -->
     <style>
       @font-face {
-        font-family: "Inter Variable";
-        src: url("/fonts/inter-latin-variable.woff2") format("woff2-variations");
-        font-weight: 100 900;
-        font-display: block;
-      }
-
-      @font-face {
-        font-family: "Inter Tight Variable";
-        src: url("/fonts/inter-tight-latin-variable.woff2") format("woff2-variations");
+        font-family: "Outfit Variable";
+        src: url("/fonts/outfit-latin-variable.woff2") format("woff2-variations");
         font-weight: 100 900;
         font-display: block;
       }
 
       :root {
-        --paper: #f3f0e8;
-        --ink: #202fd6;
+        --paper: #503d42;
+        --ink: #f5fbef;
         --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
           "Liberation Mono", monospace;
+        /* The same print grain the page carries. It matters more here than on
+           the site: this card is encoded as a JPEG, and a large flat dark field
+           is exactly what chroma subsampling turns into visible banding. The
+           noise dithers it away before the encoder ever sees a gradient. */
+        --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 .05 .05 .05 0 -.02'/%3E%3C/filter%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch' seed='19'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .05 .05 .05 0 -.02'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23a)'/%3E%3Crect width='180' height='180' filter='url(%23b)'/%3E%3C/svg%3E");
       }
 
       * {
@@ -62,9 +60,10 @@
            halves to 450x632, so the whole bust fits the card almost exactly.
            This is the same asymmetric split the hero uses. */
         grid-template-columns: 750px 450px;
-        background: var(--paper);
+        background-color: var(--paper);
+        background-image: var(--grain);
         color: var(--ink);
-        font-family: "Inter Variable", sans-serif;
+        font-family: "Outfit Variable", sans-serif;
       }
 
       .copy {
@@ -75,7 +74,7 @@
       }
 
       .wordmark {
-        font-family: "Inter Variable", sans-serif;
+        font-family: "Outfit Variable", sans-serif;
         font-size: 15px;
         font-weight: 400;
         letter-spacing: 0.34em;
@@ -85,10 +84,10 @@
 
       h1 {
         max-width: 15ch;
-        font-family: "Inter Tight Variable", sans-serif;
+        font-family: "Outfit Variable", sans-serif;
         font-size: 78px;
         font-weight: 520;
-        letter-spacing: -0.045em;
+        letter-spacing: -0.03em;
         line-height: 0.94;
         text-wrap: balance;
       }
@@ -99,7 +98,7 @@
         align-items: flex-end;
         gap: 24px;
         padding-top: 20px;
-        border-top: 1px solid rgba(32, 47, 214, 0.26);
+        border-top: 1px solid rgba(245, 251, 239, 0.32);
         font-family: var(--mono);
         font-size: 12px;
         font-weight: 500;
@@ -107,8 +106,10 @@
         text-transform: uppercase;
       }
 
-      /* The plate. Paper dots on blue, so it belongs to the same ground the
-         page's inverted bands are printed on. */
+      /* The plate. Ink dots on the ivory, because the page is printed on the
+         dark stock now and the light sheet is the exception — the same
+         relationship the hero has, where the portrait is the one lit surface on
+         a dark page. */
       .plate {
         position: relative;
         overflow: hidden;
@@ -122,7 +123,7 @@
         width: 450px;
       }
 
-      /* Top right, where the plate is still open blue. Sat at the foot it
+      /* Top right, where the plate is still open paper. Sat at the foot it
          landed on the densest part of the screen and the dots ate it. */
       .caption {
         position: absolute;
@@ -147,7 +148,7 @@
       </div>
     </div>
     <div class="plate">
-      <img src="/scripts/assets/portrait-halftone-inverted.png" alt="" />
+      <img src="/scripts/assets/portrait-halftone.png" alt="" />
       <span class="caption">Fig. 01</span>
     </div>
   </body>

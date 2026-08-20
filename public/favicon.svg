@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Florian Beermann &amp; Partners">
   <title>Florian Beermann &amp; Partners</title>
-  <!-- One square of Electric Blue, edge to edge. It replaces the ampersand
+  <!-- One square of the ink, edge to edge. It replaces the ampersand
        badge, which was the monogram's tile with the & knocked out of it in
        paper — a mark that has been retired everywhere else in the identity, so
        leaving it in the tab would have made the favicon the last surviving
@@ -11,7 +11,7 @@
        loses its ground to antialiasing and the mark reads as a smaller, muddier
        square rather than as a framed one. Bleeding to the edges makes the
        colour itself the mark. It is also the honest miniature of the page,
-       which is now a blue field with a sheet of paper laid on it — seen from
+       which is now a plum field with a sheet of paper laid on it — seen from
        far enough away, the field is all that is left.
 
        No geometry to regenerate and nothing to keep in step with the logo
@@ -21,5 +21,5 @@
        inside a comment, and an SVG that breaks that rule is rejected outright
        rather than rendered with the comment ignored. This file carried a bare
        token name here and was silently failing to parse. -->
-  <rect width="512" height="512" fill="#202FD6"/>
+  <rect width="512" height="512" fill="#503D42"/>
 </svg>

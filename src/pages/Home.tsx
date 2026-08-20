@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { toast } from "sonner";
@@ -14,10 +14,8 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { setPageMetadata } from "@/lib/metadata";
-import { startAsciiMotion } from "@/lib/ascii-motion";
 import { startPanelScroll } from "@/lib/panel-scroll";
 import { startSectionScroll } from "@/lib/section-scroll";
-import portraitAscii from "@/assets/portrait-ascii.txt?raw";
 import "./Home.css";
 
 /* The portrait is a character grid, generated from the photograph by
@@ -32,9 +30,6 @@ import "./Home.css";
    published: the columns size the grid to the panel's width, and the rows let
    it also be sized against the height it has been given, which the hero needs
    because it is the one panel with a fixed height budget. */
-const portraitLines = portraitAscii.replace(/\n+$/, "").split("\n");
-const portraitColumns = Math.max(...portraitLines.map((line) => line.length));
-const portraitRows = portraitLines.length;
 
 const employers = [
   { name: "Microsoft", logo: "/company-logos/microsoft.png" },
@@ -124,7 +119,6 @@ export default function Home() {
   const [showDetails, setShowDetails] = useState(false);
   const [size, setSize] = useState("");
   const [tooling, setTooling] = useState("");
-  const portraitRef = useRef<HTMLPreElement>(null);
 
   useEffect(() => {
     setPageMetadata({
@@ -133,12 +127,6 @@ export default function Home() {
         "Customer Success consulting for B2B SaaS companies whose customer base has outgrown the way they serve it. Strategy, lifecycle playbooks and CSM enablement.",
       path: "/",
     });
-  }, []);
-
-  useEffect(() => {
-    if (!portraitRef.current) return;
-    const motion = startAsciiMotion(portraitRef.current, portraitAscii);
-    return () => motion.stop();
   }, []);
 
   useEffect(() => startPanelScroll(), []);
@@ -273,28 +261,15 @@ export default function Home() {
             </div>
           </div>
 
-          <figure className="home-portrait site-inverted">
-            <div
-              className="home-portrait-plate"
-              role="img"
-              aria-label="Florian Beermann"
-              style={
-                {
-                  "--ascii-columns": portraitColumns,
-                  "--ascii-rows": portraitRows,
-                } as React.CSSProperties
-              }
-            >
-              {/* Hidden from assistive tech: read out, the grid is several
-                  thousand punctuation marks. The name is carried by the
-                  `role="img"` label above and the caption below. */}
-              <pre
-                className="home-portrait-ascii"
-                aria-hidden="true"
-                ref={portraitRef}
-              >
-                {portraitAscii}
-              </pre>
+          <figure className="home-portrait">
+            <div className="home-portrait-plate">
+              <img
+                src="/portrait-plate.jpg"
+                alt="Florian Beermann"
+                width="723"
+                height="1086"
+                decoding="async"
+              />
             </div>
             <figcaption className="home-portrait-caption">
               <span className="site-label">Fig. 01</span>
@@ -305,7 +280,7 @@ export default function Home() {
 
         {/* Snap stop. See `.site-stop` in Home.css. */}
         <span className="site-stop" aria-hidden="true" />
-        <section className="home-proof site-panel" aria-labelledby="proof-title">
+        <section className="home-proof site-inverted site-panel" aria-labelledby="proof-title">
           <div className="home-proof-heading site-reveal">
             <h2 id="proof-title">Where the experience comes from</h2>
             <p>
@@ -427,7 +402,7 @@ export default function Home() {
 
         {/* Snap stop. See `.site-stop` in Home.css. */}
         <span className="site-stop" aria-hidden="true" />
-        <section className="home-method site-inverted site-panel">
+        <section className="home-method site-voltage site-panel">
           <div className="home-method-inner site-reveal">
             <header>
               <h2>Customer signals only matter when they change the work.</h2>

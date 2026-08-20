@@ -26,11 +26,15 @@
          now, so it is the same colour at every scroll position and the chrome
          can simply continue it: the frame runs off the top of the screen into
          the status bar instead of stopping at a seam. -->
-    <meta name="theme-color" content="#202FD6" />
+    <meta name="theme-color" content="#503D42" />
     <link rel="canonical" href="https://florianbeermann.com/" />
 
-    <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-latin-variable.woff2" crossorigin />
-    <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-tight-latin-variable.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/outfit-latin-variable.woff2" crossorigin />
+    <!-- The hero portrait is the page's LCP element, and it sits in the second
+         column of the first viewport, so the browser only discovers it after
+         the stylesheet and the module graph have resolved. Preloading pulls it
+         forward to the first round trip alongside the font. -->
+    <link rel="preload" as="image" href="/portrait-plate.jpg" fetchpriority="high" />
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://florianbeermann.com/" />

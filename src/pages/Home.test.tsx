@@ -44,15 +44,17 @@ describe("homepage", () => {
     ).toHaveAttribute("href", "#contact");
   });
 
-  it("labels the ASCII portrait for assistive technology without reading the grid", () => {
+  it("names the portrait for assistive technology", () => {
     renderHome();
 
     const portrait = screen.getByRole("img", { name: "Florian Beermann" });
-    const grid = portrait.querySelector("pre");
 
-    expect(grid).not.toBeNull();
-    expect(grid).toHaveAttribute("aria-hidden", "true");
-    expect(grid?.textContent?.length ?? 0).toBeGreaterThan(1000);
+    expect(portrait.tagName).toBe("IMG");
+    expect(portrait).toHaveAttribute("src", "/portrait-plate.jpg");
+    // Intrinsic dimensions are what stop the hero reflowing once the plate
+    // decodes, which is the whole reason this is the site's LCP element.
+    expect(portrait).toHaveAttribute("width");
+    expect(portrait).toHaveAttribute("height");
   });
 
   it("lists the three engagements with their deliverables", () => {

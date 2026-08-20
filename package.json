@@ -12,7 +12,7 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "portrait": "node scripts/generate-portrait-ascii.mjs",
+    "portrait": "node scripts/generate-portrait-plate.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "halftone": "node scripts/generate-halftone.mjs"

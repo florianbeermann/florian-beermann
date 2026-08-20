@@ -48,7 +48,7 @@
      all, and it never grows the type, only declines to. */
   font-size: min(clamp(4rem, 6.7vw, 7rem), 10.5vh);
   line-height: 0.91;
-  letter-spacing: -0.067em;
+  letter-spacing: -0.035em;
 }
 
 /* Only the line break. The second line used to be set in the lapis while the
@@ -76,7 +76,7 @@
   max-width: 650px;
   margin-top: clamp(0.75rem, 3.2vh, 2rem) !important;
   color: var(--muted);
-  font-size: min(clamp(1.02rem, 1.25vw, 1.16rem), 2.3vh);
+  font-size: min(clamp(1.11rem, 1.36vw, 1.26rem), 2.51vh);
   line-height: 1.6;
 }
 
@@ -92,134 +92,155 @@
   min-height: 52px;
   align-items: center;
   justify-content: center;
-  background: var(--ink);
-  color: var(--on-ink) !important;
+  background: var(--voltage);
+  color: var(--on-voltage) !important;
   padding: 0 1.5rem;
-  font-size: 0.86rem;
+  font-size: 0.94rem;
   font-weight: 650;
   /* Drawn as an inset rule rather than a border so the box is identical in
      both states and the inversion below costs no layout. */
-  box-shadow: inset 0 0 0 1px var(--ink);
+  box-shadow: inset 0 0 0 1px var(--voltage);
 }
 
-/* Hover is an inversion, not a second blue. The palette has one blue, so the
-   only move left is to swap which side of it the type sits on: the block
-   empties to paper and the label becomes the ink. It reads as the button being
-   pressed out of the sheet rather than tinted, which is the right gesture for a
-   system whose whole depth model is figure and ground. */
+/* Hover empties the block rather than tinting it: the fill drains to the page's
+   own stock and the label becomes the ink, so the button reads as pressed out
+   of the sheet rather than as a second shade of itself.
+
+   The rule has to change with it. At rest it is the voltage, drawn as an inset
+   shadow so the box is identical in both states and the swap costs no layout —
+   but the blue measures 1.17:1 against the plum stock, so a rule left behind in
+   it would vanish the moment the fill drained and the button would appear to
+   disappear on hover. Taking the rule to the ink keeps the outline at 9.55:1
+   and the whole control visible in both states. */
 .home-primary-action:hover,
 .home-primary-action:focus-visible {
   background: var(--paper);
   color: var(--ink) !important;
+  box-shadow: inset 0 0 0 1px var(--ink);
 }
 
-/* The portrait panel. It is the first full-bleed blue on the page and it is
-   also the only image on the site — which is the same fact stated twice, since
-   the picture is set in characters and therefore *is* type. That resolves the
-   oldest problem with this layout: a photograph pasted into a system built on
-   flat ink and hairlines always looked like it came from somewhere else. This
-   cannot, because it is made of the same stuff as the paragraph beside it. */
+/* The portrait column. The picture runs edge to edge inside it — no mount, no
+   inset, no band behind it. The photograph is a rectangle already; framing a
+   rectangle inside another rectangle only announces that someone framed it.
+
+   The caption sits under the picture on the page's own stock rather than on a
+   sheet with it. That is the difference between an annotation and a mount: the
+   rule and the two labels belong to the page, and the picture simply ends. */
 .home-portrait {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: clamp(1.4rem, 2.4vw, 2.2rem);
+  gap: clamp(0.9rem, 1.6vw, 1.4rem);
   margin: 0;
   min-width: 0;
   /* Lets the plate below shrink inside this column instead of forcing it open.
      Without it a flex item refuses to go under its content's size and the
      figure grows past the hero's height budget. */
   min-height: 0;
-  padding: clamp(1.6rem, 2.6vw, 2.4rem);
+  /* Only the caption is inset, and only enough to clear the page's own gutter.
+     The picture itself takes none of this. */
+  padding: 0 0 clamp(1.4rem, 2.4vw, 2rem);
 }
 
-/* The measuring box for the grid, on both axes. `container-type: size` turns
-   the box the layout has actually given this element — width *and* height —
-   into units the characters can be sized against, so the artwork is fitted to
-   the space available rather than to a guess about it.
-
-   Sizing on width alone was the bug: the plate came out as tall as its column
-   is wide times its own aspect, which on a short window is taller than the
-   whole hero, and the figure then pushed the panel past the fold. The first fix
-   for that computed the leftover height from `100svh` minus a hand-totalled
-   list of this figure's padding, gap and caption — correct, and immediately
-   stale the moment any of those changed. This asks the layout instead.
-
-   `size` requires a definite height, which is what `flex: 1` and the `min-height:
-   0` above provide: the row stretches to the hero's height budget, the caption
-   takes what it needs, and this takes the rest. */
+/* The plate: the photograph, printed in one ink. It is one committed image
+   (`npm run portrait`), so the tint happened once, at a desk, rather than on a
+   visitor's phone — and the frame inside it is the original, background and
+   all. */
 .home-portrait-plate {
-  /* Centred, because the plate is now the space the layout gave it rather than
-     the size of the artwork inside it: whichever axis is not the binding one
-     leaves slack, and slack at one end reads as the portrait having slipped. */
-  display: grid;
-  align-content: center;
-  justify-items: center;
   flex: 1 1 auto;
-  min-height: 0;
-  /* The artwork's own proportions, so the box has a height even when the layout
-     does not hand it one. `container-type: size` makes an element's contents
-     stop contributing to its size in *both* axes, which is the point — but in
-     the stacked layout the row is auto-height, so there was nothing left to
-     measure and the plate resolved to zero: `100cqh` became 0, the font size
-     became 0, and the portrait vanished on phones entirely. An aspect ratio
-     gives it a definite height derived from its width, which is exactly the
-     shape the grid wants anyway. Where the layout *does* give it a height —
-     the two-column hero, where `flex: 1` stretches it — that wins instead. */
-  aspect-ratio: calc(var(--ascii-columns) * 0.6) / calc(var(--ascii-rows) * 1.15);
-  container-type: size;
+  /* A floor, not a fixed ratio: where the layout hands the plate a definite
+     height — the two-column hero, where `flex: 1` stretches it — that wins,
+     and where it does not, in the stacked layout, this keeps the box from
+     collapsing to nothing. */
+  min-height: min(58vh, 32rem);
+  /* Centred on the column, which puts it on the same axis as the caption rule
+     beneath it — that rule is inset by an equal gutter on both sides, so the
+     column's centre and the rule's centre are the same line. The picture and
+     its annotation read as one object rather than as two things that happen to
+     be stacked.
+
+     Top-aligned, so the sitter's head keeps its position as the column changes
+     height and any slack opens at the bottom, where the fade already is. */
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 }
 
-/* Sizing contract, and it is load-bearing in both directions.
+.home-portrait-plate img {
+  display: block;
+  /* Bounded rather than sized, which is the whole point of this rule.
 
-   The generator drew the artwork against a character aspect of 0.6 / 1.15 —
-   the advance width of a monospace glyph over its line height. Reproducing the
-   proportions therefore requires exactly two things here: a line height of
-   1.15, and a font size that makes the widest row span the container. Since
-   every advance is 0.6em, a row of N characters is 0.6N em wide, so the size
-   that fits is the container's inline size over 0.6N.
+     Both axes are caps and both dimensions are `auto`, so the picture is drawn
+     at the largest size that fits the column *without ever being cropped,
+     stretched or enlarged past its own resolution*. It is the same picture at
+     every viewport: same crop, same headroom, same amount of shoulder.
 
-   `--ascii-columns` is measured from the artwork itself in Home.tsx rather than
-   typed here, because the generator trims each row to its last inked character
-   and the width that results is not a number anyone should have to keep in
-   sync by hand.
+     Sizing it to the box instead — `width: 100%; height: 100%` under
+     `object-fit: cover` — made the framing a function of the window. The
+     column is a fraction of the width but the full hero height, so its shape
+     swung from 0.79 on a laptop to 0.33 on a portrait tablet, and `cover`
+     answered by discarding whatever did not fit: 15% of the photograph in the
+     first case, half of it in the second. No single one of those crops was
+     wrong; the problem was that they were all different, so the portrait was a
+     different portrait depending on the window.
 
-   Line height is unitless on purpose: it scales with the font size, so the
-   aspect ratio survives every viewport and only the overall size changes. */
-.home-portrait-ascii {
-  width: fit-content;
-  color: var(--ink);
-  font-family: var(--mono);
-  /* Fitted to the plate on whichever axis runs out first. A row of N glyphs is
-     0.6N em wide, so the width that fits is the box over 0.6N; N rows at a 1.15
-     line height are 1.15N em tall, so the height that fits is the box over
-     1.15N. Both dimensions are measured from the artwork itself in Home.tsx —
-     see `--ascii-columns` and `--ascii-rows` — rather than typed here, because
-     the generator trims each row to its last inked character and neither number
-     is one anyone should have to keep in sync by hand.
+     The upper bound is the photograph's own pixels. A 723x1086 master stretched
+     to fill a 1281px-tall column on a large display is a 1.18x enlargement
+     before the device pixel ratio doubles it again, which is exactly the soft,
+     over-zoomed look this avoids. When the column is bigger than the picture,
+     the picture stops growing and the slack becomes air. */
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  /* The picture dissolves into the page rather than stopping at an edge. Every
+     edge is masked now that it is centred: it no longer runs off the viewport
+     on the right, so a hard edge there would be the only one left and would
+     read as an oversight rather than as a bleed.
 
-     On a tall window the width term is the smaller of the two and the plate
-     fills its column exactly as before; on a short one the height term takes
-     over and the portrait gives up size rather than pushing the hero past the
-     fold. */
-  font-size: min(
-    100cqw / (var(--ascii-columns) * 0.6),
-    100cqh / (var(--ascii-rows) * 1.15)
-  );
-  font-variant-ligatures: none;
-  letter-spacing: 0;
-  line-height: 1.15;
-  white-space: pre;
+     Fading all four means the photograph has no boundary at all — at its
+     perimeter it is the same warm dark as the stock, and the sitter emerges
+     from the page he is printed on rather than sitting in a window cut into it.
+
+     This is why the plate is tinted rather than left in neutral grey. A fade
+     only works if the photograph's own shadows are already the page's ink; a
+     neutral image would grey out into the plum and read as a smudge instead of
+     a dissolve.
+
+     Two gradients intersected rather than a single radial one, so the
+     horizontal and vertical falloffs stay independent. The sides are symmetric
+     and generous, because they cross open background where a short fade reads
+     as a vignette. The top is short — the head sits close to it and there is no
+     room to spend — and the bottom is longer, because it has to carry the
+     picture down into the caption's gutter.
+
+     Percentages, so every falloff scales with the picture instead of drifting
+     as the column changes size.
+
+     A browser without `mask-composite` gets the unmasked picture — a hard edge,
+     which is exactly what this replaced and is no worse than it.
+
+     The opaque stop is `currentColor` rather than a literal black. A mask built
+     from a gradient reads the alpha channel and ignores the hue entirely, so
+     any fully opaque value does the same job; naming a colour here would imply
+     this one was chosen, and the next person would keep it in step with a
+     palette it has nothing to do with. */
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0%, currentColor 22%, currentColor 78%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, currentColor 10%, currentColor 80%, transparent 100%);
+  mask-image:
+    linear-gradient(to right, transparent 0%, currentColor 22%, currentColor 78%, transparent 100%),
+    linear-gradient(to bottom, transparent 0%, currentColor 10%, currentColor 80%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
 }
 
-/* The caption is the mono register's first appearance and its job is to say
-   what the panel is — a plate in a document, numbered. Two labels pushed to
-   opposite ends of a hairline is the oldest annotation form there is. */
 .home-portrait-caption {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 1rem;
+  margin-inline: 4vw;
   border-top: 1px solid var(--line);
   padding-top: 0.7rem;
   color: var(--muted);
@@ -257,7 +278,7 @@
   max-width: 610px;
   padding-top: clamp(1.25rem, 2.25vw, 2.25rem);
   color: var(--muted);
-  font-size: 1rem;
+  font-size: 1.09rem;
   line-height: 1.6;
 }
 
@@ -290,7 +311,7 @@
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  font-size: 0.95rem;
+  font-size: 1.04rem;
   font-weight: 560;
 }
 
@@ -351,23 +372,23 @@
 .home-facts dd {
   margin: 0.6rem 0 0;
   color: var(--ink);
-  font-size: 0.96rem;
+  font-size: 1.05rem;
   line-height: 1.5;
 }
 
 .home-facts .home-fact-metric dt {
   color: var(--ink);
-  font-family: "Inter Tight Variable", sans-serif;
+  font-family: "Outfit Variable", sans-serif;
   font-size: clamp(1.45rem, 2.4vw, 2.25rem);
   font-weight: 540;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.028em;
   text-transform: none;
 }
 
 .home-facts .home-fact-metric dd {
   margin-top: 0.45rem;
   color: var(--muted);
-  font-size: 0.8125rem;
+  font-size: 0.89rem;
 }
 
 /* Full-bleed box, inset content. The section used to be a 1240px-wide box
@@ -400,7 +421,7 @@
 
 .home-section-heading > span {
   color: var(--muted);
-  font-size: 0.96rem;
+  font-size: 1.05rem;
   line-height: 1.6;
 }
 
@@ -836,13 +857,13 @@
   max-width: 350px;
   margin-top: 1.2rem;
   color: var(--muted);
-  font-size: 0.98rem;
+  font-size: 1.07rem;
   line-height: 1.55;
 }
 
 .home-engagement-detail > p {
   max-width: 580px;
-  font-size: 1rem;
+  font-size: 1.09rem;
   line-height: 1.65;
 }
 
@@ -859,7 +880,7 @@
   border-top: 1px solid var(--line);
   padding-top: 0.65rem;
   color: var(--muted);
-  font-size: 0.82rem;
+  font-size: 0.89rem;
 }
 
 /* The band no longer paints itself. It carries `.site-inverted` in the markup,
@@ -930,7 +951,7 @@
 .home-signal-flow p {
   margin-top: 0.8rem;
   color: var(--muted);
-  font-size: 0.87rem;
+  font-size: 0.95rem;
   line-height: 1.5;
 }
 
@@ -955,7 +976,7 @@
 
 .home-about-copy > p {
   color: var(--muted);
-  font-size: 1rem;
+  font-size: 1.09rem;
   /* Leading answers to the panel's height too. Three paragraphs at 1.7 are
      430px of the about panel's 659, and the panel has a heading to seat as
      well; the floor is still comfortable for a 1rem measure. */
@@ -976,10 +997,10 @@
 .home-about-copy .home-about-lead {
   margin-bottom: clamp(0.8rem, 2.5vh, 1.8rem);
   color: var(--ink);
-  font-family: "Inter Tight Variable", sans-serif;
+  font-family: "Outfit Variable", sans-serif;
   font-size: clamp(1.8rem, 3vw, 3rem);
   font-weight: 520;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.03em;
   line-height: 1.08;
 }
 
@@ -1002,7 +1023,7 @@
 .home-about-note {
   display: flex;
   align-items: center;
-  font-size: 0.88rem;
+  font-size: 0.96rem;
   line-height: 1.6;
 }
 
@@ -1040,13 +1061,13 @@
 
 .home-experience-list span {
   color: var(--ink);
-  font-size: 0.82rem;
+  font-size: 0.89rem;
   font-weight: 650;
 }
 
 .home-experience-list p {
   color: var(--muted);
-  font-size: 0.86rem;
+  font-size: 0.94rem;
   line-height: 1.55;
 }
 
@@ -1087,7 +1108,7 @@
   flex-direction: column;
   gap: clamp(0.2rem, 1vh, 0.7rem);
   margin-top: clamp(1rem, 4vh, 3rem);
-  font-size: 0.9rem;
+  font-size: 0.98rem;
   font-style: normal;
   font-weight: 620;
 }
@@ -1203,7 +1224,7 @@
   color: var(--ink);
   box-shadow: none;
   font: inherit;
-  font-size: 0.96rem;
+  font-size: 1.05rem;
 }
 
 .home-contact-form textarea.home-form-control {
@@ -1268,7 +1289,7 @@
   color: var(--ink);
   cursor: pointer;
   font: inherit;
-  font-size: 0.8125rem;
+  font-size: 0.89rem;
   font-weight: 650;
   text-align: left;
 }
@@ -1305,27 +1326,28 @@
   color: var(--ink);
   box-shadow: none;
   font: inherit;
-  font-size: 0.9rem;
+  font-size: 0.98rem;
 }
 
 /* The dropdown is rendered through a portal at the end of `<body>`, which puts
    it outside `.site-page` — so none of the palette tokens reach it, and neither
-   does the inversion the band around its trigger is under. It arrives instead
-   with the component library's defaults: a rounded card with a drop shadow, on
-   a page that has neither. The literals here are the only ones in this file,
-   and they are literal for that structural reason rather than by oversight.
+   does the scope of the band its trigger sits in. It arrives instead with the
+   component library's defaults: a rounded card with a drop shadow, on a page
+   that has neither. The literals here are the only ones in this file, and they
+   are literal for that structural reason rather than by oversight.
 
-   It is drawn as paper in both contexts on purpose. A menu is a sheet that
-   floats above the page, and it should read as the same paper the page is
-   printed on regardless of which band opened it. */
+   It is drawn in the light band's values because that is the only place it
+   appears: the trigger lives in the contact form, and a menu that opens dark
+   out of a lit sheet reads as a different application rather than as part of
+   the form. Keep these in step with `.site-inverted` in shell.css. */
 .home-select-content {
-  border: 1px solid #202FD6;
+  border: 1px solid #503d42;
   border-radius: 0;
-  background: #f3f0e8;
+  background: #f5fbef;
   padding: 0;
-  color: #202FD6;
+  color: #503d42;
   box-shadow: none;
-  font-size: 0.9rem;
+  font-size: 0.98rem;
 }
 
 .home-select-content [data-radix-select-item] {
@@ -1342,7 +1364,7 @@
   padding: 1rem 1.5rem;
   color: var(--on-ink);
   font: inherit;
-  font-size: 0.8125rem;
+  font-size: 0.89rem;
   font-weight: 680;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -1358,13 +1380,13 @@
 .home-form-reassure {
   margin: 0 0 -0.85rem;
   color: var(--ink);
-  font-size: 0.875rem;
+  font-size: 0.95rem;
   line-height: 1.6;
 }
 
 .home-form-privacy {
   color: var(--muted);
-  font-size: 0.8125rem;
+  font-size: 0.89rem;
   line-height: 1.6;
 }
 
@@ -1458,7 +1480,7 @@
 
   .home-intro {
     margin-top: 1.4rem !important;
-    font-size: 0.95rem;
+    font-size: 1.04rem;
     line-height: 1.5;
   }
 
@@ -1469,7 +1491,7 @@
   .home-primary-action {
     min-height: 48px;
     padding: 0 1.2rem;
-    font-size: 0.8125rem;
+    font-size: 0.89rem;
   }
 }
 
@@ -1525,7 +1547,7 @@
   }
 
   .home-portrait {
-    padding: clamp(2rem, 7vw, 3rem) 4vw;
+    padding-bottom: clamp(2rem, 7vw, 3rem);
   }
 }
 
@@ -1544,7 +1566,11 @@
   }
 
   .home-portrait {
-    padding: 2.4rem 1.35rem;
+    padding-bottom: 2.4rem;
+  }
+
+  .home-portrait-caption {
+    margin-inline: 1.35rem;
   }
 
   .home-hero h1 {
@@ -1553,7 +1579,7 @@
   }
 
   .home-intro {
-    font-size: 1rem;
+    font-size: 1.09rem;
     line-height: 1.6;
   }
 
@@ -1583,7 +1609,7 @@
   }
 
   .home-employers li {
-    font-size: 0.8125rem;
+    font-size: 0.89rem;
   }
 
   .home-facts {

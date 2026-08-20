@@ -36,9 +36,12 @@ const WIDTH = 900;
    renderings are recognisably the same photograph. */
 const CROP = { x0: 0.12, x1: 0.90, y0: 0.15, y1: 0.88 };
 
-/* The two inks. Paper is the ground, ink is the dot. */
-const PAPER = [0xf3, 0xf0, 0xe8];
-const INK = [0x20, 0x2f, 0xd6];
+/* The two inks. Paper is the ground, ink is the dot. Keep these equal to
+   `--paper` and `--ink` in src/styles/shell.css: the plate is composited into a
+   flat PNG, so the palette is baked in here rather than resolved at render
+   time, and a stale pair here is a plate printed in the previous identity. */
+const PAPER = [0xf5, 0xfb, 0xef];
+const INK = [0x50, 0x3d, 0x42];
 
 /* Screen pitch in output pixels — the distance between dot centres — and the
    angle the grid is rotated to.

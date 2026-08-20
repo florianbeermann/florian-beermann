@@ -105,13 +105,18 @@ this network; the legal entity is a sole trader.
 - **Voice:** first-person singular, en-GB spelling ("realisation",
   "organisations"), understated and specific. Avoids transformation-consultancy
   vocabulary.
-- **Assets:** portrait rendered as ASCII art (`src/assets/portrait-ascii.txt`,
-  generated from `scripts/assets/portrait-source.jpg`), the wordmark as outlined
-  SVG in ink and paper variants (`public/logo-wordmark.svg`,
-  `public/logo-wordmark-on-ink.svg`), self-hosted licensed Inter / Inter Tight
-  variable font subsets (`public/fonts/`, licences committed, including
-  `LICENSE-OUTFIT.txt` for the face the wordmark was cut from). `public/logo.png`
-  is the retired "fb" monogram and is referenced by nothing.
+- **Assets:** portrait shipped as a committed duotone print of the photograph
+  (`public/portrait-plate.jpg`, tinted from the black-and-white master at
+  `scripts/assets/portrait-source.jpg`), the wordmark as outlined
+  SVG in two cuts — `public/logo-wordmark.svg` in ivory for the page's own dark
+  stock, and `public/logo-wordmark-on-light.svg` in plum for the light bands —
+  and a self-hosted licensed Outfit variable
+  font subset (`public/fonts/`, `LICENSE-OUTFIT.txt` committed) — the face the
+  wordmark was cut from, and since the palette change the face the whole site is
+  set in. The Inter and Inter Tight subsets it replaced have been removed.
+  `public/logo.png` is the retired "fb" monogram and is referenced by nothing;
+  `public/logo-lockup*.svg` and `public/logo-mark*.svg` are retired monogram
+  artwork, are referenced by nothing, and still carry the superseded palette.
 
 ## Evidence on Hand
 
