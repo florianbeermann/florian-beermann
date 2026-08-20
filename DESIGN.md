@@ -199,6 +199,11 @@ of a drag. Every one of those is a *ground* with the plum sitting on it at
 8.15:1 — none is a tint, an outline, an icon or a highlight, and that is the
 distinction the rule below protects.
 
+Headings on the ivory bands are set in it (`--heading`), which is the one place
+it sets type: 8.15:1 there, against 1.17:1 on the stock. The blue carries the
+argument and the prose beneath stays in the ink, so the colour marks what a
+section is about rather than becoming its default voice.
+
 The blue takes the **ivory**, never the plum: plum on this blue measures
 **1.17:1**. The chartreuse this replaced had the opposite polarity — it was a
 light and took dark type — so every surface printed on the voltage flipped when
@@ -215,6 +220,7 @@ icon invisible. It works as a ground, or not at all.
 | `--line` | `rgba(245, 251, 239, 0.32)` | Every hairline rule. |
 | `--on-ink` | `#503d42` | Type on a filled control, which on this ground is an ivory fill. |
 | `--on-ink-muted` | `rgba(80, 61, 66, 0.78)` | Secondary type on that fill. |
+| `--heading` | `var(--ink)` | What a heading is printed in. The light bands override it to the voltage; the blue band restates it as its own ink. |
 
 ### The light bands
 
@@ -227,7 +233,14 @@ the footer:
 --paper-deep: #e6eee0;    --muted: #5e735f;
 --line: #92ad94;
 --on-ink: #f5fbef;        --on-ink-muted: rgba(245, 251, 239, 0.82);
+--heading: var(--voltage);
 ```
+
+`--heading` has to be restated by any scope that changes `--ink`, including the
+blue band. A custom property holding `var(--ink)` resolves against the element
+that *declares* it, not the one that uses it, so a band that changed the ink
+without restating the heading would inherit the previous scope's resolved
+colour — on the blue band that would be the stock's plum, at 1.17:1.
 
 Note that `--muted` and `--line` are *not* the dark scope's values re-tinted.
 `#748b75`, the palette's dusty olive, measures only **3.50:1** on ivory and
@@ -280,10 +293,12 @@ instead.
 ### Named Rules
 
 - **One Stock.** There is exactly one plum in the system. A second is a bug.
-- **The Voltage Is a Ground.** The blue appears as a full-bleed surface, a
-  button fill, the ampersand tile, or the selection highlight. It never appears
-  as a chip, a tag, a progress bar, a coloured icon or a hairline. It never sets
-  type on the stock — the ivory sits on it, not the other way round.
+- **The Voltage Is a Ground, Except on a Light Band.** The blue appears as a
+  full-bleed surface, a button fill, the ampersand tile, or the selection
+  highlight — and as the colour of headings on the ivory bands, where it holds
+  8.15:1. It never appears as a chip, a tag, a progress bar, a coloured icon or
+  a hairline, and it never sets type on the plum stock, where it is 1.17:1 and
+  invisible. On the blue itself the ivory sits on top, not the other way round.
 - **The Loud Surfaces Are Enumerated.** Three: the statement band, the primary
   button, and the ampersand tile. That list is the design, not a default —
   adding a fourth is a decision to make deliberately, because each new one costs

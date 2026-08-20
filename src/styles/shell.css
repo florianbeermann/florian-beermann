@@ -422,6 +422,10 @@ body::before {
      this value changed. */
   --voltage: #0000ff;
   --on-voltage: #f5fbef;
+  /* What a heading is printed in. On the stock it is simply the ink: the blue
+     measures 1.17:1 against the plum and would be unreadable here, so the
+     voltage stays off this ground entirely. The light bands override it. */
+  --heading: var(--ink);
   --header-height: 76px;
   /* The rhythm between a full-screen section's edge and its content, paid for
      out of its height rather than its width. At `10vw` the old value spent
@@ -471,6 +475,11 @@ body::before {
   font-family: "Outfit Variable", sans-serif;
   font-weight: 520;
   letter-spacing: -0.03em;
+  /* Headings take their own token rather than inheriting the scope's ink, so a
+     band can print its argument in a different colour from its prose without
+     any component knowing about it. On the stock this resolves to the ink and
+     nothing changes; on the light bands it is the voltage. See `--heading`. */
+  color: var(--heading);
 }
 
 .site-page a {
@@ -510,6 +519,16 @@ body::before {
      ivory type on plum, which is the page's own relationship one level in. */
   --on-ink: #f5fbef;
   --on-ink-muted: rgba(245, 251, 239, 0.82);
+  /* The one place the voltage sets type. It holds 8.15:1 on the ivory — better
+     than most systems' body text — where on the page's own stock it is 1.17:1
+     and invisible. So the rule is not "the blue never sets type", it is "the
+     blue only sets type on a light band", and the token is what keeps that
+     conditional in one place instead of scattered across components.
+
+     It is scoped to headings on purpose. The blue carries the argument; the
+     prose under it stays in the ink, so the colour marks what a section is
+     about rather than becoming the section's default voice. */
+  --heading: var(--voltage);
   background-color: var(--paper);
   background-image: none;
   color: var(--ink);
@@ -539,6 +558,13 @@ body::before {
   --line: rgba(245, 251, 239, 0.42);
   --on-ink: #0000ff;
   --on-ink-muted: rgba(0, 0, 255, 0.78);
+  /* Restated, and it has to be. A custom property holding `var(--ink)` resolves
+     against the element that declares it, not the element that uses it, so a
+     band that changes `--ink` without restating `--heading` would inherit the
+     previous scope's resolved colour. Left out here, headings on this band
+     would arrive in the plum the stock computed — 1.17:1 on the blue, and
+     invisible. */
+  --heading: var(--ink);
   background-color: var(--paper);
   background-image: var(--grain);
   color: var(--ink);
