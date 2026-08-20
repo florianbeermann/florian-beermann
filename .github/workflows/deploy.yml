@@ -92,14 +92,31 @@ jobs:
           fi
 
           if [ -z "${HTPASSWD_PATH}" ]; then
-            echo "::error::HETZNER_HTPASSWD_PATH is not set. Apache needs the absolute path of the password file on the server, which konsoleH shows under Webserver configuration; it is the document root this deploy uploads into, with /.htpasswd on the end (typically /usr/www/users/<user>/<ftp-dir>/.htpasswd)."
+            echo "::error::HETZNER_HTPASSWD_PATH is not set. Apache needs to know where the password file lives on the server. konsoleH shows the document root under Webserver configuration; paste that, or the full path to the file — either is understood."
             exit 1
           fi
 
-          case "${HTPASSWD_PATH}" in
-            /*/.htpasswd) : ;;
+          # The secret may hold the document root konsoleH displays, or the full
+          # path to the file itself. Both are honest readings of "the path to
+          # the password file", and the difference between them is not worth a
+          # failed deploy, so normalise instead of insisting: drop a trailing
+          # slash, then add the filename unless it is already there.
+          htpasswd_path="${HTPASSWD_PATH%/}"
+          case "${htpasswd_path}" in
+            */.htpasswd) : ;;
+            *) htpasswd_path="${htpasswd_path}/.htpasswd" ;;
+          esac
+
+          # Actions masks the secret itself, but not a value derived from it, and
+          # this repository's logs are public. Mask the derived path explicitly
+          # or the first error message below publishes the server's directory
+          # layout to anyone reading the run.
+          echo "::add-mask::${htpasswd_path}"
+
+          case "${htpasswd_path}" in
+            /*) : ;;
             *)
-              echo "::error::HETZNER_HTPASSWD_PATH must be an absolute path ending in /.htpasswd, not '${HTPASSWD_PATH}'. The file is deployed into the document root, so the path is that directory with /.htpasswd appended."
+              echo "::error::HETZNER_HTPASSWD_PATH must be an absolute filesystem path beginning with /, not a URL and not a path relative to the document root. konsoleH shows the absolute one under Webserver configuration; it usually starts /usr/www/users/."
               exit 1
               ;;
           esac
@@ -119,9 +136,9 @@ jobs:
           # above it. A server-side .htaccess whose comment claims a real path
           # is "substituted at deploy time" is exactly the sort of thing that
           # misleads whoever is reading it during an outage.
-          sed -i "s|^AuthUserFile __HTPASSWD_PATH__$|AuthUserFile ${HTPASSWD_PATH}|" dist/.htaccess
+          sed -i "s|^AuthUserFile __HTPASSWD_PATH__$|AuthUserFile ${htpasswd_path}|" dist/.htaccess
 
-          if ! grep -qF "AuthUserFile ${HTPASSWD_PATH}" dist/.htaccess; then
+          if ! grep -qF "AuthUserFile ${htpasswd_path}" dist/.htaccess; then
             echo "::error::The AuthUserFile placeholder was not substituted. Apache would return 500 for the whole site."
             exit 1
           fi
@@ -132,7 +149,7 @@ jobs:
           fi
 
           echo "GATE_ACTIVE=1" >> "$GITHUB_ENV"
-          echo "Gate built for user '${username}', reading ${HTPASSWD_PATH}."
+          echo "Gate built for user '${username}'."
 
       - name: 📂 Sync files to Hetzner
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
