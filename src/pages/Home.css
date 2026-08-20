@@ -408,10 +408,6 @@
   .home-engagements .home-section-heading > span {
     padding-top: clamp(1.25rem, 2.25vw, 2.25rem);
   }
-
-  .home-about-copy {
-    padding-bottom: clamp(2.5rem, 4vw, 4rem);
-  }
 }
 
 /* The engagements track.
@@ -941,9 +937,9 @@
 .home-about-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  /* One row. The experience list that used to fill the second column is its own
-     panel now, so the note goes beside the copy rather than stacking under it —
-     which was costing the panel 92px of height to leave half the grid empty. */
+  /* One row: the argument beside the record. The record column is one cell
+     rather than a stack of grid items, so the taller copy beside it cannot
+     stretch the rows the list sits in. */
   grid-template-rows: auto;
   column-gap: clamp(4rem, 9vw, 9rem);
   row-gap: 0;
@@ -987,20 +983,30 @@
   line-height: 1.08;
 }
 
-.home-about-note {
+/* The record column: the list of companies, and the note that qualifies it. */
+.home-about-record {
   display: flex;
   grid-column: 2;
   grid-row: 1;
+  flex-direction: column;
+  /* The gap the copy's spare height pays for. The left column runs deeper than
+     the list and the note together, so this is space the panel already had. */
+  gap: clamp(1.25rem, 2.5vh, 2rem);
+}
+
+/* A footnote to the record above it, and set without rules of its own. It had
+   one on each side when it stood alone beside the copy; here the list already
+   closes on a rule and the tools open on one, so its borders landed a hairline
+   from each and read as bands rather than as edges. The gap above it and its
+   ink colour are enough to hold it apart from the list. */
+.home-about-note {
+  display: flex;
   align-items: center;
-  border-top: 1px solid var(--ink);
-  border-bottom: 1px solid var(--ink);
-  padding: 1.4rem 0;
   font-size: 0.88rem;
   line-height: 1.6;
 }
 
 .home-experience-list {
-  display: contents;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1008,38 +1014,28 @@
 
 .home-experience-list li {
   display: grid;
-  grid-column: 2;
-  grid-template-columns: 0.55fr 1fr;
+  /* A company name is one word; the context beside it is a sentence. At the
+     old 0.55fr the name kept a third of a half-width column to itself and
+     pushed the sentence into three lines where two would do. */
+  grid-template-columns: 0.42fr 1fr;
   border-bottom: 1px solid var(--line);
-  padding: 1.3rem 0;
+  /* Tied to viewport height rather than fixed. At half the measure every
+     context line wraps to two, so these five rows are much taller than they
+     were as a full-width list on a panel of their own, and on a short screen
+     the padding is the first thing that has to give for the section to stay
+     inside one window. The ceiling is the 1.3rem they had before the move. */
+  padding: clamp(0.7rem, 2vh, 1.3rem) 0;
 }
 
+/* The list's first rule and the copy's are the same line across the page: both
+   columns open on it, which is what makes the two read as one spread rather
+   than as two blocks that happen to be side by side. */
 .home-experience-list li:first-child {
   border-top: 1px solid var(--ink);
 }
 
 .home-experience-list li:last-child {
   border-bottom-color: var(--ink);
-}
-
-.home-experience-list li:nth-child(1) {
-  grid-row: 1;
-}
-
-.home-experience-list li:nth-child(2) {
-  grid-row: 2;
-}
-
-.home-experience-list li:nth-child(3) {
-  grid-row: 3;
-}
-
-.home-experience-list li:nth-child(4) {
-  grid-row: 4;
-}
-
-.home-experience-list li:nth-child(5) {
-  grid-row: 5;
 }
 
 .home-experience-list span {
@@ -1052,29 +1048,6 @@
   color: var(--muted);
   font-size: 0.86rem;
   line-height: 1.55;
-}
-
-.home-tools {
-  display: grid;
-  grid-template-columns: 0.5fr 1.5fr;
-  gap: 3rem;
-  margin-top: 6rem;
-  border-top: 1px solid var(--ink);
-  padding-top: 1.5rem;
-}
-
-.home-tools strong {
-  font-family: var(--mono);
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.home-tools p {
-  color: var(--muted);
-  font-size: 0.9rem;
-  line-height: 1.7;
 }
 
 .home-contact {
@@ -1688,8 +1661,7 @@
   }
 
   .home-about-copy,
-  .home-about-note,
-  .home-experience-list li {
+  .home-about-record {
     grid-column: 1;
     grid-row: auto;
   }
@@ -1699,18 +1671,12 @@
   }
 
   .home-about-note {
-    margin-bottom: 4rem;
+    margin-bottom: 0;
   }
 
   .home-experience-list li {
     grid-template-columns: 1fr;
     gap: 0.3rem;
-  }
-
-  .home-tools {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-    margin-top: 4rem;
   }
 
   .home-contact {

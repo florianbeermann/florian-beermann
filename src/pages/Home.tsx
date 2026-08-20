@@ -117,17 +117,6 @@ const experience = [
   },
 ];
 
-const tools = [
-  "Salesforce",
-  "Gainsight",
-  "HubSpot",
-  "Dynamics",
-  "Power BI",
-  "Looker",
-  "Tableau",
-  "Vitally",
-];
-
 const contactEmail = "hello@florianbeermann.com";
 
 export default function Home() {
@@ -456,10 +445,13 @@ export default function Home() {
           </div>
         </section>
 
-        {/* The about section is two panels for the same reason the engagements are
-            three: at 1219px it needed almost twice the height a screen has. The
-            argument sits on the first, the evidence on the second, which is the
-            seam the content already had. */}
+        {/* The about section carries the argument and the evidence together.
+            They were two panels for a while: at 1219px the pair needed almost
+            twice the height a screen has, so the record was split onto its own.
+            That is no longer true — the record sits in the column the note was
+            already leaving empty, and the two columns now run to roughly the
+            same depth instead of one of them stopping a third of the way down
+            and the next screen carrying five rows on its own. */}
         {/* Snap stop. See `.site-stop` in Home.css. */}
         <span className="site-stop" aria-hidden="true" />
         <section id="about" className="home-about home-section site-panel">
@@ -486,32 +478,27 @@ export default function Home() {
               </p>
             </div>
 
-            <aside className="home-about-note">
-              When an engagement needs deeper CS Operations, data, tooling or
-              enablement expertise, I bring in a small network of independent
-              specialists.
-            </aside>
-          </div>
-        </section>
+            {/* The record, and the note that qualifies it. Both sit in one cell
+                rather than as separate grid items so the column is laid out by
+                its own flow: as siblings of the copy they would each claim a
+                row, and the copy — taller than either — would stretch those
+                rows and prise the two apart by whatever it had spare. */}
+            <div className="home-about-record">
+              <ol className="home-experience-list">
+                {experience.map((item) => (
+                  <li key={item.company}>
+                    <span>{item.company}</span>
+                    <p>{item.context}</p>
+                  </li>
+                ))}
+              </ol>
 
-        {/* Snap stop. See `.site-stop` in Home.css. */}
-        <span className="site-stop" aria-hidden="true" />
-        <section
-          className="home-about home-about-record home-section site-panel"
-          aria-label="Where I have worked"
-        >
-          <ol className="home-experience-list site-reveal">
-            {experience.map((item) => (
-              <li key={item.company}>
-                <span>{item.company}</span>
-                <p>{item.context}</p>
-              </li>
-            ))}
-          </ol>
-
-          <div className="home-tools">
-            <strong>Tooling fluency</strong>
-            <p>{tools.join(" · ")}</p>
+              <aside className="home-about-note">
+                When an engagement needs deeper CS Operations, data, tooling or
+                enablement expertise, I bring in a small network of independent
+                specialists.
+              </aside>
+            </div>
           </div>
         </section>
 
