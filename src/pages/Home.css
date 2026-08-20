@@ -1184,8 +1184,13 @@
   flex-direction: column;
   gap: clamp(0.8rem, 2.4vh, 1.75rem);
   width: 100%;
+  /* Opened at the top and left open at the foot. The rule under the last line
+     was the form's closing edge back when the panel ended with it; the legal
+     block now sits below and draws its own, so the two stacked into a double
+     rule with a strip of blue between them. The top rule still earns its keep
+     — it is where the form starts — but a frame with nothing after it to
+     enclose is just a line. */
   border-top: 1px solid var(--ink);
-  border-bottom: 1px solid var(--ink);
   padding: 1.5rem 0 1.25rem;
   text-align: left;
 }
