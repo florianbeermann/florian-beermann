@@ -76,6 +76,42 @@
   --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
     "Liberation Mono", monospace;
 
+  /* The type ramp, as tokens.
+
+     Sizes were the last numeric family in this system still written as literals
+     at each use site, and they had drifted the way the weights had: ten
+     distinct values between 0.94rem and 1.09rem, several within 0.01rem of a
+     neighbour. Differences nobody can see and everybody has to maintain.
+
+     Four steps carry everything below headline size, and the gaps between them
+     are deliberately large enough to be legible as steps:
+
+       --text-label  the mono register, and only that
+       --text-xs     dense UI: list items, captions, the legal line
+       --text-sm     UI at rest: nav, controls, definition terms
+       --text-base   secondary and dense prose
+       --text-body   primary prose
+
+     `--text-2xs` exists for exactly one thing, recorded so it is not mistaken
+     for a general step: below 360px the header nav has to give up size or
+     overflow, and it is the floor of that squeeze. */
+  --text-label: 0.6875rem;
+  --text-2xs: 0.82rem;
+  --text-xs: 0.89rem;
+  --text-sm: 0.94rem;
+  --text-base: 1.05rem;
+  --text-body: clamp(1.11rem, 1.36vw, 1.26rem);
+  --text-title: clamp(1.8rem, 3vw, 3.1rem);
+  --text-headline: clamp(2.8rem, 5vw, 5.4rem);
+  --text-display: clamp(4rem, 6.7vw, 7rem);
+
+  /* The sans register, as one token. It was written out at every use site and
+     had drifted into two stacks — one with a Helvetica/Arial fallback and one
+     without — which meant the face a visitor saw before the webfont arrived
+     depended on which element they were looking at. Naming it once makes that
+     impossible and puts the fallback decision in a single place. */
+  --sans: "Outfit Variable", "Helvetica Neue", Arial, sans-serif;
+
   /* Intro sequence. A short rise and fade on load, in place of the taller one
      the framed layout used — that travel was tuned to reveal the band above the
      sheet, and with no band there is nothing to uncover, so the page only needs
@@ -426,6 +462,12 @@ body::before {
      measures 1.17:1 against the plum and would be unreadable here, so the
      voltage stays off this ground entirely. The light bands override it. */
   --heading: var(--ink);
+  /* The marker register: everything that is not running prose. Labels, figures,
+     links, controls and the footer — the parts of a page a reader scans rather
+     than reads. Same conditional as `--heading`, kept as a separate token
+     because the two answer different questions and a band may want to move one
+     without the other. */
+  --marker: var(--ink);
   --header-height: 76px;
   /* The rhythm between a full-screen section's edge and its content, paid for
      out of its height rather than its width. At `10vw` the old value spent
@@ -451,7 +493,7 @@ body::before {
   background-color: var(--paper);
   background-image: var(--grain);
   color: var(--ink);
-  font-family: "Outfit Variable", "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--sans);
   font-weight: 400;
   text-align: left;
 }
@@ -472,7 +514,7 @@ body::before {
 .site-page h1,
 .site-page h2,
 .site-page h3 {
-  font-family: "Outfit Variable", sans-serif;
+  font-family: var(--sans);
   font-weight: 520;
   letter-spacing: -0.03em;
   /* Headings take their own token rather than inheriting the scope's ink, so a
@@ -505,30 +547,37 @@ body::before {
 .site-footer {
   --paper: #f5fbef;
   --paper-deep: #e6eee0;
-  --ink: #503d42;
-  /* Secondary prose on the light bands. Not a tint of the plum — diluted plum
-     turns into a dead warm grey and takes the palette's character with it. This
-     is the dusty olive taken down until it holds text: #748b75 itself measures
-     only 3.50:1 here and fails the body floor, so it stays a rule colour and
-     this darker cut does the reading. 4.87:1. */
-  --muted: #5e735f;
-  /* The muted teal at full strength rather than the ink at an alpha, so the
-     hairline stays a colour instead of compositing to grey. 2.31:1. */
-  --line: #92ad94;
-  /* Nested inversions — a filled button inside a light band — resolve back to
-     ivory type on plum, which is the page's own relationship one level in. */
+  /* The ink on a light band is the voltage itself. This is the one ground where
+     the blue can carry everything — it holds 8.15:1 on the ivory, better than
+     most systems manage for body text, where on the page's own plum stock it is
+     1.17:1 and invisible.
+
+     So these bands are not "ivory sections with a blue accent". They are
+     printed in blue: heading, prose, label, figure, rule and filled control.
+     The plum does not appear inside them at all. */
+  --ink: #0000ff;
+  /* Secondary prose, as the ink at reduced strength rather than a second
+     colour. 0.7 composites to rgb(74, 75, 251) and holds 5.41:1 — comfortably
+     over the body floor, and far enough below full strength that a placeholder
+     still reads as an empty field rather than as a typed value. Below about
+     0.62 it drops under 4.5:1, so this has little room to give. */
+  --muted: rgba(0, 0, 255, 0.7);
+  /* Every hairline: the ink at 42%, which is the same relationship the blue
+     band uses for its own rules. The muted teal that used to do this job was
+     the last non-blue value left inside these bands. */
+  --line: rgba(0, 0, 255, 0.42);
+  /* Type on a filled control, which on this band is a blue fill — so the
+     submit button is blue with ivory on it, the same pair the statement band
+     runs, at 8.15:1. */
   --on-ink: #f5fbef;
   --on-ink-muted: rgba(245, 251, 239, 0.82);
-  /* The one place the voltage sets type. It holds 8.15:1 on the ivory — better
-     than most systems' body text — where on the page's own stock it is 1.17:1
-     and invisible. So the rule is not "the blue never sets type", it is "the
-     blue only sets type on a light band", and the token is what keeps that
-     conditional in one place instead of scattered across components.
-
-     It is scoped to headings on purpose. The blue carries the argument; the
-     prose under it stays in the ink, so the colour marks what a section is
-     about rather than becoming the section's default voice. */
-  --heading: var(--voltage);
+  /* Both resolve to the ink now that the whole band is blue. They stay declared
+     rather than deleted because they are what force full strength on the
+     register that would otherwise inherit `--muted` — the field labels, the
+     definition terms, the legal line — so the scan layer stays a step above the
+     prose it sits beside. */
+  --heading: var(--ink);
+  --marker: var(--ink);
   background-color: var(--paper);
   background-image: none;
   color: var(--ink);
@@ -565,6 +614,7 @@ body::before {
      would arrive in the plum the stock computed — 1.17:1 on the blue, and
      invisible. */
   --heading: var(--ink);
+  --marker: var(--ink);
   background-color: var(--paper);
   background-image: var(--grain);
   color: var(--ink);
@@ -577,11 +627,29 @@ body::before {
 .site-label {
   display: block;
   font-family: var(--mono);
-  font-size: 0.6875rem;
+  font-size: var(--text-label);
   font-weight: 500;
   letter-spacing: 0.16em;
   line-height: 1.4;
   text-transform: uppercase;
+}
+
+/* The marker register on a light band. Scoped rather than global: on the stock
+   these elements are already the ink or a deliberate `--muted`, and colouring
+   them from the token there would flatten the caption's dimming into full
+   strength.
+
+   The split is prose versus everything else. A sentence someone wrote stays in
+   the ink; a label, a figure, a link, a control or the footer — the things a
+   reader scans rather than reads — take the voltage. That is what keeps the
+   colour meaningful: it marks the page's furniture, not its argument. */
+.site-inverted .site-label {
+  color: var(--marker);
+}
+
+.site-footer,
+.site-footer a {
+  color: var(--marker);
 }
 
 .site-header {
@@ -677,7 +745,7 @@ body::before {
   display: flex;
   align-items: center;
   gap: clamp(1.1rem, 2.7vw, 2.6rem);
-  font-size: 0.95rem;
+  font-size: var(--text-sm);
   font-weight: 520;
 }
 
@@ -702,7 +770,7 @@ body::before {
   border-top: 1px solid var(--line);
   padding: 2.4rem 4vw;
   font-family: var(--mono);
-  font-size: 0.6875rem;
+  font-size: var(--text-label);
   letter-spacing: 0.16em;
   text-transform: uppercase;
 }
@@ -827,7 +895,7 @@ body::before {
     width: var(--masthead);
     justify-content: center;
     gap: 1.15rem;
-    font-size: 0.89rem;
+    font-size: var(--text-xs);
   }
 }
 
@@ -838,7 +906,7 @@ body::before {
 
   .site-header nav {
     gap: 0.7rem;
-    font-size: 0.89rem;
+    font-size: var(--text-xs);
   }
 
   .site-footer {
@@ -869,7 +937,7 @@ body::before {
 
   .site-header nav {
     gap: clamp(0.3rem, 2.25vw, 0.45rem);
-    font-size: clamp(0.82rem, 4.47vw, 0.89rem);
+    font-size: clamp(var(--text-2xs), 4.47vw, var(--text-xs));
   }
 }
 

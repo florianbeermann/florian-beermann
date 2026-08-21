@@ -97,7 +97,7 @@
 
   body {
     @apply bg-background text-foreground antialiased font-light;
-    font-family: "Outfit Variable", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: var(--sans);
   }
 
   /* The one place the voltage is allowed to touch paper: as a ground behind
@@ -111,7 +111,7 @@
 
   h1, h2, h3, h4, h5, h6 {
     @apply tracking-tight font-normal;
-    font-family: "Outfit Variable", sans-serif;
+    font-family: var(--sans);
   }
 }
 
@@ -121,23 +121,32 @@
   }
 }
 
+/* Reduced motion is answered specifically, not with a blanket kill.
+
+   The `*, *::before, *::after { animation-duration: 0.01ms !important;
+   transition-duration: 0.01ms !important }` pattern that used to live here is
+   the wrong tool. It does not distinguish between motion that moves a visitor
+   through the page — which is what the preference is about — and the 150ms
+   colour change that tells them a link took focus, which is feedback they still
+   need and arguably need more. It also reaches every future component with
+   `!important`, so the next person to add a considered reduced-motion
+   alternative finds it silently overridden.
+
+   What replaces it lives next to what it disables: `shell.css` unpins the
+   scroll panels so scrolling behaves plainly, removes the intro, and drops
+   smooth scrolling; `Home.css` gates the horizontal engagements reel behind
+   `no-preference` so it never builds in the first place. Those are alternatives
+   rather than suppressions — the page still works, it just stops moving on its
+   own.
+
+   Nothing else needs to be said here. `.site-reveal` and `.site-sweep` are
+   declared *inside* a `no-preference` query, so under this preference they are
+   never applied in the first place and render in their final state — there is
+   no animation to cancel. Overriding them here would be dead CSS that reads
+   like a safety net. */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
-  }
-
-  .motion-reveal {
-    opacity: 1 !important;
-    transform: none !important;
   }
 }
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { toast } from "sonner";
@@ -119,6 +119,13 @@ export default function Home() {
   const [showDetails, setShowDetails] = useState(false);
   const [size, setSize] = useState("");
   const [tooling, setTooling] = useState("");
+  /* Submission failure needs somewhere to live that is not a toast. A toast
+     announces once and then removes itself, which means a visitor who was
+     looking elsewhere — or who is being read to — can lose the only notice that
+     their message did not send, with no way to get it back. This holds the
+     message in the form until the next attempt. */
+  const [submitError, setSubmitError] = useState("");
+  const errorRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     setPageMetadata({
@@ -128,6 +135,16 @@ export default function Home() {
       path: "/",
     });
   }, []);
+
+  /* Focus follows the failure. Announcing into a live region tells a screen
+     reader something happened; moving focus is what puts the visitor at the
+     thing that needs their attention, and it also scrolls the message into
+     view for a sighted visitor whose submit button was below the fold.
+     `tabIndex={-1}` on the target makes it focusable without adding a tab
+     stop that would otherwise sit in the form forever. */
+  useEffect(() => {
+    if (submitError) errorRef.current?.focus();
+  }, [submitError]);
 
   useEffect(() => startPanelScroll(), []);
   useEffect(() => startSectionScroll(), []);
@@ -171,6 +188,7 @@ export default function Home() {
     }
 
     setSubmitting(true);
+    setSubmitError("");
     formData.set("size", size);
     formData.set("tooling", tooling);
     formData.set("access_key", accessKey);
@@ -192,6 +210,7 @@ export default function Home() {
         throw new Error(result.message || "Form submission failed");
       }
 
+      setSubmitError("");
       toast.success("Message sent. I’ll reply within two business days.");
       form.reset();
       setSize("");
@@ -199,9 +218,12 @@ export default function Home() {
       setShowDetails(false);
     } catch (error) {
       console.error(error);
-      toast.error(
-        `Your message wasn’t sent. Your text is still in the form. Try again, or email ${contactEmail}.`,
-      );
+      const message = `Your message wasn’t sent. Your text is still in the form. Try again, or email ${contactEmail}.`;
+      /* Both channels, deliberately. The toast is the glance-level notice for
+         someone watching the button; the inline region is the durable record,
+         and it is the one that survives being missed. */
+      setSubmitError(message);
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }
@@ -515,6 +537,10 @@ export default function Home() {
           <form
             onSubmit={handleSubmit}
             className="home-contact-form"
+            /* Where the data goes is something to know *before* submitting, not
+               a footnote discovered afterwards, so the note below is wired as
+               the form's description rather than left as loose prose. */
+            aria-describedby="form-privacy-note"
           >
             <input
               type="checkbox"
@@ -644,6 +670,17 @@ export default function Home() {
               </div>
             )}
 
+            {submitError && (
+              <p
+                className="home-form-error"
+                ref={errorRef}
+                tabIndex={-1}
+                role="alert"
+              >
+                {submitError}
+              </p>
+            )}
+
             <p className="home-form-reassure">
               I read every enquiry myself and reply within two business days.
             </p>
@@ -657,7 +694,7 @@ export default function Home() {
               {submitting ? "Sending…" : "Send message"}
             </Button>
 
-            <p className="home-form-privacy">
+            <p className="home-form-privacy" id="form-privacy-note">
               This form is processed by Web3Forms in the US. You can email{" "}
               {contactEmail} instead. The{" "}
               <Link
@@ -681,7 +718,21 @@ export default function Home() {
               placed at the foot of the first column while there are two, and
               genuinely last once the panel stacks — inside the copy column it
               would have come between the address and the form. */}
-          <div className="home-contact-legal">
+          {/* `footer` with an explicit `contentinfo` role, in place — not a new
+              band at the end of the document.
+
+              The site deliberately has no trailing footer section: the contact
+              panel is the last thing on the page, and a separate footer would
+              cost a scroll after the visitor has already arrived at the point.
+              So this line stays exactly where it sits, in the corner of the
+              contact panel, and only its element type changes.
+
+              The role has to be explicit. A bare `<footer>` nested inside
+              `<section>` maps to the generic role rather than `contentinfo`,
+              because the implicit mapping is scoped to the nearest sectioning
+              element. Stating the role directly is what actually exposes the
+              landmark, and it costs nothing visually. */}
+          <footer className="home-contact-legal" role="contentinfo">
             <nav aria-label="Legal">
               <Link to="/imprint">Imprint</Link>
               <Link to="/privacy">Privacy</Link>
@@ -689,7 +740,7 @@ export default function Home() {
             <span>
               Florian Beermann &amp; Partners · © {new Date().getFullYear()}
             </span>
-          </div>
+          </footer>
         </section>
       </main>
     </div>

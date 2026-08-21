@@ -23,8 +23,8 @@
 
 .notfound-code {
   color: var(--ink);
-  font-size: 0.94rem;
-  font-weight: 680;
+  font-size: var(--text-sm);
+  font-weight: 620;
   padding-top: 0.7rem;
 }
 
@@ -37,7 +37,7 @@
   max-width: 46ch;
   margin-top: 2rem !important;
   color: var(--muted);
-  font-size: clamp(1.09rem, 1.31vw, 1.22rem);
+  font-size: var(--text-body);
   line-height: 1.65;
 }
 
@@ -48,8 +48,8 @@
   margin-top: 3rem;
   border-top: 1px solid var(--ink);
   padding-top: 1.4rem;
-  font-size: 1rem;
-  font-weight: 560;
+  font-size: var(--text-base);
+  font-weight: 520;
 }
 
 .notfound-links a {

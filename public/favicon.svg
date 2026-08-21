@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Florian Beermann &amp; Partners">
   <title>Florian Beermann &amp; Partners</title>
-  <!-- One square of the ink, edge to edge. It replaces the ampersand
+  <!-- One square of the voltage, edge to edge. It replaces the ampersand
        badge, which was the monogram's tile with the & knocked out of it in
        paper — a mark that has been retired everywhere else in the identity, so
        leaving it in the tab would have made the favicon the last surviving
@@ -11,15 +11,18 @@
        loses its ground to antialiasing and the mark reads as a smaller, muddier
        square rather than as a framed one. Bleeding to the edges makes the
        colour itself the mark. It is also the honest miniature of the page,
-       which is now a plum field with a sheet of paper laid on it — seen from
-       far enough away, the field is all that is left.
+       It is the voltage rather than the stock because a tab strip is not the
+       page: at 16px the plum is a small dark smudge among other small dark
+       smudges, while the blue is the one value in the palette that survives
+       being that small next to anything else. This is the same reason the
+       ampersand tile is the voltage.
 
        No geometry to regenerate and nothing to keep in step with the logo
-       drawing. Keep the fill equal to the `ink` token in shell.css.
+       drawing. Keep the fill equal to the `voltage` token in shell.css.
 
        Note the prose above avoids a double hyphen on purpose: XML forbids one
        inside a comment, and an SVG that breaks that rule is rejected outright
        rather than rendered with the comment ignored. This file carried a bare
        token name here and was silently failing to parse. -->
-  <rect width="512" height="512" fill="#503D42"/>
+  <rect width="512" height="512" fill="#0000FF"/>
 </svg>

@@ -24,13 +24,13 @@
   flex-direction: column;
   gap: 1.5rem;
   color: var(--muted);
-  font-size: 1.05rem;
+  font-size: var(--text-base);
   line-height: 1.65;
 }
 
 .legal-hero-meta small {
   color: var(--ink);
-  font-size: 0.89rem;
+  font-size: var(--text-xs);
   font-weight: 620;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -55,9 +55,9 @@
 
 .legal-contact h2 {
   color: var(--ink);
-  font-family: "Outfit Variable", sans-serif;
-  font-size: 0.89rem;
-  font-weight: 680;
+  font-family: var(--sans);
+  font-size: var(--text-xs);
+  font-weight: 620;
   letter-spacing: 0;
 }
 
@@ -72,7 +72,7 @@
 
 .legal-contact dt {
   color: var(--muted);
-  font-size: 0.89rem;
+  font-size: var(--text-xs);
   font-weight: 620;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -80,8 +80,8 @@
 
 .legal-contact dd {
   margin: 0.35rem 0 0;
-  font-size: 0.96rem;
-  font-weight: 560;
+  font-size: var(--text-sm);
+  font-weight: 520;
 }
 
 .legal-contact a,
@@ -111,7 +111,7 @@
 .legal-section-number {
   padding-top: 0.25rem;
   color: var(--muted);
-  font-size: 0.89rem;
+  font-size: var(--text-xs);
   font-variant-numeric: tabular-nums;
 }
 
@@ -130,7 +130,7 @@
 .legal-section-body {
   max-width: 720px;
   color: var(--muted);
-  font-size: 0.99rem;
+  font-size: var(--text-base);
   line-height: 1.75;
 }
 
@@ -140,7 +140,7 @@
 
 .legal-section-body strong {
   color: var(--ink);
-  font-weight: 650;
+  font-weight: 620;
 }
 
 .legal-privacy {

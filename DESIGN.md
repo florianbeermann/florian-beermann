@@ -53,6 +53,60 @@ typography:
     fontWeight: 400
     lineHeight: 1.6
     letterSpacing: "normal"
+  base:
+    fontFamily: "Outfit Variable, Helvetica Neue, Arial, sans-serif"
+    fontSize: "1.05rem"
+    fontWeight: 400
+    lineHeight: 1.5
+    letterSpacing: "normal"
+  metric:
+    fontFamily: "Outfit Variable, sans-serif"
+    fontSize: "clamp(1.45rem, 2.4vw, 2.25rem)"
+    fontWeight: 520
+    lineHeight: 1
+    letterSpacing: "-0.028em"
+  card-title:
+    fontFamily: "Outfit Variable, sans-serif"
+    fontSize: "1.8rem"
+    fontWeight: 520
+    lineHeight: 1.05
+    letterSpacing: "-0.03em"
+  headline-compact:
+    fontFamily: "Outfit Variable, sans-serif"
+    fontSize: "clamp(2rem, 3.4vw, 3.2rem)"
+    fontWeight: 520
+    lineHeight: 0.98
+    letterSpacing: "-0.03em"
+  legal-display:
+    fontFamily: "Outfit Variable, sans-serif"
+    fontSize: "clamp(4.8rem, 9vw, 9rem)"
+    fontWeight: 520
+    lineHeight: 0.9
+    letterSpacing: "-0.035em"
+  title-narrow:
+    fontFamily: "Outfit Variable, sans-serif"
+    fontSize: "2.4rem"
+    fontWeight: 520
+    lineHeight: 1
+    letterSpacing: "-0.03em"
+  legal-display-narrow:
+    fontFamily: "Outfit Variable, sans-serif"
+    fontSize: "clamp(4.2rem, 16vw, 7rem)"
+    fontWeight: 520
+    lineHeight: 0.9
+    letterSpacing: "-0.035em"
+  legal-title:
+    fontFamily: "Outfit Variable, sans-serif"
+    fontSize: "clamp(1.55rem, 2.8vw, 2.65rem)"
+    fontWeight: 520
+    lineHeight: 1.05
+    letterSpacing: "-0.03em"
+  notfound-display:
+    fontFamily: "Outfit Variable, sans-serif"
+    fontSize: "clamp(3.4rem, 7.5vw, 6.4rem)"
+    fontWeight: 520
+    lineHeight: 0.92
+    letterSpacing: "-0.035em"
   ui:
     fontFamily: "Outfit Variable, sans-serif"
     fontSize: "0.94rem"
@@ -199,10 +253,16 @@ of a drag. Every one of those is a *ground* with the plum sitting on it at
 8.15:1 — none is a tint, an outline, an icon or a highlight, and that is the
 distinction the rule below protects.
 
-Headings on the ivory bands are set in it (`--heading`), which is the one place
-it sets type: 8.15:1 there, against 1.17:1 on the stock. The blue carries the
-argument and the prose beneath stays in the ink, so the colour marks what a
-section is about rather than becoming its default voice.
+On the ivory bands it sets type, which is the one place it does: 8.15:1 there,
+against 1.17:1 on the stock. The split is prose versus everything else. A
+sentence someone wrote stays in the ink; a heading (`--heading`), and every
+label, figure, link, control and the legal line (`--marker`), take the voltage.
+
+That line is what keeps the colour meaningful. Blue marks the page's furniture —
+the parts a reader *scans*: what this section is called, which company, how many
+years, what to type, what to click. The prose it surrounds is the part a reader
+*reads*, and it stays in the ink. Colour is a wayfinding system here, not a
+second voice, and the moment it starts narrating it stops being either.
 
 The blue takes the **ivory**, never the plum: plum on this blue measures
 **1.17:1**. The chartreuse this replaced had the opposite polarity — it was a
@@ -221,6 +281,7 @@ icon invisible. It works as a ground, or not at all.
 | `--on-ink` | `#503d42` | Type on a filled control, which on this ground is an ivory fill. |
 | `--on-ink-muted` | `rgba(80, 61, 66, 0.78)` | Secondary type on that fill. |
 | `--heading` | `var(--ink)` | What a heading is printed in. The light bands override it to the voltage; the blue band restates it as its own ink. |
+| `--marker` | `var(--ink)` | The same conditional for everything that is not running prose — labels, figures, links, controls, the legal line. Separate from `--heading` because the two answer different questions. |
 
 ### The light bands
 
@@ -229,12 +290,25 @@ anything. Two sections carry it — the proof section and the contact form — p
 the footer:
 
 ```
---paper: #f5fbef;         --ink: #503d42;
---paper-deep: #e6eee0;    --muted: #5e735f;
---line: #92ad94;
+--paper: #f5fbef;         --ink: #0000ff;
+--paper-deep: #e6eee0;    --muted: rgba(0, 0, 255, 0.7);
+--line: rgba(0, 0, 255, 0.42);
 --on-ink: #f5fbef;        --on-ink-muted: rgba(245, 251, 239, 0.82);
---heading: var(--voltage);
+--heading: var(--ink);    --marker: var(--ink);
 ```
+
+These bands are not "ivory sections with a blue accent" — they are **printed in
+blue**. Heading, prose, label, figure, rule and filled control are all the
+voltage; the plum does not appear inside them at all. It is the one ground where
+the blue can carry everything, because it holds 8.15:1 on the ivory against
+1.17:1 on the stock.
+
+`--muted` is the ink at `0.7`, which composites to `rgb(74, 75, 251)` and holds
+**5.41:1**. It has little room to give: below about `0.62` it falls under the
+body floor. The dimming is load-bearing beyond hierarchy — it is what keeps a
+form placeholder reading as an empty field rather than as a typed value, which
+is why the register that must stay at full strength (`--marker`) is declared
+separately rather than left to inherit.
 
 `--heading` has to be restated by any scope that changes `--ink`, including the
 blue band. A custom property holding `var(--ink)` resolves against the element
@@ -242,12 +316,10 @@ that *declares* it, not the one that uses it, so a band that changed the ink
 without restating the heading would inherit the previous scope's resolved
 colour — on the blue band that would be the stock's plum, at 1.17:1.
 
-Note that `--muted` and `--line` are *not* the dark scope's values re-tinted.
-`#748b75`, the palette's dusty olive, measures only **3.50:1** on ivory and
-fails the body floor, so the light bands take a darkened cut (`#5e735f`,
-**4.87:1**) for prose and the muted teal at full strength (`#92ad94`) for rules.
-A hairline of diluted plum composites to a dead warm grey; a rule that stays a
-colour is what stops a page built entirely from rules looking like a wireframe.
+The palette's two greens used to do this work — a darkened dusty olive for
+prose and the muted teal for rules — and both are now unused on the site. The
+olive never cleared the body floor at full strength (`#748b75` is **3.50:1** on
+ivory) and needed darkening; the blue clears it twice over without help.
 
 `.site-voltage` is the same mechanic on the blue, and it is deliberately
 not a class any section may reach for:
@@ -295,8 +367,17 @@ instead.
 - **One Stock.** There is exactly one plum in the system. A second is a bug.
 - **The Voltage Is a Ground, Except on a Light Band.** The blue appears as a
   full-bleed surface, a button fill, the ampersand tile, or the selection
-  highlight — and as the colour of headings on the ivory bands, where it holds
-  8.15:1. It never appears as a chip, a tag, a progress bar, a coloured icon or
+  highlight — and on the ivory bands as the colour of headings and of the marker
+  register, where it holds 8.15:1. Never of prose, on any ground.
+
+  There is one exception, inside a section printed on the stock: the travelling
+  segment on the engagements rail. It works because of what sits under it — the
+  bar overlays the ivory rail rather than the page, so the pair that matters is
+  blue on ivory at 8.15:1. Against the plum it would be 1.15:1 and gone, which
+  is what happened while that rail was a 32% tint. **Rail and bar are a unit:
+  dimming the rail breaks the bar.** The rail is therefore full `--ink`, matching
+  the rule under the section heading, and the two hairlines that bracket the reel
+  carry equal weight. It never appears as a chip, a tag, a progress bar, a coloured icon or
   a hairline, and it never sets type on the plum stock, where it is 1.17:1 and
   invisible. On the blue itself the ivory sits on top, not the other way round.
 - **The Loud Surfaces Are Enumerated.** Three: the statement band, the primary
@@ -330,6 +411,23 @@ One family, three jobs, plus a machine register.
   and UI take 400 at 1.6 line-height.
 - **System monospace** (`--mono`) — the label register. `0.6875rem`, weight 500,
   `0.16em` tracking, uppercase, via the `.site-label` utility.
+
+### Three weights, and only three
+
+`400` for prose, `520` for headings, figures, names and UI, `620` for controls
+and links. The mono register uses `500`.
+
+This is a ceiling, not a starting point. The site briefly carried seven weights
+in the sans register — 400, 520, 540, 560, 620, 650, 680 — because the values
+were tuned against Inter and inherited unchanged. Outfit is a geometric face
+with a different progression, and at these sizes 620, 650 and 680 are
+indistinguishable: three weights doing one job, which reads as drift rather than
+as hierarchy. Anything between the three steps is a mistake; if a new element
+needs to sit between them, the answer is size or colour, not a fourth weight.
+
+The family is `--sans`, declared once. It had drifted into two stacks — one with
+a Helvetica/Arial fallback and one without — so which face a visitor saw before
+the webfont arrived depended on which element they were looking at.
 
 Outfit is self-hosted as a licensed, subsetted variable font in `public/fonts/`
 (OFL, licence committed) and preloaded. It replaced Inter and Inter Tight, and
@@ -379,7 +477,6 @@ Monospace is reserved for text a machine would have printed. Currently:
 
 - Plate captions (`FIG. 01`, `FLORIAN BEERMANN`)
 - Form field labels
-- Definition-list terms (`TARGETS`, `TOOLING`)
 - Engagement numbers
 - The entire footer
 
@@ -392,8 +489,17 @@ It is never used for a heading, a sentence, or a call to action. The rule is
   optional; they are what stops the display type reading as a slogan.
 - **No Bold Body.** Emphasis inside body copy comes from `--ink` versus
   `--muted`, not from weight.
-- **Labels Are Mono, Always.** A tracked uppercase label in Outfit is the old
-  system and should be migrated if found.
+- **Labels Are Mono, Always — with one documented exception.** A tracked
+  uppercase label in Outfit is the retired system and should be migrated if
+  found. The exception is the definition terms in the proof section's fact row
+  (`Targets`, `Tooling`), which are set in the sans register at UI size in
+  sentence case. That row is a list of three parallel entries whose first is a
+  display figure (`6+ years`); setting the other two in tracked uppercase mono
+  made three equals read as a figure plus two captions. They are small headings,
+  not annotation, and the register follows the job rather than the tag.
+
+  Note what the exception is *not*: they did not become a tracked uppercase
+  label in Outfit. That would have been worse than the mono it replaced.
 
 ## Layout
 
