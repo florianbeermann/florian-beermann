@@ -95,8 +95,28 @@
     scroll-behavior: smooth;
   }
 
+  /* The family is declared here and in the `@font-face` above, and nowhere else
+     on the site. Everything inherits it, including form controls, which get
+     `font-family: inherit` from Tailwind's preflight.
+
+     400, not `font-light`. The 300 here was left over from Inter and was
+     invisible only because `.site-page` resets the weight — so anything
+     rendered outside it, like a toast in a portal, was painting at a weight the
+     design system does not have. */
   body {
-    @apply bg-background text-foreground antialiased font-light;
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--sans);
+    font-weight: 400;
+  }
+
+  /* Sonner ships its own `font-family` on the toaster and renders in a portal
+     outside `.site-page`, so the toast was the one piece of the site still
+     painting in the system UI face. The selector is doubled to outrank the
+     library's own `[data-sonner-toaster]` rule without `!important`, because
+     its stylesheet is injected at runtime and therefore wins on source order at
+     equal specificity. */
+  [data-sonner-toaster][data-sonner-toaster],
+  [data-sonner-toast][data-sonner-toast] {
     font-family: var(--sans);
   }
 
@@ -111,7 +131,6 @@
 
   h1, h2, h3, h4, h5, h6 {
     @apply tracking-tight font-normal;
-    font-family: var(--sans);
   }
 }
 

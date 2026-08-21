@@ -120,9 +120,9 @@ typography:
     lineHeight: 1.5
     letterSpacing: "normal"
   label:
-    fontFamily: "ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, monospace"
-    fontSize: "0.6875rem"
-    fontWeight: 500
+    fontFamily: "Outfit Variable, sans-serif"
+    fontSize: "0.72rem"
+    fontWeight: 520
     lineHeight: 1.4
     letterSpacing: "0.16em"
 rounded:
@@ -189,11 +189,15 @@ Three things make it specific rather than generic minimalism:
    onto neutral UI. It is also the only value here that is not drawn from the
    logo palette: a raw channel maximum against a warm plum stock reads as an
    instrument, not as decoration.
-3. **There are two type registers.** Argument is set in Outfit — the face the
+3. **One face, two registers.** Argument is set in Outfit — the face the
    wordmark itself is cut from — enormous and tight. Machine facts — figure
-   numbers, field labels, section markers, the footer — are set in monospace,
-   small and widely tracked. The contrast between "written by a person" and
-   "printed by an instrument" is the voice.
+   numbers, field labels, section markers, the footer — are set in the same
+   face, but small, uppercase and widely tracked. The contrast between "written
+   by a person" and "printed by an instrument" is carried by case, size,
+   tracking and weight rather than by a second family, which is what makes the
+   annotation layer read as part of the same document instead of pasted in from
+   another one. The label register is the wordmark's own treatment at footnote
+   size.
 
 The density is deliberately uneven. Display type runs to 7rem with negative
 tracking and sub-1 line-height so headlines read as one dense mass, while body
@@ -402,20 +406,21 @@ instead.
 
 ## Typography
 
-One family, three jobs, plus a machine register.
+One family, four jobs.
 
 - **Outfit Variable** — the face the wordmark is cut from, and now the face the
   whole site is set in. Display, headline and title take weight 520 with
   negative tracking from `-0.028em` to `-0.035em` and line-height below 1;
   headlines are meant to read as a solid block, not a sequence of words. Body
   and UI take 400 at 1.6 line-height.
-- **System monospace** (`--mono`) — the label register. `0.6875rem`, weight 500,
-  `0.16em` tracking, uppercase, via the `.site-label` utility.
+- **The label register** — the same face, at `0.72rem`, weight 520, `0.16em`
+  tracking, uppercase, tabular figures, via the `.site-label` utility. It is a
+  register, not a family: nothing on this site is set in a second face.
 
 ### Three weights, and only three
 
-`400` for prose, `520` for headings, figures, names and UI, `620` for controls
-and links. The mono register uses `500`.
+`400` for prose, `520` for headings, figures, names, UI and labels, `620` for
+controls and links.
 
 This is a ceiling, not a starting point. The site briefly carried seven weights
 in the sans register — 400, 520, 540, 560, 620, 650, 680 — because the values
@@ -433,9 +438,18 @@ Outfit is self-hosted as a licensed, subsetted variable font in `public/fonts/`
 (OFL, licence committed) and preloaded. It replaced Inter and Inter Tight, and
 it replaced both with one file: 32KB against their 93KB, because a geometric
 face already tightens as it grows and the weight axis supplies the rest, so the
-display register no longer needs a separate narrower cut. The mono stack is
-deliberately *not* a webfont — it costs zero bytes and every face in it shares
-the 0.6em advance the halftone screen is metered against.
+display register no longer needs a separate narrower cut.
+
+It is now the only face on the site. The label register was a system monospace
+until that consolidation; it cost no bytes, so removing it saved nothing on the
+wire — the reason to drop it was that the page reads as one document set by one
+hand rather than two things stapled together. `font-family` is declared three
+times and only three: in the `@font-face`, on `body`, and on the Sonner toaster,
+which ships its own stack and renders in a portal outside `.site-page`. Every
+other element — including form controls, which inherit it through Tailwind's
+preflight — resolves to it. A `font-family` declaration anywhere else is
+redundant by construction, and the weight is `400` at the root so anything
+rendered outside `.site-page` still lands on a documented step.
 
 ### Metrics: why every size moved
 
@@ -469,11 +483,12 @@ everything below it `-0.03em` to `-0.028em`.
 | Body | `clamp(1.11rem, 1.36vw, 1.26rem)` | Outfit 400 |
 | UI | `0.94rem` | Outfit 520 |
 | UI small | `0.89rem` | Outfit 400 |
-| Label | `0.6875rem` uppercase, `0.16em` | Mono |
+| Label | `0.72rem` uppercase, `0.16em` | Outfit 520 |
 
-### The mono register
+### The label register
 
-Monospace is reserved for text a machine would have printed. Currently:
+Tracked uppercase at `0.72rem` is reserved for text a machine would have
+printed. Currently:
 
 - Plate captions (`FIG. 01`, `FLORIAN BEERMANN`)
 - Form field labels
@@ -481,7 +496,26 @@ Monospace is reserved for text a machine would have printed. Currently:
 - The entire footer
 
 It is never used for a heading, a sentence, or a call to action. The rule is
-*category*, not decoration: if a human wrote it as prose, it is Outfit.
+*category*, not decoration: if a human wrote it as prose, it is set as prose.
+
+This register was a system monospace until the site consolidated onto one
+family. Three things had to be tuned for the swap rather than carried over:
+
+- **Size.** Outfit's caps are 96% of the mono's, so `0.6875rem` would have
+  quietly shrunk every label. `0.72rem` matches the old cap height, and a long
+  label sets to within 0.2% of its previous width — no layout moved.
+- **Weight.** `500` existed on this site for the monospace and nothing else.
+  Folding the register into `520` leaves the page at three weights.
+- **Figures.** Outfit's default figures are proportional and unusually uneven —
+  its `1` is barely half the width of its `0`, so `01` and `04` set to visibly
+  different lengths. Every rule in this register sets
+  `font-variant-numeric: tabular-nums`, which restores the even metering the
+  monospace gave away for free. This is not optional; the section readouts are
+  the reason the register exists.
+
+Tracking is a token (`--track-label`), not a number repeated at each use site.
+With one family on the page it is one of only four signals separating a label
+from a short sentence, so it cannot be allowed to drift.
 
 ### Named Rules
 
@@ -489,17 +523,14 @@ It is never used for a heading, a sentence, or a call to action. The rule is
   optional; they are what stops the display type reading as a slogan.
 - **No Bold Body.** Emphasis inside body copy comes from `--ink` versus
   `--muted`, not from weight.
-- **Labels Are Mono, Always — with one documented exception.** A tracked
-  uppercase label in Outfit is the retired system and should be migrated if
-  found. The exception is the definition terms in the proof section's fact row
-  (`Targets`, `Tooling`), which are set in the sans register at UI size in
-  sentence case. That row is a list of three parallel entries whose first is a
-  display figure (`6+ years`); setting the other two in tracked uppercase mono
-  made three equals read as a figure plus two captions. They are small headings,
-  not annotation, and the register follows the job rather than the tag.
-
-  Note what the exception is *not*: they did not become a tracked uppercase
-  label in Outfit. That would have been worse than the mono it replaced.
+- **Labels Are Tracked Caps, Always — with one documented exception.** Small,
+  uppercase, `0.16em`, weight 520, tabular figures. The exception is the
+  definition terms in the proof section's fact row (`Targets`, `Tooling`), which
+  are set at UI size in sentence case. That row is a list of three parallel
+  entries whose first is a display figure (`6+ years`); setting the other two as
+  tracked uppercase labels made three equals read as a figure plus two captions.
+  They are small headings, not annotation, and the register follows the job
+  rather than the tag.
 
 ## Layout
 
@@ -569,7 +600,7 @@ portrait plate. There is no exception, and no token for one.
 - **Shape:** square.
 - **Primary (hero CTA):** `--ink` background, `--on-ink` text, `0 24px`,
   `52px` min-height, 650 weight at `0.86rem`, sentence case.
-- **Submit:** `--ink` background, `--on-ink` text, mono Label type, `16px 24px`,
+- **Submit:** `--ink` background, `--on-ink` text, Label type, `16px 24px`,
   `54px` min-height. The case change separates a form's terminal action from a
   navigational CTA. Its hover state inverts to `--paper`/`--ink`, which means it
   keeps working inside `.site-inverted` for free.
@@ -582,7 +613,7 @@ portrait plate. There is no exception, and no token for one.
   `0.9rem` padding, `150px` min-height.
 - **Focus:** border colour goes to `--ink` and `box-shadow: 0 1px 0` adds a
   second pixel.
-- **Labels:** mono Label type above the field, always visible. No
+- **Labels:** Label type above the field, always visible. No
   placeholder-as-label.
 - **Autofill:** neutralised with `box-shadow: inset 0 0 0 1000px var(--paper)`,
   `-webkit-text-fill-color: var(--ink)` and a 100000s background transition.
@@ -902,7 +933,7 @@ it is not on any critical path.
 - Put a form, a placeholder or a field underline on the voltage band.
 - Add a shadow, a blur, a lift or a scale to anything.
 - Use blend modes to texture the ink; they are near no-ops on a flat ground.
-- Use mono for prose, or Outfit for a label.
+- Introduce a second family, or set a label as prose (sentence case, untracked).
 - Put `.site-sweep` on anything visible above the fold — it will sit permanently
   half-masked.
 - End a `view()` range in `cover` on anything inside a `.site-panel`; it freezes

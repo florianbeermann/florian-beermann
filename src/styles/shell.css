@@ -62,20 +62,6 @@
   --grain:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 .05 .05 .05 0 -.02'/%3E%3C/filter%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch' seed='19'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .05 .05 .05 0 -.02'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23a)'/%3E%3Crect width='180' height='180' filter='url(%23b)'/%3E%3C/svg%3E");
 
-  /* The second typographic register. The page had exactly one voice — a
-     grotesque running from body size to the hero — and a single voice is what
-     makes a layout read as a template no matter how well it is set. A
-     monospace at label size supplies the other half: it reads as annotation,
-     specification, a drawing's margin note, and it is the register that makes
-     the display type look chosen rather than merely large.
-
-     System faces rather than a webfont. A third family would cost ~40KB on a
-     page whose job is to be read once by a busy executive, and every monospace
-     in this stack shares the 0.6em advance the portrait grid is drawn against,
-     so the ASCII plate keeps its proportions on every platform. */
-  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
-    "Liberation Mono", monospace;
-
   /* The type ramp, as tokens.
 
      Sizes were the last numeric family in this system still written as literals
@@ -86,7 +72,7 @@
      Four steps carry everything below headline size, and the gaps between them
      are deliberately large enough to be legible as steps:
 
-       --text-label  the mono register, and only that
+       --text-label  the label register, and only that
        --text-xs     dense UI: list items, captions, the legal line
        --text-sm     UI at rest: nav, controls, definition terms
        --text-base   secondary and dense prose
@@ -95,7 +81,7 @@
      `--text-2xs` exists for exactly one thing, recorded so it is not mistaken
      for a general step: below 360px the header nav has to give up size or
      overflow, and it is the floor of that squeeze. */
-  --text-label: 0.6875rem;
+  --text-label: 0.72rem;
   --text-2xs: 0.82rem;
   --text-xs: 0.89rem;
   --text-sm: 0.94rem;
@@ -104,6 +90,14 @@
   --text-title: clamp(1.8rem, 3vw, 3.1rem);
   --text-headline: clamp(2.8rem, 5vw, 5.4rem);
   --text-display: clamp(4rem, 6.7vw, 7rem);
+
+  /* Tracking is load-bearing now, so it is a token rather than a number copied
+     into six rules. When the label register was monospace, the family did most
+     of the work of separating annotation from prose and the tracking was a
+     comfort measure. With one family on the page the register is *only* case,
+     size, weight and this value — so it is the difference between a label and a
+     short sentence, and it cannot be allowed to drift. */
+  --track-label: 0.16em;
 
   /* The sans register, as one token. It was written out at every use site and
      had drifted into two stacks — one with a Helvetica/Arial fallback and one
@@ -493,7 +487,6 @@ body::before {
   background-color: var(--paper);
   background-image: var(--grain);
   color: var(--ink);
-  font-family: var(--sans);
   font-weight: 400;
   text-align: left;
 }
@@ -514,7 +507,6 @@ body::before {
 .site-page h1,
 .site-page h2,
 .site-page h3 {
-  font-family: var(--sans);
   font-weight: 520;
   letter-spacing: -0.03em;
   /* Headings take their own token rather than inheriting the scope's ink, so a
@@ -620,16 +612,32 @@ body::before {
   color: var(--ink);
 }
 
-/* The mono register: section numbers, eyebrows, field labels, captions. Kept
-   small and tracked open — uppercase monospace closes up badly at label size —
-   and never used above 13px, where it stops reading as annotation and starts
-   competing with the prose it is annotating. */
+/* The label register: section numbers, eyebrows, field labels, captions.
+
+   This used to be set in a system monospace, on the argument that a second
+   family was what separated annotation from prose. It is one family now, so the
+   separation has to come from the four signals that are left — uppercase, size,
+   tracking and weight — and they carry it: at this size, tracked caps are not
+   something anyone mistakes for a sentence.
+
+   Two things were tuned rather than carried over. The size went from 0.6875rem
+   to 0.72rem because Outfit's caps are 96% of the mono's, so the old value would
+   have quietly shrunk every label; at 0.72rem the cap height matches what was
+   there before, and a long label sets to within 0.2% of its previous width, so
+   nothing in any layout moves. And the weight went from 500 to 520 — the mono
+   register was the only thing on the site still using 500, and with it gone the
+   whole page is three weights.
+
+   `tabular-nums` replaces what the monospace used to give away: Outfit's default
+   figures are proportional and very uneven — its `1` is barely half the width of
+   its `0` — which made `01` and `04` visibly different lengths in the readouts
+   that count sections. */
 .site-label {
   display: block;
-  font-family: var(--mono);
   font-size: var(--text-label);
-  font-weight: 500;
-  letter-spacing: 0.16em;
+  font-variant-numeric: tabular-nums;
+  font-weight: 520;
+  letter-spacing: var(--track-label);
   line-height: 1.4;
   text-transform: uppercase;
 }
@@ -769,9 +777,10 @@ body::before {
   gap: 2rem;
   border-top: 1px solid var(--line);
   padding: 2.4rem 4vw;
-  font-family: var(--mono);
   font-size: var(--text-label);
-  letter-spacing: 0.16em;
+  font-variant-numeric: tabular-nums;
+  font-weight: 520;
+  letter-spacing: var(--track-label);
   text-transform: uppercase;
 }
 

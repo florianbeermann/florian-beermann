@@ -377,28 +377,25 @@
   border-right: 0;
 }
 
-/* The mono register. These four are the page's annotation layer — a field
-   label, a plate number, a specimen number, a heading for a list of tools —
-   and setting them in the same grotesque as the prose is what made them read
-   as small body copy rather than as marginalia. Same size, same tracking, same
-   family as `.site-label`; they are separate selectors only because they are
-   already positioned by their own sections. */
-/* The definition terms sit in the sans register, not the mono one.
+/* The label register. These four are the page's annotation layer — a field
+   label, a plate number, a specimen number, a heading for a list of tools — and
+   setting them at prose size and case is what made them read as small body copy
+   rather than as marginalia. Same size, tracking and case as `.site-label`;
+   they are separate selectors only because they are already positioned by their
+   own sections. */
+/* The definition terms are the one place in this layer set in sentence case.
 
-   They are the only exception to *Labels Are Mono, Always* on the site, and the
+   They are the only exception to *Labels Are Tracked Caps* on the site, and the
    reason is that this row is not annotation. The three terms are parallel
    entries in one list — `6+ years`, `Targets`, `Tooling` — and the first is a
-   display figure in Outfit by necessity. Setting the other two in tracked
-   uppercase monospace made a list of three read as a figure plus two captions,
-   which is not what it is.
+   display figure by necessity. Setting the other two as tracked uppercase
+   labels made a list of three read as a figure plus two captions, which is not
+   what it is.
 
-   Sentence case rather than uppercase, and no tracking. A tracked uppercase
-   label in Outfit is the retired system and would be worse than the mono it
-   replaced; what makes this belong is that it is simply a small heading, which
-   is what a `dt` in this list actually is. */
+   What makes this belong is that it is simply a small heading, which is what a
+   `dt` in this list actually is. */
 .home-facts dt {
   color: var(--muted);
-  font-family: var(--sans);
   font-size: var(--text-sm);
   font-weight: 520;
   letter-spacing: normal;
@@ -414,7 +411,6 @@
 
 .home-facts .home-fact-metric dt {
   color: var(--ink);
-  font-family: var(--sans);
   font-size: clamp(1.45rem, 2.4vw, 2.25rem);
   font-weight: 520;
   letter-spacing: -0.028em;
@@ -778,14 +774,12 @@
       margin: 0;
       padding: 0;
       color: var(--muted);
-      font-family: var(--mono);
       font-size: var(--text-label);
-      /* 500, like every other label in the mono register. These numbers were
-         inheriting 400 and sat a step lighter than the labels they belong
-         beside. */
-      font-weight: 500;
+      /* 520, like every other label. These numbers were inheriting 400 and sat
+         a step lighter than the labels they belong beside. */
+      font-weight: 520;
       font-variant-numeric: tabular-nums;
-      letter-spacing: 0.16em;
+      letter-spacing: var(--track-label);
       list-style: none;
     }
 
@@ -998,9 +992,10 @@
 .home-signal-flow span {
   display: block;
   color: var(--muted);
-  font-family: var(--mono);
   font-size: var(--text-label);
-  letter-spacing: 0.16em;
+  font-variant-numeric: tabular-nums;
+  font-weight: 520;
+  letter-spacing: var(--track-label);
 }
 
 .home-signal-flow h3 {
@@ -1057,7 +1052,6 @@
 .home-about-copy .home-about-lead {
   margin-bottom: clamp(0.8rem, 2.5vh, 1.8rem);
   color: var(--ink);
-  font-family: var(--sans);
   font-size: var(--text-title);
   font-weight: 520;
   letter-spacing: -0.03em;
@@ -1187,8 +1181,8 @@
    it sits under the address and lines up with the bottom of the form. The copy
    column and the form both start in row one, so neither has to know about it.
    
-   Set quieter than the address above it — mono, small, muted — so it reads as
-   the notice it is and does not compete with the email address, which is the
+   Set quieter than the address above it — small, tracked, muted — so it reads
+   as the notice it is and does not compete with the email address, which is the
    thing that column exists to offer. */
 .home-contact-legal {
   display: flex;
@@ -1200,9 +1194,10 @@
   padding-top: clamp(0.6rem, 1.8vh, 1.25rem);
   border-top: 1px solid var(--line);
   color: var(--muted);
-  font-family: var(--mono);
   font-size: var(--text-label);
-  letter-spacing: 0.1em;
+  font-variant-numeric: tabular-nums;
+  font-weight: 520;
+  letter-spacing: var(--track-label);
   text-transform: uppercase;
 }
 
@@ -1264,10 +1259,10 @@
 
 .home-contact-form label {
   color: var(--ink);
-  font-family: var(--mono);
   font-size: var(--text-label);
-  font-weight: 500;
-  letter-spacing: 0.16em;
+  font-variant-numeric: tabular-nums;
+  font-weight: 520;
+  letter-spacing: var(--track-label);
   text-transform: uppercase;
 }
 
