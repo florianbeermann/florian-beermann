@@ -27,6 +27,17 @@
   isolation: isolate;
   background: var(--ink);
   color: var(--on-dark);
+  /* The hero is a dark scope and now has to say so in the tokens, not only in
+     its own rules. It never declared `--heading` or `--marker` because nothing
+     inside it reads them — the statement sets its colour directly — so both
+     inherited `.site-page`'s slate while the hero actually prints in paper.
+
+     That went unnoticed until the masthead started colouring its mark from
+     whichever section is behind it. Reading `--marker` is the right signal
+     precisely because it is the token the marker register already uses, and a
+     scope that reports the wrong one is a bug wherever it is read from. */
+  --heading: var(--on-dark);
+  --marker: var(--on-dark);
 }
 
 /* Grid items default to `min-width: auto`, so a row whose contents refuse to

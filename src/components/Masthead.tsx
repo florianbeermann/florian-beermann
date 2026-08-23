@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { StarMark } from "./StarMark";
+import { CircleMark } from "./CircleMark";
 import { MobileNav } from "./MobileNav";
 
 /* The masthead, and it now belongs to the page rather than to the hero.
@@ -63,9 +63,26 @@ function groundOf(el: Element): Ground | null {
   return luminance < DEEP_BELOW ? "deep" : "light";
 }
 
+/* What the mark should be printed in, taken from the section rather than from
+   the ground.
+
+   The two are not the same question. The ground decides the film and the type,
+   and there are only three of those. The mark belongs to the marker register —
+   the labels, figures and headings a reader scans — and that register is the
+   blue on the inverted bands and the slate on the plain ones, both of which are
+   the same "light" ground. Colouring the mark from the ground put it in the
+   blue over a section whose headings were slate.
+
+   So it reads `--marker`, which is the token that register already resolves
+   from, and is therefore right by construction in any section added later. */
+function markerOf(el: Element): string {
+  return getComputedStyle(el).getPropertyValue("--marker").trim();
+}
+
 export function Masthead() {
   const ref = useRef<HTMLElement | null>(null);
   const [ground, setGround] = useState<Ground>("dark");
+  const [markColor, setMarkColor] = useState<string>("");
 
   useEffect(() => {
     const el = ref.current;
@@ -98,7 +115,9 @@ export function Masthead() {
           for (const entry of entries) {
             if (!entry.isIntersecting) continue;
             const next = groundOf(entry.target);
-            if (next) setGround(next);
+            if (!next) continue;
+            setGround(next);
+            setMarkColor(markerOf(entry.target));
           }
         },
         { rootMargin: `-${line}px 0px -${vh - line - 1}px 0px`, threshold: 0 },
@@ -132,12 +151,18 @@ export function Masthead() {
   return (
     /* Explicit `banner`, and outside <main> so the landmark is not nested
        inside another one. */
-    <header ref={ref} className="site-masthead" data-ground={ground} role="banner">
+    <header
+      ref={ref}
+      className="site-masthead"
+      data-ground={ground}
+      style={markColor ? ({ "--mark-color": markColor } as React.CSSProperties) : undefined}
+      role="banner"
+    >
       {/* The mark carries the accessible name now that the wordmark has left
           the bar — otherwise the only route home would be an unlabelled
           graphic. */}
       <a className="masthead-mark" href="#top" aria-label="Florian Beermann &amp; Partners — home">
-        <StarMark />
+        <CircleMark />
       </a>
       <nav className="glass masthead-rail" aria-label="Primary navigation">
         <a href="#engagements">Engagements</a>

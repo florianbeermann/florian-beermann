@@ -197,11 +197,26 @@
    with more air inside its box than ink, so at a matched 40px it reads
    markedly smaller than the thing it is being matched to. Optical size, not
    measured size. */
-.masthead-mark {
+.site-masthead .masthead-mark {
   display: inline-flex;
   align-items: center;
-  color: inherit;
   justify-self: start;
+  /* Set from the section under the row — see `markerOf` in Masthead.tsx. The
+     fallback is the paper, which is what the hero wants and what the row starts
+     on before the observer has reported anything.
+
+     Scoped to the parent for weight. The mark is an anchor, so `.site-page a`
+     at (0,1,1) outranks a bare `.masthead-mark` at (0,1,0) and silently repaints
+     it in the page's link colour — the third place on this header that rule has
+     caught, after the masthead action and the sheet's action. */
+  color: var(--mark-color, var(--on-dark));
+  transition: color 260ms ease;
+}
+
+/* The sheet is its own dark world and the row sits on top of it, so the mark
+   goes back to the paper whatever the section behind is doing. */
+.site-masthead:has([aria-expanded="true"]) .masthead-mark {
+  color: var(--on-dark);
 }
 
 .masthead-mark svg {
@@ -209,6 +224,9 @@
   width: var(--masthead-h);
   height: auto;
   aspect-ratio: 1;
+  /* Fifty-two tapering rays, the finest of them under a pixel wide at this
+     size. Letting the rasteriser optimise for speed turns them to mush. */
+  shape-rendering: geometricPrecision;
 }
 
 .masthead-rail {
