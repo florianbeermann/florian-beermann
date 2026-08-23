@@ -238,12 +238,7 @@ export default function Home() {
               </span>
             </h1>
             <p className="hero-lede">
-              I rebuild Customer Success for B2B SaaS companies whose customer
-              base has outgrown the way they serve it. The coverage model,
-              health scores and playbooks still assume the customers they used
-              to have, whether that shift is just beginning or already behind
-              you. I have operated Customer Success myself, from SMB accounts
-              through to DAX 40 enterprises.
+              I build Customer Success operations that work in the real world.
             </p>
           </div>
         </section>

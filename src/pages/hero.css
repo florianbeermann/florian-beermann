@@ -203,15 +203,12 @@
    and this line now sits on a photograph that moves underneath it. The
    alternative was to keep deepening the veil to protect eight pixels, which
    would have cost the whole frame its light. */
-/* The lede is a paragraph now, not a one-line subtitle, and that changes how it
-   has to be set. Centred text works for a line or two; at seven lines the eye
-   has to hunt for the start of each one, because a ragged left edge gives it
-   nothing to return to. So the block stays centred under the headline and the
-   text inside it is ranged left, at a measure of about fifty-five characters. */
+/* One line again, so it goes back to centre under the headline. It was ranged
+   left only while it ran to seven, where a ragged left edge left the eye
+   nothing to return to; at this length centring is simply correct. */
 .hero-lede {
   margin: 0;
   max-width: 42rem;
-  text-align: left;
   font-family: var(--sans);
   font-size: clamp(1.0625rem, 0.9rem + 1vw, 1.5rem);
   font-weight: 400;
