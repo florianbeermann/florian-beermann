@@ -71,6 +71,9 @@ uniform float uSpotRadius;
 uniform float uSpotOrbit;
 uniform float uSpotSpeed;
 uniform float uSpotSurge;
+uniform float uSpotBreath;   // how much the pool grows at the top of the cycle
+uniform float uSpotPeriod;   // seconds for one full swell and return
+uniform float uSpotGain;     // how hard the pigment reads at full strength
 
 float hash(vec2 p) {
   return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
@@ -207,8 +210,15 @@ void main() {
 
   // Aspect-corrected so the pool stays round on screen rather than stretching
   // with the viewport.
+  // The pool breathes: it swells to its widest at the halfway mark of the
+  // cycle and returns to where it started. A raised cosine rather than a sine
+  // so the turning points are smooth at both ends — a sine would arrive at its
+  // peak with the radius still climbing and snap over.
+  float breath = 0.5 - 0.5 * cos(6.2831853 * t / uSpotPeriod);
+  float radius = uSpotRadius * (1.0 + uSpotBreath * breath);
+
   vec2 sd = vec2((uv.x - centre.x) * aspect, yTop - centre.y);
-  float sr = length(sd) / uSpotRadius;
+  float sr = length(sd) / radius;
 
   // The noise displaces the *radius*, not the strength. Displacing the radius
   // makes the boundary wander like the ink around it; modulating strength would
@@ -218,7 +228,10 @@ void main() {
   // A hard core with a long falloff — the core is what makes it read as a
   // spotlight rather than a haze, and the falloff is what keeps it ink.
   float pig = 1.0 - smoothstep(0.22, 1.0, sr);
-  pig = pow(pig, 1.35);
+  // Lower exponent reads as a denser pool: the falloff spends less of its
+  // range near zero, so more of the pigment is at or near full colour.
+  pig = pow(pig, 1.35 / uSpotGain);
+  pig = min(pig * uSpotGain, 1.0);
 
   // The pigment is the same ink in a different colour, not a light shining on
   // it. That distinction is the whole difference between the two readings, and
@@ -418,6 +431,9 @@ export function InkField({
     const uSpotOrbit = gl.getUniformLocation(prog, "uSpotOrbit");
     const uSpotSpeed = gl.getUniformLocation(prog, "uSpotSpeed");
     const uSpotSurge = gl.getUniformLocation(prog, "uSpotSurge");
+    const uSpotBreath = gl.getUniformLocation(prog, "uSpotBreath");
+    const uSpotPeriod = gl.getUniformLocation(prog, "uSpotPeriod");
+    const uSpotGain = gl.getUniformLocation(prog, "uSpotGain");
     const uInkDark = gl.getUniformLocation(prog, "uInkDark");
     const uInkLight = gl.getUniformLocation(prog, "uInkLight");
     const uPigmentDark = gl.getUniformLocation(prog, "uPigmentDark");
@@ -527,6 +543,11 @@ export function InkField({
       gl.uniform1f(uSpotOrbit, readVar(cs, "--spot-orbit", 0.34));
       gl.uniform1f(uSpotSpeed, readVar(cs, "--spot-speed", 0.15));
       gl.uniform1f(uSpotSurge, readVar(cs, "--spot-surge", 1));
+      gl.uniform1f(uSpotBreath, readVar(cs, "--spot-breath", 0.7));
+      // Guarded: a zero period divides by zero in the shader and takes the
+      // whole field with it.
+      gl.uniform1f(uSpotPeriod, Math.max(0.5, readVar(cs, "--spot-period", 12)));
+      gl.uniform1f(uSpotGain, Math.max(0.05, readVar(cs, "--spot-gain", 1)));
 
       const inkDark = readColor(cs, "--p-field-dark", INK_DARK);
       const inkLight = readColor(cs, "--p-field-light", INK_LIGHT);

@@ -126,7 +126,16 @@
   /* Radians per second around the orbit. Speeding this up while leaving the
      wander slow also makes the motion *more* even, because the wander's
      contribution to the total speed shrinks in proportion. */
-  --spot-speed: 0.15;
+  --spot-speed: 0.34;
+
+  /* The swell. 12s for a full cycle, which puts the pool at its widest at 6s
+     and back to where it started at 12. `--spot-breath` is how much wider it
+     gets at the top of that: 0.85 is nearly double. */
+  --spot-period: 12;
+  --spot-breath: 0.85;
+  /* How hard the pigment reads. Above 1 the falloff spends less of its range
+     near zero, so more of the pool sits at full colour. */
+  --spot-gain: 1.5;
   /* How much the orbit surges, 0 to 1. At 0 the pool travels at a constant
      rate; at 1 it runs between roughly a sixth and twice its mean, which is
      an eleven-fold spread between its slowest and fastest. The mean is
