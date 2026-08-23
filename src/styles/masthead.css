@@ -1,0 +1,521 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   THE MASTHEAD
+
+   Page chrome, not hero chrome. Fixed to the viewport and crossing every
+   section, which is why every rule about colour in here is written twice: once
+   for a dark ground and once for a light one. See `Masthead.tsx` for how the
+   ground is decided.
+
+   The blur never changes and neither does the geometry. Only the film, the type
+   and the action's plate move — which is what keeps the switch reading as the
+   same object passing under a different light rather than as two headers
+   swapping places.
+   ───────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* Declared here and consumed by `.hero`, so the space the masthead used to
+     occupy in flow stays reserved once it is fixed. Two tokens rather than one
+     literal: the offset and the height are both clamped, and a hand-written
+     padding would drift from them at every breakpoint. The height is the mark's
+     — it is the tallest thing in the row, taller than the rail. */
+  --masthead-top: clamp(1rem, 2.2vh, 1.75rem);
+  --masthead-h: clamp(2.75rem, 4.2vw, 3.75rem);
+  --masthead-space: calc(var(--masthead-top) + var(--masthead-h));
+}
+
+/* Three columns, and the middle one is the point: `1fr auto 1fr` centres the
+   pane against the *viewport* rather than against whatever space the mark and
+   the action happen to leave. Centring it with `space-between` would drift it
+   left or right every time either label changed length.
+
+   The action sits outside the pane, on the right — it is not navigation, it is
+   the one thing the page is asking for, and putting it inside the glass filed
+   it under "menu". */
+.site-masthead {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  padding: var(--masthead-top) var(--gutter) 0;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
+  color: var(--on-dark);
+  /* The bar spans the full width but is mostly empty, and it is now fixed over
+     every section rather than over the hero alone. Left solid it would swallow
+     clicks on a band across the top of the entire page — including the first
+     row of the contact form. The children take their own hits back. */
+  pointer-events: none;
+}
+
+.site-masthead > * {
+  pointer-events: auto;
+  min-width: 0;
+}
+
+/* The row needs a ground of its own on the shader, and this is not optional.
+
+   The pill's film is a tenth of a near-white: it is a *lift*, not a backdrop,
+   so whatever legibility it has is borrowed from whatever happens to be behind
+   it. On the hero that is a moving marble with bright veins in it. Measured
+   down the hero's own scroll, the paper links ran 6.26:1 at rest and 2.03:1
+   three hundred pixels later — the pill had no ground at all, it had luck.
+
+   The shader's `--shade-top` cannot fix this. It darkens the top of the *hero*,
+   in the canvas's own coordinates, which is exactly right for a masthead parked
+   at the hero's top and useless for one fixed to the viewport that travels the
+   whole section. The thing being protected moved to viewport space, so the
+   protection has to move with it.
+
+   Painted behind the pill rather than over it, so the pill's backdrop-filter
+   samples the scrim too and the two read as one material. It also covers the
+   mark, which sits on the raw shader with no pane at all and had the same
+   problem more severely. */
+.site-masthead::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: -1;
+  height: calc(var(--masthead-space) + 5rem);
+  /* Four stops, and the tail is as considered as the head.
+
+     The second lands exactly on the row's bottom edge, so the dense part covers
+     the whole row and only then begins to fade. Fading from the top instead
+     left the lower half of the mark on ~0.4 and measured 2.5:1 against its
+     ground — under the 3:1 a meaningful graphic is held to.
+
+     The tail then has to outlast the pill's *blur footprint*, not the pill. A
+     50px blur samples 50px past its own box, so at the hero's bottom edge the
+     pill was pulling in the pale sheet below through the thin end of a shorter
+     scrim and dropped to 4.18:1 for the last 25px of the section.
+
+     WHAT IS LEFT, AND WHY IT STAYS: about eight pixels of scroll either side of
+     a section edge, where the blur straddles the boundary and the pill measures
+     ~4.2:1 instead of 4.5:1. This cannot be tuned away — the trigger is a line,
+     and moving it earlier to cover the descent into the sheet moves the same
+     gap onto the ascent into the statement band. Darkening the tail further was
+     measured and bought 0.12 for real visual weight over the hero. Eliminating
+     it needs the pill to stop borrowing its ground — a dark film on every
+     ground — which would cost the hero the airy glass this whole header is
+     built around. It is a transient mid-gesture state at a boundary the header
+     never rests on; everywhere it can rest measures 5.4:1 or better. */
+  background: linear-gradient(
+    to bottom,
+    rgb(var(--scrim-rgb) / var(--scrim-head)) 0,
+    rgb(var(--scrim-rgb) / var(--scrim-row)) var(--masthead-space),
+    rgb(var(--scrim-rgb) / var(--scrim-tail)) calc(var(--masthead-space) + 3rem),
+    rgb(var(--scrim-rgb) / 0) 100%
+  );
+  transition: background 260ms ease;
+  pointer-events: none;
+}
+
+/* Dark ground: translucent, because there is a picture worth seeing through it
+   and the statement passing underneath should dim rather than vanish. */
+.site-masthead {
+  --scrim-rgb: var(--p-ink-rgb);
+  --scrim-head: 0.62;
+  --scrim-row: 0.58;
+  --scrim-tail: 0.45;
+}
+
+/* ── Ground: light ────────────────────────────────────────────────────────
+   Measured off the reference rather than guessed. Its film goes from a 10%
+   light film on the dark hero to a 40% white film on the light sections, and
+   its links flip from white to near-black; the blur holds at 50px across both.
+
+   White rather than the palette's paper: the film has to read as a lift off the
+   sheet it sits on, and the sheet *is* the paper. A paper film on paper is
+   nothing at all. */
+.site-masthead[data-ground="light"] {
+  --glass-bg: rgb(255 255 255 / 0.4);
+  --glass-shadow: 0 4px 35px rgb(var(--p-ink-rgb) / 0.08);
+  color: var(--p-ink);
+  /* Denser than the dark ground's, and for a different reason. On the hero the
+     scrim buys contrast; here it buys separation. The sheets scroll their own
+     headings straight under a fixed row, and the mark — a thin star with no
+     pane behind it — landed on top of 48px display type and turned into
+     debris. Near-opaque paper gives the row a page to sit on. */
+  --scrim-rgb: var(--p-paper-rgb);
+  --scrim-head: 0.94;
+  --scrim-row: 0.9;
+  --scrim-tail: 0.55;
+}
+
+/* ── Ground: deep ─────────────────────────────────────────────────────────
+   The statement band, and the only ground on the page that is a saturated
+   colour rather than a neutral. The light film cannot be used here: measured
+   off real pixels it composited the band to rgb(23,92,253), which put the paper
+   links at 4.48:1 — under the 4.5 bar for 13px, by 0.02.
+
+   The film is therefore inverted. Ink at 28% darkens the band instead of
+   lifting it, which takes the same links to 6.5:1 and reads as an inset panel
+   cut into the band rather than a plate laid on it. On a surface whose whole
+   job is to be the loudest thing on the page, an inset is also the quieter and
+   better answer — a white pill here would compete with the headline. */
+.site-masthead[data-ground="deep"] {
+  --glass-bg: rgb(var(--p-ink-rgb) / 0.28);
+  color: var(--on-dark);
+  /* The band's own blue, so the row sits on the band rather than on whatever
+     line of it happens to be passing underneath. */
+  --scrim-rgb: var(--p-blue-rgb);
+  --scrim-head: 0.94;
+  --scrim-row: 0.9;
+  --scrim-tail: 0.55;
+}
+
+/* While the sheet is open it covers the viewport in its own dark ground, and
+   the mark, the action and the toggle all sit above it. They have to go back to
+   the dark treatment whatever the page behind is doing, or the mark vanishes
+   and the action turns blue-on-blue.
+
+   `:has()` rather than a piece of React state: the toggle already publishes
+   `aria-expanded` because it has to, so the open state is in the DOM and does
+   not need lifting out of MobileNav to be read here. */
+.site-masthead:has([aria-expanded="true"]) {
+  --glass-bg: rgba(226, 230, 238, 0.1);
+  color: var(--on-dark);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .site-masthead,
+  .masthead-rail,
+  .masthead-cta {
+    transition:
+      color 260ms ease,
+      background-color 260ms ease,
+      border-color 260ms ease;
+  }
+}
+
+/* The mark sits directly on the ground with no pane behind it.
+
+   Larger than the reference's 40px, and deliberately. That mark is a dense
+   solid glyph; this one is a twelve-point star built from thin tapering rays
+   with more air inside its box than ink, so at a matched 40px it reads
+   markedly smaller than the thing it is being matched to. Optical size, not
+   measured size. */
+.masthead-mark {
+  display: inline-flex;
+  align-items: center;
+  color: inherit;
+  justify-self: start;
+}
+
+.masthead-mark svg {
+  display: block;
+  width: var(--masthead-h);
+  height: auto;
+  aspect-ratio: 1;
+}
+
+.masthead-rail {
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0 1.5rem;
+  min-height: var(--rail-height);
+  padding: 0 1.5rem;
+}
+
+/* `:not(.control)` throughout: the action sits in this row too, and it is a
+   drawn plate rather than a link. Left unscoped, these rules would strip its
+   padding and rule a line across the inside of it on hover. */
+.masthead-rail a:not(.control) {
+  font-family: var(--mono);
+  font-size: var(--label-size);
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  color: inherit;
+  text-decoration: none;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+/* The rule is the whole hover state. It draws from the left in the same 180ms
+   the control's fill uses, so hovering a link and hovering a button feel like
+   the same material. */
+.masthead-rail a:not(.control)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.25rem;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 180ms ease;
+}
+
+.masthead-rail a:not(.control):hover::after,
+.masthead-rail a:not(.control):focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Cut down to the rail's scale — it is masthead-height, not hero-height. The
+   whole header runs on one `--rail-height` measure: mark, pane and action.
+
+   Doubled up for weight, not for reach. `world.css` is imported from `main.tsx`
+   and this file after it, but a bare `.masthead-cta` still only ties `.control`
+   at (0,1,0); naming the parent takes it to (0,2,0). This used to be scoped to
+   `.hero`, which stopped matching the moment the header moved out of it — and
+   silently returned the button to the world's full 3rem. */
+.site-masthead .masthead-cta {
+  justify-self: end;
+  min-height: var(--rail-height);
+  padding: 0 1.125rem;
+  /* Stated here rather than left to `.control--solid`, and this is the same
+     (0,1,1) trap the hero rules were written around: `.site-page a` in
+     shell.css sets a colour and outranks `.control--solid` at (0,1,0). Left
+     out, the label takes the page's link colour — which on this header
+     resolves to the paper, and paints a paper label on a paper plate. */
+  color: var(--ink);
+}
+
+/* On the dark ground the plate is the paper. On the light one the paper plate
+   would be invisible against the sheet, so it becomes the blue — the signal,
+   spent on the one action the page is asking for, and louder exactly where the
+   visitor has read enough to want it. */
+.site-masthead[data-ground="light"] .masthead-cta {
+  background: var(--p-blue);
+  border-color: var(--p-blue);
+  color: var(--p-paper);
+}
+
+.site-masthead[data-ground="light"] .masthead-cta:hover {
+  background: var(--p-ink);
+  border-color: var(--p-ink);
+  color: var(--p-paper);
+}
+
+.site-masthead:has([aria-expanded="true"]) .masthead-cta {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--ink);
+}
+
+/* ── The mobile disclosure ────────────────────────────────────────────────
+   Hidden above the breakpoint, where the glass pill carries the links. See
+   `src/components/MobileNav.tsx` for the behaviour; this is only its skin.
+
+   Two bars rather than three. Three is the convention, but this menu holds two
+   links — the mark is a deliberate small honesty about how much is behind it,
+   and at 2px apart it still reads instantly as "menu". */
+.masthead-disclosure {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  /* 44px. Below that a control is measurably harder to hit, and this one sits
+     at the very edge of the viewport where the margin for error is smallest. */
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  justify-self: end;
+}
+
+.masthead-disclosure-bars {
+  display: grid;
+  gap: 5px;
+  width: 1.25rem;
+}
+
+.masthead-disclosure-bars > span {
+  display: block;
+  height: 1.5px;
+  background: currentColor;
+  border-radius: 1px;
+  transition:
+    transform 220ms cubic-bezier(0.2, 0, 0, 1),
+    opacity 160ms ease;
+}
+
+/* The bars cross into an X. Both move to the centre and rotate — the
+   translate has to come first in the list, because transforms compose right to
+   left and rotating before translating would send them off at an angle. */
+[aria-expanded="true"] .masthead-disclosure-bars > span:first-child {
+  transform: translateY(3.25px) rotate(45deg);
+}
+
+[aria-expanded="true"] .masthead-disclosure-bars > span:last-child {
+  transform: translateY(-3.25px) rotate(-45deg);
+}
+
+/* ── The sheet ────────────────────────────────────────────────────────────
+   Full-bleed, heavily blurred, and fixed rather than absolute so it covers the
+   whole viewport and not just the hero.
+
+   It stays dark on every ground. A sheet that covers the viewport is not
+   sitting on a ground — it is one — so there is nothing for it to adapt to, and
+   a sheet that changed colour with the section behind it would announce a
+   scroll position the visitor cannot see anyway.
+
+   The blur is doing real work rather than decoration: whatever is behind is a
+   moving, high-contrast texture, and 64px resolves it to a flat ground that
+   17px links can sit on. The dark film on top is what actually carries the
+   contrast; the blur is what stops the motion showing through and pulling the
+   eye off the list. */
+/* The row stays above the sheet — the mark, the action and the toggle are all
+   still live while it is open, and the toggle in particular has to be, because
+   it is the close button. */
+.masthead-mark,
+.site-masthead .masthead-cta,
+.masthead-disclosure {
+  position: relative;
+  z-index: 21;
+}
+
+.masthead-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: calc(var(--rail-height) + clamp(2rem, 8vh, 3.5rem)) var(--gutter)
+    calc(var(--gutter) + env(safe-area-inset-bottom, 0px));
+  background: rgb(var(--wash-rgb) / 0.82);
+  backdrop-filter: blur(64px) saturate(120%);
+  -webkit-backdrop-filter: blur(64px) saturate(120%);
+  color: var(--on-dark);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 240ms ease,
+    visibility 0s linear 240ms;
+}
+
+.masthead-sheet.is-open {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 240ms ease,
+    visibility 0s;
+}
+
+/* Without backdrop-filter the film alone is too thin to hold type over a
+   moving texture, so the sheet goes nearly opaque. Same reasoning as the glass
+   pill: the effect is optional, the legibility is not. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .masthead-sheet {
+    background: rgb(var(--wash-rgb) / 0.97);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .masthead-sheet {
+    background: rgb(var(--wash-rgb) / 0.97);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .masthead-sheet,
+  .masthead-disclosure-bars > span {
+    transition-duration: 0s;
+  }
+}
+
+.masthead-sheet-nav {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Rules between the items, and one under the last, so the list reads as a
+   set rather than as loose text. The row is 3.5rem so each target clears the
+   44px minimum with room to spare. */
+.masthead-sheet-nav a {
+  display: flex;
+  align-items: center;
+  min-height: 3.5rem;
+  border-bottom: 1px solid rgb(var(--p-paper-rgb) / 0.16);
+  font-family: var(--sans);
+  font-size: 1.0625rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Pushed to the foot of the sheet, where a thumb is. The action is repeated
+   here rather than left only in the masthead because a sheet that covers the
+   viewport also covers the one thing the page is asking for.
+
+   The colour is stated for the same reason it is on `.masthead-cta`:
+   `.site-page a` is (0,1,1) and outranks `.control--solid`, which left this
+   plate with a paper label on a paper fill — an apparently blank button. */
+.masthead-sheet .masthead-sheet-action {
+  margin-top: auto;
+  width: 100%;
+  color: var(--ink);
+}
+
+@media (max-width: 48rem) {
+  /* One row: mark, action, disclosure. The glass pill is not shrunk to fit —
+     it is removed. Measured at 390px the mark, the pill and the action need
+     about 500px between them against the 358px the gutters leave, and every
+     way of forcing them onto one row means setting navigation below a
+     comfortably tappable size. Folding the links into a sheet is the only
+     arrangement that keeps the action visible, which is the one thing on this
+     header the page is actually asking for. */
+  :root {
+    --masthead-h: clamp(2.5rem, 9vw, 3.25rem);
+  }
+
+  .site-masthead {
+    grid-template-columns: auto 1fr auto;
+    gap: 0.625rem 0.75rem;
+  }
+
+  /* Off, not hidden: `display: none` keeps it out of the accessibility tree as
+     well, so the links are not announced twice while the sheet holds its own
+     copy of them. */
+  .masthead-rail {
+    display: none;
+  }
+
+  .site-masthead .masthead-cta {
+    grid-column: 2;
+    justify-self: end;
+    padding: 0 0.875rem;
+  }
+
+  .masthead-disclosure {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 30rem) {
+  :root {
+    --masthead-top: 0.625rem;
+  }
+
+  .site-masthead {
+    gap: 0.5rem 0.75rem;
+  }
+
+  .masthead-rail {
+    gap: 0 1rem;
+    padding: 0 0.75rem;
+  }
+
+  .masthead-rail a:not(.control) {
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+  }
+
+  .site-masthead .masthead-cta {
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    padding: 0 0.75rem;
+  }
+}

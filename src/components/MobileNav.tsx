@@ -104,7 +104,7 @@ export function MobileNav({
       <button
         ref={buttonRef}
         type="button"
-        className="hero-disclosure"
+        className="masthead-disclosure"
         aria-expanded={open}
         aria-controls="hero-nav-sheet"
         aria-label={open ? "Close menu" : "Open menu"}
@@ -118,7 +118,7 @@ export function MobileNav({
           setOpen((v) => !v);
         }}
       >
-        <span className="hero-disclosure-bars" aria-hidden="true">
+        <span className="masthead-disclosure-bars" aria-hidden="true">
           <span />
           <span />
         </span>
@@ -132,10 +132,10 @@ export function MobileNav({
       <div
         id="hero-nav-sheet"
         ref={sheetRef}
-        className={`hero-sheet${open ? " is-open" : ""}`}
+        className={`masthead-sheet${open ? " is-open" : ""}`}
         {...(open ? {} : { inert: "" })}
       >
-        <nav className="hero-sheet-nav" aria-label="Primary navigation">
+        <nav className="masthead-sheet-nav" aria-label="Primary navigation">
           {links.map((l) => (
             <a key={l.href} href={l.href} onClick={close}>
               {l.label}
@@ -143,7 +143,7 @@ export function MobileNav({
           ))}
         </nav>
         <a
-          className="control control--solid hero-sheet-action"
+          className="control control--solid masthead-sheet-action"
           href={action.href}
           onClick={close}
         >

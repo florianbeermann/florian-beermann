@@ -12,11 +12,18 @@
    IN FRONT: interface, floating clear of it in glass. One rail, one statement,
    nothing else. */
 
+/* One in-flow child now: the statement. The masthead used to be the `auto` row
+   here and is `position: fixed` page chrome since — see `styles/masthead.css`.
+   Left at `auto 1fr` the statement would take the auto row and sit at the top;
+   and simply dropping the row would centre it in the full viewport, which is
+   35px higher than it was drawn. `--masthead-space` reserves what the header
+   used to occupy, so the composition is unchanged. */
 .hero {
   position: relative;
   min-height: 100svh;
+  padding-top: var(--masthead-space);
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: 1fr;
   isolation: isolate;
   background: var(--ink);
   color: var(--on-dark);
@@ -56,7 +63,14 @@
      reach depends on the masthead's height, and how hard the band must work
      depends on how much of the frame the statement covers. Both change at the
      breakpoints below. */
-  --shade-top: 0.24;
+  /* Reduced from 0.24 when the masthead became viewport-fixed. This darkens the
+     top of the *hero*, in canvas coordinates, which protected a masthead parked
+     at the hero's top and did nothing for one that travels the whole section —
+     the row measured 2.03:1 three hundred pixels down. That job moved to a
+     fixed scrim in `styles/masthead.css`, which follows the row. What is left
+     here is only the small amount of top weighting the composition itself
+     wants; leaving it at 0.24 as well stacked the two into a heavy dark band. */
+  --shade-top: 0.08;
   --shade-band: 0.82;
   --shade-band-h: 0.3;
   --shade-band-floor: 0.64;
@@ -97,268 +111,6 @@
   text-shadow:
     0 1px 2px rgba(12, 16, 24, 0.3),
     0 2px 26px rgba(12, 16, 24, 0.38);
-}
-
-.hero .control--solid {
-  color: var(--ink);
-}
-
-/* ── The masthead ─────────────────────────────────────────────────────────
-   Three columns, and the middle one is the point: `1fr auto 1fr` centres the
-   pane against the *viewport* rather than against whatever space the mark and
-   the action happen to leave. Centring it with `space-between` would drift it
-   left or right every time either label changed length.
-
-   The action sits outside the pane, on the right — it is not navigation, it is
-   the one thing the page is asking for, and putting it inside the glass filed
-   it under "menu".
-
-   Sticky as a unit, so all three travel together. Sticky rather than fixed:
-   they should detach while the photograph is on screen and then stop, because
-   everything below the hero is a different world with a different ground. */
-.hero-masthead {
-  position: sticky;
-  top: clamp(1rem, 2.2vh, 1.75rem);
-  z-index: 3;
-  margin: clamp(1rem, 2.2vh, 1.75rem) var(--gutter) 0;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 1rem;
-  color: var(--on-dark);
-}
-
-/* The mark sits directly on the sky with no pane behind it.
-
-   Larger than the reference's 40px, and deliberately. That mark is a dense
-   solid glyph; this one is a twelve-point star built from thin tapering rays
-   with more air inside its box than ink, so at a matched 40px it reads
-   markedly smaller than the thing it is being matched to. Optical size, not
-   measured size. */
-.hero-mark {
-  display: inline-flex;
-  align-items: center;
-  color: var(--on-dark);
-  justify-self: start;
-}
-
-.hero-mark svg {
-  display: block;
-  width: clamp(2.75rem, 4.2vw, 3.75rem);
-  height: auto;
-  aspect-ratio: 1;
-}
-
-.hero-rail {
-  justify-self: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0 1.5rem;
-  min-height: var(--rail-height);
-  padding: 0 1.5rem;
-}
-
-/* `:not(.control)` throughout: the action sits in this row too, and it is a
-   drawn plate rather than a link. Left unscoped, these rules would strip its
-   padding and rule a line across the inside of it on hover. */
-.hero-rail a:not(.control) {
-  font-family: var(--mono);
-  font-size: var(--label-size);
-  letter-spacing: var(--label-tracking);
-  text-transform: uppercase;
-  color: inherit;
-  text-decoration: none;
-  padding: 0.5rem 0;
-  position: relative;
-}
-
-/* The rule is the whole hover state. It draws from the left in the same 180ms
-   the control's fill uses, so hovering a link and hovering a button feel like
-   the same material. */
-.hero-rail a:not(.control)::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0.25rem;
-  height: 1px;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 180ms ease;
-}
-
-.hero-rail a:not(.control):hover::after,
-.hero-rail a:not(.control):focus-visible::after {
-  transform: scaleX(1);
-}
-
-/* Cut down to the rail's scale — it is masthead-height, not hero-height. The
-   whole header runs on one `--rail-height` measure: mark, pane and action.
-
-   Scoped to `.hero` for weight, not for reach. `world.css` is imported from
-   `main.tsx` and this file from `Home.tsx`, so the bundle emits the world
-   *after* the hero: a bare `.hero-cta` ties with `.control` at (0,1,0) and
-   loses on source order, which silently left this button at the world's full
-   3rem × 1.75rem and made the masthead a head taller than it was drawn to be. */
-.hero .hero-cta {
-  justify-self: end;
-  min-height: var(--rail-height);
-  padding: 0 1.125rem;
-}
-
-/* ── The mobile disclosure ────────────────────────────────────────────────
-   Hidden above the breakpoint, where the glass pill carries the links. See
-   `src/components/MobileNav.tsx` for the behaviour; this is only its skin.
-
-   Two bars rather than three. Three is the convention, but this menu holds two
-   links — the mark is a deliberate small honesty about how much is behind it,
-   and at 2px apart it still reads instantly as "menu". */
-.hero-disclosure {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  /* 44px. Below that a control is measurably harder to hit, and this one sits
-     at the very edge of the viewport where the margin for error is smallest. */
-  width: 2.75rem;
-  height: 2.75rem;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: var(--on-dark);
-  cursor: pointer;
-  justify-self: end;
-}
-
-.hero-disclosure-bars {
-  display: grid;
-  gap: 5px;
-  width: 1.25rem;
-}
-
-.hero-disclosure-bars > span {
-  display: block;
-  height: 1.5px;
-  background: currentColor;
-  border-radius: 1px;
-  transition:
-    transform 220ms cubic-bezier(0.2, 0, 0, 1),
-    opacity 160ms ease;
-}
-
-/* The bars cross into an X. Both move to the centre and rotate — the
-   translate has to come first in the list, because transforms compose right to
-   left and rotating before translating would send them off at an angle. */
-[aria-expanded="true"] .hero-disclosure-bars > span:first-child {
-  transform: translateY(3.25px) rotate(45deg);
-}
-
-[aria-expanded="true"] .hero-disclosure-bars > span:last-child {
-  transform: translateY(-3.25px) rotate(-45deg);
-}
-
-/* ── The sheet ────────────────────────────────────────────────────────────
-   Full-bleed, heavily blurred, and fixed rather than absolute so it covers the
-   whole viewport and not just the hero.
-
-   The blur is doing real work rather than decoration: the ink field behind is
-   a moving, high-contrast texture, and 64px of blur resolves it to a flat
-   ground that 17px links can sit on. The dark film on top is what actually
-   carries the contrast; the blur is what stops the motion showing through and
-   pulling the eye off the list. */
-/* The row stays above the sheet — the mark, the action and the toggle are all
-   still live while it is open, and the toggle in particular has to be, because
-   it is the close button. They are siblings of the sheet inside the masthead,
-   so this is a plain z-order between them rather than anything to do with the
-   hero's own stacking context. */
-.hero-mark,
-.hero .hero-cta,
-.hero-disclosure {
-  position: relative;
-  z-index: 21;
-}
-
-.hero-sheet {
-  position: fixed;
-  inset: 0;
-  z-index: 20;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding: calc(var(--rail-height) + clamp(2rem, 8vh, 3.5rem)) var(--gutter)
-    calc(var(--gutter) + env(safe-area-inset-bottom, 0px));
-  background: rgb(var(--wash-rgb) / 0.82);
-  backdrop-filter: blur(64px) saturate(120%);
-  -webkit-backdrop-filter: blur(64px) saturate(120%);
-  color: var(--on-dark);
-  opacity: 0;
-  visibility: hidden;
-  transition:
-    opacity 240ms ease,
-    visibility 0s linear 240ms;
-}
-
-.hero-sheet.is-open {
-  opacity: 1;
-  visibility: visible;
-  transition:
-    opacity 240ms ease,
-    visibility 0s;
-}
-
-/* Without backdrop-filter the film alone is too thin to hold type over a
-   moving texture, so the sheet goes nearly opaque. Same reasoning as the glass
-   pill: the effect is optional, the legibility is not. */
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .hero-sheet {
-    background: rgb(var(--wash-rgb) / 0.97);
-  }
-}
-
-@media (prefers-reduced-transparency: reduce) {
-  .hero-sheet {
-    background: rgb(var(--wash-rgb) / 0.97);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-sheet,
-  .hero-disclosure-bars > span {
-    transition-duration: 0s;
-  }
-}
-
-.hero-sheet-nav {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Rules between the items, and one under the last, so the list reads as a
-   set rather than as loose text. The row is 3.5rem so each target clears the
-   44px minimum with room to spare. */
-.hero-sheet-nav a {
-  display: flex;
-  align-items: center;
-  min-height: 3.5rem;
-  border-bottom: 1px solid rgba(238, 233, 223, 0.16);
-  font-family: var(--sans);
-  font-size: 1.0625rem;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  color: inherit;
-  text-decoration: none;
-}
-
-/* Pushed to the foot of the sheet, where a thumb is. The action is repeated
-   here rather than left only in the masthead because a sheet that covers the
-   viewport also covers the one thing the page is asking for. */
-.hero-sheet-action {
-  margin-top: auto;
-  width: 100%;
 }
 
 /* ── The statement ────────────────────────────────────────────────────────
@@ -427,46 +179,13 @@
      24%. And the statement keeps its lines while the picture shrinks around
      it, so the band has to work harder for the same result. */
   .hero-ink {
-    --shade-top: 0.46;
+    --shade-top: 0.2;
     --shade-band: 1;
     --shade-band-h: 0.36;
     /* The lede's clamp resolves to about 22px here — just under WCAG's 24px
        large-text threshold, so it is held to 4.5:1 rather than 3:1 and the
        band has to be deeper than the desktop default to pay for it. */
     --shade-band-floor: 0.50;
-  }
-
-  /* One row: mark, action, disclosure. The glass pill is not shrunk to fit —
-     it is removed. Measured at 390px the mark, the pill and the action need
-     about 500px between them against the 358px the gutters leave, and every
-     way of forcing them onto one row means setting navigation below a
-     comfortably tappable size. Folding the links into a sheet is the only
-     arrangement that keeps the action visible, which is the one thing on this
-     header the page is actually asking for. */
-  .hero-masthead {
-    grid-template-columns: auto 1fr auto;
-    gap: 0.625rem 0.75rem;
-  }
-
-  /* Off, not hidden: `display: none` keeps it out of the accessibility tree as
-     well, so the links are not announced twice while the sheet holds its own
-     copy of them. */
-  .hero-rail {
-    display: none;
-  }
-
-  .hero .hero-cta {
-    grid-column: 2;
-    justify-self: end;
-    padding: 0 0.875rem;
-  }
-
-  .hero-disclosure {
-    display: inline-flex;
-  }
-
-  .hero-mark svg {
-    width: clamp(2.5rem, 9vw, 3.25rem);
   }
 
 }
@@ -476,33 +195,12 @@
      lede to three, so together they cover well over half the picture, and the
      pane sits lower still. Both shapes grow again. */
   .hero-ink {
-    --shade-top: 0.46;
+    --shade-top: 0.2;
     --shade-band-h: 0.46;
     /* The lede is 15px here rather than 24px, so it drops out of WCAG's
        large-text allowance and is held to 4.5:1 instead of 3:1. The band has
        to be correspondingly deeper. */
     --shade-band-floor: 0.38;
-  }
-
-  .hero-masthead {
-    gap: 0.5rem 0.75rem;
-    margin-top: 0.625rem;
-  }
-
-  .hero-rail {
-    gap: 0 1rem;
-    padding: 0 0.75rem;
-  }
-
-  .hero-rail a:not(.control) {
-    font-size: 0.6875rem;
-    letter-spacing: 0.06em;
-  }
-
-  .hero .hero-cta {
-    font-size: 0.6875rem;
-    letter-spacing: 0.06em;
-    padding: 0 0.75rem;
   }
 
   .hero-title {

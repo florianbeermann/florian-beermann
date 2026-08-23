@@ -13,9 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { StarMark } from "@/components/StarMark";
 import { InkField } from "@/components/InkField";
-import { MobileNav } from "@/components/MobileNav";
+import { Masthead } from "@/components/Masthead";
 import { setPageMetadata } from "@/lib/metadata";
 import "./Home.css";
 import "./hero.css";
@@ -206,6 +205,7 @@ export default function Home() {
 
   return (
     <div className="site-page">
+      <Masthead />
       <main id="site-main">
         <section id="top" className="hero on-dark">
           {/* The whole background. No photograph: the shader generates the
@@ -214,35 +214,6 @@ export default function Home() {
               Decorative and unreadable by definition. */}
           <InkField className="hero-ink" />
 
-          {/* Explicit `banner`: nested inside a sectioning element the implicit
-              mapping degrades to generic, so the landmark has to be stated to
-              exist at all. Same reason the contact panel states contentinfo. */}
-          <header className="hero-masthead" role="banner">
-            {/* The mark carries the accessible name now that the wordmark has
-                left the bar — otherwise the only route home would be an
-                unlabelled graphic. */}
-            <a className="hero-mark" href="#top" aria-label="Florian Beermann &amp; Partners — home">
-              <StarMark />
-            </a>
-            <nav className="glass hero-rail" aria-label="Primary navigation">
-              <a href="#engagements">Engagements</a>
-              <a href="#about">About</a>
-            </nav>
-            <a className="control control--solid hero-cta" href="#contact">
-              Start a conversation
-            </a>
-            {/* Below 48rem the pill above is hidden and this takes over. Both
-                are always in the DOM; CSS decides which is shown, so there is
-                no viewport-width branch in JavaScript to get out of step with
-                the breakpoint. */}
-            <MobileNav
-              links={[
-                { href: "#engagements", label: "Engagements" },
-                { href: "#about", label: "About" },
-              ]}
-              action={{ href: "#contact", label: "Start a conversation" }}
-            />
-          </header>
 
           <div className="hero-statement">
             <h1 className="display hero-title">
