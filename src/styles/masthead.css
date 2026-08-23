@@ -55,72 +55,6 @@
   min-width: 0;
 }
 
-/* The row needs a ground of its own on the shader, and this is not optional.
-
-   The pill's film is a tenth of a near-white: it is a *lift*, not a backdrop,
-   so whatever legibility it has is borrowed from whatever happens to be behind
-   it. On the hero that is a moving marble with bright veins in it. Measured
-   down the hero's own scroll, the paper links ran 6.26:1 at rest and 2.03:1
-   three hundred pixels later — the pill had no ground at all, it had luck.
-
-   The shader's `--shade-top` cannot fix this. It darkens the top of the *hero*,
-   in the canvas's own coordinates, which is exactly right for a masthead parked
-   at the hero's top and useless for one fixed to the viewport that travels the
-   whole section. The thing being protected moved to viewport space, so the
-   protection has to move with it.
-
-   Painted behind the pill rather than over it, so the pill's backdrop-filter
-   samples the scrim too and the two read as one material. It also covers the
-   mark, which sits on the raw shader with no pane at all and had the same
-   problem more severely. */
-.site-masthead::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto;
-  z-index: -1;
-  height: calc(var(--masthead-space) + 5rem);
-  /* Four stops, and the tail is as considered as the head.
-
-     The second lands exactly on the row's bottom edge, so the dense part covers
-     the whole row and only then begins to fade. Fading from the top instead
-     left the lower half of the mark on ~0.4 and measured 2.5:1 against its
-     ground — under the 3:1 a meaningful graphic is held to.
-
-     The tail then has to outlast the pill's *blur footprint*, not the pill. A
-     50px blur samples 50px past its own box, so at the hero's bottom edge the
-     pill was pulling in the pale sheet below through the thin end of a shorter
-     scrim and dropped to 4.18:1 for the last 25px of the section.
-
-     WHAT IS LEFT, AND WHY IT STAYS: about eight pixels of scroll either side of
-     a section edge, where the blur straddles the boundary and the pill measures
-     ~4.2:1 instead of 4.5:1. This cannot be tuned away — the trigger is a line,
-     and moving it earlier to cover the descent into the sheet moves the same
-     gap onto the ascent into the statement band. Darkening the tail further was
-     measured and bought 0.12 for real visual weight over the hero. Eliminating
-     it needs the pill to stop borrowing its ground — a dark film on every
-     ground — which would cost the hero the airy glass this whole header is
-     built around. It is a transient mid-gesture state at a boundary the header
-     never rests on; everywhere it can rest measures 5.4:1 or better. */
-  background: linear-gradient(
-    to bottom,
-    rgb(var(--scrim-rgb) / var(--scrim-head)) 0,
-    rgb(var(--scrim-rgb) / var(--scrim-row)) var(--masthead-space),
-    rgb(var(--scrim-rgb) / var(--scrim-tail)) calc(var(--masthead-space) + 3rem),
-    rgb(var(--scrim-rgb) / 0) 100%
-  );
-  transition: background 260ms ease;
-  pointer-events: none;
-}
-
-/* Dark ground: translucent, because there is a picture worth seeing through it
-   and the statement passing underneath should dim rather than vanish. */
-.site-masthead {
-  --scrim-rgb: var(--p-ink-rgb);
-  --scrim-head: 0.62;
-  --scrim-row: 0.58;
-  --scrim-tail: 0.45;
-}
-
 /* ── Ground: light ────────────────────────────────────────────────────────
    Measured off the reference rather than guessed. Its film goes from a 10%
    light film on the dark hero to a 40% white film on the light sections, and
@@ -133,15 +67,6 @@
   --glass-bg: rgb(255 255 255 / 0.16);
   --glass-shadow: 0 4px 35px rgb(var(--p-ink-rgb) / 0.08);
   color: var(--p-ink);
-  /* Denser than the dark ground's, and for a different reason. On the hero the
-     scrim buys contrast; here it buys separation. The sheets scroll their own
-     headings straight under a fixed row, and the mark — a thin star with no
-     pane behind it — landed on top of 48px display type and turned into
-     debris. Near-opaque paper gives the row a page to sit on. */
-  --scrim-rgb: var(--p-paper-rgb);
-  --scrim-head: 0.42;
-  --scrim-row: 0.38;
-  --scrim-tail: 0.2;
 }
 
 /* ── Ground: deep ─────────────────────────────────────────────────────────
@@ -160,10 +85,6 @@
   color: var(--on-dark);
   /* The band's own blue, so the row sits on the band rather than on whatever
      line of it happens to be passing underneath. */
-  --scrim-rgb: var(--p-blue-rgb);
-  --scrim-head: 0.42;
-  --scrim-row: 0.38;
-  --scrim-tail: 0.2;
 }
 
 /* While the sheet is open it covers the viewport in its own dark ground, and
