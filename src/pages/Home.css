@@ -1814,14 +1814,15 @@
    the bottom edge. The crop is the point: a wordmark that runs off the sheet
    reads as a mark on the page rather than as a logo placed on it.
 
-   Full height for a second, structural reason. The masthead colours itself
-   from whichever section crosses its centre line, and at maximum scroll a
-   panel shorter than the viewport never reaches that line. */
+   Half a screen. It was full height so the masthead would read it at maximum
+   scroll, but the panel is the blue now — the mark cannot be blue on it — so
+   that reason is gone. At half height the row sits over the contact sheet
+   instead, where the mark is the blue. */
 .site-closing {
   position: relative;
   display: flex;
   flex-direction: column;
-  min-height: 100svh;
+  min-height: 50svh;
   /* No bottom padding: the wordmark is meant to reach the edge and be cut. */
   padding: calc(var(--masthead-space) + clamp(1.5rem, 4vh, 3rem)) 4vw 0;
   overflow: hidden;
@@ -1920,13 +1921,16 @@
   align-items: center;
   gap: 0.08em;
   width: max-content;
-  max-width: 100%;
   margin-top: auto;
   margin-bottom: -0.19em;
-  /* The floor is what it can be, not a round number: the lockup is about 13.9
-     times its own font-size wide, so at 320px anything above ~1.3rem runs past
-     the column and is clipped. */
-  font-size: clamp(1.25rem, 6.3vw, 9.5rem);
+  /* Wall to wall: the lockup bleeds past the panel's gutters to the viewport
+     edges, so the mark starts at one edge and the wordmark ends at the other.
+     7.15vw is the width of the page divided by the lockup's own aspect — it is
+     about 13.9 times its font-size wide — with a hair of margin so a rounding
+     difference cannot clip the final letter. */
+  margin-left: -4vw;
+  margin-right: -4vw;
+  font-size: 7.15vw;
   line-height: 1;
   white-space: nowrap;
 }
