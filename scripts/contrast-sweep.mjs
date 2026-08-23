@@ -167,7 +167,12 @@ export const SWEEP = `(() => {
   // that can move a ratio and it now travels its orbit at a surging rate — a
   // sparse set of times maps to a clustered set of positions, and the position
   // is what actually matters. These span roughly three laps.
-  const SAMPLES = [0, 3, 7, 13, 23, 31, 43, 61, 79, 97, 121, 149];
+  // Spread across the cycle. The field now has three interlocking beats — the
+  // heading turns every 4s, the polarity inverts every 4s, and the texture
+  // changes every 8s — so these are chosen to hit all eight texture/polarity
+  // combinations rather than just to be far apart. 17 is here for the moire
+  // at normal polarity, which nothing else in the list reaches.
+  const SAMPLES = [0, 3, 7, 13, 17, 23, 31, 43, 61, 79, 97, 121, 149];
 
   const sampleAt = seconds => {
     ink.__inkRenderAt(seconds);

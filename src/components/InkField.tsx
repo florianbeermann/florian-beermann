@@ -134,6 +134,96 @@ vec2 flowOffset(float t, float seg, float speed) {
   return (acc * seg + flowDir(c) * frac) * speed;
 }
 
+/* A cheaper field for the textures that need a gradient of it: three octaves
+   rather than six, because a contour drawn through a six octave field is
+   spaghetti rather than topography. */
+float fbm3(vec2 p) {
+  float v = 0.0;
+  float a = 0.5;
+  mat2 rot = mat2(0.80, 0.60, -0.60, 0.80);
+  for (int i = 0; i < 3; i++) {
+    v += a * vnoise(p);
+    p = rot * p * 2.03;
+    a *= 0.5;
+  }
+  return v;
+}
+
+/* Texture 0: poured ink. Plates with a hard boundary and a flat interior,
+   crossed by veining taken from the warp magnitude. */
+float texMarble(float n, float warp) {
+  float plate = smoothstep(0.465, 0.535, n);
+  float vein = 0.5 + 0.5 * sin((warp * 5.4 + n * 3.1) * 3.14159);
+  vein = pow(vein, 2.2);
+  float v = mix(plate, vein, 0.42);
+  return clamp(v * 0.86 + n * 0.28, 0.0, 1.0);
+}
+
+/* Texture 1: survey contours. The same kind of terrain the ink pours over,
+   read as measurement instead of as fluid.
+
+   The line weight is normalised by the field's own gradient. A fixed width in
+   field units swells wherever the ground is flat, and a flat patch large
+   enough fills in solid; dividing by the per pixel change turns the distance
+   to the nearest isoline into pixels, so every line lands at the same weight
+   and flat ground simply carries fewer of them, which is what a real map
+   does. Finite differences rather than fwidth, because this is a WebGL1
+   context and derivatives are an extension there. */
+float texContour(vec2 p, vec2 drift) {
+  float e = 2.1 / uRes.y;                // one device pixel, in p units
+  vec2 cp = p * 0.85 + drift * 1.7;
+  float h = fbm3(cp);
+  float hx = fbm3(cp + vec2(e * 0.85, 0.0));
+  float hy = fbm3(cp + vec2(0.0, e * 0.85));
+  float lines = 24.0;
+  float grad = max(length(vec2(hx - h, hy - h)) * lines, 1e-7);
+  float df = abs(fract(h * lines) - 0.5);
+  float line = 1.0 - smoothstep(0.5, 1.5, df / grad);
+  // A hypsometric wash under the lines so the sheet is not flat between them.
+  return clamp(0.08 + 0.34 * h + 0.62 * line, 0.0, 1.0);
+}
+
+/* Texture 2: interference. Two fine gratings turning against each other at
+   slightly different pitches, so where their crests coincide the beat opens
+   into broad bands that sweep across the sheet.
+
+   Displaced by the same warp the ink uses. Straight gratings read as a linear
+   gradient laid over the picture; bending them through the warp keeps the
+   sheet one material. */
+float texMoire(vec2 p, vec2 drift, vec2 r, float t) {
+  vec2 pp = p + drift * 2.6 + (r - 0.5) * 0.22;
+  float a1 = t * 0.045;
+  float a2 = 1.05 - t * 0.031;
+  float g1 = sin(dot(pp, vec2(cos(a1), sin(a1))) * 38.0);
+  float g2 = sin(dot(pp, vec2(cos(a2), sin(a2))) * 40.5);
+  return clamp(0.5 + 0.5 * g1 * g2, 0.0, 1.0);
+}
+
+/* The mark's motif: round on three quadrants and square on the fourth, so it
+   comes to a point at one corner. Continuous across both axes, since on
+   f.x = 0 and on f.y = 0 the circle and the square agree. */
+float dTeardrop(vec2 f) {
+  float c = length(f);
+  float s = max(abs(f.x), abs(f.y));
+  return mix(c, s, step(f.x, 0.0) * step(0.0, f.y));
+}
+
+/* Texture 3: halftone. The field resolved onto a grid of teardrops that swell
+   where it is light and close to nothing where it is dark, which is the
+   masthead's mark used as a printing screen.
+
+   The cell is small enough that n is near enough constant across it, so each
+   teardrop reads as one flat size rather than a shape with a gradient in it. */
+float texHalftone(vec2 p, vec2 drift, float n) {
+  float dens = 15.0;
+  vec2 gp = (p + drift * 2.0) * dens;
+  vec2 f = fract(gp) - 0.5;
+  float rad = 0.04 + 0.46 * smoothstep(0.22, 0.78, n);
+  float aa = 1.4 * dens * 2.1 / uRes.y;  // one device pixel, in cell units
+  float disc = 1.0 - smoothstep(rad - aa, rad + aa, dTeardrop(f));
+  return clamp(0.10 + 0.80 * disc, 0.0, 1.0);
+}
+
 void main() {
   vec2 uv = gl_FragCoord.xy / uRes;
   // gl_FragCoord counts from the bottom; everything below thinks in screen
@@ -167,19 +257,27 @@ void main() {
   float n = fbm(p + 3.0 * r);
   float warp = length(r);
 
-  // ── The ink ────────────────────────────────────────────────────────────
-  // Plates: a narrow smoothstep, so the boundary is hard and the interior is
-  // flat. This is the single most characteristic thing about the reference
-  // texture and the thing plain fbm never gives you.
-  float plate = smoothstep(0.465, 0.535, n);
+  // ── The texture ────────────────────────────────────────────────────────
+  // Four of them, each holding for two direction changes before the next takes
+  // over, so the sheet changes material on a beat twice as slow as it changes
+  // heading. Derived from uFlowSeg rather than given its own control, because
+  // "two turns" is the relationship being asked for, not "eight seconds".
+  //
+  // A hard cut, like the turn and the inversion. The three beats then run at
+  // 4, 8 and 16 seconds against each other and the whole thing comes back
+  // round every 32.
+  float tex = mod(floor(t / (uFlowSeg * 2.0)), 4.0);
 
-  // Veining: sin() of the warp magnitude gives the strata of cut stone. The
-  // fbm term inside keeps them from reading as regular stripes.
-  float vein = 0.5 + 0.5 * sin((warp * 5.4 + n * 3.1) * 3.14159);
-  vein = pow(vein, 2.2);
-
-  float ink = mix(plate, vein, 0.42);
-  ink = clamp(ink * 0.86 + n * 0.28, 0.0, 1.0);
+  float ink;
+  if (tex < 0.5) {
+    ink = texMarble(n, warp);
+  } else if (tex < 1.5) {
+    ink = texContour(p, drift);
+  } else if (tex < 2.5) {
+    ink = texMoire(p, drift, r, t);
+  } else {
+    ink = texHalftone(p, drift, n);
+  }
 
   // Alternate segments run in negative, so the field inverts on the same beat
   // it changes direction. Inverting the ramp position rather than the colour
