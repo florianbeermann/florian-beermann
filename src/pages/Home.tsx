@@ -674,15 +674,40 @@ export default function Home() {
           page is scrolled to the end.
 
           Outside <main> so the contentinfo landmark is not nested inside it. */}
-      <footer className="site-closing site-inverted" role="contentinfo">
-        <div className="site-closing-legal">
-          <nav aria-label="Legal">
-            <Link to="/imprint">Imprint</Link>
-            <Link to="/privacy">Privacy</Link>
-          </nav>
-          <span>
-            Florian Beermann &amp; Partners · © {new Date().getFullYear()}
-          </span>
+      {/* The closing panel. Full height for a structural reason as well as a
+          compositional one: the masthead colours itself from whichever section
+          crosses its centre line, and at maximum scroll a panel shorter than
+          the viewport never reaches that line. */}
+      <footer className="site-closing" role="contentinfo">
+        <div className="site-closing-top">
+          <p className="site-closing-line">
+            Operations and processes that work in the real world.
+          </p>
+
+          <div className="site-closing-cols">
+            <nav aria-label="Sections">
+              <a href="#engagements">Work</a>
+              <a href="#about">About</a>
+              <a href="#contact">Contact</a>
+            </nav>
+            <nav aria-label="Legal">
+              <Link to="/imprint">Imprint</Link>
+              <Link to="/privacy">Privacy</Link>
+              <a href={`mailto:${contactEmail}`}>Email</a>
+            </nav>
+          </div>
+        </div>
+
+        <p className="site-closing-copy">
+          Florian Beermann &amp; Partners · © {new Date().getFullYear()}
+        </p>
+
+        {/* The wordmark, set to the width of the page and cropped by the
+            panel's bottom edge. Presentational: the accessible name is already
+            on the masthead's home link. */}
+        <div className="site-closing-lockup" aria-hidden="true">
+          <CircleMark className="site-closing-mark" />
+          <span className="site-closing-word">Florian Beermann &amp; Partners</span>
         </div>
       </footer>
     </div>

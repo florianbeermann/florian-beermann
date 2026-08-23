@@ -1810,20 +1810,156 @@
 }
 
 /* ── The closing panel ────────────────────────────────────────────────────
-   Full height, and that is the whole point of it rather than a flourish. The
-   masthead colours its mark from whichever section crosses its centre line,
-   about 35px down. At maximum scroll the last section's top sits at
-   `viewport − its height`, so anything shorter than the viewport never reaches
-   that line and the row keeps reporting the section above. A panel that fills
-   the last screen is the only geometry that puts the footer under the row when
-   the page is scrolled to the end.
+   A blue field with the wordmark set to the width of the page and cropped by
+   the bottom edge. The crop is the point: a wordmark that runs off the sheet
+   reads as a mark on the page rather than as a logo placed on it.
 
-   The legal line sits at the foot of it, where a footer's fine print belongs. */
+   Full height for a second, structural reason. The masthead colours itself
+   from whichever section crosses its centre line, and at maximum scroll a
+   panel shorter than the viewport never reaches that line. */
 .site-closing {
+  position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
   min-height: 100svh;
-  padding: var(--section-pad, clamp(3rem, 8vh, 6rem)) 4vw
-    calc(clamp(2rem, 5vh, 3.5rem) + env(safe-area-inset-bottom, 0px));
+  /* No bottom padding: the wordmark is meant to reach the edge and be cut. */
+  padding: calc(var(--masthead-space) + clamp(1.5rem, 4vh, 3rem)) 4vw 0;
+  overflow: hidden;
+  background: var(--p-blue);
+  color: var(--p-paper);
+  /* The panel is its own scope. Anything inside it prints in the paper — this
+     is the one ground on the site where the blue is the sheet. */
+  --paper: var(--p-blue);
+  --ink: var(--p-paper);
+  --prose: var(--p-paper);
+  --muted: rgb(var(--p-paper-rgb) / 0.72);
+  --line: rgb(var(--p-paper-rgb) / 0.3);
+  --heading: var(--p-paper);
+  --marker: var(--p-paper);
+}
+
+/* The panel has to be a full screen tall for the masthead to read it, which
+   leaves far more room than this much content needs. Both blocks take a share
+   of the slack — the text sits in the middle of the space above the wordmark
+   rather than stranded at the top of an empty field. */
+.site-closing-top {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: clamp(2rem, 6vw, 5rem);
+}
+
+.site-closing-line {
+  margin: 0;
+  max-width: 22ch;
+  font-family: var(--sans);
+  font-size: clamp(1rem, 1.5vw, 1.375rem);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.site-closing-cols {
+  display: flex;
+  gap: clamp(2rem, 5vw, 4.5rem);
+}
+
+.site-closing-cols nav {
+  display: flex;
+  flex-direction: column;
+  min-width: 9rem;
+}
+
+/* A rule under every item, which is what gives the block its ledger look in
+   the reference rather than reading as a loose list of links. */
+.site-closing-cols a {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--line);
+  color: inherit;
+  font-family: var(--mono);
+  font-size: var(--text-label);
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: border-color 180ms ease;
+}
+
+.site-closing-cols a:hover,
+.site-closing-cols a:focus-visible {
+  border-bottom-color: var(--p-paper);
+}
+
+/* Full paper, not the muted tint. On this ground the tint composites to
+   3.41:1 against the blue, under the 4.5 bar for type this size — the blue is
+   dark enough that a 0.72 alpha has nowhere to go. It steps down by scale and
+   by the mono voice instead. */
+.site-closing-copy {
+  margin: clamp(2rem, 5vh, 3.5rem) 0 auto;
+  color: var(--p-paper);
+  font-family: var(--mono);
+  font-size: var(--text-label);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+}
+
+/* Sized to span the page, and pushed to the foot so the panel's own edge does
+   the cropping. The negative bottom margin is what takes the descenders off the
+   sheet.
+
+   6.3vw, and it is measured rather than picked: at 7.4vw the lockup's content
+   ran 173px past the column. Worth noting because the container reports the
+   width it was *given* — it is a block-level flex box, so it fills the column
+   whatever is inside it — and reading that number says everything fits while
+   the text overflows and is silently clipped. The mark and the wordmark have
+   to be measured separately. */
+.site-closing-lockup {
+  display: flex;
+  align-items: center;
+  gap: 0.08em;
+  width: max-content;
+  max-width: 100%;
+  margin-top: auto;
+  margin-bottom: -0.19em;
+  /* The floor is what it can be, not a round number: the lockup is about 13.9
+     times its own font-size wide, so at 320px anything above ~1.3rem runs past
+     the column and is clipped. */
+  font-size: clamp(1.25rem, 6.3vw, 9.5rem);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.site-closing-mark {
+  height: 0.78em;
+  width: auto;
+  aspect-ratio: 1402 / 1122;
+  flex: none;
+}
+
+.site-closing-word {
+  font-family: var(--wordmark);
+  font-size: 1em;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+@media (max-width: 48rem) {
+  .site-closing-top {
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 30rem) {
+  .site-closing-cols {
+    gap: 1.5rem;
+  }
+
+  .site-closing-cols nav {
+    min-width: 0;
+    flex: 1;
+  }
 }
