@@ -419,14 +419,18 @@ export default function Home() {
                 and one a busy team will still be using in six months. I build
                 for the second.
               </p>
+
+              <aside className="home-about-note">
+                When an engagement needs deeper CS Operations, data, tooling or
+                enablement expertise, I bring in a small network of independent
+                specialists.
+              </aside>
             </div>
 
-            {/* The portrait, and the note that qualifies the practice. Both sit
-                in one cell rather than as separate grid items so the column is
-                laid out by its own flow: as siblings of the copy they would
-                each claim a row, and the copy — taller than either — would
-                stretch those rows and prise the two apart by whatever it had
-                spare. */}
+            {/* The portrait sits alone in its column now. The note that
+                qualifies the practice used to sit under it, which read as a
+                caption on the photograph rather than as a closing qualifier on
+                the argument — it belongs at the end of the prose it qualifies. */}
             <div className="home-about-record">
               <figure className="home-about-portrait">
                 <img
@@ -438,12 +442,6 @@ export default function Home() {
                   decoding="async"
                 />
               </figure>
-
-              <aside className="home-about-note">
-                When an engagement needs deeper CS Operations, data, tooling or
-                enablement expertise, I bring in a small network of independent
-                specialists.
-              </aside>
             </div>
           </div>
         </section>
@@ -618,8 +616,18 @@ export default function Home() {
               </p>
             )}
 
-            <p className="home-form-reassure">
+            {/* Carries `form-privacy-note`, which the form's `aria-describedby`
+                points at. The id moved here with the link when the Web3Forms
+                paragraph came out: left on a deleted element it would have been
+                a dangling reference, and the form would have lost its
+                description entirely rather than obviously breaking. */}
+            <p className="home-form-reassure" id="form-privacy-note">
               I read every enquiry myself and reply within two business days.
+              See the{" "}
+              <Link to="/privacy" className="home-privacy-link">
+                privacy policy
+              </Link>
+              .
             </p>
 
             <Button
@@ -630,18 +638,6 @@ export default function Home() {
             >
               {submitting ? "Sending…" : "Send message"}
             </Button>
-
-            <p className="home-form-privacy" id="form-privacy-note">
-              This form is processed by Web3Forms in the US. You can email{" "}
-              {contactEmail} instead. The{" "}
-              <Link
-                to="/privacy"
-                className="home-privacy-link"
-              >
-                privacy policy
-              </Link>{" "}
-              explains both.
-            </p>
           </form>
 
           {/* The imprint and privacy links, and the copyright, used to live in

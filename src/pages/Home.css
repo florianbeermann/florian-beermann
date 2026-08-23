@@ -255,7 +255,7 @@
 
    The prose these sit among is deliberately absent from this list and takes
    `--prose` instead: `.home-proof-rest`, `.home-facts dd`, `.home-contact-copy`,
-   `.home-form-reassure`, `.home-form-privacy`, and every value the visitor
+   `.home-form-reassure` and every value the visitor
    types. Colour marks the page's furniture; it does not narrate.
 
    `--prose` exists because that distinction stopped being free. While the blue
@@ -273,7 +273,7 @@
 .site-inverted .home-details-toggle,
 .site-inverted .home-contact-legal,
 .site-inverted .home-contact-legal a,
-.site-inverted .home-form-privacy a.home-privacy-link {
+.site-inverted .home-form-reassure a.home-privacy-link {
   color: var(--marker);
 }
 
@@ -1071,19 +1071,20 @@
   grid-column: 2;
   grid-row: 1;
   flex-direction: column;
-  /* The gap the copy's spare height pays for. The left column runs deeper than
-     the list and the note together, so this is space the panel already had. */
-  gap: clamp(1.25rem, 2.5vh, 2rem);
 }
 
-/* A footnote to the record above it, and set without rules of its own. It had
-   one on each side when it stood alone beside the copy; here the list already
-   closes on a rule and the tools open on one, so its borders landed a hairline
-   from each and read as bands rather than as edges. The gap above it and its
-   ink colour are enough to hold it apart from the list. */
+/* The qualifier that closes the argument, and it now sits at the foot of the
+   prose rather than under the portrait. Beneath the photograph it read as a
+   caption on the picture; it is not about the picture, it is the last thing the
+   argument says, so it belongs at the end of the argument.
+
+   Set a step down from the prose and held apart by a rule, so it reads as a
+   footnote to the three paragraphs above rather than as a fourth one. */
 .home-about-note {
-  display: flex;
-  align-items: center;
+  margin-top: clamp(1.25rem, 2.5vh, 1.9rem);
+  padding-top: clamp(1rem, 2vh, 1.5rem);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
   font-size: var(--text-sm);
   line-height: 1.6;
 }
@@ -1480,13 +1481,10 @@
   line-height: 1.6;
 }
 
-.home-form-privacy {
-  color: var(--muted);
-  font-size: var(--text-xs);
-  line-height: 1.6;
-}
-
-.home-form-privacy a.home-privacy-link {
+/* The privacy link now sits inside the reassurance line rather than in a
+   paragraph of its own below the button. It keeps the marker treatment — this
+   is a link, which is furniture, even though the sentence around it is prose. */
+.home-form-reassure a.home-privacy-link {
   color: var(--ink);
   font-weight: 620;
   text-decoration: underline;
