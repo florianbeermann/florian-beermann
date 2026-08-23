@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { InkField } from "@/components/InkField";
+import { CircleMark } from "@/components/CircleMark";
 import { Masthead } from "@/components/Masthead";
 import { setPageMetadata } from "@/lib/metadata";
 import "./Home.css";
@@ -218,6 +219,15 @@ export default function Home() {
             line=".hero-title-accent"
           />
 
+
+          {/* The brand lockup: mark and wordmark together, under the pill.
+              Presentational — the accessible name for the site already lives on
+              the masthead's home link, and repeating it here would announce the
+              company twice to a screen reader. */}
+          <div className="hero-lockup" aria-hidden="true">
+            <CircleMark className="hero-lockup-mark" />
+            <span className="hero-lockup-word">Florian Beermann &amp; Partners</span>
+          </div>
 
           <div className="hero-statement">
             <h1 className="display hero-title">

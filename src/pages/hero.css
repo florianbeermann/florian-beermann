@@ -296,3 +296,53 @@
 .hero-title-accent {
   color: var(--p-blue);
 }
+
+/* ── The brand lockup ─────────────────────────────────────────────────────
+   Mark and wordmark, centred under the glass pill. Set in Nippo, which appears
+   nowhere else on the site — the wordmark is a piece of identity rather than
+   part of the type system, and giving it its own face is what keeps it from
+   reading as a heading. */
+.hero-lockup {
+  position: absolute;
+  top: calc(var(--masthead-space) + clamp(1.25rem, 3vh, 2.25rem));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: clamp(0.5rem, 1vw, 0.75rem);
+  color: var(--on-dark);
+  white-space: nowrap;
+  pointer-events: none;
+  /* The same perceptual aid the statement uses, for the same reason: this sits
+     above the shade band, on raw field, where it measures 4.7 against the mean
+     ground and 3.6 against the brightest pixel the pool can put under it. */
+  text-shadow:
+    0 1px 2px rgba(12, 16, 24, 0.35),
+    0 2px 18px rgba(12, 16, 24, 0.4);
+}
+
+.hero-lockup-mark {
+  height: clamp(1.4rem, 2.2vw, 1.9rem);
+  width: auto;
+  aspect-ratio: 1402 / 1122;
+  flex: none;
+}
+
+.hero-lockup-word {
+  font-family: var(--wordmark);
+  font-size: clamp(0.9375rem, 1.35vw, 1.1875rem);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+
+@media (max-width: 30rem) {
+  .hero-lockup {
+    gap: 0.45rem;
+  }
+
+  .hero-lockup-word {
+    font-size: 0.8125rem;
+  }
+}
