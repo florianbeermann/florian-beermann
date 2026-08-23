@@ -212,7 +212,11 @@ export default function Home() {
               picture, which is what lets the statement's contrast floor be a
               property of the image rather than something layered onto it.
               Decorative and unreadable by definition. */}
-          <InkField className="hero-ink" protect=".hero-statement" />
+          <InkField
+            className="hero-ink"
+            protect=".hero-statement"
+            line=".hero-title-accent"
+          />
 
 
           <div className="hero-statement">

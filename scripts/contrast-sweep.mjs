@@ -63,11 +63,20 @@ export const SWEEP = `(() => {
   const L = (r, g, b) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
   const ratio = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
 
+  // Handles both forms the browser reports. rgb() gives 0-255; color(srgb ...)
+  // gives 0-1, and reading those as 0-255 silently turns any colour into near
+  // black. That is not hypothetical: the accent line is a color-mix(), which
+  // computes to the color() form, and this harness spent a whole pass
+  // reporting it at ~1.2:1 no matter what colour it was actually set to,
+  // because it was measuring black against the ground every time.
   const rgba = str => {
-    const m = String(str).match(/[\\d.]+/g);
+    const raw = String(str);
+    const m = raw.match(/[\\d.]+/g);
     if (!m) return null;
-    const [r, g, b] = m.slice(0, 3).map(Number);
-    return { r, g, b, a: m.length > 3 ? Number(m[3]) : 1 };
+    const nums = m.map(Number);
+    const scale = raw.indexOf('color(') === 0 ? 255 : 1;
+    const [r, g, b] = nums.slice(0, 3).map(v => v * scale);
+    return { r, g, b, a: nums.length > 3 ? nums[3] : 1 };
   };
 
   let grounds = [];
@@ -113,7 +122,28 @@ export const SWEEP = `(() => {
     return out;
   };
 
-  const targets = [...document.querySelectorAll('.hero-title, .hero-lede, .hero-rail a, .hero-cta')]
+  // NOTE: no backticks anywhere in this comment. It lives inside the SWEEP
+  // template literal, and a backtick here terminates the string.
+  //
+  // .hero-title-accent is listed explicitly, and it has to be. This sweep
+  // reads each target's own computed colour, so a span that recolours part of
+  // its parent is invisible to it: the accent line went blue and this harness
+  // went on reporting the h1's paper against the same ground, which is a pass
+  // for a measurement nobody was taking. Any future element that recolours a
+  // run of text inside a checked one has to be added here for the same reason.
+  //
+  // The masthead is deliberately absent. It used to be .hero-rail a and
+  // .hero-cta, both of which stopped matching when the header moved out of the
+  // hero and became page chrome — but re-pointing them at the new names would
+  // be worse than leaving them out. This sweep takes its ground by sampling
+  // the shader canvas, and the masthead now sits on a fixed scrim between
+  // itself and that canvas, so it would be measured against a ground it no
+  // longer has and fail on contrast it actually possesses. It is checked
+  // instead by sampling composited screenshots, which is the only way to see
+  // a backdrop-filtered pane and a scrim at the same time.
+  const targets = [...document.querySelectorAll(
+    '.hero-title, .hero-title-accent, .hero-lede'
+  )]
     .map(el => {
       const cs = getComputedStyle(el);
       const fg = rgba(cs.color) || { r: 0, g: 0, b: 0 };

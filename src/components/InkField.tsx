@@ -62,6 +62,8 @@ uniform vec3  uPigmentDark;
 uniform vec3  uPigmentLight;
 uniform float uShadeBandH;
 uniform float uShadeBandY;
+uniform vec4  uLineBox;    // centre x, centre y, half width, half height
+uniform float uLineFloor;
 uniform float uShadeBandGain;
 uniform float uShadeTop;
 uniform float uShadeBandFloor;
@@ -254,6 +256,24 @@ void main() {
   col *= mix(1.0, uShadeBandFloor, band);
   col *= mix(1.0, 0.42, top);
 
+  // A third region, and a much tighter one: the strip directly behind the
+  // accent line. That line is set in a blue whose luminance sits inside the
+  // range this ground covers, so it is the one thing on the hero that cannot
+  // borrow legibility from the wide band — it needs its own ground, and only
+  // where it actually is.
+  //
+  // Separable falloff rather than an ellipse, because the target is a wide
+  // short box and an ellipse around one pinches at the ends, dimming the
+  // middle of the line more than its edges. Both axes are displaced by the
+  // same noise as everything else so the boundary reads as part of the
+  // picture rather than as a rectangle laid over it.
+  if (uLineFloor < 1.0) {
+    float wob = (n - 0.5) * 0.30;
+    float lx = 1.0 - smoothstep(0.72, 1.55, abs(uv.x - uLineBox.x) / max(uLineBox.z, 0.0001) + wob);
+    float ly = 1.0 - smoothstep(0.55, 1.60, abs(yTop - uLineBox.y) / max(uLineBox.w, 0.0001) + wob);
+    col *= mix(1.0, uLineFloor, lx * ly);
+  }
+
   gl_FragColor = vec4(col, 1.0);
 }
 `;
@@ -321,21 +341,28 @@ function readColor(
 export function InkField({
   className,
   protect,
+  line,
 }: {
   className?: string;
   /* Selector for the element the legibility band must cover. Optional: without
      it the band falls back to the CSS fraction, which is the geometry this had
      before and is still what sets its minimum. */
   protect?: string;
+  /* Selector for a single line that needs its own, much tighter shade — see
+     the accent strip in the shader. Inert unless `--shade-line` is set below
+     1, so adding the selector alone changes nothing. */
+  line?: string;
 }) {
   const ref = useRef<HTMLCanvasElement | null>(null);
   const protectRef = useRef<HTMLElement | null>(null);
+  const lineRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     protectRef.current = protect
       ? document.querySelector<HTMLElement>(protect)
       : null;
-  }, [protect]);
+    lineRef.current = line ? document.querySelector<HTMLElement>(line) : null;
+  }, [protect, line]);
 
   useEffect(() => {
     const canvas = ref.current;
@@ -382,6 +409,8 @@ export function InkField({
     const uTime = gl.getUniformLocation(prog, "uTime");
     const uShadeBandH = gl.getUniformLocation(prog, "uShadeBandH");
     const uShadeBandY = gl.getUniformLocation(prog, "uShadeBandY");
+    const uLineBox = gl.getUniformLocation(prog, "uLineBox");
+    const uLineFloor = gl.getUniformLocation(prog, "uLineFloor");
     const uShadeBandGain = gl.getUniformLocation(prog, "uShadeBandGain");
     const uShadeTop = gl.getUniformLocation(prog, "uShadeTop");
     const uShadeBandFloor = gl.getUniformLocation(prog, "uShadeBandFloor");
@@ -462,6 +491,31 @@ export function InkField({
       }
       gl.uniform1f(uShadeBandH, bandH);
       gl.uniform1f(uShadeBandY, bandY);
+
+      /* The accent strip, measured from the element rather than guessed at, so
+         it follows the line when it rewraps instead of needing a value per
+         breakpoint. Padded generously on both axes: a shade that stops exactly
+         at the glyph box has a visible edge, and the point is for this to read
+         as a darker passage of the picture. */
+      const line = lineRef.current;
+      let lineFloor = 1;
+      if (line) {
+        const host = canvas.getBoundingClientRect();
+        const box = line.getBoundingClientRect();
+        if (host.width > 0 && host.height > 0 && box.width > 0) {
+          const padX = box.width * 0.06 + 40;
+          const padY = box.height * 0.35 + 26;
+          gl.uniform4f(
+            uLineBox,
+            (box.left + box.width / 2 - host.left) / host.width,
+            (box.top + box.height / 2 - host.top) / host.height,
+            (box.width / 2 + padX) / host.width,
+            (box.height / 2 + padY) / host.height,
+          );
+          lineFloor = readVar(cs, "--shade-line", 1);
+        }
+      }
+      gl.uniform1f(uLineFloor, lineFloor);
       gl.uniform1f(uShadeBandFloor, readVar(cs, "--shade-band-floor", 0.64));
       gl.uniform1f(uSpotRadius, readVar(cs, "--spot-radius", 0.42));
       gl.uniform1f(uSpotOrbit, readVar(cs, "--spot-orbit", 0.34));
