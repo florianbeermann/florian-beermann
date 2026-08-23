@@ -74,6 +74,8 @@ uniform float uSpotSurge;
 uniform float uSpotBreath;   // how much the pool grows at the top of the cycle
 uniform float uSpotPeriod;   // seconds for one full swell and return
 uniform float uSpotGain;     // how hard the pigment reads at full strength
+uniform float uFlowSeg;      // seconds between direction changes
+uniform float uFlowSpeed;    // how fast the field drifts
 
 float hash(vec2 p) {
   return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
@@ -104,6 +106,34 @@ float fbm(vec2 p) {
   return v;
 }
 
+/* The flow direction, one of four diagonals, turning a quarter turn each
+   segment. */
+vec2 flowDir(float c) {
+  float a = c * 1.5707963 + 0.7853982;
+  return vec2(cos(a), sin(a));
+}
+
+/* Where the field has drifted to by time t.
+
+   The direction changes abruptly; the position must not. So this integrates
+   velocity rather than multiplying a direction by t — the naive version moves
+   the whole picture to a completely different part of the noise field the
+   instant the direction changes, which reads as a cut rather than a turn.
+
+   Closed form rather than a running total: the four directions sum to zero
+   over a full cycle, so only the segments since the last multiple of four
+   contribute, and that is at most three of them. */
+vec2 flowOffset(float t, float seg, float speed) {
+  float k = floor(t / seg);
+  float frac = t - k * seg;
+  float c = mod(k, 4.0);
+  vec2 acc = vec2(0.0);
+  for (int i = 0; i < 3; i++) {
+    if (float(i) < c) acc += flowDir(float(i));
+  }
+  return (acc * seg + flowDir(c) * frac) * speed;
+}
+
 void main() {
   vec2 uv = gl_FragCoord.xy / uRes;
   // gl_FragCoord counts from the bottom; everything below thinks in screen
@@ -118,7 +148,11 @@ void main() {
   // Over roughly six seconds it moves far enough through the noise field that
   // nothing of the previous arrangement is left, which is this shader's
   // equivalent of the reference cross-fading to a different photograph.
-  vec2 drift = vec2(t * 0.030, t * 0.019);
+  //
+  // The direction turns a quarter turn every uFlowSeg seconds, so the field
+  // stops flowing one way and starts flowing another without the picture
+  // itself moving. See flowOffset above for why that has to be an integral.
+  vec2 drift = flowOffset(t, uFlowSeg, uFlowSpeed);
 
   vec2 q = vec2(
     fbm(p + drift),
@@ -434,6 +468,8 @@ export function InkField({
     const uSpotBreath = gl.getUniformLocation(prog, "uSpotBreath");
     const uSpotPeriod = gl.getUniformLocation(prog, "uSpotPeriod");
     const uSpotGain = gl.getUniformLocation(prog, "uSpotGain");
+    const uFlowSeg = gl.getUniformLocation(prog, "uFlowSeg");
+    const uFlowSpeed = gl.getUniformLocation(prog, "uFlowSpeed");
     const uInkDark = gl.getUniformLocation(prog, "uInkDark");
     const uInkLight = gl.getUniformLocation(prog, "uInkLight");
     const uPigmentDark = gl.getUniformLocation(prog, "uPigmentDark");
@@ -548,6 +584,9 @@ export function InkField({
       // whole field with it.
       gl.uniform1f(uSpotPeriod, Math.max(0.5, readVar(cs, "--spot-period", 12)));
       gl.uniform1f(uSpotGain, Math.max(0.05, readVar(cs, "--spot-gain", 1)));
+      // Guarded: a zero segment divides by zero and takes the field with it.
+      gl.uniform1f(uFlowSeg, Math.max(0.25, readVar(cs, "--flow-seg", 4)));
+      gl.uniform1f(uFlowSpeed, readVar(cs, "--flow-speed", 0.036));
 
       const inkDark = readColor(cs, "--p-field-dark", INK_DARK);
       const inkLight = readColor(cs, "--p-field-light", INK_LIGHT);

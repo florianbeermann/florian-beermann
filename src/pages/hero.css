@@ -121,6 +121,12 @@
 
   /* The pigment spotlight, both in fractions of viewport height: how tight the
      pool is, and how far its centre travels from the middle of the frame. */
+  /* The marble's flow. It runs on one diagonal for `--flow-seg` seconds, then
+     turns a quarter turn and runs on the next — the direction changes, the
+     picture does not jump. */
+  --flow-seg: 4;
+  --flow-speed: 0.036;
+
   --spot-radius: 0.42;
   --spot-orbit: 0.34;
   /* Radians per second around the orbit. Speeding this up while leaving the
