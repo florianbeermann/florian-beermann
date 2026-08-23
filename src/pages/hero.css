@@ -182,7 +182,7 @@
    the bottom. */
 .hero-title {
   margin: 0;
-  font-size: clamp(2.5rem, min(6vw, 9vh), 7rem);
+  font-size: clamp(2.75rem, min(7.6vw, 11.5vh), 9.5rem);
   /* Wide enough that the second sentence holds one line at every desktop size
      — the `<br />` is the only break this headline should have, because the
      two sentences are a parallel pair and breaking inside the second one
@@ -263,7 +263,7 @@
   }
 
   .hero-title {
-    font-size: clamp(2rem, 9vw, 2.5rem);
+    font-size: clamp(2.25rem, 10.5vw, 3rem);
   }
 
   .hero-statement {
@@ -291,7 +291,7 @@
    luminance 0.41 and clears 3:1 against the deepened band, which is the bar
    for text at this size. */
 .hero-title-accent {
-  color: var(--p-blue);
+  color: inherit;
 }
 
 /* ── The brand lockup ─────────────────────────────────────────────────────
