@@ -234,11 +234,13 @@ export default function Home() {
               Your customers changed.{" "}
               <br />
               <span className="hero-title-accent">
-                Your Customer Success motion didn’t.
+                Your Customer Success motion did not.
               </span>
             </h1>
             <p className="hero-lede">
-              I build Customer Success operations that work in the real world.
+              I build operations and processes
+              <br />
+              that work in the real world.
             </p>
           </div>
         </section>

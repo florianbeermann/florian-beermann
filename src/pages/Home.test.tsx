@@ -37,7 +37,7 @@ describe("homepage", () => {
     renderHome();
 
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-      "Your customers changed. Your Customer Success motion didn’t.",
+      "Your customers changed. Your Customer Success motion did not.",
     );
     // Both copies of the action are asserted, because both are real: the one
     // in the masthead row and the one at the foot of the mobile sheet. Only
