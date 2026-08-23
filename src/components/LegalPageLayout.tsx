@@ -27,7 +27,7 @@ export const LegalPageLayout = ({
           <img className="site-brand-name" src="/logo-wordmark.svg?v=2" alt="" width="2335" height="198" />
         </Link>
         <nav aria-label="Primary navigation">
-          <Link to="/#engagements">Engagements</Link>
+          <Link to="/#engagements">Work</Link>
           <Link to="/#about">About</Link>
           <Link to="/#contact">Contact</Link>
         </nav>

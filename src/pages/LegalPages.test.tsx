@@ -24,7 +24,7 @@ describe("legal pages", () => {
     expect(
       screen.getByRole("link", { name: "hello@florianbeermann.com" }),
     ).toHaveAttribute("href", "mailto:hello@florianbeermann.com");
-    expect(screen.getByRole("link", { name: "Engagements" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Work" })).toHaveAttribute(
       "href",
       "/#engagements",
     );

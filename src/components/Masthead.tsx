@@ -165,7 +165,7 @@ export function Masthead() {
         <CircleMark />
       </a>
       <nav className="glass masthead-rail" aria-label="Primary navigation">
-        <a href="#engagements">Engagements</a>
+        <a href="#engagements">Work</a>
         <a href="#about">About</a>
       </nav>
       <a className="control control--solid masthead-cta" href="#contact">
@@ -177,7 +177,7 @@ export function Masthead() {
           breakpoint. */}
       <MobileNav
         links={[
-          { href: "#engagements", label: "Engagements" },
+          { href: "#engagements", label: "Work" },
           { href: "#about", label: "About" },
         ]}
         action={{ href: "#contact", label: "Start a conversation" }}
