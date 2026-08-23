@@ -382,17 +382,17 @@ export function InkField({ className }: { className?: string }) {
     // one material with a slight hue wobble, not two.
     //
     // So the pair is rotated rather than half-swapped. The base moves to a
-    // near-neutral graphite carrying only a trace of cool, and the pigment
-    // becomes a genuinely saturated azure. The relationship the reference has
-    // is preserved; only its position on the wheel changes.
+    // slate carrying only a trace of cool, and the pigment becomes a genuinely
+    // electric blue. The relationship the reference has is preserved; only its
+    // position on the wheel changes.
     //
-    // Both ramps now come from `palettes.css` — see `resize()`. The fallbacks
-    // below are palette 03, which is what these uniforms held as literals
-    // before the palette layer existed.
-    const INK_DARK: [number, number, number] = [0.286, 0.29, 0.318];
-    const INK_LIGHT: [number, number, number] = [0.663, 0.667, 0.694];
-    const PIG_DARK: [number, number, number] = [0.063, 0.153, 0.396];
-    const PIG_LIGHT: [number, number, number] = [0.353, 0.573, 0.961];
+    // Both ramps come from `palettes.css` — see `resize()`. These fallbacks
+    // mirror it, and exist only for the case where the custom properties fail
+    // to resolve at all.
+    const INK_DARK: [number, number, number] = [0.255, 0.278, 0.325];
+    const INK_LIGHT: [number, number, number] = [0.639, 0.667, 0.722];
+    const PIG_DARK: [number, number, number] = [0.0, 0.133, 0.478];
+    const PIG_LIGHT: [number, number, number] = [0.302, 0.545, 1.0];
 
     const resize = () => {
       const r = canvas.getBoundingClientRect();

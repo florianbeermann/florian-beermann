@@ -437,6 +437,10 @@ body::before {
      near-black ink has plenty of room to fade. */
   --muted: rgb(var(--p-ink-rgb) / 0.72);
   --line: rgb(var(--p-ink-rgb) / 0.28);
+  /* Running prose. On this ground it is simply the ink — the split between the
+     two only matters on the light bands, where the ink is the blue — but it is
+     declared in every scope so `var(--prose)` always resolves. */
+  --prose: var(--p-ink);
   /* Type on a filled control, which on this ground is an ink fill. */
   --on-ink: var(--p-paper);
   --on-ink-muted: rgb(var(--p-paper-rgb) / 0.82);
@@ -539,46 +543,43 @@ body::before {
 .site-footer {
   --paper: var(--p-paper);
   --paper-deep: var(--p-paper-deep);
-  /* The ink on a light band is the voltage itself, in four of the five
-     palettes. This is the one ground where the blue can carry everything — it
-     holds 5:1 or better on every paper in the set, where on the dark stock it
-     is close to 1:1 and invisible.
+  /* On the light bands `--ink` is the blue — but it is the blue as a *material*
+     rather than as a text colour. It fills controls, draws borders, paints
+     rails. What it no longer does is carry running prose, which is the change
+     that stopped these bands reading as one flat sheet of blue.
 
-     So these bands are not "light sections with a blue accent". They are
-     printed in blue: heading, prose, label, figure, rule and filled control.
-     The stock does not appear inside them at all.
-
-     Palette 04 is the deliberate exception. Its premise is that the navy is the
-     ink and the blue is the accent, so it points `--p-band-ink` at its own dark
-     instead — which is why this reads a token rather than `--p-blue` directly. */
-  --ink: var(--p-band-ink);
-  /* Secondary prose, as the ink at reduced strength rather than a second
-     colour. How much reduction a palette can afford depends entirely on how
-     dark its blue is, so the alpha is a palette token rather than a constant.
-
-     The old system used a flat 0.7 and got away with it because its ink was
-     `#0000FF` — 8.15:1 on ivory, with room to fade. A mid-blue at 5.3:1 has
-     none: the same 0.7 measures 3.16:1, which is why two of the five palettes
-     declare 1 here and step secondary prose down by scale instead. */
-  --muted: rgb(var(--p-band-ink-rgb) / var(--p-muted-alpha));
-  /* Every hairline: the ink at 42%, which is the same relationship the blue
-     band uses for its own rules. */
-  --line: rgb(var(--p-band-ink-rgb) / 0.42);
+     `#0047FF` measures 5.34:1 here, so a 0.7 tint of it lands at 3.32:1 and
+     fails. With no tint available every register — heading, lede, body,
+     secondary, label, figure — arrived at exactly the same value, and the
+     hierarchy came from size alone. */
+  --ink: var(--p-blue);
+  /* Running prose, and the reason this token exists. The slate at 14.38:1 has
+     the headroom the blue does not, so a real secondary step is possible. */
+  --prose: var(--p-ink);
+  /* Secondary prose as a tint of the prose colour. 0.7 composites to 8.4:1
+     against the sheet; the measured floor before it drops under 4.5:1 is
+     0.63, so unlike the blue this has room to give. */
+  --muted: rgb(var(--p-ink-rgb) / 0.7);
+  /* Every hairline: the blue at 42%. Rules are the blue's job, not the
+     prose's — a hairline is a drawn mark, not a sentence. */
+  --line: rgb(var(--p-blue-rgb) / 0.42);
   /* Type on a filled control, which on this band is a blue fill — so the
      submit button is blue with paper on it, the same pair the statement band
-     runs. */
+     runs, at 5.34:1. */
   --on-ink: var(--p-paper);
   --on-ink-muted: rgb(var(--p-paper-rgb) / 0.82);
-  /* Both resolve to the ink now that the whole band is blue. They stay declared
-     rather than deleted because they are what force full strength on the
-     register that would otherwise inherit `--muted` — the field labels, the
-     definition terms, the legal line — so the scan layer stays a step above the
-     prose it sits beside. */
-  --heading: var(--ink);
-  --marker: var(--ink);
+  /* Both stay the blue. These are the scan layer — headings, labels, figures,
+     links — and keeping them on the signal while prose sits on the slate is
+     what gives the band three distinct registers instead of one.
+
+     They are restated rather than inherited for a reason worth remembering: a
+     custom property holding `var(--ink)` resolves against the element that
+     declares it, not the element that uses it. */
+  --heading: var(--p-blue);
+  --marker: var(--p-blue);
   background-color: var(--paper);
   background-image: none;
-  color: var(--ink);
+  color: var(--prose);
 }
 
 /* The voltage scope: the one band on the page that is printed in the blue. It
@@ -601,6 +602,7 @@ body::before {
   --paper: var(--p-blue);
   --paper-deep: color-mix(in srgb, var(--p-blue) 84%, #000);
   --ink: var(--p-paper);
+  --prose: var(--p-paper);
   --muted: var(--p-paper);
   --line: rgb(var(--p-paper-rgb) / 0.42);
   --on-ink: var(--p-blue);

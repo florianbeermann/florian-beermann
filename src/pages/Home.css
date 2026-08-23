@@ -253,10 +253,17 @@
    name, a number, a thing to click — rather than a sentence to read, and on a
    light band that whole register takes the voltage.
 
-   The prose these sit among is deliberately absent from this list and stays in
-   the ink: `.home-proof-rest`, `.home-facts dd`, `.home-contact-copy`,
+   The prose these sit among is deliberately absent from this list and takes
+   `--prose` instead: `.home-proof-rest`, `.home-facts dd`, `.home-contact-copy`,
    `.home-form-reassure`, `.home-form-privacy`, and every value the visitor
-   types. Colour marks the page's furniture; it does not narrate. */
+   types. Colour marks the page's furniture; it does not narrate.
+
+   `--prose` exists because that distinction stopped being free. While the blue
+   was `#0000FF` it was dark enough to be both the signal and a body-text
+   colour, so prose could simply take `--ink` and the split was a matter of
+   which elements got an override. `#0047FF` is not: at 5.34:1 it cannot carry a
+   tinted secondary register, so `--ink` had to become the signal alone and
+   prose needed a token of its own. */
 .site-inverted .home-proof-lede,
 .site-inverted .home-employers li,
 .site-inverted .home-facts dt,
@@ -404,7 +411,7 @@
 
 .home-facts dd {
   margin: 0.6rem 0 0;
-  color: var(--ink);
+  color: var(--prose);
   font-size: var(--text-base);
   line-height: 1.5;
 }
@@ -1051,7 +1058,7 @@
 
 .home-about-copy .home-about-lead {
   margin-bottom: clamp(0.8rem, 2.5vh, 1.8rem);
-  color: var(--ink);
+  color: var(--prose);
   font-size: var(--text-title);
   font-weight: 520;
   letter-spacing: -0.03em;
@@ -1265,7 +1272,7 @@
   outline: none;
   background: transparent;
   padding: 0.65rem 0;
-  color: var(--ink);
+  color: var(--prose);
   box-shadow: none;
   font: inherit;
   font-size: var(--text-base);
@@ -1367,7 +1374,7 @@
   outline: none;
   background: transparent;
   padding: 0.65rem 0;
-  color: var(--ink);
+  color: var(--prose);
   box-shadow: none;
   font: inherit;
   font-size: var(--text-base);
@@ -1386,11 +1393,11 @@
    the form. It reads the palette tokens directly — they live on :root, so they
    resolve inside a portal where a scope class would not. */
 .home-select-content {
-  border: 1px solid var(--p-band-ink);
+  border: 1px solid var(--p-blue);
   border-radius: 0;
   background: var(--p-paper);
   padding: 0;
-  color: var(--p-band-ink);
+  color: var(--p-ink);
   box-shadow: none;
   font-size: var(--text-base);
 }
@@ -1451,7 +1458,7 @@
 
 .home-form-reassure {
   margin: 0 0 -0.85rem;
-  color: var(--ink);
+  color: var(--prose);
   font-size: var(--text-sm);
   line-height: 1.6;
 }

@@ -26,61 +26,57 @@
     /* The component library's mirror of the design system. Nothing here draws
        the page — the shell and the page stylesheets own every visible surface —
        but Radix's portalled menus and the toaster resolve their defaults from
-       these, so a value left stale here is a blue popover on a plum site. Keep
-       them in step with shell.css.
+       these, so a value left stale here is a plum popover on a slate site.
 
-       Every value is one of the five palette colours, stated in HSL because
-       Tailwind composes them with an alpha channel. */
+       Which is exactly what happened: this block still held the retired plum
+       palette long after every other surface had moved, and `body` inherited a
+       honeydew that no longer existed anywhere in the system. Every value now
+       points at `palettes.css` through its HSL mirrors rather than restating a
+       colour, so it cannot drift again. */
 
-    /* --chocolate-plum: the stock the page is printed on. */
-    --background: 344 13% 28%;
-    /* --ivory: the ink. */
-    --foreground: 90 60% 96%;
+    --background: var(--p-paper-hsl);
+    --foreground: var(--p-ink-hsl);
 
-    --card: 344 13% 28%;
-    --card-foreground: 90 60% 96%;
+    --card: var(--p-paper-hsl);
+    --card-foreground: var(--p-ink-hsl);
 
-    --popover: 344 13% 28%;
-    --popover-foreground: 90 60% 96%;
+    --popover: var(--p-paper-hsl);
+    --popover-foreground: var(--p-ink-hsl);
 
-    /* Primary is the ink and accent is the voltage — the one place in the
-       system where the two are genuinely different jobs rather than the same
-       colour twice. A filled control is ivory with plum on it; the thing that
-       asks to be pressed is the blue with ivory on it (8.15:1). */
-    --primary: 90 60% 96%;
-    --primary-foreground: 344 13% 28%;
+    /* A filled control is the blue with the paper on it — the same pair the
+       statement band runs, at 5.34:1. Primary and accent hold the same value
+       because on this palette they are the same job. */
+    --primary: var(--p-blue-hsl);
+    --primary-foreground: var(--p-paper-hsl);
 
-    /* The voltage: the sRGB primary, unmixed. It takes the ivory, never the
-       plum — plum on this blue is 1.17:1. */
-    --accent: 240 100% 50%;
-    --accent-foreground: 90 60% 96%;
+    --accent: var(--p-blue-hsl);
+    --accent-foreground: var(--p-paper-hsl);
 
-    /* Inset grounds: the stock taken a step deeper. */
-    --secondary: 344 13% 24%;
-    --secondary-foreground: 90 60% 96%;
+    /* Inset grounds: the sheet taken a step deeper. */
+    --secondary: var(--p-paper-deep-hsl);
+    --secondary-foreground: var(--p-ink-hsl);
 
-    --muted: 344 13% 24%;
-    /* The ink at 0.84 over the stock, stated flat because Tailwind composes
-       these with its own alpha channel. 7.34:1, and it matches `--muted` in
-       shell.css. */
-    --muted-foreground: 67 11% 85%;
+    --muted: var(--p-paper-deep-hsl);
+    /* The prose colour at 0.7 over the paper, stated flat because Tailwind
+       composes these with its own alpha channel. Matches shell.css. */
+    --muted-foreground: var(--p-muted-hsl);
 
     /* The one deliberate exception to the palette, and it stays an exception on
        purpose: an error has to be unmistakable, and a brand-coloured error is a
        missed one. Nothing renders it today — the toaster paints every variant as
-       stock and ink — so it is an unused affordance rather than a sixth colour
+       paper and ink — so it is an unused affordance rather than a second colour
        on the page. */
     --destructive: 0 84% 60%;
-    --destructive-foreground: 90 60% 96%;
+    --destructive-foreground: var(--p-paper-hsl);
 
-    /* The rule on the dark stock: the ink at 0.32, stated flat. */
-    --border: 5 5% 50%;
-    --input: 5 5% 50%;
-    /* The focus ring is the ink, not the voltage. The blue holds 8.15:1 on a
-       light band but only 1.17:1 on the page's own plum stock, and a focus
-       indicator whose reliability changes by section is not an indicator. The
-       ivory holds 9.55:1 on the stock. */
-    --ring: 90 60% 96%;
+    /* Every hairline: the ink at 0.28 over the paper, stated flat. */
+    --border: var(--p-line-hsl);
+    --input: var(--p-line-hsl);
+    /* The focus ring is the blue. The page's own focus style is
+       `outline: 2px solid currentColor`, which adapts to whatever ground it
+       lands on; this token only reaches library components, and those render on
+       the sheet where the blue holds. */
+    --ring: var(--p-blue-hsl);
 
     --radius: 0;
   }
