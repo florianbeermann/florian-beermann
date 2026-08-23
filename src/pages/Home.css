@@ -1180,6 +1180,16 @@
    Set quieter than the address above it — small, tracked, muted — so it reads
    as the notice it is and does not compete with the email address, which is the
    thing that column exists to offer. */
+/* Set in the machine voice, the same one the navigation uses: Fragment Mono in
+   tracked caps. These three are the only things in this section that stay
+   capitalised, and giving them the mono is what makes that read as a register
+   rather than as shouting — it is the typeface saying "this was printed by a
+   system", which is exactly what an imprint link and a copyright line are.
+
+   `font-weight` drops to 400 because Fragment Mono ships one weight; 520 was
+   asking the browser to synthesise a bolder cut that does not exist. Tracking
+   moves to the mono's own `--label-tracking` for the same reason: 0.16em was
+   set for Switzer's caps, and the mono is already wider. */
 .home-contact-legal {
   display: flex;
   grid-area: 2 / 1;
@@ -1190,10 +1200,11 @@
   padding-top: clamp(0.6rem, 1.8vh, 1.25rem);
   border-top: 1px solid var(--line);
   color: var(--muted);
+  font-family: var(--mono);
   font-size: var(--text-label);
   font-variant-numeric: tabular-nums;
-  font-weight: 520;
-  letter-spacing: var(--track-label);
+  font-weight: 400;
+  letter-spacing: var(--label-tracking);
   text-transform: uppercase;
 }
 
@@ -1253,13 +1264,17 @@
   gap: 0.55rem;
 }
 
+/* Sentence case. The tracking and the size go with it: `--track-label` is
+   0.16em, which exists to open up capitals, and lower case at that spacing
+   reads as though the letters have come loose. At 11.5px sentence case also
+   sits smaller than caps do, so the size steps up one notch to hold the same
+   presence in the form. */
 .home-contact-form label {
   color: var(--ink);
-  font-size: var(--text-label);
+  font-size: var(--text-sm);
   font-variant-numeric: tabular-nums;
-  font-weight: 520;
-  letter-spacing: var(--track-label);
-  text-transform: uppercase;
+  font-weight: 560;
+  letter-spacing: -0.005em;
 }
 
 .home-contact-form .home-form-control {
@@ -1416,10 +1431,12 @@
   padding: 1rem 1.5rem;
   color: var(--on-ink);
   font: inherit;
-  font-size: var(--text-xs);
-  font-weight: 620;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  /* Sentence case, so the 0.1em tracking that was holding the capitals apart
+     goes with it and the size steps up — this is the button the whole page is
+     asking for and it should not read smaller than the labels above it. */
+  font-size: var(--text-base);
+  font-weight: 600;
+  letter-spacing: -0.01em;
 }
 
 /* Same inversion as the hero's action, for the same reason. */

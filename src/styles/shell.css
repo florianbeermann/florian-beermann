@@ -785,10 +785,18 @@ body::before {
   gap: 2rem;
   border-top: 1px solid var(--line);
   padding: 2.4rem 4vw;
+  /* The machine voice, matching the navigation and the landing page's own
+     legal line. These are the same three items in the same role — an imprint
+     link, a privacy link and a copyright — and they should not change typeface
+     depending on which page you reached them from.
+
+     400, because Fragment Mono ships one weight, and the mono's own tracking,
+     because 0.16em was set for Switzer's capitals. */
+  font-family: var(--mono);
   font-size: var(--text-label);
   font-variant-numeric: tabular-nums;
-  font-weight: 520;
-  letter-spacing: var(--track-label);
+  font-weight: 400;
+  letter-spacing: var(--label-tracking);
   text-transform: uppercase;
 }
 
