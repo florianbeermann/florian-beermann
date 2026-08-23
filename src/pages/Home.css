@@ -271,8 +271,8 @@
 .site-inverted address a,
 .site-inverted .home-contact-form label,
 .site-inverted .home-details-toggle,
-.site-inverted .home-contact-legal,
-.site-inverted .home-contact-legal a,
+.site-inverted .site-closing-legal,
+.site-inverted .site-closing-legal a,
 .site-inverted .home-form-reassure a.home-privacy-link {
   color: var(--marker);
 }
@@ -1191,12 +1191,10 @@
    asking the browser to synthesise a bolder cut that does not exist. Tracking
    moves to the mono's own `--label-tracking` for the same reason: 0.16em was
    set for Switzer's caps, and the mono is already wider. */
-.home-contact-legal {
+.site-closing-legal {
   display: flex;
-  grid-area: 2 / 1;
   flex-wrap: wrap;
   align-items: baseline;
-  align-self: end;
   gap: 0.4rem 1.5rem;
   padding-top: clamp(0.6rem, 1.8vh, 1.25rem);
   border-top: 1px solid var(--line);
@@ -1209,26 +1207,26 @@
   text-transform: uppercase;
 }
 
-.home-contact-legal nav {
+.site-closing-legal nav {
   display: flex;
   gap: 1.5rem;
 }
 
 /* The links keep a full touch target without the block growing by two rows of
    it: the box stays the height of the text and the reach extends past it. */
-.home-contact-legal a {
+.site-closing-legal a {
   position: relative;
   border-bottom: 1px solid currentColor;
 }
 
-.home-contact-legal a::after {
+.site-closing-legal a::after {
   content: "";
   position: absolute;
   inset: -14px -6px;
 }
 
-.home-contact-legal a:hover,
-.home-contact-legal a:focus-visible {
+.site-closing-legal a:hover,
+.site-closing-legal a:focus-visible {
   color: var(--on-ink);
 }
 
@@ -1515,7 +1513,7 @@
 
   .home-contact-copy,
   .home-contact-form,
-  .home-contact-legal {
+  .site-closing-legal {
     grid-area: auto;
   }
 
@@ -1809,4 +1807,23 @@
   .home-optional-details {
     grid-template-columns: 1fr;
   }
+}
+
+/* ── The closing panel ────────────────────────────────────────────────────
+   Full height, and that is the whole point of it rather than a flourish. The
+   masthead colours its mark from whichever section crosses its centre line,
+   about 35px down. At maximum scroll the last section's top sits at
+   `viewport − its height`, so anything shorter than the viewport never reaches
+   that line and the row keeps reporting the section above. A panel that fills
+   the last screen is the only geometry that puts the footer under the row when
+   the page is scrolled to the end.
+
+   The legal line sits at the foot of it, where a footer's fine print belongs. */
+.site-closing {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 100svh;
+  padding: var(--section-pad, clamp(3rem, 8vh, 6rem)) 4vw
+    calc(clamp(2rem, 5vh, 3.5rem) + env(safe-area-inset-bottom, 0px));
 }

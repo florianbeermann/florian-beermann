@@ -662,31 +662,29 @@ export default function Home() {
               placed at the foot of the first column while there are two, and
               genuinely last once the panel stacks — inside the copy column it
               would have come between the address and the form. */}
-          {/* `footer` with an explicit `contentinfo` role, in place — not a new
-              band at the end of the document.
-
-              The site deliberately has no trailing footer section: the contact
-              panel is the last thing on the page, and a separate footer would
-              cost a scroll after the visitor has already arrived at the point.
-              So this line stays exactly where it sits, in the corner of the
-              contact panel, and only its element type changes.
-
-              The role has to be explicit. A bare `<footer>` nested inside
-              `<section>` maps to the generic role rather than `contentinfo`,
-              because the implicit mapping is scoped to the nearest sectioning
-              element. Stating the role directly is what actually exposes the
-              landmark, and it costs nothing visually. */}
-          <footer className="home-contact-legal" role="contentinfo">
-            <nav aria-label="Legal">
-              <Link to="/imprint">Imprint</Link>
-              <Link to="/privacy">Privacy</Link>
-            </nav>
-            <span>
-              Florian Beermann &amp; Partners · © {new Date().getFullYear()}
-            </span>
-          </footer>
         </section>
       </main>
+
+      {/* The closing panel. It is a section in its own right rather than a strip
+          at the foot of the contact form, and it is full height on purpose:
+          the masthead reads whichever section crosses its centre line, and at
+          maximum scroll a short footer never reaches that line — the row went
+          on reporting the section two above it. A panel that fills the last
+          screen is the only thing that puts the footer under the row when the
+          page is scrolled to the end.
+
+          Outside <main> so the contentinfo landmark is not nested inside it. */}
+      <footer className="site-closing site-inverted" role="contentinfo">
+        <div className="site-closing-legal">
+          <nav aria-label="Legal">
+            <Link to="/imprint">Imprint</Link>
+            <Link to="/privacy">Privacy</Link>
+          </nav>
+          <span>
+            Florian Beermann &amp; Partners · © {new Date().getFullYear()}
+          </span>
+        </div>
+      </footer>
     </div>
   );
 }

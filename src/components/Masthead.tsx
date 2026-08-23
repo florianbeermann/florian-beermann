@@ -27,7 +27,7 @@ import { MobileNav } from "./MobileNav";
 
 /* Which sections can be a ground. Anything with an opaque background; the rest
    are skipped at read time. */
-const GROUNDS = "main > section, main > footer";
+const GROUNDS = "main > section, main > footer, .site-page > footer";
 
 /* Three grounds, not two, and the third one is not a nicety.
 
