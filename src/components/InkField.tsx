@@ -181,6 +181,17 @@ void main() {
   float ink = mix(plate, vein, 0.42);
   ink = clamp(ink * 0.86 + n * 0.28, 0.0, 1.0);
 
+  // Alternate segments run in negative, so the field inverts on the same beat
+  // it changes direction. Inverting the ramp position rather than the colour
+  // keeps this inside the palette: light and dark swap places between the same
+  // two tones instead of 1.0 - col sending them somewhere off-brand. The
+  // pigment reads from the same value, so the whole picture turns together
+  // rather than the pool holding the old polarity like a lens.
+  //
+  // abs() rather than a branch: neg = 0 leaves ink alone, neg = 1 gives 1 - ink.
+  float neg = mod(floor(t / uFlowSeg), 2.0);
+  ink = abs(neg - ink);
+
   vec3 col = mix(uInkDark, uInkLight, ink);
 
   // ── The pigment ────────────────────────────────────────────────────────
