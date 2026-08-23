@@ -130,7 +130,7 @@
    sheet it sits on, and the sheet *is* the paper. A paper film on paper is
    nothing at all. */
 .site-masthead[data-ground="light"] {
-  --glass-bg: rgb(255 255 255 / 0.4);
+  --glass-bg: rgb(255 255 255 / 0.16);
   --glass-shadow: 0 4px 35px rgb(var(--p-ink-rgb) / 0.08);
   color: var(--p-ink);
   /* Denser than the dark ground's, and for a different reason. On the hero the
@@ -156,7 +156,7 @@
    job is to be the loudest thing on the page, an inset is also the quieter and
    better answer — a white pill here would compete with the headline. */
 .site-masthead[data-ground="deep"] {
-  --glass-bg: rgb(var(--p-ink-rgb) / 0.28);
+  --glass-bg: rgb(var(--p-ink-rgb) / 0.14);
   color: var(--on-dark);
   /* The band's own blue, so the row sits on the band rather than on whatever
      line of it happens to be passing underneath. */
@@ -200,20 +200,7 @@
 .site-masthead .masthead-mark {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
   justify-self: start;
-  /* The mark carries the pill's material rather than sitting bare on the page.
-     It has to: the scrim behind this row is now a veil rather than a sheet — a
-     sheet is what killed the glass — and a bare mark on a veil collides with
-     whatever heading scrolls under it. Giving it the same glass makes the row
-     one material instead of two. */
-  padding: 0 0.5rem;
-  min-height: var(--rail-height);
-  border-radius: var(--radius);
-  background: var(--glass-bg);
-  box-shadow: var(--glass-shadow);
-  backdrop-filter: blur(var(--glass-blur)) saturate(130%);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(130%);
   /* Set from the section under the row — see `markerOf` in Masthead.tsx. The
      fallback is the paper, which is what the hero wants and what the row starts
      on before the observer has reported anything.
