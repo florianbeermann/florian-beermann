@@ -698,17 +698,18 @@ export default function Home() {
           </div>
         </div>
 
-        <p className="site-closing-copy">
-          Florian Beermann &amp; Partners · © {new Date().getFullYear()}
-        </p>
-
         {/* The wordmark, set to the width of the page and cropped by the
             panel's bottom edge. Presentational: the accessible name is already
-            on the masthead's home link. */}
+            on the masthead's home link, and the copyright it now carries is
+            given to assistive tech by the line below. */}
         <div className="site-closing-lockup" aria-hidden="true">
           <CircleMark className="site-closing-mark" />
           <span className="site-closing-word">Florian Beermann &amp; Partners</span>
+          <span className="site-closing-year">© {new Date().getFullYear()}</span>
         </div>
+        <p className="site-closing-legal">
+          Florian Beermann &amp; Partners, © {new Date().getFullYear()}
+        </p>
       </footer>
     </div>
   );

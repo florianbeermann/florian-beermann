@@ -1892,18 +1892,19 @@
   border-bottom-color: var(--p-paper);
 }
 
-/* Full paper, not the muted tint. On this ground the tint composites to
-   3.41:1 against the blue, under the 4.5 bar for type this size — the blue is
-   dark enough that a 0.72 alpha has nowhere to go. It steps down by scale and
-   by the mono voice instead. */
-.site-closing-copy {
-  margin: clamp(2rem, 5vh, 3.5rem) 0 auto;
-  color: var(--p-paper);
-  font-family: var(--mono);
-  font-size: var(--text-label);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: var(--label-tracking);
-  text-transform: uppercase;
+/* The copyright is carried visibly by the lockup below, which is presentational.
+   This is the same notice as real text for assistive tech, taken out of the
+   visual flow rather than hidden with display:none, which would take it out of
+   the accessibility tree as well and leave the footer with no legal line. */
+.site-closing-legal {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* Sized to span the page, and pushed to the foot so the panel's own edge does
@@ -1924,13 +1925,14 @@
   margin-top: auto;
   margin-bottom: -0.19em;
   /* Wall to wall: the lockup bleeds past the panel's gutters to the viewport
-     edges, so the mark starts at one edge and the wordmark ends at the other.
-     7.15vw is the width of the page divided by the lockup's own aspect — it is
-     about 13.9 times its font-size wide — with a hair of margin so a rounding
-     difference cannot clip the final letter. */
+     edges, so the mark starts at one edge and the year ends at the other.
+     6.74vw is the width of the page divided by the lockup's own aspect — it is
+     about 14.68 times its font-size wide, the mark, the wordmark and the year
+     measured separately — with a hair of margin so a rounding difference
+     cannot clip the final digit. Re-measure this if anything joins the lockup. */
   margin-left: -4vw;
   margin-right: -4vw;
-  font-size: 7.15vw;
+  font-size: 6.74vw;
   line-height: 1;
   white-space: nowrap;
 }
@@ -1950,10 +1952,41 @@
   line-height: 1;
 }
 
+/* The year rides at the top of the wordmark rather than on its baseline, the
+   way a registration mark does. flex-start against a line whose height is set
+   by the 1em wordmark puts it at the ascender without a magic offset.
+
+   Mono rather than the wordmark face: at this size Nippo's figures are too
+   small to hold, and the mono voice is the one the rest of the site's legal
+   and label text already uses. */
+.site-closing-year {
+  align-self: flex-start;
+  margin-left: 0.14em;
+  font-family: var(--mono);
+  font-size: 0.135em;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--label-tracking);
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
 @media (max-width: 48rem) {
   .site-closing-top {
     flex-direction: column;
     gap: 2.5rem;
+  }
+
+  /* The lockup is sized to span the viewport, so on a narrow screen the whole
+     thing is small — around 26px at 390px wide — and 0.135em of that is 3.5px,
+     which is not a registration mark, it is a smudge. The year gets an absolute
+     floor here and the lockup is re-fitted around it: the mark and wordmark are
+     13.97em of the remaining space once the year and its margin are taken out. */
+  .site-closing-year {
+    font-size: 0.625rem;
+  }
+
+  .site-closing-lockup {
+    font-size: min(6.74vw, calc((100vw - 3.6rem) / 14.11));
   }
 }
 
