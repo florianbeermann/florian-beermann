@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { StarMark } from "@/components/StarMark";
+import { InkField } from "@/components/InkField";
+import { MobileNav } from "@/components/MobileNav";
 import { setPageMetadata } from "@/lib/metadata";
 import "./Home.css";
 import "./hero.css";
@@ -84,33 +86,6 @@ const engagements = [
   },
 ];
 
-const experience = [
-  {
-    company: "Microsoft",
-    context:
-      "Supported enterprise customers across cloud adoption, AI and modern work.",
-  },
-  {
-    company: "Capgemini",
-    context:
-      "Ran delivery across large enterprise programmes, coordinating multiple stakeholders and dependencies.",
-  },
-  {
-    company: "HubSpot",
-    context:
-      "Developed commercial experience in B2B SaaS sales and customer conversations.",
-  },
-  {
-    company: "Personio",
-    context:
-      "Worked with large corporate accounts on adoption, retention and expansion.",
-  },
-  {
-    company: "Spendesk",
-    context:
-      "Improved fintech onboarding and built data-led Customer Success plans.",
-  },
-];
 
 const contactEmail = "hello@florianbeermann.com";
 
@@ -233,26 +208,11 @@ export default function Home() {
     <div className="site-page">
       <main id="site-main">
         <section id="top" className="hero on-dark">
-          <div className="hero-photo">
-            <img
-              src="/photo/alster-1400.jpg"
-              srcSet="/photo/alster-700.jpg 700w, /photo/alster-1000.jpg 1000w, /photo/alster-1400.jpg 1400w, /photo/alster-1800.jpg 1800w, /photo/alster-2000.jpg 2000w"
-              sizes="(max-width: 48rem) 560vw, 140vw"
-              alt="The Binnenalster in Hamburg at sunset, with the spire of St. Nikolai, the Rathaus tower and the Elbphilharmonie along the far shore."
-              width="2000"
-              height="1333"
-              decoding="async"
-            />
-            {/* Inside the photo, so they blend with the image and are clipped
-                by it. Three lobes rather than one so the field morphs instead
-                of sliding. Decorative and unreadable by definition, so inert
-                to the tree rather than hidden from it. */}
-            <div className="hero-field hero-field--warm" aria-hidden="true" />
-            <div className="hero-field hero-field--cool" aria-hidden="true" />
-            <div className="hero-field hero-field--pool" aria-hidden="true" />
-          </div>
-          <div className="hero-wash" aria-hidden="true" />
-          <div className="hero-grain" aria-hidden="true" />
+          {/* The whole background. No photograph: the shader generates the
+              picture, which is what lets the statement's contrast floor be a
+              property of the image rather than something layered onto it.
+              Decorative and unreadable by definition. */}
+          <InkField className="hero-ink" />
 
           {/* Explicit `banner`: nested inside a sectioning element the implicit
               mapping degrades to generic, so the landmark has to be stated to
@@ -271,11 +231,23 @@ export default function Home() {
             <a className="control control--solid hero-cta" href="#contact">
               Start a conversation
             </a>
+            {/* Below 48rem the pill above is hidden and this takes over. Both
+                are always in the DOM; CSS decides which is shown, so there is
+                no viewport-width branch in JavaScript to get out of step with
+                the breakpoint. */}
+            <MobileNav
+              links={[
+                { href: "#engagements", label: "Engagements" },
+                { href: "#about", label: "About" },
+              ]}
+              action={{ href: "#contact", label: "Start a conversation" }}
+            />
           </header>
 
           <div className="hero-statement">
             <h1 className="display hero-title">
-              Your customers changed.<br />
+              Your customers changed.{" "}
+              <br />
               Your Customer Success motion didn’t.
             </h1>
             <p className="hero-lede">
@@ -472,20 +444,23 @@ export default function Home() {
               </p>
             </div>
 
-            {/* The record, and the note that qualifies it. Both sit in one cell
-                rather than as separate grid items so the column is laid out by
-                its own flow: as siblings of the copy they would each claim a
-                row, and the copy — taller than either — would stretch those
-                rows and prise the two apart by whatever it had spare. */}
+            {/* The portrait, and the note that qualifies the practice. Both sit
+                in one cell rather than as separate grid items so the column is
+                laid out by its own flow: as siblings of the copy they would
+                each claim a row, and the copy — taller than either — would
+                stretch those rows and prise the two apart by whatever it had
+                spare. */}
             <div className="home-about-record">
-              <ol className="home-experience-list">
-                {experience.map((item) => (
-                  <li key={item.company}>
-                    <span>{item.company}</span>
-                    <p>{item.context}</p>
-                  </li>
-                ))}
-              </ol>
+              <figure className="home-about-portrait">
+                <img
+                  src="/portrait.jpg"
+                  alt="Florian Beermann"
+                  width="723"
+                  height="1086"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </figure>
 
               <aside className="home-about-note">
                 When an engagement needs deeper CS Operations, data, tooling or

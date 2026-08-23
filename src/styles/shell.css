@@ -37,7 +37,7 @@
      direction — no responsive cuts, no format negotiation, no decode to wait
      on, no fallback colour to sample, and the first frame is already the final
      one. */
-  --backdrop: #503D42;
+  --backdrop: var(--p-stock);
 
   /* Print grain, laid over every inked surface — the field, the inverted bands,
      the portrait plate, the chartreuse statement. Any unbroken expanse of a
@@ -416,22 +416,30 @@ body::before {
      with plum bands cut into it; it is now plum with ivory bands, so the light
      is the thing that arrives rather than the thing that recedes — and it
      arrives on the two surfaces that matter, the portrait plate and the form. */
-  --paper: #503d42;
-  --paper-deep: #453337;
-  /* The ink, and it is the paper colour of the old system. 9.55:1 on the stock:
-     the palette measures identically in both directions, which is the whole
-     reason this flip is a swap and not a redesign. */
-  --ink: #f5fbef;
-  /* Secondary prose. A tint of the ink rather than a second colour, and never
-     below 0.84 — at that alpha it composites to rgb(219, 220, 211) and holds
-     7.34:1. The olive that does this job on the light bands is far too dark to
-     read against the stock, which is why the two scopes derive `--muted`
-     differently instead of sharing one value. */
-  --muted: rgba(245, 251, 239, 0.84);
-  --line: rgba(245, 251, 239, 0.32);
-  /* Type on a filled control, which on this ground is an ivory fill. */
-  --on-ink: #503d42;
-  --on-ink-muted: rgba(80, 61, 66, 0.78);
+  /* The stock the page is printed on.
+
+     This scope used to declare a dark ground — plum stock, light ink — from
+     when the page was dark with light bands cut into it. It no longer is:
+     `world.css` resolves `--paper` here to the light sheet, and every section
+     below the fold is either that sheet or the voltage band. The dark values
+     stayed behind anyway, and `--muted` still resolved to a near-white tint on
+     a near-white ground, which is why the two paragraphs in the About section
+     were rendering at 1.00:1 — invisible, and had been for several passes.
+
+     So the scope now declares what it actually is: a light ground with dark
+     ink. The dark stock survives only as `--backdrop`, the fixed layer behind
+     everything, for wherever it shows through. */
+  --paper: var(--p-paper);
+  --paper-deep: var(--p-paper-deep);
+  --ink: var(--p-ink);
+  /* 0.72 clears 4.5:1 against every paper in the set; the tightest is palette
+     03 at a measured floor of 0.64. Unlike the blue on the light bands, a
+     near-black ink has plenty of room to fade. */
+  --muted: rgb(var(--p-ink-rgb) / 0.72);
+  --line: rgb(var(--p-ink-rgb) / 0.28);
+  /* Type on a filled control, which on this ground is an ink fill. */
+  --on-ink: var(--p-paper);
+  --on-ink-muted: rgb(var(--p-paper-rgb) / 0.82);
   /* The voltage. One colour in the palette carries current, and the system
      spends it in exactly two places: the statement band it paints edge to edge,
      and the primary call to action. It is never a chip, a tag, an icon or a
@@ -439,19 +447,11 @@ body::before {
      signal and the page acquires the brand-colour-sprinkled look this whole
      system exists to avoid.
 
-     The sRGB primary, unmixed. It is the one value in the system that is not
-     drawn from the logo palette, and it is deliberately the rawest colour a
-     screen can make: against a warm plum stock and an ivory sheet, a pure
-     channel maximum is unmistakably an instrument reading rather than a
-     decoration.
-
-     It carries the ivory, not the plum. This is the one hard constraint on it —
-     plum on this blue measures 1.17:1 and is illegible, where the ivory holds
-     8.15:1. The chartreuse it replaced had the opposite polarity (it was a
-     light, and took dark type), so anything printed on the voltage flipped when
-     this value changed. */
-  --voltage: #0000ff;
-  --on-voltage: #f5fbef;
+     Each palette picks its own, and every one of them is chosen so it clears
+     4.5:1 against that palette's paper in both directions — because the light
+     bands print prose in it and the statement band prints paper on it. */
+  --voltage: var(--p-blue);
+  --on-voltage: var(--p-paper);
   /* What a heading is printed in. On the stock it is simply the ink: the blue
      measures 1.17:1 against the plum and would be unreadable here, so the
      voltage stays off this ground entirely. The light bands override it. */
@@ -537,32 +537,38 @@ body::before {
    swatch, and these are the sheet, not the ink. */
 .site-inverted,
 .site-footer {
-  --paper: #f5fbef;
-  --paper-deep: #e6eee0;
-  /* The ink on a light band is the voltage itself. This is the one ground where
-     the blue can carry everything — it holds 8.15:1 on the ivory, better than
-     most systems manage for body text, where on the page's own plum stock it is
-     1.17:1 and invisible.
+  --paper: var(--p-paper);
+  --paper-deep: var(--p-paper-deep);
+  /* The ink on a light band is the voltage itself, in four of the five
+     palettes. This is the one ground where the blue can carry everything — it
+     holds 5:1 or better on every paper in the set, where on the dark stock it
+     is close to 1:1 and invisible.
 
-     So these bands are not "ivory sections with a blue accent". They are
+     So these bands are not "light sections with a blue accent". They are
      printed in blue: heading, prose, label, figure, rule and filled control.
-     The plum does not appear inside them at all. */
-  --ink: #0000ff;
+     The stock does not appear inside them at all.
+
+     Palette 04 is the deliberate exception. Its premise is that the navy is the
+     ink and the blue is the accent, so it points `--p-band-ink` at its own dark
+     instead — which is why this reads a token rather than `--p-blue` directly. */
+  --ink: var(--p-band-ink);
   /* Secondary prose, as the ink at reduced strength rather than a second
-     colour. 0.7 composites to rgb(74, 75, 251) and holds 5.41:1 — comfortably
-     over the body floor, and far enough below full strength that a placeholder
-     still reads as an empty field rather than as a typed value. Below about
-     0.62 it drops under 4.5:1, so this has little room to give. */
-  --muted: rgba(0, 0, 255, 0.7);
+     colour. How much reduction a palette can afford depends entirely on how
+     dark its blue is, so the alpha is a palette token rather than a constant.
+
+     The old system used a flat 0.7 and got away with it because its ink was
+     `#0000FF` — 8.15:1 on ivory, with room to fade. A mid-blue at 5.3:1 has
+     none: the same 0.7 measures 3.16:1, which is why two of the five palettes
+     declare 1 here and step secondary prose down by scale instead. */
+  --muted: rgb(var(--p-band-ink-rgb) / var(--p-muted-alpha));
   /* Every hairline: the ink at 42%, which is the same relationship the blue
-     band uses for its own rules. The muted teal that used to do this job was
-     the last non-blue value left inside these bands. */
-  --line: rgba(0, 0, 255, 0.42);
+     band uses for its own rules. */
+  --line: rgb(var(--p-band-ink-rgb) / 0.42);
   /* Type on a filled control, which on this band is a blue fill — so the
-     submit button is blue with ivory on it, the same pair the statement band
-     runs, at 8.15:1. */
-  --on-ink: #f5fbef;
-  --on-ink-muted: rgba(245, 251, 239, 0.82);
+     submit button is blue with paper on it, the same pair the statement band
+     runs. */
+  --on-ink: var(--p-paper);
+  --on-ink-muted: rgb(var(--p-paper-rgb) / 0.82);
   /* Both resolve to the ink now that the whole band is blue. They stay declared
      rather than deleted because they are what force full strength on the
      register that would otherwise inherit `--muted` — the field labels, the
@@ -592,13 +598,13 @@ body::before {
    itself so secondary text steps down by scale rather than by tone, which keeps
    the whole band at full strength. */
 .site-voltage {
-  --paper: #0000ff;
-  --paper-deep: #0000d6;
-  --ink: #f5fbef;
-  --muted: #f5fbef;
-  --line: rgba(245, 251, 239, 0.42);
-  --on-ink: #0000ff;
-  --on-ink-muted: rgba(0, 0, 255, 0.78);
+  --paper: var(--p-blue);
+  --paper-deep: color-mix(in srgb, var(--p-blue) 84%, #000);
+  --ink: var(--p-paper);
+  --muted: var(--p-paper);
+  --line: rgb(var(--p-paper-rgb) / 0.42);
+  --on-ink: var(--p-blue);
+  --on-ink-muted: rgb(var(--p-blue-rgb) / 0.78);
   /* Restated, and it has to be. A custom property holding `var(--ink)` resolves
      against the element that declares it, not the element that uses it, so a
      band that changes `--ink` without restating `--heading` would inherit the

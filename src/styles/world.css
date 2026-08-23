@@ -55,27 +55,25 @@
    Restating them at the same specificity here — and later in the cascade —
    is what actually retires them. */
 .site-page {
-  /* Every value is measured off the photograph. The palette is not applied to
-     the picture; it is taken from it, which is why the page and the image do
-     not look like two different decisions. */
+  /* Every value now comes from `palettes.css`, which is the single place the
+     site's colour is decided. Nothing here holds a literal — that is what lets
+     one attribute on <html> repaint both planes, shader included.
 
-  /* Tree-black. The darkest thing in the frame, and warm rather than neutral —
-     a neutral #262626 next to this sky reads as a hole punched in it. */
-  --ink: #1e2019;
-  /* The sky, held as paper. */
-  --paper: #ede6d9;
-  --paper-deep: #e2d9c8;
-  /* The water. Carries light type at 6.2:1, never dark. */
-  --slate: #4e606c;
-  /* The sky at its warmest, behind the Elbphilharmonie. */
-  --amber: #d0ac81;
+     These used to be measured off a photograph of the Alster. That photograph
+     is gone, and the tokens outlived it by several passes: `--slate` and
+     `--amber` were still declared here with nothing on the site referencing
+     them. Deleted rather than re-derived. */
 
-  --ink-muted: rgba(30, 32, 25, 0.66);
-  --line: rgba(30, 32, 25, 0.28);
+  --ink: var(--p-ink);
+  --paper: var(--p-paper);
+  --paper-deep: var(--p-paper-deep);
 
-  --on-dark: #f2ede4;
-  --on-dark-muted: rgba(242, 237, 228, 0.72);
-  --line-on-dark: rgba(242, 237, 228, 0.32);
+  --ink-muted: rgb(var(--p-ink-rgb) / 0.66);
+  --line: rgb(var(--p-ink-rgb) / 0.28);
+
+  --on-dark: var(--p-paper);
+  --on-dark-muted: rgb(var(--p-paper-rgb) / 0.72);
+  --line-on-dark: rgb(var(--p-paper-rgb) / 0.32);
 
   --sans: "Switzer", "Helvetica Neue", Arial, sans-serif;
   --mono: "Fragment Mono", ui-monospace, "SF Mono", Menlo, monospace;
@@ -84,48 +82,9 @@
      Everything below this line exists only above the photograph. On flat
      ground none of it applies: no glass, no radius, no blur. */
 
-  /* The wash that turns the photograph into a ground. Held as a bare triple
-     so `scripts/contrast-sweep.mjs` can read the same numbers the gradient is
-     built from and composite them itself — otherwise the sweep measures a
-     photograph the eye never sees, and every ratio it reports is a fiction.
-     Change these and the contrast changes; re-run the sweep. */
-  /* The grade. Two operations, in this order, and the order is the point.
-
-     First `brightness`, which is a multiply: it scales every pixel toward
-     black and so *preserves* the ratios inside the photograph. The
-     Elbphilharmonie's lit glass stays the brightest object in the frame
-     relative to the trees around it. An alpha veil cannot do this — it
-     interpolates every pixel toward one colour, which compresses the
-     highlights into the shadows.
-
-     Left at 1 now. It was 0.86, and stacked with everything else it was part
-     of a chain that took the frame to a mean luminance of 0.039 against a
-     reference sitting near 0.28 — seven times darker. The photograph is
-     correctly exposed as shot; there is nothing here to fix.
-
-     `saturate` is safe to leave out of any contrast maths — the CSS filter
-     matrix is luminance-preserving by construction. */
-  --photo-brightness: 1;
-  --photo-saturate: 1.16;
-
-  /* Sampled from the water, taken down to its own shadow. */
-  --wash-rgb: 22 32 41;
-  /* Density across the frame, and the shape of it matters more than the
-     numbers. The veil was the single biggest thing eating the light — 59% of
-     it — because a heavy band at the top ramped down across a full 30% of the
-     height, dragging the whole upper half with it.
-
-     It only ever needed to be heavy in one place. The 13px navigation is the
-     only element on this screen held to 4.5:1; the headline and the lede are
-     both large text at 3:1, and the action carries its own plate. So the top
-     stop stays deep enough to hold the pane, the ramp is short enough that it
-     is spent by 13% of the height, and everything below runs thin. The cost is
-     paid where the problem is instead of across the whole frame. */
-  --wash-top: 0.62;
-  --wash-mid: 0.13;
-  --wash-bot: 0.06;
-  --wash-stop-a: 13%;
-  --wash-stop-b: 32%;
+  /* Ink, held as a bare triple so the glass fallbacks below can compose it at
+     partial alpha. */
+  --wash-rgb: var(--p-stock-rgb);
 
   /* Pioneer's recipe, measured off the live page rather than guessed at: a
      ~10% light film, `blur(50px)`, a 4px radius, no border at all, and one
@@ -136,16 +95,7 @@
      separates it from what is behind, which reads as a *sheet of glass lying
      on top*. And 50px of blur is not 20px with more: at that radius everything
      behind resolves to one flat field, so the pane stops being a window onto
-     the photograph and becomes a material in its own right.
-
-     An earlier pass tinted this film dark, because 13px navigation on a light
-     film over open sky measured 3.4:1 against a 4.5 requirement. That fixed
-     the number and broke the look — a dark plate reads as a *bar*, where the
-     reference reads as a barely-there lightening. The right lever was never
-     the pane: it was the sky behind it. `--wash-top` now carries the top band
-     down far enough that white clears 4.5:1 on the bare photograph, which
-     leaves this film free to be what it should be — light, and almost not
-     there. */
+     the photograph and becomes a material in its own right. */
   --glass-bg: rgba(226, 230, 238, 0.1);
   --glass-blur: 50px;
   --glass-shadow: 0 4px 35px rgba(0, 0, 0, 0.15);
@@ -283,31 +233,3 @@
   outline-offset: 3px;
 }
 
-/* Responsive density. Two separate reasons, both measured rather than felt.
-
-   ≤48rem: the masthead breaks to two rows, which drops the glass pane clear of
-   the very top of the veil and onto a different part of the crop — the
-   portrait rules change the framing as well. The navigation measured 4.43:1
-   there against 4.5, failing across 16% of its glyph pixels, while the same
-   type cleared comfortably at desktop widths.
-
-   ≤30rem: the statement keeps its full three or four lines while the frame
-   shrinks, so a much larger share of it lands on the lit facades behind. The
-   lede measured 3.96:1 with 0.57% of its glyph pixels below AA, against
-   nothing at all on desktop.
-
-   Adjusting the tokens rather than the layout keeps `scripts/contrast-sweep.mjs`
-   honest — it reads these values at whatever width it is run. */
-@media (max-width: 48rem) {
-  :root,
-  .site-page {
-    --wash-top: 0.66;
-  }
-}
-
-@media (max-width: 30rem) {
-  :root,
-  .site-page {
-    --wash-mid: 0.5;
-  }
-}

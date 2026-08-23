@@ -5,6 +5,7 @@ import Imprint from "./pages/Imprint.tsx";
 import Privacy from "./pages/Privacy.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import { useEffect } from "react";
+import { PaletteSwitcher } from "./components/PaletteSwitcher.tsx";
 
 // ScrollToTop component to handle scroll restoration and anchor/hash-based navigation
 const ScrollToTop = () => {
@@ -42,6 +43,9 @@ const App = () => (
       <Route path="*" element={<NotFound />} />
     </Routes>
     <Sonner />
+    {/* Comparison tool for choosing the palette. Dev only — this whole subtree,
+        and the component behind it, drop out of the production bundle. */}
+    {import.meta.env.DEV && <PaletteSwitcher />}
   </BrowserRouter>
 );
 

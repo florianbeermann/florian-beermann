@@ -171,20 +171,23 @@
 
 /* The scrollbar is part of the sheet, not part of the browser. Painted in the
    page's own values so the gutter does not sit beside a dark page as a strip of
-   system grey. Square, like everything else. The thumb takes the palette's two
-   greens rather than a lighter plum: on this stock they are the only values
-   quiet enough not to read as a second piece of content. */
+   system grey. Square, like everything else.
+
+   Mixed from the palette rather than held as literals: this is one of the few
+   surfaces that cannot inherit a scope, so it has to name its colours, and
+   naming them as fixed hexes is what left it painted in a retired plum long
+   after the rest of the page had moved. */
 ::-webkit-scrollbar {
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #453337;
+  background: color-mix(in srgb, var(--p-stock) 88%, #000);
 }
 ::-webkit-scrollbar-thumb {
-  background: #748b75;
+  background: color-mix(in srgb, var(--p-stock) 58%, var(--p-paper));
   border-radius: 0;
-  border: 2px solid #453337;
+  border: 2px solid color-mix(in srgb, var(--p-stock) 88%, #000);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #92ad94;
+  background: color-mix(in srgb, var(--p-stock) 38%, var(--p-paper));
 }

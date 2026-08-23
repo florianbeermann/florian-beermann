@@ -31,30 +31,6 @@
 
     <link rel="preload" as="font" type="font/woff2" href="/fonts/Switzer-Variable.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/FragmentMono-Regular.woff2" crossorigin />
-    <!-- The photograph is the page's LCP element and it is rendered by React,
-         so it does not exist in the served HTML at all — the browser cannot
-         discover it until the stylesheet and the module graph have resolved.
-         Preloading pulls it into the first round trip alongside the faces.
-
-         `imagesrcset` and `imagesizes` have to restate the image element's
-         own candidates exactly. If they drift, the preload fetches one file
-         and the element picks a different one, and the page pays for both.
-
-         The `500vw` branch is not a typo. Below 48rem the photograph is laid
-         out 132% of the hero's height and `cover` then scales it to fill —
-         which draws it about 4.3x wider than the viewport, before the drift
-         animation scales it a further 22%. Declared as 100vw the browser sizes
-         for 390px, picks the 1000w file and upscales it better than
-         threefold. The desktop branch carries the same 22% for the same
-         reason. -->
-    <link
-      rel="preload"
-      as="image"
-      href="/photo/alster-1400.jpg"
-      imagesrcset="/photo/alster-700.jpg 700w, /photo/alster-1000.jpg 1000w, /photo/alster-1400.jpg 1400w, /photo/alster-1800.jpg 1800w, /photo/alster-2000.jpg 2000w"
-      imagesizes="(max-width: 48rem) 560vw, 140vw"
-      fetchpriority="high"
-    />
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://florianbeermann.com/" />

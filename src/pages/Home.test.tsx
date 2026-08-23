@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import Home from "@/pages/Home";
@@ -39,9 +39,18 @@ describe("homepage", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Your customers changed. Your Customer Success motion didn’t.",
     );
-    expect(
-      screen.getByRole("link", { name: "Start a conversation" }),
-    ).toHaveAttribute("href", "#contact");
+    // Both copies of the action are asserted, because both are real: the one
+    // in the masthead row and the one at the foot of the mobile sheet. Only
+    // ever one is exposed at a time — below the breakpoint the glass rail is
+    // display:none, and above it the closed sheet is inert — but jsdom
+    // implements neither, so the query matches both here.
+    const actions = screen.getAllByRole("link", {
+      name: "Start a conversation",
+    });
+    expect(actions).toHaveLength(2);
+    for (const action of actions) {
+      expect(action).toHaveAttribute("href", "#contact");
+    }
   });
 
   it("names the portrait for assistive technology", () => {
@@ -50,7 +59,7 @@ describe("homepage", () => {
     const portrait = screen.getByRole("img", { name: "Florian Beermann" });
 
     expect(portrait.tagName).toBe("IMG");
-    expect(portrait).toHaveAttribute("src", "/portrait-plate.jpg");
+    expect(portrait).toHaveAttribute("src", "/portrait.jpg");
     // Intrinsic dimensions are what stop the hero reflowing once the plate
     // decodes, which is the whole reason this is the site's LCP element.
     expect(portrait).toHaveAttribute("width");
@@ -74,19 +83,17 @@ describe("homepage", () => {
     ).toBeInTheDocument();
   });
 
-  it("orders the experience list from most to least recent employer", () => {
+  it("shows the portrait beside the about copy", () => {
     renderHome();
 
-    const list = screen
-      .getByText(
-        "Supported enterprise customers across cloud adoption, AI and modern work.",
-      )
-      .closest("ol");
-    expect(
-      Array.from(list?.querySelectorAll("li span") ?? []).map(
-        (item) => item.textContent,
-      ),
-    ).toEqual(["Microsoft", "Capgemini", "HubSpot", "Personio", "Spendesk"]);
+    const portrait = screen.getByAltText("Florian Beermann");
+    expect(portrait).toBeInTheDocument();
+    // Scoped to the about section: the employer names also appear in the proof
+    // section above, which this change does not touch. Asserting against the
+    // whole document would pass or fail for the wrong reason.
+    const about = document.querySelector("#about");
+    expect(about).toContainElement(portrait);
+    expect(within(about as HTMLElement).queryByText("Capgemini")).not.toBeInTheDocument();
   });
 
   it("reveals the optional qualification fields on request", () => {

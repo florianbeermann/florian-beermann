@@ -1,7 +1,10 @@
 {
   "detector": {
     "ignoreRules": [],
-    "ignoreFiles": [],
+    "ignoreFiles": [
+      "src/components/PaletteSwitcher.css",
+      "src/components/PaletteSwitcher.tsx"
+    ],
     "ignoreValues": [
       {
         "rule": "overused-font",

@@ -1,0 +1,178 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   PALETTES
+
+   Five candidate colour worlds, each defined once and consumed by both planes:
+   the WebGL ink field in the hero and the flat bands below it. Everything
+   downstream — `world.css`, `shell.css`, `InkField.tsx` — reads these `--p-*`
+   tokens and nothing else, so switching `data-palette` on <html> repaints the
+   entire site including the shader.
+
+   Why the site needed this regardless of which option wins: before it, the page
+   carried two blues (the hero's azure and the band's `#0000FF`) and two whites
+   (warm ivory above the fold, honeydew below). They were never reconciled
+   because nothing forced them through a single definition. Now something does.
+
+   Each palette declares:
+
+     --p-stock        the dark page ground below the fold
+     --p-field-*      the shader's ink ramp, dark to light
+     --p-pig-*        the shader's pigment ramp, dark to light
+     --p-blue         the one flat-UI blue: statement band and primary action
+     --p-paper        the light band
+     --p-ink          type on the light band when it is not the blue
+
+   `-rgb` companions exist wherever a value is also needed at partial alpha.
+   Shades are taken with `color-mix` rather than a hand-picked token, because a
+   second hand-picked value is a second thing to keep in sync.
+
+   CONTRAST: every `--p-blue` is chosen to clear 4.5:1 against its own
+   `--p-paper` in both directions, because the light bands print body prose in
+   the blue and the statement band prints paper on it. That constraint is what
+   rules out the brighter, more attractive blues in options 03 and 04 — the
+   first pick for each measured 4.38:1 and 4.62:1 respectively.
+   ───────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* 03 is the incumbent — what the hero already renders — so it is the default
+     and an unset `data-palette` changes nothing. */
+  --p-stock: #22242a;
+  --p-field-dark: #494a51;
+  --p-field-light: #a9aab1;
+  --p-pig-dark: #102765;
+  --p-pig-light: #5a92f5;
+  --p-blue: #1e4fd8;
+  --p-blue-rgb: 30 79 216;
+  --p-paper: #ede6d9;
+  --p-paper-rgb: 237 230 217;
+  --p-paper-deep: #e2d9c8;
+  --p-ink: #1e2019;
+  --p-ink-rgb: 30 32 25;
+  --p-band-ink: var(--p-blue);
+  --p-band-ink-rgb: var(--p-blue-rgb);
+  /* blue too light to tint; min was 0.90 */
+  --p-muted-alpha: 1;
+  --p-stock-rgb: 34 36 42;
+}
+
+/* 01 — ULTRAMARINE
+   Maximum chroma on near-black. The loudest of the five and the closest in
+   spirit to the `#0000FF` the old site spent on its statement band, but pulled
+   just off the sRGB primary so it renders as a colour rather than as a channel
+   clipping. 8.36:1 on its paper. */
+[data-palette="01"] {
+  --p-stock: #0b0b10;
+  --p-stock-rgb: 11 11 16;
+  --p-field-dark: #3e4050;
+  --p-field-light: #9c9eb0;
+  --p-pig-dark: #0b0b8f;
+  --p-pig-light: #6e6eff;
+  --p-blue: #1a1ae6;
+  --p-blue-rgb: 26 26 230;
+  --p-paper: #f4f6fb;
+  --p-paper-rgb: 244 246 251;
+  --p-paper-deep: #e6e9f2;
+  --p-ink: #0b0b10;
+  --p-ink-rgb: 11 11 16;
+  --p-band-ink: var(--p-blue);
+  --p-band-ink-rgb: var(--p-blue-rgb);
+  /* min 0.69 at 8.32:1 */
+  --p-muted-alpha: 0.72;
+}
+
+/* 02 — COBALT & BONE
+   The only palette built on a temperature conflict: a cold cobalt printed on a
+   warm bone page. That tension is the idea, not a compromise — but it is also
+   the one option where the black-and-white portrait will read as slightly warm,
+   because everything beside it is. */
+[data-palette="02"] {
+  --p-stock: #16150f;
+  --p-stock-rgb: 22 21 15;
+  --p-field-dark: #4b4740;
+  --p-field-light: #ada99e;
+  --p-pig-dark: #0a2585;
+  --p-pig-light: #4f82ff;
+  --p-blue: #1240ce;
+  --p-blue-rgb: 18 64 206;
+  --p-paper: #efeae0;
+  --p-paper-rgb: 239 234 224;
+  --p-paper-deep: #e3dcce;
+  --p-ink: #16150f;
+  --p-ink-rgb: 22 21 15;
+  --p-band-ink: var(--p-blue);
+  --p-band-ink-rgb: var(--p-blue-rgb);
+  /* min 0.80 at 6.61:1 */
+  --p-muted-alpha: 0.82;
+}
+
+/* 03 — AZURE & GRAPHITE
+   The incumbent, declared on :root above. Restated here so selecting it
+   explicitly is not a special case in the switcher. */
+[data-palette="03"] {
+  --p-stock: #22242a;
+  --p-stock-rgb: 34 36 42;
+  --p-field-dark: #494a51;
+  --p-field-light: #a9aab1;
+  --p-pig-dark: #102765;
+  --p-pig-light: #5a92f5;
+  --p-blue: #1e4fd8;
+  --p-blue-rgb: 30 79 216;
+  --p-paper: #ede6d9;
+  --p-paper-rgb: 237 230 217;
+  --p-paper-deep: #e2d9c8;
+  --p-ink: #1e2019;
+  --p-ink-rgb: 30 32 25;
+  --p-band-ink: var(--p-blue);
+  --p-band-ink-rgb: var(--p-blue-rgb);
+  /* blue too light to tint; min was 0.90 */
+  --p-muted-alpha: 1;
+}
+
+/* 04 — PRUSSIAN & CHALK
+   The only palette where the dark is a colour rather than a neutral: prussian
+   navy is both the page stock and the ink on the light bands, so the blue
+   accent is a brighter member of the same family instead of a contrast to it.
+   Quietest of the five, and the most institutional. */
+[data-palette="04"] {
+  --p-stock: #0e2440;
+  --p-stock-rgb: 14 36 64;
+  --p-field-dark: #2f4258;
+  --p-field-light: #93a6bc;
+  --p-pig-dark: #0b1e38;
+  --p-pig-light: #4d8df5;
+  --p-blue: #1e4fd6;
+  --p-blue-rgb: 30 79 214;
+  --p-paper: #f2f1ec;
+  --p-paper-rgb: 242 241 236;
+  --p-paper-deep: #e6e4dc;
+  --p-ink: #0e2440;
+  --p-ink-rgb: 14 36 64;
+  --p-band-ink: var(--p-ink);
+  --p-band-ink-rgb: var(--p-ink-rgb);
+  /* min 0.64 at 13.81:1 */
+  --p-muted-alpha: 0.66;
+}
+
+/* 05 — ELECTRIC ON SLATE
+   Cool from end to end, with no warm note anywhere. The blue is the sRGB
+   primary lifted just into green, which keeps it electric while clearing 5.35:1
+   on its paper. The cleanest ground for a neutral black-and-white portrait,
+   since nothing adjacent to it carries a cast. */
+[data-palette="05"] {
+  --p-stock: #181d26;
+  --p-stock-rgb: 24 29 38;
+  --p-field-dark: #414753;
+  --p-field-light: #a3aab8;
+  --p-pig-dark: #00227a;
+  --p-pig-light: #4d8bff;
+  --p-blue: #0047ff;
+  --p-blue-rgb: 0 71 255;
+  --p-paper: #e8edf5;
+  --p-paper-rgb: 232 237 245;
+  --p-paper-deep: #d9e1ee;
+  --p-ink: #181d26;
+  --p-ink-rgb: 24 29 38;
+  --p-band-ink: var(--p-blue);
+  --p-band-ink-rgb: var(--p-blue-rgb);
+  /* blue too light to tint; min was 0.90 */
+  --p-muted-alpha: 1;
+}
