@@ -590,7 +590,7 @@
        enough for the gesture to read as finished, so the page stopped scrolling
        altogether. Whatever paces this page must not be able to prevent it. */
     html {
-      scroll-snap-type: y mandatory;
+      scroll-snap-type: none;
     }
 
     /* The stops themselves, and why they are not the panels.

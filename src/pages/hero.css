@@ -1,0 +1,664 @@
+/* The first viewport. Two planes.
+
+   BEHIND: the photograph, washed to a ground and grained like a print. It
+   stops being a picture of Hamburg and becomes the light Hamburg is in. The
+   wash is not decoration and it is not a scrim dropped over a legibility
+   problem — it is the thing that buys the type its contrast. Measured on the
+   raw photograph, white ran 2.1:1 and was unusable; under this wash the same
+   white clears 5:1 over the brightest object in the frame, which is the
+   fountain plume sitting dead centre where the headline goes.
+
+   IN FRONT: interface, floating clear of it in glass. One rail, one statement,
+   nothing else.
+
+   The wash is generated from --wash-top / --wash-mid / --wash-bot in
+   world.css, and `scripts/contrast-sweep.mjs` reads those same three numbers
+   to composite the ground it measures. They are one source of truth on
+   purpose. Change them and re-run the sweep. */
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  isolation: isolate;
+  background: var(--ink);
+  color: var(--on-dark);
+}
+
+/* Grid items default to `min-width: auto`, so a row whose contents refuse to
+   shrink — the rail, where the name is one unbreakable string — pushes past
+   the track and takes the document with it. This is what put 13px of
+   horizontal scroll on the page at 490px. */
+.hero > * {
+  min-width: 0;
+}
+
+.hero-photo {
+  position: absolute;
+  inset: 0;
+  z-index: -4;
+  overflow: hidden;
+}
+
+.hero-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Anchored low. The frame is cropped vertically on any viewport wider than
+     3:2, and taking that crop off the top rather than the bottom keeps the
+     Alster in shot — the boats, the buoys and the one orange sail that is the
+     only saturated colour left once the wash has taken the rest. */
+  object-position: 50% 75%;
+  display: block;
+  /* See --photo-brightness in world.css: a multiply, not a veil, so the
+     photograph keeps its own internal contrast on the way down. */
+  filter: brightness(var(--photo-brightness)) saturate(var(--photo-saturate));
+  /* The picture moves. This is the thing that actually reads as animation, and
+     it took three passes of tuning the colour field to work out why: measured
+     on the reference, its hero images change width by 15-20px a second and pan
+     by another 8 while the colour layer does comparatively little. A drifting
+     tint over a *recognisable photograph* is anchored by the photograph — you
+     know what a building is supposed to look like, so a few RGB levels of
+     colour change reads as nothing. Move the building and there is nothing
+     left to anchor against.
+
+     Scale never returns to 1. At 1.0 the image exactly fills its box and any
+     translation at all would walk an edge into frame. The floor of 1.08 leaves
+     4% of overflow on each side against a 3% maximum pan.
+
+     The range stops at 1.26 rather than going further. Speed is what makes the
+     motion read, not distance, and distance has a composition cost: at 1.34
+     the push-in cropped the waterline and the boats out of frame entirely at
+     one end of the cycle, which loses half the reason this photograph works.
+     16s across that range holds ~16px a second of scale — against the
+     reference's ~20 — while keeping the Alster in shot throughout. */
+  transform-origin: 50% 50%;
+  animation: hero-photo-drift 16s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes hero-photo-drift {
+  from {
+    transform: translate3d(-3%, -1.75%, 0) scale(1.08);
+  }
+  to {
+    transform: translate3d(3%, 1.75%, 0) scale(1.26);
+  }
+}
+
+/* ── The grade ────────────────────────────────────────────────────────────
+   A veil cannot change hue. Compositing blue over a golden photograph only
+   drags it toward grey, which is why an early attempt came out mud-brown — to
+   reach actual blue by alpha alone you need so much of it that the picture
+   flattens.
+
+   `mix-blend-mode: color` is the right instrument: it takes hue and saturation
+   from this layer and luminosity from the photograph underneath. So the sky
+   goes dusk blue, the low sun stays where it is tonally, and — the part that
+   matters — *luminance is preserved by definition*, which means this layer
+   cannot move a single contrast ratio. The grade is free, which is why it
+   survives alongside the field rather than being replaced by it: the field
+   lights the picture, this decides what colour it is.
+
+   Graded on a gradient rather than flat, because flat was wrong: at full frame
+   it took the gold out of the Elbphilharmonie too and the picture went cold and
+   inert. Alpha modulates the blend, so fading it out by the lower third leaves
+   a split-tone — dusk blue in the sky and the shadows, the low sun still amber
+   on the glass and the sails. Complements, and that is where the frame gets
+   its charge.
+
+   Held back from its original strength now that the field is carrying colour
+   too; at full weight the two of them were arguing. */
+.hero-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    to bottom,
+    rgba(42, 74, 109, 0.42) 0%,
+    rgba(42, 74, 109, 0.36) 30%,
+    rgba(42, 74, 109, 0.14) 56%,
+    rgba(42, 74, 109, 0.04) 76%,
+    rgba(42, 74, 109, 0) 100%
+  );
+  mix-blend-mode: color;
+  pointer-events: none;
+}
+
+/* ── The field ────────────────────────────────────────────────────────────
+   The luminous part. On the reference this layer is an animated <canvas>
+   blended over the photograph, and it — not the glass — is what people are
+   actually looking at when they say a page has "the effect": a slow drifting
+   field of colour that makes a still image feel lit rather than printed.
+
+   Three lobes, each its own element with its own animation, and that is the
+   whole reason it is three elements rather than one. A single layer can only
+   be moved rigidly, and a rigid slide of a soft gradient is invisible: the
+   first attempt ran 42s at ±1.5% and 8% of scale, which works out near a pixel
+   a second and reads as a still image. Moving the lobes independently makes
+   the field *morph* — the warm and cool centres separate and close, the light
+   changes shape rather than position — and that is legible at a glance. The
+   durations are deliberately not multiples of each other so the arrangement
+   does not visibly repeat.
+
+   `overlay`, and the choice is load-bearing twice over.
+
+   The reference uses `hard-light`, which was the first thing tried and lifted
+   St. Nikolai's spire to maroon: hard-light's conditional is on the *source*,
+   so a lobe brighter than mid-grey screens the photograph everywhere,
+   including its near-black silhouettes. `soft-light` fixed the spire and
+   created a worse problem — measured across a full half-cycle it moved the
+   composite by a mean of 6.6 RGB levels out of 255, about 0.3 levels a second,
+   which is nowhere near visible. A blend that barely changes the picture
+   changes it even less when you move it around.
+
+   Overlay is hard-light with the operands swapped: the conditional is on the
+   *backdrop*. Dark ground multiplies and stays dark — so the silhouettes are
+   safe — while mid and light ground screens and takes the colour hard. Strong
+   where there is something to light, inert where there isn't.
+
+   Position alone is also not enough to read as motion, so each lobe breathes
+   as well as drifts. Opacity is the more visible of the two by a distance: it
+   changes how much light there is rather than where it is, and the eye is far
+   better at the former. Both are compositor-only properties.
+
+   The colours are the photograph's own: the amber off the low sun, the indigo
+   off the water. The pool is the one carrying contrast for the statement, so
+   it moves least — the two lobes free to wander are the ones that only add
+   light.
+
+   Lives inside `.hero-photo` for two reasons: it blends with the image and
+   nothing else, and `.hero-photo` clips it. Left as a child of `.hero` the
+   negative inset put 214px of horizontal scroll on the document.
+
+   Animated with `transform` only, so it stays on the compositor and never
+   touches layout or paint. */
+.hero-field {
+  position: absolute;
+  inset: -20%;
+  z-index: 1;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  will-change: transform, opacity;
+}
+
+.hero-field--warm {
+  background: radial-gradient(
+    26% 24% at 26% 30%,
+    rgba(230, 170, 88, 0.95) 0%,
+    rgba(230, 170, 88, 0) 100%
+  );
+  animation: hero-drift-warm 15s ease-in-out infinite alternate;
+}
+
+.hero-field--cool {
+  background: radial-gradient(
+    28% 26% at 76% 34%,
+    rgba(140, 164, 230, 0.9) 0%,
+    rgba(140, 164, 230, 0) 100%
+  );
+  animation: hero-drift-cool 19s ease-in-out infinite alternate;
+}
+
+/* Not a lobe of colour like the other two — a band of shade, and the only
+   reason the frame can be bright at all.
+
+   The headline crosses the lit Elbphilharmonie facade, the near-black spires
+   and the fountain plume in the same line, so there is no single ink colour
+   that survives the whole width: white measured 1.16:1 over the plume once the
+   veil came off, and dark ink would fail just as badly over the trees.
+   Something local has to give the type a ground.
+
+   `multiply`, where the other two lobes are `overlay`, and that is the whole
+   trick. Overlay *screens* anything brighter than mid-grey, so against the
+   plume — which is close to white — it could only take 0.85 down to 0.72 no
+   matter how hard it was pushed. Multiply is a scale rather than a curve: it
+   darkens proportionally, which is both what a shadow physically does and the
+   only operation strong enough for a highlight that bright. It also preserves
+   the relationships inside the picture, so the band reads as a bank of cloud
+   shadow over the water rather than as a panel switched on behind the words.
+
+   Wide and shallow, because the statement is wide and shallow. */
+.hero-field--pool {
+  mix-blend-mode: multiply;
+  background: radial-gradient(
+    62% 31% at 50% 51%,
+    rgba(102, 114, 138, 1) 0%,
+    rgba(136, 148, 170, 0.64) 56%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: hero-drift-pool 17s ease-in-out infinite alternate;
+}
+
+/* Tuned against a measured number, not a feeling: the mean change in the
+   composited frame between the two ends of a cycle, in RGB levels out of 255.
+   Position alone at 42s managed 6.6 and read as a still photograph.
+
+   The two light lobes are small — a quarter of the frame, not half — and that
+   is why they read. A lobe wide enough to cover most of the picture is
+   effectively a uniform tint, and sliding a uniform tint around changes
+   nothing you can see. At this size each one is a discernible pool of light
+   that crosses the skyline, which is the structure the reference has and the
+   first three attempts did not. Percentages are of each layer's own box,
+   which is 140% of the hero. */
+@keyframes hero-drift-warm {
+  from {
+    transform: translate3d(-14%, -6%, 0) scale(1);
+    opacity: 0.25;
+  }
+  to {
+    transform: translate3d(12%, 7%, 0) scale(1.25);
+    opacity: 1;
+  }
+}
+
+@keyframes hero-drift-cool {
+  from {
+    transform: translate3d(12%, 5%, 0) scale(1.2);
+    opacity: 1;
+  }
+  to {
+    transform: translate3d(-11%, -7%, 0) scale(0.9);
+    opacity: 0.2;
+  }
+}
+
+/* The odd one out, and deliberately so: barely any travel, and an opacity that
+   hardly varies. This band is what holds the statement's ground; measured at
+   1440x900 its old 0.78 trough was itself the cause of the headline's worst
+   reading, dropping the plume behind "Success" to 2.18:1 at one phase of the
+   cycle. A layer carrying contrast is not allowed to be interesting. */
+@keyframes hero-drift-pool {
+  from {
+    transform: translate3d(-2%, 1.5%, 0) scale(1.04);
+    opacity: 0.94;
+  }
+  to {
+    transform: translate3d(2%, -1.5%, 0) scale(0.99);
+    opacity: 1;
+  }
+}
+
+/* The drift is ambient motion with no informational content, which is exactly
+   the category this preference exists to switch off. The field stays; only its
+   movement stops. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-field,
+  .hero-photo img {
+    animation: none;
+  }
+
+  /* Without the animation the image falls back to its untransformed box, which
+     is the one state where a pan would expose an edge. Nothing pans here, so
+     it is safe — but the scale is restated so the framing does not jump
+     between the two paths. */
+  .hero-photo img {
+    transform: scale(1.08);
+  }
+}
+
+/* ── The veil ─────────────────────────────────────────────────────────────
+   Four stops, three numbers. Hue is the grade's job now, so all this layer
+   does is shape depth across the frame: a little more density at the top where
+   the rail sits, a plateau across the middle band the statement occupies, and
+   least at the foot so the water keeps its depth and the orange sail survives.
+   Kept thin deliberately — the brightness multiply has already done the
+   darkening, and doing it twice is what flattens a photograph.
+
+   The radial is a vignette and is deliberately *not* modelled by the sweep:
+   it only ever darkens, so leaving it out makes every measurement pessimistic
+   rather than optimistic. That is the safe direction to be wrong in. */
+.hero-wash {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      130% 90% at 50% 42%,
+      transparent 55%,
+      rgb(var(--wash-rgb) / 0.16) 100%
+    ),
+    linear-gradient(
+      to bottom,
+      rgb(var(--wash-rgb) / var(--wash-top)) 0%,
+      rgb(var(--wash-rgb) / var(--wash-top)) var(--wash-stop-a),
+      rgb(var(--wash-rgb) / var(--wash-mid)) var(--wash-stop-b),
+      rgb(var(--wash-rgb) / var(--wash-bot)) 100%
+    );
+}
+
+/* ── The grain ────────────────────────────────────────────────────────────
+   A 240px tile of fractal noise in multiply — the reference's exact tile size,
+   frequency and octave count, because grain is one of those things where the
+   parameters are the whole effect and there is no reason to re-derive them.
+   This is what stops the treatment reading as a filter laid on a JPEG: grain
+   sits *in* the image rather than on it, and it ties the glass to the
+   photograph because both pick it up. A few hundred bytes, and it never
+   leaves the compositor. */
+.hero-grain {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  /* 12%, not the reference's 25%. Grain in `multiply` over noise centred near
+     mid-grey is not luminance-neutral — it darkened the frame by 23% on its
+     own, which is affordable when the base is already light and was not when
+     it was the fourth darkening layer in a stack. The texture is still there;
+     it is just no longer also an exposure control. */
+  opacity: 0.12;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+}
+
+/* Grain is a still texture, but it is also a high-frequency pattern across the
+   whole viewport, which is exactly what some people set this preference to
+   avoid. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-grain {
+    opacity: 0.14;
+  }
+}
+
+/* ── Beating the old world ────────────────────────────────────────────────
+   `.site-page h1` and `.site-page a` in shell.css are (0,1,1) and set colour;
+   a bare `.hero-title` is (0,1,0) and loses to them, which is what printed the
+   headline in the retired ink and the action's label in white on a white
+   plate. Scoping to `.hero` takes these to (0,2,0). Every rule in this block
+   exists only to outrank a world that is on its way out. */
+.hero .hero-title,
+.hero .hero-lede {
+  color: var(--on-dark);
+  /* A perceptual aid, and named as one: WCAG computes contrast against the
+     background and gives a shadow no credit, so this is not what makes the
+     numbers pass — the shade band is. What it does is firm up the type over
+     the handful of places the band cannot reach, chiefly the fountain plume,
+     which is near-white and lands directly behind "Success". Two stops: a
+     tight one for edge definition and a wide soft one that reads as depth
+     rather than as a drop shadow. Costs the photograph nothing, which is the
+     entire argument for it over dimming the frame further. */
+  text-shadow:
+    0 1px 2px rgba(12, 16, 24, 0.3),
+    0 2px 26px rgba(12, 16, 24, 0.38);
+}
+
+.hero .control--solid {
+  color: var(--ink);
+}
+
+/* ── The masthead ─────────────────────────────────────────────────────────
+   Three columns, and the middle one is the point: `1fr auto 1fr` centres the
+   pane against the *viewport* rather than against whatever space the mark and
+   the action happen to leave. Centring it with `space-between` would drift it
+   left or right every time either label changed length.
+
+   The action sits outside the pane, on the right — it is not navigation, it is
+   the one thing the page is asking for, and putting it inside the glass filed
+   it under "menu".
+
+   Sticky as a unit, so all three travel together. Sticky rather than fixed:
+   they should detach while the photograph is on screen and then stop, because
+   everything below the hero is a different world with a different ground. */
+.hero-masthead {
+  position: sticky;
+  top: clamp(1rem, 2.2vh, 1.75rem);
+  z-index: 3;
+  margin: clamp(1rem, 2.2vh, 1.75rem) var(--gutter) 0;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
+  color: var(--on-dark);
+}
+
+/* The mark sits directly on the sky with no pane behind it.
+
+   Larger than the reference's 40px, and deliberately. That mark is a dense
+   solid glyph; this one is a twelve-point star built from thin tapering rays
+   with more air inside its box than ink, so at a matched 40px it reads
+   markedly smaller than the thing it is being matched to. Optical size, not
+   measured size. */
+.hero-mark {
+  display: inline-flex;
+  align-items: center;
+  color: var(--on-dark);
+  justify-self: start;
+}
+
+.hero-mark svg {
+  display: block;
+  width: clamp(2.75rem, 4.2vw, 3.75rem);
+  height: auto;
+  aspect-ratio: 1;
+}
+
+.hero-rail {
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0 1.5rem;
+  min-height: var(--rail-height);
+  padding: 0 1.5rem;
+}
+
+/* `:not(.control)` throughout: the action sits in this row too, and it is a
+   drawn plate rather than a link. Left unscoped, these rules would strip its
+   padding and rule a line across the inside of it on hover. */
+.hero-rail a:not(.control) {
+  font-family: var(--mono);
+  font-size: var(--label-size);
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  color: inherit;
+  text-decoration: none;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+/* The rule is the whole hover state. It draws from the left in the same 180ms
+   the control's fill uses, so hovering a link and hovering a button feel like
+   the same material. */
+.hero-rail a:not(.control)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.25rem;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 180ms ease;
+}
+
+.hero-rail a:not(.control):hover::after,
+.hero-rail a:not(.control):focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Cut down to the rail's scale — it is masthead-height, not hero-height. The
+   whole header runs on one `--rail-height` measure: mark, pane and action.
+
+   Scoped to `.hero` for weight, not for reach. `world.css` is imported from
+   `main.tsx` and this file from `Home.tsx`, so the bundle emits the world
+   *after* the hero: a bare `.hero-cta` ties with `.control` at (0,1,0) and
+   loses on source order, which silently left this button at the world's full
+   3rem × 1.75rem and made the masthead a head taller than it was drawn to be. */
+.hero .hero-cta {
+  justify-self: end;
+  min-height: var(--rail-height);
+  padding: 0 1.125rem;
+}
+
+/* ── The statement ────────────────────────────────────────────────────────
+   Centred both ways. The photograph can carry it there now: the colour field's
+   indigo pool sits under exactly this band, so the middle of the frame is the
+   part with the most contrast to give rather than the least.
+
+   `scripts/contrast-sweep.mjs` measures the type against that band. Re-run it
+   after any change to the type scale, the crop, the field or the anchor. */
+
+.hero-statement {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: clamp(1.25rem, 3vh, 2.25rem);
+  padding: clamp(2rem, 6vh, 5rem) var(--gutter);
+}
+
+/* Height-aware, because the constraint is height rather than width: the
+   statement has to fit between the rail and the foot of the frame, and a
+   width-only clamp cannot see a short window. The `min()` against vh is
+   load-bearing — without it, 1366×768 sets 82px and the lede is pushed off
+   the bottom. */
+.hero-title {
+  margin: 0;
+  font-size: clamp(2.5rem, min(6vw, 9vh), 7rem);
+  /* Wide enough that the second sentence holds one line at every desktop size
+     — the `<br />` is the only break this headline should have, because the
+     two sentences are a parallel pair and breaking inside the second one
+     destroys the rhyme. Bounded in `em` so the measure scales with the type
+     rather than with the window. */
+  max-width: 24em;
+}
+
+/* Verbatim from the site it replaces — the first sentence of the original
+   introduction, which was always the one doing the work. Set in the human
+   voice, capped near 60 characters so it stays a paragraph and not a banner.
+
+   24px at the top of its range, and that number does two jobs. A 19px line
+   under a 90px headline was underweight — the hierarchy had a hole in the
+   middle of it. And 24px is exactly WCAG's large-text threshold, which drops
+   the requirement from 4.5:1 to 3:1. That is not a loophole being worked: the
+   requirement is lower because larger type genuinely survives lower contrast,
+   and this line now sits on a photograph that moves underneath it. The
+   alternative was to keep deepening the veil to protect eight pixels, which
+   would have cost the whole frame its light. */
+.hero-lede {
+  margin: 0;
+  max-width: 38rem;
+  font-family: var(--sans);
+  font-size: clamp(1.0625rem, 0.9rem + 1vw, 1.5rem);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -0.008em;
+  color: var(--on-dark);
+  /* The old world's `.site-page p` resets margins at (0,1,1) and would
+     otherwise win. */
+  text-wrap: pretty;
+}
+
+@media (max-width: 48rem) {
+  /* Three columns stop fitting long before the labels do. The grid collapses
+     to two: mark and action share the top row, and the pane drops beneath them
+     spanning the full width — still centred, because it is centred inside its
+     own cell either way. */
+  .hero-masthead {
+    grid-template-columns: auto 1fr;
+    gap: 0.625rem 1rem;
+  }
+
+  .hero-rail {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    padding: 0 1rem;
+  }
+
+  .hero-rail a:not(.control) {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+  }
+
+  .hero .hero-cta {
+    grid-column: 2;
+    grid-row: 1;
+    padding: 0 1rem;
+  }
+
+  .hero-mark svg {
+    width: clamp(2.5rem, 9vw, 3.25rem);
+  }
+
+  /* The shade band has to work harder on a small frame. The statement keeps
+     its three or four lines while the picture shrinks around it, so it covers
+     a much larger share of the image — and the crop is tighter, which puts
+     more of the lit facade directly behind it. Measured at 320x568 the desktop
+     band left the lede at 2.48:1 across 0.4% of its glyph pixels. Wider,
+     taller and deeper here; there is less picture to protect. */
+  .hero-field--pool {
+    background: radial-gradient(
+      82% 42% at 50% 52%,
+      rgba(84, 96, 120, 1) 0%,
+      rgba(118, 130, 154, 0.72) 58%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  }
+
+  /* A vertical crop, which portrait viewports do not otherwise get. At 390×844
+     `cover` scales the photograph to fit the height exactly — the overflow is
+     all horizontal — so `object-position`'s Y component is inert and the sky
+     is a fixed 46% of the frame at every value. Measured: 530px of empty sky
+     between the pane and the skyline.
+
+     Making the image taller than the hero and anchoring it to the foot gives
+     the crop back. `.hero-photo` clips the excess; the statement sits at the
+     bottom, so the top is the right end to lose.
+
+     114% and not more. Every point of extra height also widens the draw, so
+     the horizontal window narrows in step — at 132% the frame held nothing but
+     the Elbphilharmonie's facade, cropped at both edges, and stopped reading
+     as a skyline at all. This keeps the sky down to roughly a third while the
+     Rathaus tower, the fountain and the concert hall all stay in shot. */
+  .hero-photo img {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 114%;
+    object-position: 50% 50%;
+  }
+}
+
+@media (max-width: 30rem) {
+  .hero-masthead {
+    gap: 0.5rem 0.75rem;
+    margin-top: 0.625rem;
+  }
+
+  .hero-rail {
+    gap: 0 1rem;
+    padding: 0 0.75rem;
+  }
+
+  .hero-rail a:not(.control) {
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+  }
+
+  .hero .hero-cta {
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    padding: 0 0.75rem;
+  }
+
+  .hero-title {
+    font-size: clamp(2rem, 9vw, 2.5rem);
+  }
+
+  .hero-statement {
+    gap: 1.25rem;
+    padding-block: 2.5rem;
+  }
+
+  .hero-lede {
+    font-size: 0.9375rem;
+  }
+}

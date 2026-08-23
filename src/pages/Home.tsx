@@ -13,10 +13,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { StarMark } from "@/components/StarMark";
 import { setPageMetadata } from "@/lib/metadata";
-import { startPanelScroll } from "@/lib/panel-scroll";
-import { startSectionScroll } from "@/lib/section-scroll";
 import "./Home.css";
+import "./hero.css";
 
 /* The portrait is a character grid, generated from the photograph by
    `npm run portrait` and inlined at build time. The site ships no photography:
@@ -146,8 +146,8 @@ export default function Home() {
     if (submitError) errorRef.current?.focus();
   }, [submitError]);
 
-  useEffect(() => startPanelScroll(), []);
-  useEffect(() => startSectionScroll(), []);
+  /* The old world pinned every section to the viewport and snapped between
+     them. The new one scrolls plainly, so both drivers are off. */
 
 
   const buildSubject = (formData: FormData) =>
@@ -231,73 +231,58 @@ export default function Home() {
 
   return (
     <div className="site-page">
-      <header className="site-header">
-        <a className="site-brand" href="#top" aria-label="Florian Beermann &amp; Partners, home">
-          {/* The wordmark is the whole brand now; the FB&P monogram it used to
-              sit beside has been retired. Shipped as outlines rather than live
-              type: the drawing is Outfit 200 tracked at 0.92em, so setting it
-              in the page would mean loading a third family for sixteen glyphs
-              and reflowing the masthead if it failed. Decorative — the link's
-              aria-label carries the name once.
-
-              The `?v=2` is load-bearing and must stay in step across all four
-              places this file is referenced. `.htaccess` serves .svg with
-              `max-age=2592000` and no revalidation, while the stylesheet that
-              sizes it is content-hashed and the HTML is `no-cache`. Without the
-              query a visitor who loaded the site in the previous thirty days
-              gets the new CSS with the old 7.05:1 artwork, and because the
-              stacked header derives the mark's height from its width, the
-              masthead renders 73.6px instead of 43.9px and the header box grows
-              28px past `--header-height` — which every anchor offset subtracts.
-              Bump it whenever the artwork changes. */}
-          <img className="site-brand-name" src="/logo-wordmark.svg?v=2" alt="" width="2335" height="198" />
-        </a>
-        <nav aria-label="Primary navigation">
-          <a href="#engagements">Engagements</a>
-          <a href="#about">About</a>
-          <a href="#contact">Contact</a>
-        </nav>
-      </header>
-
       <main id="site-main">
-        {/* Snap stop. See `.site-stop` in Home.css. */}
-        <span className="site-stop" aria-hidden="true" />
-        <section id="top" className="home-hero site-panel" aria-label="Introduction">
-          <div className="home-hero-copy">
-            <h1>
-              Your customers changed.{" "}
-              <span>Your Customer Success motion didn’t.</span>
-            </h1>
-            <p className="home-intro">
-              I rebuild Customer Success for B2B SaaS companies whose customer
-              base has outgrown the way they serve it. The coverage model,
-              health scores and playbooks still assume the customers they used
-              to have, whether that shift is just beginning or already behind
-              you. I have operated Customer Success myself, from SMB accounts
-              through to DAX 40 enterprises.
-            </p>
-            <div className="home-actions">
-              <a className="home-primary-action" href="#contact">
-                Start a conversation
-              </a>
-            </div>
+        <section id="top" className="hero on-dark">
+          <div className="hero-photo">
+            <img
+              src="/photo/alster-1400.jpg"
+              srcSet="/photo/alster-700.jpg 700w, /photo/alster-1000.jpg 1000w, /photo/alster-1400.jpg 1400w, /photo/alster-1800.jpg 1800w, /photo/alster-2000.jpg 2000w"
+              sizes="(max-width: 48rem) 560vw, 140vw"
+              alt="The Binnenalster in Hamburg at sunset, with the spire of St. Nikolai, the Rathaus tower and the Elbphilharmonie along the far shore."
+              width="2000"
+              height="1333"
+              decoding="async"
+            />
+            {/* Inside the photo, so they blend with the image and are clipped
+                by it. Three lobes rather than one so the field morphs instead
+                of sliding. Decorative and unreadable by definition, so inert
+                to the tree rather than hidden from it. */}
+            <div className="hero-field hero-field--warm" aria-hidden="true" />
+            <div className="hero-field hero-field--cool" aria-hidden="true" />
+            <div className="hero-field hero-field--pool" aria-hidden="true" />
           </div>
+          <div className="hero-wash" aria-hidden="true" />
+          <div className="hero-grain" aria-hidden="true" />
 
-          <figure className="home-portrait">
-            <div className="home-portrait-plate">
-              <img
-                src="/portrait-plate.jpg"
-                alt="Florian Beermann"
-                width="723"
-                height="1086"
-                decoding="async"
-              />
-            </div>
-            <figcaption className="home-portrait-caption">
-              <span className="site-label">Fig. 01</span>
-              <span className="site-label">Florian Beermann</span>
-            </figcaption>
-          </figure>
+          {/* Explicit `banner`: nested inside a sectioning element the implicit
+              mapping degrades to generic, so the landmark has to be stated to
+              exist at all. Same reason the contact panel states contentinfo. */}
+          <header className="hero-masthead" role="banner">
+            {/* The mark carries the accessible name now that the wordmark has
+                left the bar — otherwise the only route home would be an
+                unlabelled graphic. */}
+            <a className="hero-mark" href="#top" aria-label="Florian Beermann &amp; Partners — home">
+              <StarMark />
+            </a>
+            <nav className="glass hero-rail" aria-label="Primary navigation">
+              <a href="#engagements">Engagements</a>
+              <a href="#about">About</a>
+            </nav>
+            <a className="control control--solid hero-cta" href="#contact">
+              Start a conversation
+            </a>
+          </header>
+
+          <div className="hero-statement">
+            <h1 className="display hero-title">
+              Your customers changed.<br />
+              Your Customer Success motion didn’t.
+            </h1>
+            <p className="hero-lede">
+              Florian Beermann &amp; Partners help companies whose customer base
+              has outgrown the way they serve it.
+            </p>
+          </div>
         </section>
 
         {/* Snap stop. See `.site-stop` in Home.css. */}

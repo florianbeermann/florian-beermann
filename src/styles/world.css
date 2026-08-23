@@ -1,0 +1,313 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   THE WORLD
+
+   THESIS: A consultancy that argues from conditions, not from claims. It
+   refuses the dark-plum statement-panel arrangement the old site shipped, and
+   refuses the card-grid consultancy page. The page opens on a real place at a
+   real hour and lets one sentence do the work.
+
+   OWN-WORLD: Two planes, always. Behind: one photograph of the Alster at dusk,
+   full bleed, washed to a ground and grained like a print — atmosphere, not
+   subject. In front: interface, floating clear of it in glass. Two voices,
+   never mixed: Fragment Mono in tracked caps for anything a machine would have
+   printed — navigation, labels, field names, legal, captions — and Switzer at
+   600 for anything a person says. A 4px radius, only ever on the front plane.
+
+   STORY: A VP of Customer Success arrives at the moment retention became a
+   board number. They see a place that has visibly rebuilt itself, read one
+   sentence that names their exact problem, and find a single way to start.
+
+   FIRST VIEWPORT: The photograph fills the screen under a warm ink wash. One
+   glass bar floats at the top holding the name, the navigation and the action.
+   The statement is centred and set large in light type — the wash is what buys
+   that; on the raw photograph white measured 2.1:1 and this is the whole
+   reason the wash exists. Beneath it the Elbphilharmonie is the brightest
+   thing left in the frame.
+
+   FORM: Icebug's typography — the two voices, the tracked mono, the tight
+   display — on Pioneer's material: washed ground, floating glass, small
+   radius. The two references divide cleanly, because they were never arguing
+   about the same layer. Icebug owns the type; Pioneer owns the surfaces.
+   ───────────────────────────────────────────────────────────────────────── */
+
+@font-face {
+  font-family: "Switzer";
+  src: url("/fonts/Switzer-Variable.woff2") format("woff2-variations");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+/* Fragment Mono is drawn on Helvetica's monospaced metrics, which is the same
+   ancestry Suisse Int'l Mono has. It ships one weight, and that is a feature
+   here: the machine voice appears at exactly one size and one weight across
+   the whole site, so there is never a decision to make about it. */
+@font-face {
+  font-family: "Fragment Mono";
+  src: url("/fonts/FragmentMono-Regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root,
+/* The old world declared its tokens on `.site-page`, which outranks `:root`.
+   Restating them at the same specificity here — and later in the cascade —
+   is what actually retires them. */
+.site-page {
+  /* Every value is measured off the photograph. The palette is not applied to
+     the picture; it is taken from it, which is why the page and the image do
+     not look like two different decisions. */
+
+  /* Tree-black. The darkest thing in the frame, and warm rather than neutral —
+     a neutral #262626 next to this sky reads as a hole punched in it. */
+  --ink: #1e2019;
+  /* The sky, held as paper. */
+  --paper: #ede6d9;
+  --paper-deep: #e2d9c8;
+  /* The water. Carries light type at 6.2:1, never dark. */
+  --slate: #4e606c;
+  /* The sky at its warmest, behind the Elbphilharmonie. */
+  --amber: #d0ac81;
+
+  --ink-muted: rgba(30, 32, 25, 0.66);
+  --line: rgba(30, 32, 25, 0.28);
+
+  --on-dark: #f2ede4;
+  --on-dark-muted: rgba(242, 237, 228, 0.72);
+  --line-on-dark: rgba(242, 237, 228, 0.32);
+
+  --sans: "Switzer", "Helvetica Neue", Arial, sans-serif;
+  --mono: "Fragment Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* ── The front plane ────────────────────────────────────────────────────
+     Everything below this line exists only above the photograph. On flat
+     ground none of it applies: no glass, no radius, no blur. */
+
+  /* The wash that turns the photograph into a ground. Held as a bare triple
+     so `scripts/contrast-sweep.mjs` can read the same numbers the gradient is
+     built from and composite them itself — otherwise the sweep measures a
+     photograph the eye never sees, and every ratio it reports is a fiction.
+     Change these and the contrast changes; re-run the sweep. */
+  /* The grade. Two operations, in this order, and the order is the point.
+
+     First `brightness`, which is a multiply: it scales every pixel toward
+     black and so *preserves* the ratios inside the photograph. The
+     Elbphilharmonie's lit glass stays the brightest object in the frame
+     relative to the trees around it. An alpha veil cannot do this — it
+     interpolates every pixel toward one colour, which compresses the
+     highlights into the shadows.
+
+     Left at 1 now. It was 0.86, and stacked with everything else it was part
+     of a chain that took the frame to a mean luminance of 0.039 against a
+     reference sitting near 0.28 — seven times darker. The photograph is
+     correctly exposed as shot; there is nothing here to fix.
+
+     `saturate` is safe to leave out of any contrast maths — the CSS filter
+     matrix is luminance-preserving by construction. */
+  --photo-brightness: 1;
+  --photo-saturate: 1.16;
+
+  /* Sampled from the water, taken down to its own shadow. */
+  --wash-rgb: 22 32 41;
+  /* Density across the frame, and the shape of it matters more than the
+     numbers. The veil was the single biggest thing eating the light — 59% of
+     it — because a heavy band at the top ramped down across a full 30% of the
+     height, dragging the whole upper half with it.
+
+     It only ever needed to be heavy in one place. The 13px navigation is the
+     only element on this screen held to 4.5:1; the headline and the lede are
+     both large text at 3:1, and the action carries its own plate. So the top
+     stop stays deep enough to hold the pane, the ramp is short enough that it
+     is spent by 13% of the height, and everything below runs thin. The cost is
+     paid where the problem is instead of across the whole frame. */
+  --wash-top: 0.62;
+  --wash-mid: 0.13;
+  --wash-bot: 0.06;
+  --wash-stop-a: 13%;
+  --wash-stop-b: 32%;
+
+  /* Pioneer's recipe, measured off the live page rather than guessed at: a
+     ~10% light film, `blur(50px)`, a 4px radius, no border at all, and one
+     soft shadow at `0 4px 35px rgba(0,0,0,0.15)`.
+
+     The no-border part is the surprise and it is the important part. A hairline
+     draws the pane's outline, which reads as a *shape*; the shadow instead
+     separates it from what is behind, which reads as a *sheet of glass lying
+     on top*. And 50px of blur is not 20px with more: at that radius everything
+     behind resolves to one flat field, so the pane stops being a window onto
+     the photograph and becomes a material in its own right.
+
+     An earlier pass tinted this film dark, because 13px navigation on a light
+     film over open sky measured 3.4:1 against a 4.5 requirement. That fixed
+     the number and broke the look — a dark plate reads as a *bar*, where the
+     reference reads as a barely-there lightening. The right lever was never
+     the pane: it was the sky behind it. `--wash-top` now carries the top band
+     down far enough that white clears 4.5:1 on the bare photograph, which
+     leaves this film free to be what it should be — light, and almost not
+     there. */
+  --glass-bg: rgba(226, 230, 238, 0.1);
+  --glass-blur: 50px;
+  --glass-shadow: 0 4px 35px rgba(0, 0, 0, 0.15);
+
+  /* One height for everything in the masthead — mark, pane and action. Pioneer
+     runs its whole header on a single 40px rail and that is most of why it
+     looks engineered rather than assembled. */
+  --rail-height: 2.5rem;
+
+  /* 4px. Large enough to say the pane is a physical object, small enough that
+     it never reads as a rounded button. Front plane only. */
+  --radius: 4px;
+
+  /* The machine voice. One size, one tracking, everywhere it appears. */
+  --label-size: 0.8125rem;
+  --label-tracking: 0.14em;
+
+  --gutter: clamp(1.5rem, 4vw, 3.5rem);
+  --header-height: 5.25rem;
+}
+
+/* The machine voice. Navigation, field labels, captions, legal, prices,
+   numbers — anything that would have been printed by a system rather than
+   written by a person. */
+.label {
+  font-family: var(--mono);
+  font-size: var(--label-size);
+  font-weight: 400;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  font-feature-settings: "tnum" 1;
+}
+
+/* The human voice. */
+.display {
+  font-family: var(--sans);
+  font-weight: 600;
+  letter-spacing: -0.028em;
+  line-height: 0.9;
+  text-wrap: balance;
+}
+
+/* Controls are drawn, never filled. A 1px rule with the machine voice inside
+   it; the fill arrives only on hover, and it is the ink. On the front plane it
+   picks up the pane's blur, so a control sitting on the photograph is made of
+   the same material as the bar it sits in. */
+.control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 3rem;
+  padding: 0 1.75rem;
+  border: 1px solid currentColor;
+  border-radius: var(--radius);
+  background: transparent;
+  color: inherit;
+  font-family: var(--mono);
+  font-size: var(--label-size);
+  font-weight: 400;
+  letter-spacing: var(--label-tracking);
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease;
+}
+
+.control:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* On a dark ground the fill inverts, so the control still reads as "the rule
+   fills in" rather than as a different component. */
+.on-dark .control:hover {
+  background: var(--on-dark);
+  color: var(--ink);
+}
+
+/* The one filled control on the page. Reserved for the single action the hero
+   is asking for — on a washed photograph a drawn rule is a suggestion, and a
+   solid plate is an instruction. */
+.control--solid {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--ink);
+}
+
+.control--solid:hover,
+.on-dark .control--solid:hover {
+  background: #fff;
+  border-color: #fff;
+  color: var(--ink);
+}
+
+/* ── Glass ────────────────────────────────────────────────────────────────
+   The front plane's only material. A film of light, a deep blur, and a soft
+   shadow to lift it off the picture. No border: the outline is what makes a
+   pane read as a drawn shape instead of a sheet lying on top. */
+.glass {
+  background: var(--glass-bg);
+  border: 0;
+  border-radius: var(--radius);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(var(--glass-blur)) saturate(130%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(130%);
+}
+
+/* Without backdrop-filter the film is just a 10% wash — far too little to hold
+   13px type over a photograph. The pane goes opaque instead of transparent,
+   which loses the effect but keeps the text readable, and readable is the part
+   that is not optional. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: rgb(var(--wash-rgb) / 0.82);
+  }
+}
+
+/* Reduced transparency is an accessibility setting, not a taste one: it is set
+   by people for whom a moving photograph behind text is the problem. Honour it
+   the same way the no-support path does. */
+@media (prefers-reduced-transparency: reduce) {
+  .glass {
+    background: rgb(var(--wash-rgb) / 0.88);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* Responsive density. Two separate reasons, both measured rather than felt.
+
+   ≤48rem: the masthead breaks to two rows, which drops the glass pane clear of
+   the very top of the veil and onto a different part of the crop — the
+   portrait rules change the framing as well. The navigation measured 4.43:1
+   there against 4.5, failing across 16% of its glyph pixels, while the same
+   type cleared comfortably at desktop widths.
+
+   ≤30rem: the statement keeps its full three or four lines while the frame
+   shrinks, so a much larger share of it lands on the lit facades behind. The
+   lede measured 3.96:1 with 0.57% of its glyph pixels below AA, against
+   nothing at all on desktop.
+
+   Adjusting the tokens rather than the layout keeps `scripts/contrast-sweep.mjs`
+   honest — it reads these values at whatever width it is run. */
+@media (max-width: 48rem) {
+  :root,
+  .site-page {
+    --wash-top: 0.66;
+  }
+}
+
+@media (max-width: 30rem) {
+  :root,
+  .site-page {
+    --wash-mid: 0.5;
+  }
+}
