@@ -268,9 +268,9 @@ void main() {
   // same noise as everything else so the boundary reads as part of the
   // picture rather than as a rectangle laid over it.
   if (uLineFloor < 1.0) {
-    float wob = (n - 0.5) * 0.30;
-    float lx = 1.0 - smoothstep(0.72, 1.55, abs(uv.x - uLineBox.x) / max(uLineBox.z, 0.0001) + wob);
-    float ly = 1.0 - smoothstep(0.55, 1.60, abs(yTop - uLineBox.y) / max(uLineBox.w, 0.0001) + wob);
+    float wob = (n - 0.5) * 0.16;
+    float lx = 1.0 - smoothstep(0.88, 1.22, abs(uv.x - uLineBox.x) / max(uLineBox.z, 0.0001) + wob);
+    float ly = 1.0 - smoothstep(0.80, 1.30, abs(yTop - uLineBox.y) / max(uLineBox.w, 0.0001) + wob);
     col *= mix(1.0, uLineFloor, lx * ly);
   }
 
@@ -494,17 +494,23 @@ export function InkField({
 
       /* The accent strip, measured from the element rather than guessed at, so
          it follows the line when it rewraps instead of needing a value per
-         breakpoint. Padded generously on both axes: a shade that stops exactly
-         at the glyph box has a visible edge, and the point is for this to read
-         as a darker passage of the picture. */
+         breakpoint.
+
+         Padded barely at all, and that is the point. The blue this protects
+         needs a near-black backdrop to clear 3:1 — its luminance is 0.117, so
+         the ground behind it has to come down to about 0.006 — and a near-black
+         region is only acceptable if it is small. Generous padding plus a wide
+         falloff put a dark smear across the middle of the frame; the shade has
+         to hug the line instead, dark where the glyphs are and gone within
+         half a line height. */
       const line = lineRef.current;
       let lineFloor = 1;
       if (line) {
         const host = canvas.getBoundingClientRect();
         const box = line.getBoundingClientRect();
         if (host.width > 0 && host.height > 0 && box.width > 0) {
-          const padX = box.width * 0.06 + 40;
-          const padY = box.height * 0.35 + 26;
+          const padX = box.width * 0.01 + 14;
+          const padY = box.height * 0.06 + 8;
           gl.uniform4f(
             uLineBox,
             (box.left + box.width / 2 - host.left) / host.width,

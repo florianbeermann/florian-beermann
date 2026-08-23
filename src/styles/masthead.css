@@ -139,9 +139,9 @@
      pane behind it — landed on top of 48px display type and turned into
      debris. Near-opaque paper gives the row a page to sit on. */
   --scrim-rgb: var(--p-paper-rgb);
-  --scrim-head: 0.94;
-  --scrim-row: 0.9;
-  --scrim-tail: 0.55;
+  --scrim-head: 0.42;
+  --scrim-row: 0.38;
+  --scrim-tail: 0.2;
 }
 
 /* ── Ground: deep ─────────────────────────────────────────────────────────
@@ -161,9 +161,9 @@
   /* The band's own blue, so the row sits on the band rather than on whatever
      line of it happens to be passing underneath. */
   --scrim-rgb: var(--p-blue-rgb);
-  --scrim-head: 0.94;
-  --scrim-row: 0.9;
-  --scrim-tail: 0.55;
+  --scrim-head: 0.42;
+  --scrim-row: 0.38;
+  --scrim-tail: 0.2;
 }
 
 /* While the sheet is open it covers the viewport in its own dark ground, and
@@ -200,7 +200,20 @@
 .site-masthead .masthead-mark {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   justify-self: start;
+  /* The mark carries the pill's material rather than sitting bare on the page.
+     It has to: the scrim behind this row is now a veil rather than a sheet — a
+     sheet is what killed the glass — and a bare mark on a veil collides with
+     whatever heading scrolls under it. Giving it the same glass makes the row
+     one material instead of two. */
+  padding: 0 0.5rem;
+  min-height: var(--rail-height);
+  border-radius: var(--radius);
+  background: var(--glass-bg);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(var(--glass-blur)) saturate(130%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(130%);
   /* Set from the section under the row — see `markerOf` in Masthead.tsx. The
      fallback is the paper, which is what the hero wants and what the row starts
      on before the observer has reported anything.
@@ -221,9 +234,11 @@
 
 .masthead-mark svg {
   display: block;
-  width: var(--masthead-h);
-  height: auto;
-  aspect-ratio: 1;
+  /* Sized by height: the mark is 1402x1122, so a width-based rule would make
+     it taller than the row. */
+  height: var(--masthead-h);
+  width: auto;
+  aspect-ratio: 1402 / 1122;
   /* Fifty-two tapering rays, the finest of them under a pixel wide at this
      size. Letting the rasteriser optimise for speed turns them to mush. */
   shape-rendering: geometricPrecision;
