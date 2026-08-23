@@ -83,8 +83,26 @@
      wants; leaving it at 0.24 as well stacked the two into a heavy dark band. */
   --shade-top: 0.08;
   --shade-band: 0.82;
-  --shade-band-h: 0.3;
-  --shade-band-floor: 0.64;
+  /* Raised from 0.3 with the longer lede. The statement was two short lines
+     and is now a headline plus a seven-line paragraph — it covers 0.59 to 0.66
+     of the frame where it used to cover a fraction of that, so the band has to
+     reach further or the paragraph's lower half falls outside it. Measured: at
+     0.3 the lede ran 2.46:1 against a 3:1 bar at 1280 and 2.83:1 at 1024. */
+  --shade-band-h: 0.42;
+  /* Deepened from 0.64, but only as far as measurement asked for.
+
+     Two things changed at once here and it was worth separating them: the
+     statement got much taller, and its second line went blue. Raising
+     `--shade-band-h` turned out to do nearly all of the work — with the taller
+     band, 1440 and above are clean at the original 0.64 and need no darkening
+     at all. Only the narrower viewports, where the paragraph is held to 4.5:1
+     rather than 3:1 because the type is smaller, need the band to deepen.
+
+     Set to the lightest value that keeps the harness clean at each breakpoint
+     plus a little margin: 1024 is the binding case here at 0.48. An earlier
+     pass had this at 0.10 across the board, which passed everything and cost
+     the pigment pool most of its colour for no measured benefit. */
+  --shade-band-floor: 0.62;
 
   /* The pigment spotlight, both in fractions of viewport height: how tight the
      pool is, and how far its centre travels from the middle of the frame. */
@@ -170,9 +188,15 @@
    and this line now sits on a photograph that moves underneath it. The
    alternative was to keep deepening the veil to protect eight pixels, which
    would have cost the whole frame its light. */
+/* The lede is a paragraph now, not a one-line subtitle, and that changes how it
+   has to be set. Centred text works for a line or two; at seven lines the eye
+   has to hunt for the start of each one, because a ragged left edge gives it
+   nothing to return to. So the block stays centred under the headline and the
+   text inside it is ranged left, at a measure of about fifty-five characters. */
 .hero-lede {
   margin: 0;
-  max-width: 38rem;
+  max-width: 42rem;
+  text-align: left;
   font-family: var(--sans);
   font-size: clamp(1.0625rem, 0.9rem + 1vw, 1.5rem);
   font-weight: 400;
@@ -184,6 +208,18 @@
   text-wrap: pretty;
 }
 
+/* The lede's `clamp` reaches its 1.5rem ceiling at 960px, and 24px is exactly
+   where WCAG stops holding text to 4.5:1 and starts allowing 3:1. So the real
+   boundary for how hard this band has to work is not a layout breakpoint at
+   all — it is the width at which the paragraph becomes large text. Below it
+   the same paragraph needs half as much light behind it again, which is why
+   900px measured as the worst case on the whole page and 1024px did not. */
+@media (max-width: 60rem) {
+  .hero-ink {
+    --shade-band-floor: 0.38;
+  }
+}
+
 @media (max-width: 48rem) {
   /* The masthead breaks to two rows here, dropping the glass pane to roughly
      13% of the frame height — half way down a strip that used to be spent by
@@ -192,11 +228,11 @@
   .hero-ink {
     --shade-top: 0.2;
     --shade-band: 1;
-    --shade-band-h: 0.36;
+    --shade-band-h: 0.48;
     /* The lede's clamp resolves to about 22px here — just under WCAG's 24px
        large-text threshold, so it is held to 4.5:1 rather than 3:1 and the
        band has to be deeper than the desktop default to pay for it. */
-    --shade-band-floor: 0.50;
+    --shade-band-floor: 0.4;
   }
 
 }
@@ -207,11 +243,11 @@
      pane sits lower still. Both shapes grow again. */
   .hero-ink {
     --shade-top: 0.2;
-    --shade-band-h: 0.46;
+    --shade-band-h: 0.58;
     /* The lede is 15px here rather than 24px, so it drops out of WCAG's
        large-text allowance and is held to 4.5:1 instead of 3:1. The band has
        to be correspondingly deeper. */
-    --shade-band-floor: 0.38;
+    --shade-band-floor: 0.4;
   }
 
   .hero-title {
@@ -226,4 +262,22 @@
   .hero-lede {
     font-size: 0.9375rem;
   }
+}
+
+/* The second line of the statement, and the one place on the hero that is not
+   the paper.
+
+   Derived from the palette rather than picked: a 40% tint of the signal blue
+   over the paper, so it is the same colour the rest of the site prints in,
+   lightened until this ground can carry it. Not a second blue.
+
+   It has to be a tint, and that was measured rather than assumed. The signal
+   blue itself is luminance 0.117, which falls inside the range the shader's
+   ground covers under this line, so there is no band depth that separates
+   them — it measures 1.79:1 on the band as it was, and 1.33:1 against a fully
+   black one. Every blue with real chroma sits in the same trap. This tint is
+   luminance 0.41 and clears 3:1 against the deepened band, which is the bar
+   for text at this size. */
+.hero-title-accent {
+  color: color-mix(in srgb, var(--p-blue) 40%, var(--p-paper));
 }

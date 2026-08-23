@@ -212,18 +212,24 @@ export default function Home() {
               picture, which is what lets the statement's contrast floor be a
               property of the image rather than something layered onto it.
               Decorative and unreadable by definition. */}
-          <InkField className="hero-ink" />
+          <InkField className="hero-ink" protect=".hero-statement" />
 
 
           <div className="hero-statement">
             <h1 className="display hero-title">
               Your customers changed.{" "}
               <br />
-              Your Customer Success motion didn’t.
+              <span className="hero-title-accent">
+                Your Customer Success motion didn’t.
+              </span>
             </h1>
             <p className="hero-lede">
-              Florian Beermann &amp; Partners help companies whose customer base
-              has outgrown the way they serve it.
+              I rebuild Customer Success for B2B SaaS companies whose customer
+              base has outgrown the way they serve it. The coverage model,
+              health scores and playbooks still assume the customers they used
+              to have, whether that shift is just beginning or already behind
+              you. I have operated Customer Success myself, from SMB accounts
+              through to DAX 40 enterprises.
             </p>
           </div>
         </section>

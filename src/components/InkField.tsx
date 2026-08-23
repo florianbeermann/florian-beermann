@@ -61,6 +61,7 @@ uniform vec3  uInkLight;
 uniform vec3  uPigmentDark;
 uniform vec3  uPigmentLight;
 uniform float uShadeBandH;
+uniform float uShadeBandY;
 uniform float uShadeBandGain;
 uniform float uShadeTop;
 uniform float uShadeBandFloor;
@@ -237,7 +238,7 @@ void main() {
   // geometry comes from CSS so the breakpoints can move them, and their
   // boundary is displaced by the same noise as everything else so it does not
   // read as a shape laid over the picture.
-  vec2 d = (vec2(uv.x, yTop) - vec2(0.5, 0.50)) / vec2(0.72, uShadeBandH);
+  vec2 d = (vec2(uv.x, yTop) - vec2(0.5, uShadeBandY)) / vec2(0.72, uShadeBandH);
   float len = length(d) + (n - 0.5) * 0.34;
   float band = (1.0 - smoothstep(0.45, 1.40, len)) * uShadeBandGain;
   float top = 1.0 - smoothstep(0.03, uShadeTop, yTop);
@@ -317,8 +318,24 @@ function readColor(
   return out;
 }
 
-export function InkField({ className }: { className?: string }) {
+export function InkField({
+  className,
+  protect,
+}: {
+  className?: string;
+  /* Selector for the element the legibility band must cover. Optional: without
+     it the band falls back to the CSS fraction, which is the geometry this had
+     before and is still what sets its minimum. */
+  protect?: string;
+}) {
   const ref = useRef<HTMLCanvasElement | null>(null);
+  const protectRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    protectRef.current = protect
+      ? document.querySelector<HTMLElement>(protect)
+      : null;
+  }, [protect]);
 
   useEffect(() => {
     const canvas = ref.current;
@@ -364,6 +381,7 @@ export function InkField({ className }: { className?: string }) {
     const uRes = gl.getUniformLocation(prog, "uRes");
     const uTime = gl.getUniformLocation(prog, "uTime");
     const uShadeBandH = gl.getUniformLocation(prog, "uShadeBandH");
+    const uShadeBandY = gl.getUniformLocation(prog, "uShadeBandY");
     const uShadeBandGain = gl.getUniformLocation(prog, "uShadeBandGain");
     const uShadeTop = gl.getUniformLocation(prog, "uShadeTop");
     const uShadeBandFloor = gl.getUniformLocation(prog, "uShadeBandFloor");
@@ -408,9 +426,42 @@ export function InkField({ className }: { className?: string }) {
       // geometry, and the contrast harness — which samples this canvas — sees
       // whatever the breakpoint actually resolved to.
       const cs = getComputedStyle(canvas);
-      gl.uniform1f(uShadeBandH, readVar(cs, "--shade-band-h", 0.3));
       gl.uniform1f(uShadeBandGain, readVar(cs, "--shade-band", 0.82));
       gl.uniform1f(uShadeTop, readVar(cs, "--shade-top", 0.24));
+
+      /* The band has to cover the statement, and the statement's height is set
+         by how the text wraps — not by the viewport. Three hand-tuned
+         breakpoint fractions could not track that: a taller lede, a narrower
+         column or a shorter window all changed how much of the frame the
+         paragraph occupied, and the band stayed where it was. It failed
+         exactly where the mismatch was worst, at 640px tall and at 900px wide.
+
+         So the geometry is measured from the element instead. Same lesson as
+         the masthead scrim: shading that protects something has to be derived
+         from that thing's box, not from a proportion of the screen that
+         happens to match it at the sizes someone checked.
+
+         The 0.45 is the shader's own number — `band` is at full strength while
+         `len` is under 0.45, so the dense part of the ellipse reaches
+         0.45 * uShadeBandH from its centre. Dividing by it converts "cover
+         this many uv units" into the semi-axis that does. */
+      const protect = protectRef.current;
+      let bandH = readVar(cs, "--shade-band-h", 0.3);
+      let bandY = 0.5;
+      if (protect) {
+        const box = protect.getBoundingClientRect();
+        const host = canvas.getBoundingClientRect();
+        if (host.height > 0) {
+          const pad = 28;
+          const half = (box.height / 2 + pad) / host.height;
+          const centre = (box.top + box.height / 2 - host.top) / host.height;
+          // Never let a measurement shrink the band below what CSS asked for.
+          bandH = Math.max(bandH, half / 0.45);
+          bandY = Math.min(0.9, Math.max(0.1, centre));
+        }
+      }
+      gl.uniform1f(uShadeBandH, bandH);
+      gl.uniform1f(uShadeBandY, bandY);
       gl.uniform1f(uShadeBandFloor, readVar(cs, "--shade-band-floor", 0.64));
       gl.uniform1f(uSpotRadius, readVar(cs, "--spot-radius", 0.42));
       gl.uniform1f(uSpotOrbit, readVar(cs, "--spot-orbit", 0.34));
