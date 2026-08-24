@@ -1826,6 +1826,11 @@
   /* No bottom padding: the wordmark is meant to reach the edge and be cut. */
   padding: calc(var(--masthead-space) + clamp(1.5rem, 4vh, 3rem)) 4vw 0;
   overflow: hidden;
+  /* So the lockup can size itself against this box rather than against the
+     viewport. The two differ by the scrollbar, and on a long page like this one
+     there is always a scrollbar: sizing the lockup in vw made it wider than the
+     space it actually had, and this panel clips. */
+  container-type: inline-size;
   background: var(--p-blue);
   color: var(--p-paper);
   /* The panel is its own scope. Anything inside it prints in the paper — this
@@ -1924,15 +1929,21 @@
   width: max-content;
   margin-top: auto;
   margin-bottom: -0.19em;
-  /* Wall to wall: the lockup bleeds past the panel's gutters to the viewport
-     edges, so the mark starts at one edge and the year ends at the other.
-     6.74vw is the width of the page divided by the lockup's own aspect — it is
-     about 14.68 times its font-size wide, the mark, the wordmark and the year
-     measured separately — with a hair of margin so a rounding difference
-     cannot clip the final digit. Re-measure this if anything joins the lockup. */
+  /* Wall to wall: the lockup bleeds past the panel's gutters so the mark starts
+     at one edge of the page and the year ends at the other.
+
+     --wall is that span: the panel's content box plus the two 4vw gutters it
+     bleeds over. Measured from the container rather than from 100vw, because
+     100vw includes the scrollbar and this panel clips — sizing in vw put the
+     year up to a pixel past the edge at narrow desktop widths.
+
+     15.02 is the lockup's own aspect with a hair of margin: it is 14.95 times
+     its font-size wide, the mark, the wordmark and the year measured
+     separately. Re-measure if anything in the lockup changes size. */
+  --wall: calc(100cqw + 8vw);
   margin-left: -4vw;
   margin-right: -4vw;
-  font-size: 6.74vw;
+  font-size: calc(var(--wall) / 15.02);
   line-height: 1;
   white-space: nowrap;
 }
@@ -1952,21 +1963,22 @@
   line-height: 1;
 }
 
-/* The year rides at the top of the wordmark rather than on its baseline, the
-   way a registration mark does. flex-start against a line whose height is set
-   by the 1em wordmark puts it at the ascender without a magic offset.
+/* The year sits below the wordmark's cap line rather than on its baseline —
+   high enough to read as part of the lockup, low enough not to look like a
+   footnote pinned to the ascender. flex-start against a line whose height is
+   set by the 1em wordmark puts it at the top; the margin drops it from there.
 
-   Mono rather than the wordmark face: at this size Nippo's figures are too
-   small to hold, and the mono voice is the one the rest of the site's legal
-   and label text already uses. */
+   Set in the wordmark face so the lockup is one voice. */
 .site-closing-year {
   align-self: flex-start;
-  margin-left: 0.14em;
-  font-family: var(--mono);
-  font-size: 0.135em;
+  margin-left: 0.16em;
+  margin-top: 0.30em;
+  font-family: var(--wordmark);
+  font-size: 0.26em;
+  font-weight: 400;
   font-variant-numeric: tabular-nums;
-  letter-spacing: var(--label-tracking);
-  line-height: 1.35;
+  letter-spacing: 0;
+  line-height: 1;
   white-space: nowrap;
 }
 
@@ -1976,17 +1988,21 @@
     gap: 2.5rem;
   }
 
-  /* The lockup is sized to span the viewport, so on a narrow screen the whole
-     thing is small — around 26px at 390px wide — and 0.135em of that is 3.5px,
-     which is not a registration mark, it is a smudge. The year gets an absolute
-     floor here and the lockup is re-fitted around it: the mark and wordmark are
-     13.97em of the remaining space once the year and its margin are taken out. */
+  /* The lockup is sized to span the page, so on a narrow screen the whole thing
+     is small — around 25px at 390px wide — and 0.26em of that is 6.5px. The
+     year gets an absolute floor here, which takes it out of the em scale and so
+     out of the lockup's own aspect: the rest is 14.13em and the year is a fixed
+     2.51rem beside it, hence the two terms. Re-measure both if it changes. */
   .site-closing-year {
-    font-size: 0.625rem;
+    font-size: 0.75rem;
+    margin-top: 0.9em;
   }
 
   .site-closing-lockup {
-    font-size: min(6.74vw, calc((100vw - 3.6rem) / 14.11));
+    font-size: min(
+      calc(var(--wall) / 15.02),
+      calc((var(--wall) - 2.51rem - 0.5rem) / 14.13)
+    );
   }
 }
 
