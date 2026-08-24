@@ -1071,6 +1071,9 @@
   grid-column: 2;
   grid-row: 1;
   flex-direction: column;
+  /* Overrides the grid's align-items: start so this column runs the full depth
+     of the row, which the copy beside it sets. The portrait then fills it. */
+  align-self: stretch;
 }
 
 /* The qualifier that closes the argument, and it now sits at the foot of the
@@ -1094,27 +1097,50 @@
    than as two blocks that happen to sit side by side, and it is the reason the
    employer list it replaces carried a border on its first row.
 
-   Sized by height rather than by aspect, because this panel is bound to the
-   viewport and the plate is 2:3. Left to its own proportions at this column
-   width it came out 716px tall, which pushed the section to 1033px on a 900px
-   screen and shunted the note below the fold — and the whole arrangement of
-   this spread, as the comments above it say, is that the two columns run to
-   roughly the same depth. Driving the height from vh keeps that true on a
-   short screen as well as a tall one; `object-fit` takes the crop off the
-   bottom, where there is only jumper. */
+   Sized to fill the row rather than to a height of its own. The row's depth is
+   set by the copy column beside it, and that depth comes from the column's
+   *width* — how the text wraps — not from the viewport. An earlier version
+   drove this from vh, which matched the copy at one window height and drifted
+   at every other: at 900px it aligned, at 700px it finished 90px short and the
+   crop tightened back to half the plate. Filling the row is exact at every
+   height, and it is also the arrangement the comments above describe. */
 .home-about-portrait {
   margin: 0;
+  /* The gap between the rule and the plate. Shared with the image's own inset,
+     which is why it is a variable rather than written twice. */
+  --plate-gap: 1.3rem;
+  position: relative;
   border-top: 1px solid var(--ink);
-  padding-top: 1.3rem;
+  padding-top: var(--plate-gap);
+  flex: 1;
+  /* A floor for the case where the copy is short enough that the row would
+     leave the plate a letterbox. */
+  min-height: 15rem;
 }
 
 .home-about-portrait img {
+  /* Out of flow deliberately. In flow, "height: 100%" against an auto-height
+     row resolves to the plate's own 2:3 proportion, that height feeds back into
+     the row, and the record column ends up defining the depth it was supposed
+     to be matching — the plate came out 834px against copy of 510px. Taking it
+     out of flow breaks the loop: the row is sized by the copy alone, and the
+     plate then fills whatever that turns out to be. */
+  position: absolute;
+  top: var(--plate-gap);
+  right: 0;
+  left: 0;
+  /* Explicit rather than relying on top and bottom to imply it: a replaced
+     element with height auto uses its intrinsic height and ignores bottom, so
+     the plate came out at its full 834px regardless of the box around it. The
+     percentage resolves against the figure's padding box, hence the subtraction
+     of the gap the top inset already spends. */
+  height: calc(100% - var(--plate-gap));
   display: block;
   width: 100%;
-  height: clamp(15rem, 46vh, 27rem);
   object-fit: cover;
-  /* Holds the frame on the face while the crop takes the body off the bottom. */
-  object-position: 50% 18%;
+  /* Holds the frame on the face. With the taller frame there is far less to
+     discard, so this is nearer the middle of the plate than it was. */
+  object-position: 50% 26%;
   /* The seat the plate sits in before it decodes. Neutral, because the
      photograph is a neutral monochrome — the plum-tinted version that used to
      be here was graded to the old world and read as a colour cast against a
@@ -1793,8 +1819,15 @@
   }
 
   /* Shorter once the column is full width, so the portrait stays a plate on a
-     page rather than becoming a hero image on a phone. */
+     page rather than becoming a hero image on a phone. Back in flow with an
+     explicit height: there is no second column here whose depth to match. */
+  .home-about-portrait {
+    flex: none;
+    min-height: 0;
+  }
+
   .home-about-portrait img {
+    position: static;
     height: clamp(13rem, 32vh, 20rem);
   }
 
