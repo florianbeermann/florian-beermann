@@ -123,6 +123,8 @@ export function HeroVideo({
   const progressRef = useRef(onProgress);
   const readyRef = useRef(onReady);
   const holdRef = useRef(hold);
+  // Set by the effect below, called by the one above. See the note beside it.
+  const playRef = useRef<(() => void) | null>(null);
   progressRef.current = onProgress;
   readyRef.current = onReady;
 
@@ -142,9 +144,7 @@ export function HeroVideo({
     // free to have advanced it during buffering, and the reveal is only worth
     // anything if it uncovers the first frame.
     video.currentTime = 0;
-    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      void video.play().catch(() => undefined);
-    }
+    playRef.current?.();
   }, [hold]);
 
   useEffect(() => {
@@ -265,48 +265,75 @@ export function HeroVideo({
       setWow(wow);
     };
 
-    /* requestVideoFrameCallback where it exists, because it fires once per
-       decoded frame rather than once per display refresh — the same rate the
-       picture actually changes, on a 30fps clip and a 120Hz screen alike. */
+    /* The scheduler, and why it is two schedulers.
+
+       requestVideoFrameCallback fires once per decoded frame, which is the
+       right rate while the plate is playing: the picture changes at the clip's
+       30fps whatever the display is doing. But it fires only on a decoded
+       frame, so a paused video never ticks at all — and the plate is paused, on
+       its first frame, for as long as the loading screen is up. That frame is
+       the whiteout, and it has to be measured before the curtain lifts or the
+       type is still white when it becomes visible.
+
+       So it falls back to requestAnimationFrame whenever the video is paused,
+       which keeps the loop alive over a still frame. Which one scheduled the
+       pending callback is tracked, because they need different cancels. */
     type FrameHost = HTMLVideoElement & {
       requestVideoFrameCallback?: (cb: (now: number) => void) => number;
       cancelVideoFrameCallback?: (handle: number) => void;
     };
     const host = video as FrameHost;
-    const useRvfc = typeof host.requestVideoFrameCallback === "function";
+    const hasRvfc = typeof host.requestVideoFrameCallback === "function";
 
     let handle = 0;
+    let handleIsRvfc = false;
     let running = false;
-    const tick = (now: number) => {
-      if (!running) return;
-      sample(now);
-      handle = useRvfc
+
+    const schedule = () => {
+      handleIsRvfc = hasRvfc && !video.paused;
+      handle = handleIsRvfc
         ? host.requestVideoFrameCallback!(tick)
         : requestAnimationFrame(tick);
     };
+
+    function tick(now: number) {
+      if (!running) return;
+      sample(now);
+      schedule();
+    }
+
     const startSampling = () => {
       if (running) return;
       running = true;
       last = 0;
-      handle = useRvfc
-        ? host.requestVideoFrameCallback!(tick)
-        : requestAnimationFrame(tick);
+      schedule();
     };
     const stopSampling = () => {
       running = false;
       if (!handle) return;
-      if (useRvfc) host.cancelVideoFrameCallback?.(handle);
+      if (handleIsRvfc) host.cancelVideoFrameCallback?.(handle);
       else cancelAnimationFrame(handle);
       handle = 0;
     };
 
     const play = () => {
-      if (reduced.matches || holdRef.current) return;
+      if (reduced.matches) return;
+      startSampling();
+      // Held means the loading screen is still up and the plate is parked on
+      // its first frame. It is still measured — see startSampling — just not
+      // advanced.
+      if (holdRef.current) return;
       // A rejected play() is not an error worth surfacing: a browser that
       // refuses autoplay leaves the poster up, which is a correct fallback.
       void video.play().catch(() => undefined);
-      startSampling();
     };
+
+    // So releasing the hold can go through the same path rather than reaching
+    // for video.play() itself, which is what left the sampler unstarted: the
+    // observer's only call to play() happened while hold was true and returned
+    // early, and nothing called it again until the hero was scrolled out of
+    // view and back.
+    playRef.current = play;
     const pause = () => {
       video.pause();
       stopSampling();

@@ -18,10 +18,17 @@ import { CircleMark } from "@/components/CircleMark";
 type Props = {
   progress: number;
   ready: boolean;
-  /* Called the moment the screen commits to leaving, not when it has finished.
-     The plate starts from its first frame on this, so the fade uncovers the
-     whiteout dissolving rather than whatever point playback had already
-     wandered to. */
+  /* Called when the screen has finished leaving, not when it starts.
+
+     The plate is held on its first frame until this fires, and that frame is
+     the clip's whiteout. So the fade uncovers a white picture with the type
+     already blue — the loader's own lockup is blue, and it hands over to type
+     in the same colour — and the dissolve to the mountains begins after the
+     curtain is gone rather than behind it.
+
+     Firing this at the start of the fade instead spends the whole whiteout
+     under the curtain: by the time anything was visible the picture was back on
+     the mountains and the type had gone white again. */
   onLeave?: () => void;
 };
 
@@ -56,9 +63,11 @@ export function HeroLoader({ progress, ready, onLeave }: Props) {
     const leave = () => {
       if (left) return;
       left = true;
-      leaveRef.current?.();
       setState("leaving");
-      goneTimer = window.setTimeout(() => setState("gone"), FADE_MS);
+      goneTimer = window.setTimeout(() => {
+        setState("gone");
+        leaveRef.current?.();
+      }, FADE_MS);
     };
 
     const armed = () => {
