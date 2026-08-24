@@ -25,7 +25,11 @@ const ScrollToTop = () => {
         return () => clearTimeout(timer);
       }
     } else {
-      window.scrollTo(0, 0);
+      /* Explicitly instant. The document sets `scroll-behavior: smooth` for the
+         masthead's anchor links, and the two-argument form of scrollTo obeys
+         it — so this animated the whole page back to the top instead of landing
+         there, with the newly-rendered route flying past on the way. */
+      window.scrollTo({ top: 0, behavior: "instant" });
     }
   }, [pathname, hash]);
 
