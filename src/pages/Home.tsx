@@ -17,6 +17,7 @@ import { HeroVideo } from "@/components/HeroVideo";
 import { HeroLoader } from "@/components/HeroLoader";
 import { CircleMark } from "@/components/CircleMark";
 import { Masthead } from "@/components/Masthead";
+import { useEngagementSteps } from "@/hooks/useEngagementSteps";
 import { setPageMetadata } from "@/lib/metadata";
 import "./Home.css";
 import "./hero.css";
@@ -100,6 +101,10 @@ export default function Home() {
   const [plateRevealed, setPlateRevealed] = useState(false);
   const handlePlateReady = useCallback(() => setPlateReady(true), []);
   const handleReveal = useCallback(() => setPlateRevealed(true), []);
+  /* The reel steps one engagement per gesture and none can be scrolled over.
+     CSS snapping cannot express that on a document-level scroller — see the
+     hook. Everything the reel *looks* like is still CSS. */
+  const engagementsRef = useEngagementSteps<HTMLElement>(engagements.length);
   const [showDetails, setShowDetails] = useState(false);
   const [size, setSize] = useState("");
   const [tooling, setTooling] = useState("");
@@ -326,6 +331,7 @@ export default function Home() {
             still and are covered, this one is scrubbed. */}
         <section
           id="engagements"
+          ref={engagementsRef}
           className="home-engagements-track"
           aria-labelledby="engagements-title"
         >

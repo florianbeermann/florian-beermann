@@ -609,33 +609,23 @@
       padding-block: var(--panel-pad);
     }
 
-    /* Snapping, and only here.
+    /* No CSS snapping. The stepping is in JavaScript — see
+       useEngagementSteps.ts — and the two cannot both have the scroll.
 
-       A scroll-driven animation rests wherever the scroll rests, and this one
-       spends about a fifth of its track mid-crossing — so a gesture that ends
-       there leaves two half cards, which is three columns of unrelated text and
-       reads as broken rather than as motion. The curve can narrow that band but
-       cannot close it. Only the scroll preferring the resting places can, which
-       is snapping.
+       Snapping was tried here and got close. What it could never do is stop at
+       every engagement rather than the nearest one: `proximity` settles a
+       gesture wherever it ends up, and `scroll-snap-stop: always`, which is the
+       property for exactly this, only applies where the browser was going to
+       snap anyway. `mandatory` does stop at every one, but `scroll-snap-type`
+       is declared on the scroll container — here the document — so with snap
+       positions only inside this track the scroll could never rest anywhere
+       else and both ends of the page became unreachable.
 
-       `proximity`, not `mandatory`. `scroll-snap-type` is declared on the
-       scroll container, which here is the document, so it cannot be scoped to
-       this section — the scoping has to come from where the snap positions are.
-       With mandatory the scroller must always settle on one, so every position
-       on the page is claimed by the nearest of these three and both ends of the
-       document become unreachable; that is exactly what happened the first time
-       this was tried. Proximity only acts within its own catch radius, so
-       anywhere further than that from a marker — which is the whole rest of the
-       page — scrolls untouched.
-
-       It is also the browser's own machinery rather than ours, which is the
-       point. It runs on the compositor and it knows about momentum, so it
-       settles a trackpad fling as the fling ends. Both JavaScript attempts at
-       this waited for the scroll to be still, and on a trackpad the scroll is
-       not still when the gesture is over. */
-    html {
-      scroll-snap-type: y proximity;
-    }
+       Leaving it on alongside the JavaScript was worse than either. Measured:
+       the handler clamped a gesture to the first engagement at 1432 correctly,
+       and the browser then snapped that scroll on to 1872, because a snap after
+       a downward scroll prefers the position ahead. The section opened on its
+       second engagement and the cause looked like the handler. */
 
     /* The three positions, one per engagement.
 
@@ -646,11 +636,11 @@
        absolutely-positioned points in the track, so each sits where it sits.
 
        The offsets are the reel's own clock: the track is pinned for exactly two
-       steps and the engagements rest at nought, one and two of them.
-       `scroll-margin-top` is the masthead because the stage pins one header
-       height before the track's top arrives — the same offset
-       `view-timeline-inset` gives the clock, so the snap positions and the
-       resting positions are the same three places. */
+       steps and the engagements rest at nought, one and two of them. The
+       masthead is subtracted because the stage pins one header height before
+       the track's top arrives — the same offset `view-timeline-inset` gives the
+       clock, so these three points and the reel's three resting states are the
+       same three places. */
     .home-engagement-steps {
       display: block;
     }
@@ -660,19 +650,10 @@
       left: 0;
       width: 1px;
       height: 1px;
-      scroll-snap-align: start;
+      /* The offset the stage pins under, and the handler reads it from here
+         rather than recomputing it — so the resting positions have one
+         definition, in CSS, next to the geometry they belong to. */
       scroll-margin-top: var(--header-height);
-
-      /* No engagement may be scrolled over.
-
-         Proximity settles a gesture on the nearest position, which is not the
-         same as showing every position. Entering the section, a flick that
-         carried a little past the first engagement was nearer to the second, so
-         it seated there and the first was never seen at rest — the section
-         opened on its second point. `always` makes the scroller stop at each of
-         these as it reaches it rather than choosing between them at the end, so
-         the three arrive in order however hard the gesture was. */
-      scroll-snap-stop: always;
     }
 
     .home-engagement-steps > span:nth-child(1) {
