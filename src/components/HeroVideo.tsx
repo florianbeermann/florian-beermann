@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /* The hero background.
  *
@@ -57,11 +57,46 @@ const RASTER_H = 18;
 type Props = {
   className?: string;
   poster: string;
+  /* The full plate, and a lighter cut for small screens. */
   src: string;
+  srcSmall: string;
 };
 
-export function HeroVideo({ className, poster, src }: Props) {
+/* Which cut to fetch.
+ *
+ * The full plate is 2560 wide and 7.7MB, which is the right file for a desktop
+ * hero and the wrong one for a phone on cellular. A portrait phone cannot use
+ * the resolution in any case: the plate is 16:9 and object-fit: cover, so on a
+ * tall box the crop is driven by height, and a 393pt screen at 3x wants 2556
+ * device pixels of height — which no 16:9 file under 4500 wide would satisfy.
+ * The extra width is spent on a crop that is thrown away.
+ *
+ * Decided once, before the element gets a src, rather than with `media` on a
+ * <source>: browsers only evaluate that at load time anyway, and several have
+ * dropped it, so doing it here is both more portable and more honest about
+ * being a one-time choice.
+ *
+ * Save-Data is respected where it is offered. A visitor who has asked for less
+ * data has asked for less data. */
+function pickSource(src: string, srcSmall: string) {
+  if (typeof window === "undefined") return src;
+
+  const conn = (
+    navigator as Navigator & { connection?: { saveData?: boolean } }
+  ).connection;
+  if (conn?.saveData) return srcSmall;
+
+  // The CSS width the full cut starts paying for itself at, in the landscape
+  // case. Below it the box is narrow, the crop is severe, and the light cut is
+  // already more resolution than the screen can show.
+  return window.innerWidth >= 900 ? src : srcSmall;
+}
+
+export function HeroVideo({ className, poster, src, srcSmall }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  // Resolved once on mount and kept, so a window resize cannot swap the file
+  // mid-loop and restart it.
+  const [chosen] = useState(() => pickSource(src, srcSmall));
 
   useEffect(() => {
     const video = videoRef.current;
@@ -228,10 +263,13 @@ export function HeroVideo({ className, poster, src }: Props) {
         ref={videoRef}
         className="hero-video-el"
         poster={poster}
-        src={src}
+        src={chosen}
         muted
         loop
         playsInline
+        /* The plate is the hero, so it is worth fetching eagerly — and
+           +faststart is set on the file, so playback begins long before the
+           download finishes. The poster covers the gap either way. */
         preload="auto"
         /* Not autoPlay: the observer starts it, so a hero scrolled past on load
            never decodes a frame. */

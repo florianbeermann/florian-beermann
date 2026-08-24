@@ -215,6 +215,7 @@ export default function Home() {
           <HeroVideo
             className="hero-video"
             src="/hero-loop.mp4"
+            srcSmall="/hero-loop-sm.mp4"
             poster="/hero-poster.jpg"
           />
 
