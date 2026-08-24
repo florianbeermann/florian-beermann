@@ -34,3 +34,6 @@ dist-ssr
 .impeccable/hook.cache.json
 .impeccable/config.local.json
 .impeccable/live/
+
+# Browser-automation artifacts from local verification runs.
+.playwright-mcp/

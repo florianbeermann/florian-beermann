@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { CircleMark } from "@/components/CircleMark";
 import { setPageMetadata } from "@/lib/metadata";
 import "./NotFound.css";
 
@@ -19,11 +20,12 @@ const NotFound = () => {
     <div className="site-page notfound-page">
       <header className="site-header">
         <Link className="site-brand" to="/" aria-label="Florian Beermann &amp; Partners, home">
-          {/* `?v=2` must match the other three references — see Home.tsx. */}
-          <img className="site-brand-name" src="/logo-wordmark.svg?v=2" alt="" width="2335" height="198" />
+          {/* Mark and name, as on the legal pages — see LegalPageLayout. */}
+          <CircleMark className="site-brand-mark" />
+          <span className="site-brand-word">Florian Beermann &amp; Partners</span>
         </Link>
         <nav aria-label="Primary navigation">
-          <Link to="/#engagements">Engagements</Link>
+          <Link to="/#engagements">Work</Link>
           <Link to="/#about">About</Link>
           <Link to="/#contact">Contact</Link>
         </nav>

@@ -1,256 +1,148 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-07T08:20:00.000Z",
-  "title": "Design System: florian beermann & partners",
+  "generatedAt": "2026-08-24T20:30:00.000Z",
+  "title": "Design System: Florian Beermann & Partners",
   "extensions": {
     "colorMeta": {
+      "electric": {
+        "role": "primary",
+        "displayName": "Electric",
+        "canonical": "#0047ff",
+        "tonalRamp": ["#000d33", "#001a66", "#00227a", "#0034bf", "#0047ff", "#4d8bff", "#99b8ff", "#ccdbff"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Slate Ink",
+        "canonical": "#181d26",
+        "tonalRamp": ["#0c0f13", "#181d26", "#2b323f", "#414753", "#5d6472", "#828997", "#a3aab8", "#c7ccd6"]
+      },
       "paper": {
         "role": "neutral",
-        "displayName": "Warm Paper",
-        "canonical": "#f3f0e8",
-        "tonalRamp": ["#241f16", "#3f382b", "#5c5342", "#7c7160", "#9e9382", "#c2b8a7", "#ddd6c8", "#f3f0e8"]
+        "displayName": "Paper",
+        "canonical": "#e8edf5",
+        "tonalRamp": ["#2b323f", "#414753", "#5d6472", "#828997", "#a3aab8", "#c7ccd6", "#d9e1ee", "#e8edf5"]
       },
       "paper-deep": {
         "role": "neutral",
-        "displayName": "Deep Paper",
-        "canonical": "#e8e3d7",
-        "tonalRamp": ["#211d15", "#3a352a", "#565040", "#746d59", "#948c74", "#b6ad93", "#d2cab4", "#e8e3d7"]
+        "displayName": "Paper Deep",
+        "canonical": "#d9e1ee",
+        "tonalRamp": ["#262c37", "#3b4250", "#565e6d", "#79818f", "#9ba3b1", "#bcc4d1", "#d9e1ee", "#eaf0f8"]
       },
-      "ink": {
-        "role": "primary",
-        "displayName": "Deep Navy Ink",
-        "canonical": "#003b76",
-        "tonalRamp": ["#001225", "#001d3b", "#002a54", "#003b76", "#0f5498", "#3b76b8", "#7aa4d3", "#c2d8ec"]
-      },
-      "blue": {
-        "role": "secondary",
-        "displayName": "Signal Blue",
-        "canonical": "#1655d8",
-        "tonalRamp": ["#061633", "#0a2456", "#0f377f", "#1348ab", "#1655d8", "#4c80e6", "#89aef0", "#c8dbf9"]
-      },
-      "muted": {
+      "stock": {
         "role": "neutral",
-        "displayName": "Muted Slate",
-        "canonical": "#52626b",
-        "tonalRamp": ["#151a1d", "#232b30", "#333e45", "#43515a", "#52626b", "#7b8992", "#a9b3b9", "#d7dcdf"]
-      },
-      "line": {
-        "role": "neutral",
-        "displayName": "Rule",
-        "canonical": "rgba(0, 59, 118, 0.22)",
-        "tonalRamp": ["rgba(0,59,118,0.9)", "rgba(0,59,118,0.75)", "rgba(0,59,118,0.6)", "rgba(0,59,118,0.45)", "rgba(0,59,118,0.34)", "rgba(0,59,118,0.22)", "rgba(0,59,118,0.12)", "rgba(0,59,118,0.06)"]
-      },
-      "on-ink": {
-        "role": "neutral",
-        "displayName": "Paper White",
-        "canonical": "#ffffff",
-        "tonalRamp": ["#2e2e2e", "#4a4a4a", "#676767", "#878787", "#a8a8a8", "#c9c9c9", "#e6e6e6", "#ffffff"]
-      },
-      "backdrop-ink": {
-        "role": "neutral",
-        "displayName": "Backdrop Ink",
-        "canonical": "#92785a",
-        "tonalRamp": ["#0f0a04", "#3a2e1e", "#67543c", "#92785a", "#b49d82", "#d0bfa9", "#e6dbcc", "#faf3e9"]
+        "displayName": "Stock",
+        "canonical": "#181d26",
+        "tonalRamp": ["#0c0f13", "#181d26", "#2b323f", "#414753", "#5d6472", "#828997", "#a3aab8", "#c7ccd6"]
       }
     },
     "typographyMeta": {
-      "display": {
-        "displayName": "Display",
-        "purpose": "The hero H1 only. Tracking (-0.067em) and line-height (0.91) are tuned to Inter Tight; re-tune both if the face changes."
-      },
-      "headline": {
-        "displayName": "Headline",
-        "purpose": "Section H2s. One per section."
-      },
-      "title": {
-        "displayName": "Title",
-        "purpose": "Engagement and method H3s."
-      },
-      "body": {
-        "displayName": "Body",
-        "purpose": "All prose, in Muted Slate, capped at a 580-650px measure."
-      },
-      "label": {
-        "displayName": "Label",
-        "purpose": "Form labels, submit button, micro-metadata. The only uppercase in the system."
-      }
+      "display": { "displayName": "Display", "purpose": "The hero statement. Once per page." },
+      "headline": { "displayName": "Headline", "purpose": "Band openers." },
+      "title": { "displayName": "Title", "purpose": "Named things inside a band." },
+      "body": { "displayName": "Body", "purpose": "Running prose, held to roughly 46-65ch." },
+      "label": { "displayName": "Label", "purpose": "The machine voice: navigation, field names, captions, legal, numbers. One size and one tracking everywhere on the site." },
+      "wordmark": { "displayName": "Wordmark", "purpose": "The lockup only. Nippo appears nowhere else." }
     },
     "shadows": [
       {
-        "name": "portrait-lift",
-        "value": "0 28px 70px rgba(0, 59, 118, 0.14)",
-        "purpose": "The single sanctioned shadow, on the hero portrait only. Not available to other surfaces."
-      },
-      {
-        "name": "focus-underline",
-        "value": "0 1px 0 var(--blue)",
-        "purpose": "Thickens a focused field's underline to 2px without shifting layout."
+        "name": "glass-lift",
+        "value": "0 4px 35px rgba(0, 0, 0, 0.15)",
+        "purpose": "The only shadow on the site. Separates a glass pane from the footage behind it. Never used on flat ground."
       }
     ],
     "motion": [
-      {
-        "name": "toggle-chevron",
-        "value": "transform 180ms ease",
-        "purpose": "One of only three motions in the system: the details toggle chevron rotating."
-      },
-      {
-        "name": "band-collapse",
-        "value": "--band: --frame-top -> --band-collapsed over 240px of scroll, linear",
-        "purpose": "The top band collapses as the page is scrolled, so the mat is top-weighted while the hero is in view and nearly closed once the visitor is reading. --band-collapsed is deliberately thinner than the side frames rather than equal to them, because at that moment every pixel of backdrop is a pixel the argument does not get; it stays above zero so the sheet still reads as an object resting on something. Switched off under prefers-reduced-motion, where the band parks at its resting depth and the anchor rule must revert with it. Driven by a scroll timeline on :root, not a scroll listener. --band is registered via @property so it interpolates. Only the fixed matte and the sticky header read it; the sheet margin stays on the static --frame-top so nothing reflows per frame."
-      },
-      {
-        "name": "intro-rise",
-        "value": "calc(var(--frame-top) - var(--frame))",
-        "purpose": "How far below its resting place the sheet starts. The rise uncovers an extra band of backdrop, which is the only moment the painting is fully visible and why this entrance is sanctioned. It is defined as calc(--frame-top - --band-collapsed), the exact distance the band later collapses, so load and scroll are one gesture; do not replace it with a literal length."
-      },
-      {
-        "name": "intro-arrive",
-        "value": "850ms cubic-bezier(0.16, 1, 0.3, 1)",
-        "purpose": "The sheet fades up from --intro-rise into place, revealing the backdrop through the travel rather than through a pause. There is no hold. Applied to #root, once per session, bypassed under prefers-reduced-motion. Keep the whole sequence under ~1s."
-      }
+      { "name": "state", "value": "180ms ease", "purpose": "Control fills: background, colour and border together." },
+      { "name": "ground", "value": "260ms ease", "purpose": "The masthead crossing between grounds, and the mark's colour with it." },
+      { "name": "reel", "value": "linear", "purpose": "The engagements reel. Deliberately unshaped: with snapping a gesture is a jump of a whole engagement, and an eased curve spends it crossing far faster in the middle than at the ends, so the card flicks past instead of travelling. The pacing belongs to the snap animation." }
     ],
     "breakpoints": [
-      { "name": "wide", "value": "901px" },
-      { "name": "desktop", "value": "900px" },
-      { "name": "tablet", "value": "768px" },
-      { "name": "mobile", "value": "680px" },
-      { "name": "narrow", "value": "360px" }
-    ]
+      { "name": "brand-word", "value": "30rem" },
+      { "name": "masthead-sheet", "value": "48rem" },
+      { "name": "reel", "value": "769px" }
+    ],
+    "narrative": {
+      "northStar": "The Weather Station",
+      "premise": "A real place at a real hour, read coolly. Live footage behind, instrument in front. Nothing is decorated; things are measured.",
+      "antiReferences": [
+        "The dark statement-panel arrangement the previous site shipped",
+        "The card-grid consultancy page: six things offered at once instead of one"
+      ],
+      "rules": [
+        {
+          "name": "The One Rule",
+          "text": "Slate is the ink, electric is the signal. Blue never carries running prose: at 5.34:1 it has no room to fade, so a tinted secondary blue collapses and the band goes flat. It is spent in fewer places rather than made louder."
+        },
+        {
+          "name": "The Single Source Rule",
+          "text": "All colour is decided in src/styles/palettes.css and nowhere else, so one attribute on <html> repaints both planes including the WebGL field. A literal colour elsewhere is a bug."
+        },
+        {
+          "name": "The Two Voices Rule",
+          "text": "Fragment Mono for anything a machine would have printed; Switzer for anything a person says. Nothing is set in both, and there is no third family."
+        },
+        {
+          "name": "The One Size Rule",
+          "text": "The machine voice appears at exactly one size and one tracking everywhere. Fragment Mono ships a single weight, which is a feature: there is never a decision to make about it."
+        },
+        {
+          "name": "The No-Border Rule",
+          "text": "Glass panes have no border. A hairline draws the pane's outline, which reads as a shape; the shadow separates it from what is behind, which reads as a sheet lying on top. 50px of blur resolves everything behind to one flat field, so the pane becomes a material rather than a window."
+        },
+        {
+          "name": "The Snap Marker Rule",
+          "text": "Every full-height panel needs a .site-stop marker immediately before it. Page snapping is mandatory, which means the scroll can never rest anywhere that is not a snap position, so a panel without one becomes unreachable. Deleting these markers once forced a retreat to proximity snapping and broke the engagements reel for a full session."
+        }
+      ]
+    }
   },
   "components": [
     {
-      "name": "Primary Button",
+      "name": "Control",
       "kind": "button",
-      "refersTo": "button-primary",
-      "description": "The hero call to action. Signal Blue, square, sentence case.",
-      "html": "<a class=\"ds-btn-primary\" href=\"#contact\">Start a conversation</a>",
-      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 24px; background: #1655d8; color: #fff; border: 0; border-radius: 0; font-family: 'Inter Variable', 'Helvetica Neue', Arial, sans-serif; font-size: 0.86rem; font-weight: 650; text-decoration: none; cursor: pointer; } .ds-btn-primary:hover { background: #003b76; } .ds-btn-primary:focus-visible { outline: 2px solid #003b76; outline-offset: 3px; }"
+      "refersTo": "control",
+      "description": "Drawn, never filled. A rule with the machine voice inside it; the fill arrives on hover and it is the ink.",
+      "html": "<a class=\"ds-control\" href=\"#\">Start a conversation</a>",
+      "css": ".ds-control { display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem; min-height: 3rem; padding: 0 1.75rem; border: 1px solid currentColor; border-radius: 4px; background: transparent; color: #181d26; font-family: \"Fragment Mono\", ui-monospace, Menlo, monospace; font-size: 0.8125rem; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease; } .ds-control:hover { background: #181d26; color: #e8edf5; }"
     },
     {
-      "name": "Submit Button",
+      "name": "Control, solid",
       "kind": "button",
-      "refersTo": "button-submit",
-      "description": "A form's terminal action. Deep ink, uppercase label type; the case change is what separates it from a navigational CTA.",
-      "html": "<button class=\"ds-btn-submit\" type=\"submit\">Send message</button>",
-      "css": ".ds-btn-submit { display: inline-flex; align-items: center; justify-content: center; min-height: 54px; padding: 16px 24px; background: #003b76; color: #fff; border: 0; border-radius: 0; font-family: 'Inter Variable', 'Helvetica Neue', Arial, sans-serif; font-size: 0.72rem; font-weight: 680; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; } .ds-btn-submit:hover { background: #1655d8; } .ds-btn-submit:disabled { opacity: 0.55; cursor: not-allowed; } .ds-btn-submit:focus-visible { outline: 2px solid #1655d8; outline-offset: 3px; }"
+      "refersTo": "control-solid",
+      "description": "One per page, for the single action the hero asks for. On a washed photograph a drawn rule is a suggestion; a solid plate is an instruction.",
+      "html": "<a class=\"ds-control-solid\" href=\"#\">Start a conversation</a>",
+      "css": ".ds-control-solid { display: inline-flex; align-items: center; justify-content: center; min-height: 3rem; padding: 0 1.75rem; border: 1px solid #e8edf5; border-radius: 4px; background: #e8edf5; color: #181d26; font-family: \"Fragment Mono\", ui-monospace, Menlo, monospace; font-size: 0.8125rem; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease; } .ds-control-solid:hover { background: #fff; border-color: #fff; }"
     },
     {
-      "name": "Underline Input",
+      "name": "Glass",
+      "kind": "custom",
+      "refersTo": "glass",
+      "description": "The front plane's only material, and only ever over the footage. A film of light, a deep blur, a soft shadow, and no border.",
+      "html": "<nav class=\"ds-glass\"><span>Work</span><span>About</span></nav>",
+      "css": ".ds-glass { display: inline-flex; gap: 1.5rem; align-items: center; height: 2.5rem; padding: 0 1.25rem; background: rgba(226, 230, 238, 0.1); border: 0; border-radius: 4px; box-shadow: 0 4px 35px rgba(0, 0, 0, 0.15); backdrop-filter: blur(50px) saturate(130%); -webkit-backdrop-filter: blur(50px) saturate(130%); color: #e8edf5; font-family: \"Fragment Mono\", ui-monospace, Menlo, monospace; font-size: 0.8125rem; letter-spacing: 0.14em; text-transform: uppercase; }"
+    },
+    {
+      "name": "Label",
+      "kind": "custom",
+      "refersTo": "label",
+      "description": "The machine voice. Anything a system would have printed rather than a person written.",
+      "html": "<span class=\"ds-label\">Engagement 02</span>",
+      "css": ".ds-label { font-family: \"Fragment Mono\", ui-monospace, Menlo, monospace; font-size: 0.8125rem; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; font-feature-settings: \"tnum\" 1; color: #181d26; }"
+    },
+    {
+      "name": "Field",
       "kind": "input",
-      "refersTo": "input-underline",
-      "description": "The only field style. Underline only, transparent ground, always-visible uppercase label.",
-      "html": "<div class=\"ds-field\"><label class=\"ds-field-label\" for=\"ds-name\">Name</label><input class=\"ds-field-input\" id=\"ds-name\" type=\"text\" placeholder=\"Your name\" /></div>",
-      "css": ".ds-field { display: flex; flex-direction: column; gap: 0.45rem; max-width: 420px; } .ds-field-label { color: #003b76; font-family: 'Inter Variable', sans-serif; font-size: 0.7rem; font-weight: 680; letter-spacing: 0.08em; text-transform: uppercase; } .ds-field-input { width: 100%; min-height: 48px; padding: 0.65rem 0; background: transparent; color: #003b76; border: 0; border-bottom: 1px solid rgba(0,59,118,0.22); border-radius: 0; outline: none; font-family: 'Inter Variable', sans-serif; font-size: 0.96rem; } .ds-field-input::placeholder { color: #52626b; opacity: 0.72; } .ds-field-input:focus-visible { border-color: #1655d8; box-shadow: 0 1px 0 #1655d8; }"
+      "refersTo": "field",
+      "description": "No box. A baseline with the label above it in the machine voice; the rule takes the electric on focus.",
+      "html": "<label class=\"ds-field\"><span>Work email</span><input type=\"email\" placeholder=\"jane@company.com\" /></label>",
+      "css": ".ds-field { display: grid; gap: 0.5rem; } .ds-field span { font-family: \"Fragment Mono\", ui-monospace, Menlo, monospace; font-size: 0.8125rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(24 29 38 / 0.66); } .ds-field input { border: 0; border-bottom: 1px solid rgb(24 29 38 / 0.28); border-radius: 0; background: transparent; padding: 0.6rem 0; color: #181d26; font-family: Switzer, sans-serif; font-size: 1.05rem; } .ds-field input:focus { outline: none; border-bottom: 2px solid #0047ff; }"
     },
     {
-      "name": "Textarea",
-      "kind": "input",
-      "refersTo": "input-underline",
-      "description": "The one field that takes a full border rather than an underline, because its height needs bounding.",
-      "html": "<textarea class=\"ds-textarea\" placeholder=\"What is changing in your customer base?\"></textarea>",
-      "css": ".ds-textarea { width: 100%; min-height: 150px; padding: 0.9rem; background: transparent; color: #003b76; border: 1px solid rgba(0,59,118,0.22); border-radius: 0; outline: none; resize: vertical; font-family: 'Inter Variable', sans-serif; font-size: 0.96rem; line-height: 1.5; } .ds-textarea::placeholder { color: #52626b; opacity: 0.72; } .ds-textarea:focus-visible { border-color: #1655d8; box-shadow: 0 1px 0 #1655d8; }"
-    },
-    {
-      "name": "Header Navigation",
-      "kind": "nav",
-      "refersTo": "nav-link",
-      "description": "Sticky paper header with a bottom rule; links underline on hover via a transparent border that becomes currentColor.",
-      "html": "<header class=\"ds-header\"><span class=\"ds-brand\"><strong>florian beermann</strong><small>&amp; partners</small></span><nav class=\"ds-nav\"><a href=\"#a\">Engagements</a><a href=\"#b\">About</a><a href=\"#c\">Contact</a></nav></header>",
-      "css": ".ds-header { display: flex; align-items: center; justify-content: space-between; min-height: 76px; padding: 0 2rem; background: #f3f0e8; border-bottom: 1px solid rgba(0,59,118,0.22); font-family: 'Inter Variable', sans-serif; } .ds-brand { display: flex; flex-direction: column; line-height: 1.05; color: #003b76; } .ds-brand strong, .ds-brand small { font-size: 0.8125rem; font-weight: 500; } .ds-brand small { margin-top: 0.2rem; color: #52626b; } .ds-nav { display: flex; align-items: center; gap: 2rem; font-size: 0.84rem; font-weight: 520; } .ds-nav a { display: inline-flex; align-items: center; min-height: 44px; color: #003b76; text-decoration: none; border-bottom: 1px solid transparent; } .ds-nav a:hover, .ds-nav a:focus-visible { border-color: currentColor; }"
-    },
-    {
-      "name": "Section Heading",
-      "kind": "custom",
-      "refersTo": "headline",
-      "description": "The two-column argument-and-margin-note heading. No eyebrow label above it, ever.",
-      "html": "<div class=\"ds-section-heading\"><h2>Where the experience comes from</h2><p>Companies I have worked in, not a client list.</p></div>",
-      "css": ".ds-section-heading { display: grid; grid-template-columns: 1fr 0.75fr; gap: 3rem; align-items: end; } .ds-section-heading h2 { margin: 0; color: #003b76; font-family: 'Inter Tight Variable', 'Inter Variable', sans-serif; font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 520; line-height: 0.95; letter-spacing: -0.045em; } .ds-section-heading p { margin: 0; color: #52626b; font-family: 'Inter Variable', sans-serif; font-size: 1.02rem; font-weight: 400; line-height: 1.6; } @media (max-width: 680px) { .ds-section-heading { grid-template-columns: 1fr; gap: 1.25rem; } }"
-    },
-    {
-      "name": "Inverted Method Band",
-      "kind": "custom",
-      "refersTo": "ink",
-      "description": "The page's spine: the one place the paper flips to ink. Four columns divided by translucent white rules. Numbers are permitted here because the sequence carries meaning.",
-      "html": "<section class=\"ds-method\"><h2>How the work runs</h2><div class=\"ds-flow\"><div><span>01</span><h3>Signals</h3><p>What the data already says.</p></div><div><span>02</span><h3>Decisions</h3><p>What it should change.</p></div><div><span>03</span><h3>Plays</h3><p>Who does what, when.</p></div><div><span>04</span><h3>Measures</h3><p>How we know it worked.</p></div></div></section>",
-      "css": ".ds-method { background: #003b76; color: #fff; padding: 4rem 2rem; font-family: 'Inter Variable', sans-serif; } .ds-method h2 { margin: 0; font-family: 'Inter Tight Variable', sans-serif; font-size: clamp(2rem, 3.4vw, 3.2rem); font-weight: 520; line-height: 0.98; letter-spacing: -0.045em; } .ds-flow { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 3rem; border-top: 1px solid rgba(255,255,255,0.35); border-bottom: 1px solid rgba(255,255,255,0.35); } .ds-flow > div { padding: 1.75rem 1.25rem; border-right: 1px solid rgba(255,255,255,0.25); } .ds-flow > div:last-child { border-right: 0; } .ds-flow span { font-size: 0.7rem; font-weight: 680; letter-spacing: 0.08em; opacity: 0.7; } .ds-flow h3 { margin: 0.6rem 0 0.4rem; font-family: 'Inter Tight Variable', sans-serif; font-size: 1.3rem; font-weight: 520; letter-spacing: -0.03em; } .ds-flow p { margin: 0; font-size: 0.9rem; line-height: 1.55; opacity: 0.82; } @media (max-width: 680px) { .ds-flow { grid-template-columns: 1fr; } .ds-flow > div { border-right: 0; border-bottom: 1px solid rgba(255,255,255,0.25); } }"
-    },
-    {
-      "name": "Details Toggle",
-      "kind": "custom",
-      "refersTo": "input-underline",
-      "description": "Progressive-disclosure row for optional form fields. Carries the system's only animation.",
-      "html": "<button class=\"ds-toggle\" type=\"button\">Add company size and tooling (optional)<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"m6 9 6 6 6-6\"/></svg></button>",
-      "css": ".ds-toggle { display: flex; width: 100%; min-height: 48px; align-items: center; justify-content: space-between; padding: 0.75rem 0; background: transparent; color: #003b76; border: 0; border-top: 1px solid rgba(0,59,118,0.22); border-bottom: 1px solid rgba(0,59,118,0.22); border-radius: 0; cursor: pointer; font-family: 'Inter Variable', sans-serif; font-size: 0.8rem; font-weight: 560; } .ds-toggle svg { transition: transform 180ms ease; } .ds-toggle[aria-expanded=\"true\"] svg { transform: rotate(180deg); } .ds-toggle:focus-visible { outline: 2px solid #1655d8; outline-offset: 2px; }"
+      "name": "Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "A full-height band holding one idea. Inverts its whole subtree rather than restating colour on its children.",
+      "html": "<section class=\"ds-panel\"><h2>Three ways I work</h2><p>Each engagement is scoped around the operating problem in front of you.</p></section>",
+      "css": ".ds-panel { display: grid; align-content: center; gap: 1.5rem; min-height: 60vh; padding: clamp(1.5rem, 5.5vh, 10rem) clamp(1.5rem, 4vw, 3.5rem); background: #e8edf5; color: #181d26; border-radius: 0; } .ds-panel h2 { margin: 0; font-family: Switzer, sans-serif; font-size: clamp(2.8rem, 5vw, 5.4rem); font-weight: 520; line-height: 0.95; letter-spacing: -0.03em; color: #0047ff; } .ds-panel p { margin: 0; max-width: 46ch; font-size: 1.2rem; line-height: 1.6; color: rgb(24 29 38 / 0.66); }"
     }
-  ],
-  "narrative": {
-    "northStar": "The Consultant's Broadsheet",
-    "overview": "This is a printed page that happens to be on screen. The system takes its structure from broadsheet newspapers and consulting reports rather than from SaaS product UI: a warm paper ground, one authoritative ink, hairline rules that divide the page into columns and registers, and headlines set enormous and tight because the argument is the design. There is no card, no drop shadow, no rounded container standing in for hierarchy. Structure is carried entirely by rules, whitespace and type scale.\n\nThe density is deliberately uneven. Display type runs to 7rem with negative tracking and sub-1 line-height so that headlines read as one dense mass, while body copy sits at a calm 1.6 line-height in a muted grey-blue and never exceeds a comfortable measure. That contrast, loud structure and quiet prose, is the whole personality. It signals a senior operator rather than a vendor, which is the positioning PRODUCT.md commits to.\n\nThe one departure from flat paper is the portrait: a single large image carrying the system's only shadow. It is the only human element on the page and it is allowed to be the only thing that lifts off the surface. Its corners are square like everything else, so the lift comes from the shadow alone rather than from shadow and rounding together.\n\nThe page itself is a sheet. It sits inset on a backdrop showing a golden-hour painting of Hamburg, the city the practice is run from, which makes the broadsheet metaphor literal: a printed page laid on a surface rather than a canvas that happens to be paper-coloured. The sheet keeps square corners and takes no shadow. Its separation from the backdrop is carried entirely by the tonal and textural difference between a worked, painterly ground and flat paper, which is the same mechanism the system already uses between sections.\n\nThe backdrop is chosen for place, not decoration, and it is the only representational imagery in the system besides the portrait.",
-    "keyCharacteristics": [
-      "Warm paper ground (#f3f0e8), never pure white",
-      "One continuous paper sheet, inset on a painted Hamburg backdrop",
-      "Square corners everywhere, without exception",
-      "Hairline rules as the primary structural device",
-      "Enormous, tightly tracked display type",
-      "One inverted deep-ink section as the page's spine",
-      "Near-zero motion; the page does not animate to prove it is alive. The exceptions both belong to the frame rather than the interface: the intro that reveals the backdrop, and the top band collapsing as the page is scrolled"
-    ],
-    "rules": [
-      {
-        "name": "The Two Blues Rule",
-        "body": "The navy is structure; the bright blue is action. They are never interchangeable. If a new element is neither a heading nor an action, it is Muted Slate, not a third blue.",
-        "section": "colors"
-      },
-      {
-        "name": "The No Pure White Rule",
-        "body": "#ffffff appears only as type on the inverted section and on filled buttons. Backgrounds use --paper or --paper-deep.",
-        "section": "colors"
-      },
-      {
-        "name": "The One Sheet Rule",
-        "body": "The page is a single piece of paper. A section never gets its own lighter or whiter background to set itself apart, because a real sheet does not have patches of different whiteness and the seam is visible once the page is an inset object. Sections are separated by a rule, by vertical space, or by full inversion. A near-white 'raised paper' step existed in an earlier version of this system and was retired when the sheet gained a backdrop.",
-        "section": "colors"
-      },
-      {
-        "name": "The One Display Rule",
-        "body": "Exactly one element per page may use Display size. A second competing headline at that scale collapses the hierarchy.",
-        "section": "typography"
-      },
-      {
-        "name": "The 0.8125rem Floor",
-        "body": "No text renders below 0.8125rem (13px). Legal and privacy microcopy sits at the floor, not beneath it.",
-        "section": "typography"
-      },
-      {
-        "name": "The Flat Paper Rule",
-        "body": "New surfaces get a rule, vertical space, or full inversion. They do not get a lighter background (see The One Sheet Rule), a shadow, or a border radius.",
-        "section": "elevation"
-      },
-      {
-        "name": "The Frame Is Content Rule",
-        "body": "--frame and --frame-top exist so the backdrop is legible, not to create breathing room. Narrowing them to reclaim column width crops the image to noise and removes the reason it is there. The top edge is deepest because it is the only band a skyline can be read in; compose backdrops so their subject sits in the top ~6.6% of the frame, which is what the band shows at rest across every desktop width. The collapsed band (1.1-2.4%) is deliberately not a composition target: the band is a subject at rest and a margin once the reader is in the page. The backdrop is shown untinted; if a future image needs seating, reintroduce a scrim under 0.15 rather than darkening the asset. Effective resolution is set by aspect ratio, not file width: the further an asset departs from the viewport aspect the harder cover magnifies it. Only a shallow top crop moves a skyline into the band — cropping the bottom leaves the band covering the same count of source rows, and cropping the sides covers fewer. Size assets to the widest device that will paint them and spend the remainder on quality, since quantisation damage survives downscaling but surplus pixels do not. Assets in public/ bypass the build's hashing but are served with a thirty-day max-age, so every backdrop filename carries a content hash; reusing a name for changed pixels strands returning visitors on the old image.",
-        "section": "elevation"
-      }
-    ],
-    "dos": [
-      "Do use hairline rules (1px solid var(--line)) to divide content.",
-      "Do keep every surface square, including the hero portrait.",
-      "Do set body prose in Muted Slate (#52626b) at 1.6 line-height and cap the measure around 580-650px.",
-      "Do reserve Signal Blue for actions, links and the single emphasised clause in a headline.",
-      "Do keep interactive targets at >=44px, and text at >=0.8125rem.",
-      "Do write in first person singular. This is one person, not a company.",
-      "Do resolve widths inside the sheet against 100%, never 100vw."
-    ],
-    "donts": [
-      "Don't add box-shadows to create separation. Use a rule or vertical space.",
-      "Don't give a section its own lighter background to set it apart. The sheet is one paper.",
-      "Don't introduce a border radius anywhere, including the portrait. The system has no rounded corners left to be consistent with.",
-      "Don't use pure white as a background.",
-      "Don't narrow --frame or --frame-top to gain column width; they are what make the backdrop readable.",
-      "Don't add eyebrow/kicker labels above headings.",
-      "Don't add entrance animations, parallax or scroll-triggered reveals. The system has exactly three motions: the once-per-session intro, the top band collapsing on scroll, and a 180ms transform on the details toggle chevron. The first two are the frame behaving, not the content performing. A motion may map continuously to scroll position, but nothing may fire at a scroll threshold, and nothing that scrolls with the page may travel at a rate different from the page. That permits viewport-fixed frame furniture to resize; the band qualifies only because it is fixed and never scrolls past anything. Anything admitted still owes prefers-reduced-motion an off switch.",
-      "Don't invent new small font sizes. The set below 1rem still holds 12 distinct values, none below the 0.8125rem floor; new work should snap to 0.8125 / 0.875 / 0.96 / 1rem rather than widen it again.",
-      "Don't introduce a third blue or a warm accent. The palette is closed."
-    ]
-  }
+  ]
 }

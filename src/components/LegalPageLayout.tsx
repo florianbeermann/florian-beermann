@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { CircleMark } from "@/components/CircleMark";
 import "./LegalPageLayout.css";
 
 interface LegalPageLayoutProps {
@@ -23,8 +24,12 @@ export const LegalPageLayout = ({
     <div className="site-page legal-page">
       <header className="site-header">
         <Link className="site-brand" to="/#top" aria-label="Florian Beermann &amp; Partners, home">
-          {/* `?v=2` must match the other three references — see Home.tsx. */}
-          <img className="site-brand-name" src="/logo-wordmark.svg?v=2" alt="" width="2335" height="198" />
+          {/* The mark and the name, because these pages have no hero to carry
+              the lockup the way the home page does. The link is labelled, so
+              the name beside the mark is decoration to assistive tech rather
+              than a second reading of the same thing. */}
+          <CircleMark className="site-brand-mark" />
+          <span className="site-brand-word">Florian Beermann &amp; Partners</span>
         </Link>
         <nav aria-label="Primary navigation">
           <Link to="/#engagements">Work</Link>

@@ -697,64 +697,58 @@ body::before {
   padding: 0 4vw;
 }
 
-/* `flex-shrink: 0` is load-bearing, not defensive. The header is
+/* The brand on the pages that have no hero to carry it.
+
+   The home page's masthead is the bare mark: the lockup is set large in the
+   hero directly beneath it, so repeating the name in the bar would be saying it
+   twice. Imprint, privacy and the 404 have no hero, so here the mark keeps its
+   name beside it — the same pairing as the closing panel, in the same face, so
+   the two places the lockup appears whole agree with each other.
+
+   It used to be a cut of the retired wordmark drawing, `logo-wordmark.svg`,
+   sized by a clamp derived from the share of that artwork its caps occupied.
+   None of that survives the drawing: the mark is a path that takes
+   `currentColor`, and the name is live type in the wordmark face.
+
+   `flex-shrink: 0` is load-bearing, not defensive. The header is
    `space-between`, so once its content exceeds its box the flex algorithm picks
-   something to compress -- and it picks the brand, squeezing the img below its
+   something to compress — and it picks the brand, squeezing the mark below its
    own aspect ratio rather than merely crowding it. Measured on the Galaxy
    Fold's 280px outer screen the old monogram rendered 43.3x32 against an
    artwork ratio of 1.763: a 23% horizontal crush, and 41% once a classic
    scrollbar took its 10px. Nothing caught it because the page never overflowed
-   -- the mark deformed inside a header that still fitted. The wordmark is
-   11.81:1 and therefore far more exposed to the same failure, so the rule
-   matters more now, not less. Note it has to sit here and not on the img: the
-   shrinking item is this wrapper, so `flex-shrink` on the child is a no-op. A
-   logo is allowed to be crowded; it is never allowed to be the wrong shape. */
+   — the mark deformed inside a header that still fitted. It has to sit here
+   and not on the child: the shrinking item is this wrapper. A logo is allowed
+   to be crowded; it is never allowed to be the wrong shape. */
 .site-brand {
   display: flex;
   align-items: center;
+  gap: 0.6em;
   min-height: 44px;
   flex-shrink: 0;
+  font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+  color: var(--ink);
+  text-decoration: none;
 }
 
-/* The name is a cut of the drawing, not type — and it stays that way now that
-   the page is set in the same face. Two earlier attempts set it in Inter; both
-   were wrong, and the reason was measurable: the artwork is tracked at 0.92em
-   and drawn at Outfit 200, a geometric hairline no Inter weight reaches. The
-   site now loads Outfit, so that particular objection is gone and one of the
-   two reasons with it — there is no third family to pay for any more.
-
-   The remaining reason is enough on its own. Live text would reflow the
-   masthead the moment the font was slow, and it would leave the brand's
-   letterspacing at the mercy of a CSS value any future edit could round off.
-   The drawing is the artwork; setting it live would be a reproduction of the
-   artwork. It costs one request; it buys the actual brand.
-
-   It is now the entire logo, and that changes what size it wants. It used to be
-   the junior half of a lockup, sized at 88.9% of the proportion the artwork
-   asks for beside a 52px monogram so it could not out-shout the mark, and it
-   stood down entirely below 760px because the mark could carry the header
-   alone. Neither constraint survives the monogram: there is nothing left to
-   defer to and nothing left to stand down in favour of. */
-.site-brand-name {
-  /* 11.81:1, and the ratio is only half the story -- what actually sets this
-     clamp is the share of the box the caps occupy. This drawing gives them
-     68.2 of its 197.78 units, 34.5%, where the drawing before it gave 28.7%.
-     Per pixel of height the name now prints 20% larger, which is what pays for
-     the extra width.
-
-     The floor is derived, not chosen. The rule this header has always followed
-     is that the masthead may not render smaller than the navigation it governs,
-     so the caps have to clear the nav's own 14px: 14 / 0.345 = 40.6px, taken up
-     to 41. At the 44px ceiling the caps reach 15.2px, comfortably senior, and
-     the ceiling is still the 76px header box, which leaves 16px of clearance
-     above and below and starts to feel crowded past it.
-
-     The old clamp floored at 38px. On the previous artwork that was 10.9px of
-     cap; on this one it is 13.1px, and both sit under the nav. The number moved
-     because the constraint was always the caps and never the box. 3.4vw joins
-     the two ends across the band where the header still has room to spare. */
-  height: clamp(41px, 3.4vw, 44px);
+/* Sized against the name rather than the header, so the pair scales as one
+   lockup. `aspect-ratio` from the artwork's own viewBox is what stops the flex
+   row crushing it — the failure described above. */
+.site-brand-mark {
+  height: 1.35em;
   width: auto;
+  aspect-ratio: 1402 / 1122;
+  flex: none;
+  color: var(--voltage);
+}
+
+.site-brand-word {
+  font-family: var(--wordmark);
+  font-size: 1em;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .site-header nav {
@@ -883,30 +877,23 @@ body::before {
     width: 100%;
   }
 
-  /* Width-driven rather than height-driven, which is the right way round once
-     the name has a row to itself: it takes the width it is given and derives
-     its height, so it fits by construction at every size down to the 280px
-     Galaxy Fold instead of by a clamp tuned per breakpoint. The ceiling is
-     reached immediately, at 900px, because a full row is exactly what the
-     one-row layout could not give it. The name is therefore larger at 900px
-     than it is at 901px, which looks like a mistake and is the point: the break
-     exists because the row was the constraint, so crossing it has to buy
-     something. Below roughly 560px of content the 100% arm takes over and the
-     name simply tracks the sheet.
+  /* The name goes below roughly 30rem, and the mark carries the header alone.
 
-     That last band is where this artwork asks for something the previous one
-     did not. At 11.81:1 a phone cannot give the name both its width and its
-     height: 375px of sheet leaves 322px of content, which is 27px of box and
-     9.4px of cap against a 13px nav. The masthead is therefore quieter than its
-     own navigation below about 500px, and no value here fixes it -- the mark
-     is already taking every pixel of width the sheet has. What carries the
-     hierarchy instead is position and measure: the name spans the full sheet on
-     the first row, the nav is a short centred row beneath it. If that ever
-     stops reading, the answer is a narrower cut of the artwork, not a bigger
-     number in this rule. */
-  .site-brand-name {
-    width: var(--masthead);
-    height: auto;
+     The retired drawing was 11.81:1 and could not be given both its width and
+     its height on a phone: 375px of sheet left 27px of box and 9.4px of cap
+     against a 13px nav, so the masthead was quieter than its own navigation
+     and no value fixed it. Live type has the same problem in a different form —
+     "Florian Beermann & Partners" set small enough to fit a narrow sheet is
+     smaller than the links beneath it. Dropping it is the honest answer: the
+     mark is the logo, and it is legible at any size. */
+  @media (max-width: 30rem) {
+    .site-brand-word {
+      display: none;
+    }
+
+    .site-brand-mark {
+      height: 2.2em;
+    }
   }
 
   /* Centred under the name rather than flush to the sheet's edge. The artwork
