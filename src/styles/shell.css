@@ -99,12 +99,10 @@
      short sentence, and it cannot be allowed to drift. */
   --track-label: 0.16em;
 
-  /* The sans register, as one token. It was written out at every use site and
-     had drifted into two stacks — one with a Helvetica/Arial fallback and one
-     without — which meant the face a visitor saw before the webfont arrived
-     depended on which element they were looking at. Naming it once makes that
-     impossible and puts the fallback decision in a single place. */
-  --sans: "Outfit Variable", "Helvetica Neue", Arial, sans-serif;
+  /* `--sans` is declared in `world.css`, which loads after this file. It was
+     also declared here, naming Outfit, and had been dead for as long as the
+     site has been set in Switzer — two declarations of one token naming two
+     different families is exactly the drift the token exists to prevent. */
 
   /* Intro sequence. A short rise and fade on load, in place of the taller one
      the framed layout used — that travel was tuned to reveal the band above the

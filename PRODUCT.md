@@ -126,13 +126,10 @@ this network; the legal entity is a sole trader.
   everything a machine would have printed, and Nippo for the wordmark alone.
 
   Retired and removed: the plum-world logo artwork (`logo-lockup*`, `logo-mark*`,
-  `logo-wordmark*`, `logo.png`) and the Inter subsets before it. Still shipped
-  but referenced by nothing: `public/portrait-plate.jpg`, and
-  `public/fonts/outfit-latin-variable.woff2` with `LICENSE-OUTFIT.txt` — the
-  face the site was set in between the plum world and this one. Outfit is still
-  named as a fallback in `src/styles/shell.css`, but `world.css` redefines
-  `--sans` later in the cascade, so nothing resolves to it and the browser never
-  downloads it.
+  `logo-wordmark*`, `logo.png`), the Inter subsets before it, the Outfit variable
+  font the site was set in between the plum world and this one, and the duotone
+  portrait plate with the two scripts that generated it and its halftones. The
+  black-and-white master stays at `scripts/assets/portrait-source.jpg`.
 
 ## Evidence on Hand
 

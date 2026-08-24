@@ -119,134 +119,6 @@
   box-shadow: inset 0 0 0 1px var(--ink);
 }
 
-/* The portrait column. The picture runs edge to edge inside it — no mount, no
-   inset, no band behind it. The photograph is a rectangle already; framing a
-   rectangle inside another rectangle only announces that someone framed it.
-
-   The caption sits under the picture on the page's own stock rather than on a
-   sheet with it. That is the difference between an annotation and a mount: the
-   rule and the two labels belong to the page, and the picture simply ends. */
-.home-portrait {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: clamp(0.9rem, 1.6vw, 1.4rem);
-  margin: 0;
-  min-width: 0;
-  /* Lets the plate below shrink inside this column instead of forcing it open.
-     Without it a flex item refuses to go under its content's size and the
-     figure grows past the hero's height budget. */
-  min-height: 0;
-  /* Only the caption is inset, and only enough to clear the page's own gutter.
-     The picture itself takes none of this. */
-  padding: 0 0 clamp(1.4rem, 2.4vw, 2rem);
-}
-
-/* The plate: the photograph, printed in one ink. It is one committed image
-   (`npm run portrait`), so the tint happened once, at a desk, rather than on a
-   visitor's phone — and the frame inside it is the original, background and
-   all. */
-.home-portrait-plate {
-  flex: 1 1 auto;
-  /* A floor, not a fixed ratio: where the layout hands the plate a definite
-     height — the two-column hero, where `flex: 1` stretches it — that wins,
-     and where it does not, in the stacked layout, this keeps the box from
-     collapsing to nothing. */
-  min-height: min(58vh, 32rem);
-  /* Centred on the column, which puts it on the same axis as the caption rule
-     beneath it — that rule is inset by an equal gutter on both sides, so the
-     column's centre and the rule's centre are the same line. The picture and
-     its annotation read as one object rather than as two things that happen to
-     be stacked.
-
-     Top-aligned, so the sitter's head keeps its position as the column changes
-     height and any slack opens at the bottom, where the fade already is. */
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-}
-
-.home-portrait-plate img {
-  display: block;
-  /* Bounded rather than sized, which is the whole point of this rule.
-
-     Both axes are caps and both dimensions are `auto`, so the picture is drawn
-     at the largest size that fits the column *without ever being cropped,
-     stretched or enlarged past its own resolution*. It is the same picture at
-     every viewport: same crop, same headroom, same amount of shoulder.
-
-     Sizing it to the box instead — `width: 100%; height: 100%` under
-     `object-fit: cover` — made the framing a function of the window. The
-     column is a fraction of the width but the full hero height, so its shape
-     swung from 0.79 on a laptop to 0.33 on a portrait tablet, and `cover`
-     answered by discarding whatever did not fit: 15% of the photograph in the
-     first case, half of it in the second. No single one of those crops was
-     wrong; the problem was that they were all different, so the portrait was a
-     different portrait depending on the window.
-
-     The upper bound is the photograph's own pixels. A 723x1086 master stretched
-     to fill a 1281px-tall column on a large display is a 1.18x enlargement
-     before the device pixel ratio doubles it again, which is exactly the soft,
-     over-zoomed look this avoids. When the column is bigger than the picture,
-     the picture stops growing and the slack becomes air. */
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  /* The picture dissolves into the page rather than stopping at an edge. Every
-     edge is masked now that it is centred: it no longer runs off the viewport
-     on the right, so a hard edge there would be the only one left and would
-     read as an oversight rather than as a bleed.
-
-     Fading all four means the photograph has no boundary at all — at its
-     perimeter it is the same warm dark as the stock, and the sitter emerges
-     from the page he is printed on rather than sitting in a window cut into it.
-
-     This is why the plate is tinted rather than left in neutral grey. A fade
-     only works if the photograph's own shadows are already the page's ink; a
-     neutral image would grey out into the plum and read as a smudge instead of
-     a dissolve.
-
-     Two gradients intersected rather than a single radial one, so the
-     horizontal and vertical falloffs stay independent. The sides are symmetric
-     and generous, because they cross open background where a short fade reads
-     as a vignette. The top is short — the head sits close to it and there is no
-     room to spend — and the bottom is longer, because it has to carry the
-     picture down into the caption's gutter.
-
-     Percentages, so every falloff scales with the picture instead of drifting
-     as the column changes size.
-
-     A browser without `mask-composite` gets the unmasked picture — a hard edge,
-     which is exactly what this replaced and is no worse than it.
-
-     The opaque stop is `currentColor` rather than a literal black. A mask built
-     from a gradient reads the alpha channel and ignores the hue entirely, so
-     any fully opaque value does the same job; naming a colour here would imply
-     this one was chosen, and the next person would keep it in step with a
-     palette it has nothing to do with. */
-  -webkit-mask-image:
-    linear-gradient(to right, transparent 0%, currentColor 22%, currentColor 78%, transparent 100%),
-    linear-gradient(to bottom, transparent 0%, currentColor 10%, currentColor 80%, transparent 100%);
-  mask-image:
-    linear-gradient(to right, transparent 0%, currentColor 22%, currentColor 78%, transparent 100%),
-    linear-gradient(to bottom, transparent 0%, currentColor 10%, currentColor 80%, transparent 100%);
-  -webkit-mask-composite: source-in;
-  mask-composite: intersect;
-}
-
-.home-portrait-caption {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-inline: 4vw;
-  border-top: 1px solid var(--line);
-  padding-top: 0.7rem;
-  color: var(--muted);
-}
-
-
 /* The marker register inside the two ivory bands: the lead line, the employer
    names, the headline figure, the disclosure control and the
    inline privacy link. Everything here is something a reader scans — a label, a
@@ -1620,10 +1492,6 @@
   .home-hero h1 {
     font-size: min(clamp(4rem, 12vw, 6.7rem), 10.5vh);
   }
-
-  .home-portrait {
-    padding-bottom: clamp(2rem, 7vw, 3rem);
-  }
 }
 
 @media (max-width: 680px) {
@@ -1638,14 +1506,6 @@
   .home-hero-copy {
     padding-block: clamp(1rem, 4.5vh, 4rem);
     padding-inline: 1.35rem;
-  }
-
-  .home-portrait {
-    padding-bottom: 2.4rem;
-  }
-
-  .home-portrait-caption {
-    margin-inline: 1.35rem;
   }
 
   .home-hero h1 {
@@ -1775,9 +1635,8 @@
     margin-bottom: 0;
   }
 
-  /* Shorter once the column is full width, so the portrait stays a plate on a
-     page rather than becoming a hero image on a phone. Back in flow with an
-     explicit height: there is no second column here whose depth to match. */
+  /* Back in flow: there is no second column here whose depth to match, so the
+     plate is free to take its own shape. */
   .home-about-portrait {
     flex: none;
     min-height: 0;
@@ -1785,7 +1644,22 @@
 
   .home-about-portrait img {
     position: static;
-    height: clamp(13rem, 32vh, 20rem);
+
+    /* The photograph's own proportion, so nothing is cropped.
+
+       This was a height in `vh` inside a column that is now the full width of
+       the sheet, and the two together made a landscape box for a portrait
+       picture: measured across three iPhones the box came out between 1.25:1
+       and 1.51:1 against the plate's 0.67:1, so `cover` kept 44-53% of it and
+       discarded the rest — and with the frame held near the top, what it
+       discarded was the bottom. Half a portrait, cut at the chest.
+
+       A ratio cannot do that. It also takes the viewport height out of it,
+       which matters on the browser this was reported from: iOS Safari resolves
+       `vh` against the large viewport, so the box was sized for a window taller
+       than the one actually on screen. */
+    aspect-ratio: 723 / 1086;
+    height: auto;
   }
 
   .home-contact {
