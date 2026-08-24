@@ -15,6 +15,14 @@ import { useEffect, useRef, useState } from "react";
  * its video replaced without also being edited.
  */
 
+/* Where the plate starts on a fresh load.
+ *
+ * The clip's own first frames are the crossfade that closes its loop — see
+ * scripts/build-hero-loop.mjs — so they are a blend rather than plain footage.
+ * The blend is measurably invisible, but there is no reason for a visitor's
+ * first seconds to be the one part of the loop that is doing work. */
+const START_AT = 2.4;
+
 /* The floor-to-wow curve.
  *
  * The signal is the darkest part of the frame, not its mean, and the
@@ -26,38 +34,21 @@ import { useEffect, useRef, useState } from "react";
  * the darkest part of the picture is bright, there is nowhere left for the blue
  * to fail.
  *
- * Measured across the loop, the floor sits at 0.07 to 0.12 through the open
- * mountain passages, lifts to 0.22 and 0.28 as the two cloud banks drift across
- * at about 13.2s and 8.4s, and reaches 0.79 in the final whiteout. So FLOOR_LO
- * sits just above the baseline and FLOOR_HI at the settled white, which puts
- * the two banks around a fifth of the way to blue — visible as a lean, not as a
- * change of state — and the whiteout at the full crossing.
+ * 0.76 is the settled floor of the clip's whiteout, and it is deliberately not
+ * lowered to make a passing cloud bank reach it. That was tried: the bank takes
+ * the floor to 0.361, so a ceiling near there does drive a full crossing — and
+ * the result is blue type over mountains and bright sky, which is illegible and
+ * reads as a fault rather than an effect. The measurement is on a 32x18 raster,
+ * where a small dark region averages away; a high floor there means "no large
+ * dark area", not "white". Only a real whiteout satisfies what the blue needs.
  *
  * A low percentile rather than the true minimum, so one stray dark pixel from
- * compression cannot hold the effect off; on this clip the two differ by about
- * 0.015. Values are sRGB, because this is a threshold on how light the picture
- * looks rather than a contrast calculation. */
+ * compression cannot hold the effect off. Values are sRGB, because this is a
+ * threshold on how light the picture looks rather than a contrast
+ * calculation. */
 const FLOOR_LO = 0.14;
 const FLOOR_HI = 0.76;
 const FLOOR_PERCENTILE = 0.005;
-
-/* Where the plate starts on a fresh load.
- *
- * Not zero. The clip is cut to loop through its own whiteout, so its first
- * frames are white and dissolving — which is right as a loop point and wrong as
- * an opening. Starting there handed the loading screen over to a white picture
- * with the type already blue, so every visit began on the effect rather than
- * arriving at it. The blue is meant to be something the clouds do, not the
- * first thing on the page.
- *
- * 2.0s is past the dissolve by measurement rather than by eye: the frame floor
- * runs 0.256 at 0.4s, 0.169 at 1.2s and 0.127 at 2.0s, and only the last of
- * those is below FLOOR_LO — which is to say only the last one puts --wow at a
- * true zero and the statement in full paper.
- *
- * Only the opening moves. The loop is untouched: it still runs off the end into
- * the whiteout and dissolves back through these frames. */
-const START_AT = 2;
 
 /* How fast --wow may move, per second. The floor is a percentile of a small
  * raster, so it steps when a bank's edge crosses a sample row; unsmoothed, the

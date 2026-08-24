@@ -140,12 +140,17 @@
      the frame.
 
      Two stops: a tight one for edge definition and a wide soft one that reads
-     as depth rather than as a drop shadow. Both fade out as --wow comes in —
-     by the time the picture is cloud there is nothing left to fight, and a
-     dark halo around blue letters on white is a smudge. */
+     as depth rather than as a drop shadow.
+
+     Constant, and it used to fade out as --wow came in. That was right while
+     the clip ended on a whiteout: at full blue on a white frame the halo was a
+     smudge with nothing left to fight. The loop no longer goes white and the
+     blue only ever leans — it peaks around 0.29 — so there is no moment the
+     shadow is not earning its place, and fading it took definition away from
+     the brightest frames, which are exactly the ones that need it most. */
   text-shadow:
-    0 1px 2px rgb(12 16 24 / calc(0.3 * (1 - var(--wow)))),
-    0 2px 26px rgb(12 16 24 / calc(0.38 * (1 - var(--wow))));
+    0 1px 2px rgb(12 16 24 / 0.3),
+    0 2px 26px rgb(12 16 24 / 0.38);
 }
 
 /* ── The statement ────────────────────────────────────────────────────────
@@ -277,14 +282,12 @@
   color: var(--wow-color);
   white-space: nowrap;
   pointer-events: none;
-  /* The same perceptual aid the statement uses, for the same reason: this sits
-     on raw plate, above where the sky is brightest. It fades out with the same
-     --wow that brings the blue in — by the time the frame is cloud there is
-     nothing left to firm the type against, and a dark halo around blue letters
-     on white is a smudge. */
+  /* The same perceptual aid the statement uses, and constant for the same
+     reason — see the note on .hero .hero-title. This one sits on raw plate
+     above where the sky is brightest, so it has the least to spare. */
   text-shadow:
-    0 1px 2px rgb(12 16 24 / calc(0.35 * (1 - var(--wow)))),
-    0 2px 18px rgb(12 16 24 / calc(0.4 * (1 - var(--wow))));
+    0 1px 2px rgb(12 16 24 / 0.35),
+    0 2px 18px rgb(12 16 24 / 0.4);
 }
 
 .hero-lockup-mark {
