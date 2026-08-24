@@ -594,7 +594,7 @@
        enough for the gesture to read as finished, so the page stopped scrolling
        altogether. Whatever paces this page must not be able to prevent it. */
     html {
-      scroll-snap-type: none;
+      scroll-snap-type: y mandatory;
     }
 
     /* The stops themselves, and why they are not the panels.
@@ -621,6 +621,30 @@
         var(--header-height),
         calc(100svh - var(--panel-h, 0px))
       );
+    }
+
+    /* The two ends.
+
+       Mandatory snapping has to be able to rest at both extremes, and neither
+       end had anything to catch on: the markers below sit one per panel and the
+       first of them is 816px down, so the top of the page was not a snap
+       position and the scroller settled on the proof section instead — a reload
+       could not show the hero. The same at the foot, where the closing panel is
+       half a screen and the last marker is a full screen above the end of the
+       document.
+
+       The hero takes the alignment directly rather than through a marker: it is
+       static, in flow, and starts at zero, so unlike the panels below it is not
+       a moving target. The footer aligns to its end, which is the one position
+       it can be fully seen at when it is shorter than the window. */
+    .hero {
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+    }
+
+    .site-page > footer {
+      scroll-snap-align: end;
+      scroll-snap-stop: always;
     }
 
     /* The engagements track is three screens tall, so its own top is not enough
@@ -704,9 +728,9 @@
       animation-range: contain 0% contain 100%;
     }
 
-    /* Each engagement rides the same clock, offset by one: parked off to the
-       right, held in the window for a third of the track, then gone to the
-       left. They are exactly one window wide, so nothing is ever half in. */
+    /* Each engagement rides the same clock, offset by one: out to the left as
+       the next comes in from the right. See the keyframes at the foot of this
+       file for why that travel is a flip rather than a scrub. */
     .home-engagement:nth-child(1) {
       animation-name: engagement-first;
     }
@@ -721,10 +745,10 @@
 
     /* The rail sits at the foot of the frame, which is otherwise empty: the
        engagement is only as tall as its own text and the frame is a screen.
-       It earns the space by answering the question this section always raises —
-       how many of these are there, and where am I? A third-width bar sits under
-       whichever engagement is showing, so the scroll reads as position rather
-       than as the page misbehaving. */
+       It earns the space by answering the question a scrubbed section always
+       raises — how many of these are there, and where am I? A third-width bar
+       tracks the reel exactly, so the scroll reads as position rather than as
+       the page misbehaving. */
     .home-engagement-progress {
       display: grid;
       gap: 0.85rem;
@@ -813,22 +837,14 @@
   }
 }
 
-/* Stepped, on the same thresholds as everything else in this readout. A bar
-   that slid while the card it reports on flipped would be describing a motion
-   that is not happening. */
+/* Travels with the reel rather than stepping with the numbers. The bar reports
+   position, and position is continuous while the snap is in flight. */
 @keyframes engagement-progress {
-  0%,
-  24.99% {
+  from {
     transform: translateX(0);
   }
 
-  25%,
-  74.99% {
-    transform: translateX(100%);
-  }
-
-  75%,
-  100% {
+  to {
     transform: translateX(200%);
   }
 }
@@ -877,42 +893,38 @@
   }
 }
 
-/* The reel flips rather than slides.
- 
-   Each engagement holds its position for a full third of the track and is
-   replaced between one frame and the next. Written as pairs of keyframes a
-   hundredth of a percent apart, which is how you get a step out of a timeline
-   that interpolates: there is no timing function that can hold a value and then
-   jump on a scroll-driven animation, because the progress is the scroll and
-   steps() would quantise the whole range rather than these two points.
- 
-   The thresholds are 25% and 75%, which is the midpoint of each pair of resting
-   states, and the same pair the numbered readout below already used. So the
-   card, the bar and the number all change on the same line. */
+/* Each engagement rides the same clock, offset by one: out to the left as the
+   next comes in from the right. They are exactly one window wide, so the two
+   meet at a seam with no gap and no overlap — the outgoing edge and the
+   incoming edge are the same vertical.
+
+   This interpolates rather than stepping, and that is right only because the
+   scroller snaps. The travel is not something a reader drags through by hand;
+   it is what happens during the snap between one engagement and the next, so
+   the motion reads as a card being replaced rather than a strip being pulled.
+   Stepping these instead was tried, and without the snap it still felt like a
+   scrub — the card simply changed at an arbitrary point mid-gesture. The snap
+   is the thing that makes it a flip. */
 @keyframes engagement-first {
-  0%,
-  24.99% {
+  0% {
     transform: translateX(0);
   }
 
-  25%,
+  50%,
   100% {
     transform: translateX(-100%);
   }
 }
 
 @keyframes engagement-second {
-  0%,
-  24.99% {
+  0% {
     transform: translateX(100%);
   }
 
-  25%,
-  74.99% {
+  50% {
     transform: translateX(0);
   }
 
-  75%,
   100% {
     transform: translateX(-100%);
   }
@@ -920,11 +932,10 @@
 
 @keyframes engagement-third {
   0%,
-  74.99% {
+  50% {
     transform: translateX(100%);
   }
 
-  75%,
   100% {
     transform: translateX(0);
   }
