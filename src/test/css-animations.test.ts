@@ -160,6 +160,16 @@ describe("scroll-driven animation declarations", () => {
     expect(css).toMatch(/:nth-child\(2\)\s*\{\s*top:\s*var\(--reel-step\)/);
     expect(css).toMatch(/:nth-child\(3\)\s*\{\s*top:\s*calc\(2\s*\*\s*var\(--reel-step\)\)/);
 
+    // Every engagement has to be a hard stop, not merely the nearest one.
+    // Proximity settles a gesture on whichever position is closest when it
+    // ends, which is not the same as showing every position: a flick into the
+    // section that carried past the first engagement was closer to the second
+    // and seated there, so the section opened on its second point.
+    expect(
+      css,
+      "an engagement must not be scrolled over",
+    ).toMatch(/scroll-snap-stop:\s*always/);
+
     // Proximity, never mandatory. Mandatory forces the scroller onto the
     // nearest position from anywhere on the page, and with snap positions only
     // inside this track that makes both ends of the document unreachable.

@@ -662,6 +662,17 @@
       height: 1px;
       scroll-snap-align: start;
       scroll-margin-top: var(--header-height);
+
+      /* No engagement may be scrolled over.
+
+         Proximity settles a gesture on the nearest position, which is not the
+         same as showing every position. Entering the section, a flick that
+         carried a little past the first engagement was nearer to the second, so
+         it seated there and the first was never seen at rest — the section
+         opened on its second point. `always` makes the scroller stop at each of
+         these as it reaches it rather than choosing between them at the end, so
+         the three arrive in order however hard the gesture was. */
+      scroll-snap-stop: always;
     }
 
     .home-engagement-steps > span:nth-child(1) {
