@@ -328,11 +328,12 @@ export default function Home() {
           className="home-engagements-track"
           aria-labelledby="engagements-title"
         >
-          {/* Snap points, one per engagement. Nothing is drawn: they exist only
-              to give the scroller somewhere to catch inside a section that is
-              three screens tall. CSS-only — see `Home.css`. */}
+          {/* Snap points for the second and third engagements. Nothing is
+              drawn: they exist only to give the scroller somewhere to catch
+              inside a section that is three screens tall. There is none for the
+              first — entering the section should not be a catch. CSS-only, see
+              `Home.css`. */}
           <div className="home-engagement-steps" aria-hidden="true">
-            <span />
             <span />
             <span />
           </div>

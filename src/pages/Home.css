@@ -601,10 +601,23 @@
       scroll-snap-type: y proximity;
     }
 
-    /* The engagements track is three screens tall, so its own top is not enough
-       to keep a fling from crossing all three. These sit at the same offsets the
-       reel's clock uses, so a catch lands on an engagement rather than between
-       two. */
+    /* Two stops, not three, and the missing one is the point.
+
+       The track is three screens tall, so its own height is not enough to keep
+       a fling from crossing all three engagements in one gesture.
+       `scroll-snap-stop: always` is the browser's answer: it halts a fling at
+       each point it passes rather than letting momentum carry through.
+
+       There is deliberately no stop at the track's start. Proximity's catch
+       radius is wide — measured at 266px on this page — so a stop there reached
+       back into the section above and yanked the reader into the track before
+       they had finished with it. Entry is free now: the first engagement is
+       simply what the reel shows for the first quarter of the track, so it is
+       on screen without anything having to pull the page to it. The stepping
+       starts at the second.
+
+       These sit one frame apart, which is where each engagement is comfortably
+       mid-view rather than on the boundary the reel changes at. */
     .home-engagement-steps {
       display: block;
     }
@@ -618,11 +631,11 @@
       scroll-snap-stop: always;
     }
 
-    .home-engagement-steps > span:nth-child(2) {
+    .home-engagement-steps > span:nth-child(1) {
       top: calc(100svh - var(--header-height));
     }
 
-    .home-engagement-steps > span:nth-child(3) {
+    .home-engagement-steps > span:nth-child(2) {
       top: calc(2 * (100svh - var(--header-height)));
     }
 
