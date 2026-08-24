@@ -501,6 +501,12 @@
   gap: clamp(1.5rem, 4vh, 3rem);
 }
 
+/* Snap positions for the sub-scroll. Inert without it — the fallback is an
+   ordinary stacked list and scrolls like one. */
+.home-engagement-steps {
+  display: none;
+}
+
 /* Position within the sub-scroll. Only meaningful where the scrub exists, so
    the plain stacked fallback never shows it. */
 .home-engagement-progress {
@@ -547,23 +553,33 @@
       --gutter: max(4vw, calc((100% - 1240px) / 2));
       padding: 0;
 
-      /* One window to hold the frame still, plus one stage-height of scroll per
-         engagement change.
-      
-         Because the reel travels sideways, scroll distance and travel distance
-         are different axes and there is no 1:1 to hit — the mapping is a
-         choice. One screen per engagement is what a hand expects from a pinned
-         horizontal reel, and it keeps a full content swap deliberate rather
-         than twitchy. There is no dead stretch at any speed: something is
-         crossing the frame at every scroll position.
-      
-         The two clocks stay in step whatever this height is. The reel runs over
-         the track's `contain` range, which is the track less the window; the
-         frame is held until its bottom meets the track's bottom, which is the
-         track less the stage and its sticky offset. The stage is a window less
-         a masthead and the offset is a masthead, so both reduce to the same
-         distance — the last engagement lands exactly as the frame lets go. */
-      height: calc(100svh + 2 * (100svh - var(--header-height)));
+      /* How much scroll one engagement is worth, and it is set by the snapping
+         rather than by taste.
+
+         Chrome's proximity snapping has a catch radius it does not let you
+         name: measured on this page it is 220-240px against a 679px window, so
+         about a third of it. A snap position only claims what falls inside that
+         radius, so if an engagement is worth more scroll than two radii, the
+         middle of each crossing belongs to no card and a gesture ending there
+         leaves two half cards on screen. That was this section's actual defect
+         at one screen per engagement: the segment was 637px, the radius 226px,
+         and the 190px in the middle of every crossing caught on nothing.
+
+         At 0.55 of a window a half-segment is about 187px, comfortably inside
+         the radius, and every position on the track belongs to a card. A
+         fraction rather than a fixed length because the radius scales with the
+         window and this has to keep holding on a laptop and a 27in display.
+
+         It is also the better length on its own terms. The reel travels
+         sideways, so scroll distance and travel distance are different axes and
+         there is no 1:1 to hit — the mapping was always a choice, and a shorter
+         one makes the section answer a flick instead of absorbing it. */
+      --reel-step: calc(0.55 * 100svh);
+
+      /* The stage, plus one step per engagement change. Written this way the
+         pinned range is exactly two steps, which is what lets the snap
+         positions below be written as plain multiples of one. */
+      height: calc(100svh - var(--header-height) + 2 * var(--reel-step));
       view-timeline-name: --engagement-reel;
       view-timeline-axis: block;
 
@@ -593,22 +609,82 @@
       padding-block: var(--panel-pad);
     }
 
-    /* No scroll snapping, and no JavaScript pacing the scroll either.
+    /* Snapping, and only here.
 
-       Both were tried on this section and both were worse than nothing.
-       `scroll-snap-type` is declared on the scroll container, which here is the
-       whole document, so it cannot be scoped to this track: mandatory took
-       every section as binding and made both ends of the document unreachable,
-       and proximity's catch radius is not the midpoint and cannot be told to be
-       — measured at 266px against an 816px segment. A JS settle that waited for
-       the scroll to stop and then eased to the nearest card was worse still: on
-       a trackpad the scroll does not stop when the gesture does, so the settle
-       arrived long after the hand had finished, and anything that writes the
-       scroll position every frame fights everything else that moves the page.
+       A scroll-driven animation rests wherever the scroll rests, and this one
+       spends about a fifth of its track mid-crossing — so a gesture that ends
+       there leaves two half cards, which is three columns of unrelated text and
+       reads as broken rather than as motion. The curve can narrow that band but
+       cannot close it. Only the scroll preferring the resting places can, which
+       is snapping.
 
-       What is left is the thing that was here first and is better than either:
-       the reel below is a scroll-driven animation, so it is locked to the
-       scroll by the compositor with nothing to arrive late or fight over. */
+       `proximity`, not `mandatory`. `scroll-snap-type` is declared on the
+       scroll container, which here is the document, so it cannot be scoped to
+       this section — the scoping has to come from where the snap positions are.
+       With mandatory the scroller must always settle on one, so every position
+       on the page is claimed by the nearest of these three and both ends of the
+       document become unreachable; that is exactly what happened the first time
+       this was tried. Proximity only acts within its own catch radius, so
+       anywhere further than that from a marker — which is the whole rest of the
+       page — scrolls untouched.
+
+       It is also the browser's own machinery rather than ours, which is the
+       point. It runs on the compositor and it knows about momentum, so it
+       settles a trackpad fling as the fling ends. Both JavaScript attempts at
+       this waited for the scroll to be still, and on a trackpad the scroll is
+       not still when the gesture is over. */
+    html {
+      scroll-snap-type: y proximity;
+    }
+
+    /* The three positions, one per engagement.
+
+       Static markers rather than the panels themselves. A sticky element makes
+       a useless snap target: its snap area is measured from where it currently
+       sits, and a pinned stage sits at the masthead line whatever the scroll
+       position, so the target moves as the page does. These are ordinary
+       absolutely-positioned points in the track, so each sits where it sits.
+
+       The offsets are the reel's own clock: the track is pinned for exactly two
+       steps and the engagements rest at nought, one and two of them.
+       `scroll-margin-top` is the masthead because the stage pins one header
+       height before the track's top arrives — the same offset
+       `view-timeline-inset` gives the clock, so the snap positions and the
+       resting positions are the same three places. */
+    .home-engagement-steps {
+      display: block;
+    }
+
+    .home-engagement-steps > span {
+      position: absolute;
+      left: 0;
+      width: 1px;
+      height: 1px;
+      scroll-snap-align: start;
+      scroll-margin-top: var(--header-height);
+    }
+
+    .home-engagement-steps > span:nth-child(1) {
+      top: 0;
+    }
+
+    .home-engagement-steps > span:nth-child(2) {
+      top: var(--reel-step);
+    }
+
+    .home-engagement-steps > span:nth-child(3) {
+      top: calc(2 * var(--reel-step));
+    }
+
+    /* Nothing in JavaScript paces this page.
+
+       A JS settle that waited for the scroll to stop and then eased to the
+       nearest card was tried twice and is the wrong shape for the problem: on a
+       trackpad the scroll does not stop when the gesture does, so it arrived
+       long after the hand had finished, and anything that writes the scroll
+       position every frame fights everything else that moves the page — a click
+       on the masthead included. The reel is a scroll-driven animation and the
+       settling is the browser's own snapping, both on the compositor. */
 
     /* The rule belongs to the heading now, not to the window.
     

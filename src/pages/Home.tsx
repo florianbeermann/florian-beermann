@@ -329,6 +329,16 @@ export default function Home() {
           className="home-engagements-track"
           aria-labelledby="engagements-title"
         >
+          {/* Three places for the scroller to catch, one per engagement, so a
+              gesture that ends mid-crossing settles on a card instead of on two
+              halves of two. Nothing is drawn and nothing is read: they exist
+              only as snap positions. CSS-only, see `Home.css`. */}
+          <div className="home-engagement-steps" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
+
           <div className="home-engagements-stage">
             <header className="home-section-heading">
               <h2 id="engagements-title">Three ways I work</h2>

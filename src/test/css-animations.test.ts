@@ -130,4 +130,43 @@ describe("scroll-driven animation declarations", () => {
       "the numbered readout must switch on the crossing points",
     ).toMatch(/24\.99%/);
   });
+
+  it("keeps an engagement short enough for the snap radius to reach its middle", () => {
+    const home = cssFiles.find(({ file }) => file === "src/pages/Home.css");
+    const css = withoutComments(home!.css);
+
+    // The one number on this page that is set by a browser internal rather than
+    // by taste. Chrome's proximity snapping has a catch radius it does not let
+    // you name: measured on this page it is 220-240px against a 679px window,
+    // so about a third of it. A snap position only claims what falls within
+    // that radius, so an engagement worth more scroll than two radii leaves the
+    // middle of every crossing belonging to no card — and a gesture ending
+    // there rests on two half cards, which is what this section did at one
+    // window per engagement.
+    //
+    // Half a step has to fit inside a third of a window, so the step has to
+    // stay under about 0.66. Raise it past that and nothing fails loudly: the
+    // reel still animates, the snap positions are still there, and the section
+    // simply goes back to being able to stop halfway.
+    const step = css.match(/--reel-step:\s*calc\(\s*([0-9.]+)\s*\*\s*100svh\s*\)/);
+    expect(step, "the engagements track should size itself in windows").not.toBeNull();
+    expect(
+      Number(step![1]),
+      "half an engagement must fit inside the snap radius, which is about a third of a window",
+    ).toBeLessThanOrEqual(0.66);
+
+    // And the markers have to sit on the steps, or they are snap positions for
+    // places the reel never rests.
+    expect(css).toMatch(/:nth-child\(2\)\s*\{\s*top:\s*var\(--reel-step\)/);
+    expect(css).toMatch(/:nth-child\(3\)\s*\{\s*top:\s*calc\(2\s*\*\s*var\(--reel-step\)\)/);
+
+    // Proximity, never mandatory. Mandatory forces the scroller onto the
+    // nearest position from anywhere on the page, and with snap positions only
+    // inside this track that makes both ends of the document unreachable.
+    expect(
+      css,
+      "snapping must stay proximity, or the document's ends become unreachable",
+    ).toMatch(/scroll-snap-type:\s*y\s+proximity/);
+    expect(css).not.toMatch(/scroll-snap-type:\s*y\s+mandatory/);
+  });
 });
