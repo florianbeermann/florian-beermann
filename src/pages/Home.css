@@ -521,9 +521,15 @@
   padding: 2.8rem 0 4rem;
 }
 
+/* The gate is `animation-timeline` even though nothing here animates on one
+   any more. It is a proxy for "a browser modern enough to be trusted with this
+   layout", and re-gating on something else would change which browsers get the
+   reel and which get the stacked list — a behaviour change dressed as a
+   tidy-up. The reel is driven by an index on the element now; see
+   useEngagementReel in Home.tsx. */
 @supports (animation-timeline: view()) {
   /* Below the three-column breakpoint an engagement stacks into one tall
-     column and no longer reads as a single card, so the scrub is desktop-only.
+     column and no longer reads as a single card, so the reel is desktop-only.
      Narrow screens keep the plain stacked list above. */
   @media (prefers-reduced-motion: no-preference) and (min-width: 769px) {
     .home-engagements-track {
@@ -559,8 +565,13 @@
          a masthead and the offset is a masthead, so both reduce to the same
          distance — the last engagement lands exactly as the frame lets go. */
       height: calc(100svh + 2 * (100svh - var(--header-height)));
-      view-timeline-name: --engagement-reel;
-      view-timeline-axis: block;
+
+      /* The travel. Long enough to read as a card being replaced rather than a
+         cut, short enough that a reader who has already decided to move on is
+         not waiting for it. The ease is fast out of the gate and settles at the
+         end, so the motion has a direction rather than a duration. */
+      --reel-move: 520ms;
+      --reel-ease: cubic-bezier(0.22, 0.61, 0.24, 1);
     }
 
     /* The frame. Sticky at the masthead line like every panel, one screen
@@ -676,39 +687,31 @@
       border-top: 0;
       padding-block: 0;
       padding-inline: var(--gutter);
-      /* Longhands, and they have to stay longhands. Written as the shorthand
-         `animation: linear both` this is a nameless animation, which means
-         `animation-name: none` — and a minifier that sees a rule whose
-         animation can never run is entitled to collapse the whole declaration
-         to `animation: none`, taking `linear` and `both` with it. The names
-         arrive from the `:nth-child` rules below, which it cannot see from
-         here, so the optimisation is locally valid and globally wrong.
-
-         Losing `both` is what breaks: with no fill mode each engagement
-         reverts to its untransformed position outside the animation's active
-         range, and since all three share one grid cell they land on top of one
-         another. It only happens in a production build, so a dev server shows
-         the reel working perfectly right up until it is deployed. */
-      animation-timing-function: linear;
-      animation-fill-mode: both;
-      animation-timeline: --engagement-reel;
-      animation-range: contain 0% contain 100%;
+      /* Everything not showing is parked off to the right; the rules below pull
+         the current one in and push the ones behind it out to the left. */
+      transform: translateX(100%);
+      transition: transform var(--reel-move) var(--reel-ease);
     }
 
-    /* Each engagement rides the same clock, offset by one: parked off to the
-       right, held in the window for its third of the track, then gone to the
-       left. They are exactly one window wide, so nothing is ever half in. See
-       the keyframes at the foot of this file for why the travel is stepped. */
-    .home-engagement:nth-child(1) {
-      animation-name: engagement-first;
+    /* The current engagement, and the ones already passed.
+    
+       Driven from an index on the reel rather than from the scroll, which is
+       the whole point. A scroll-driven animation can only interpolate along the
+       scroll, so it gives one of two things: a card that tracks the pointer and
+       reads as a strip being dragged, or — if the keyframes are stepped — a
+       swap with no motion in it at all. Neither is a transition. Moving the
+       state to an attribute lets an ordinary CSS transition run the travel on
+       its own clock, so the change is discrete and the motion is still there. */
+    .home-engagement-reel[data-active="0"] .home-engagement:nth-child(1),
+    .home-engagement-reel[data-active="1"] .home-engagement:nth-child(2),
+    .home-engagement-reel[data-active="2"] .home-engagement:nth-child(3) {
+      transform: translateX(0);
     }
 
-    .home-engagement:nth-child(2) {
-      animation-name: engagement-second;
-    }
-
-    .home-engagement:nth-child(3) {
-      animation-name: engagement-third;
+    .home-engagement-reel[data-active="1"] .home-engagement:nth-child(1),
+    .home-engagement-reel[data-active="2"] .home-engagement:nth-child(1),
+    .home-engagement-reel[data-active="2"] .home-engagement:nth-child(2) {
+      transform: translateX(-100%);
     }
 
     /* The rail sits at the foot of the frame, which is otherwise empty: the
@@ -757,9 +760,18 @@
       width: calc(100% / 3);
       height: 1px;
       background: var(--voltage);
-      animation: engagement-progress linear both;
-      animation-timeline: --engagement-reel;
-      animation-range: contain 0% contain 100%;
+      /* Travels with the reel, on the same clock, so the two read as one
+         movement rather than two things arriving separately. */
+      transform: translateX(0);
+      transition: transform var(--reel-move) var(--reel-ease);
+    }
+
+    .home-engagement-progress[data-active="1"] .home-engagement-progress-bar {
+      transform: translateX(100%);
+    }
+
+    .home-engagement-progress[data-active="2"] .home-engagement-progress-bar {
+      transform: translateX(200%);
     }
 
     .home-engagement-progress ol {
@@ -777,158 +789,17 @@
       list-style: none;
     }
 
-    /* Each number takes the ink while the bar's centre is inside its third.
-       Two keyframes back to back rather than a fade: this is a readout, and a
-       readout that dissolves between states is harder to read than one that
-       switches. */
-    .home-engagement-progress li {
-      /* Longhands for the same reason as `.home-engagement` above: the name
-         comes from the `:nth-child` rules, so the shorthand here would be
-         nameless and a minifier may reduce it to `animation: none`. */
-      animation-timing-function: linear;
-      animation-fill-mode: both;
-      animation-timeline: --engagement-reel;
-      animation-range: contain 0% contain 100%;
-    }
-
-    .home-engagement-progress li:nth-child(1) {
-      animation-name: engagement-step-first;
-    }
-
-    .home-engagement-progress li:nth-child(2) {
-      animation-name: engagement-step-second;
-    }
-
-    .home-engagement-progress li:nth-child(3) {
-      animation-name: engagement-step-third;
+    /* Each number takes the ink while its engagement is showing. No fade: this
+       is a readout, and a readout that dissolves between states is harder to
+       read than one that switches. It changes on the same beat as the reel, so
+       the number is right about what is on screen throughout the travel. */
+    .home-engagement-progress[data-active="0"] li:nth-child(1),
+    .home-engagement-progress[data-active="1"] li:nth-child(2),
+    .home-engagement-progress[data-active="2"] li:nth-child(3) {
+      color: var(--ink);
     }
   }
-}
 
-/* Stepped, on the same thresholds as the reel and the numbers. A bar that slid
-   while the card it reports on flipped would be describing a motion that is not
-   happening. */
-@keyframes engagement-progress {
-  0%,
-  24.99% {
-    transform: translateX(0);
-  }
-
-  25%,
-  74.99% {
-    transform: translateX(100%);
-  }
-
-  75%,
-  100% {
-    transform: translateX(200%);
-  }
-}
-
-@keyframes engagement-step-first {
-  0% {
-    color: var(--ink);
-  }
-
-  24.99% {
-    color: var(--ink);
-  }
-
-  25%,
-  100% {
-    color: var(--muted);
-  }
-}
-
-@keyframes engagement-step-second {
-  0%,
-  24.99% {
-    color: var(--muted);
-  }
-
-  25%,
-  74.99% {
-    color: var(--ink);
-  }
-
-  75%,
-  100% {
-    color: var(--muted);
-  }
-}
-
-@keyframes engagement-step-third {
-  0%,
-  74.99% {
-    color: var(--muted);
-  }
-
-  75%,
-  100% {
-    color: var(--ink);
-  }
-}
-
-/* The reel flips. This is the one place on the page that jumps, and it is the
-   only place that should: three cards share a frame, so any position between
-   two of them shows half of each.
-
-   The travel is stepped rather than interpolated because the page scrolls
-   freely. Interpolating is right when the scroller snaps — then the travel only
-   ever happens during a snap and reads as a card being replaced — but page-wide
-   snapping is not something this page can have. It is set on the scroll
-   container, which is the whole document, so it would pull every section into
-   alignment; that version made both ends of the document unreachable. Left
-   interpolated on a free scroll, the reel becomes a strip the reader drags.
-
-   Written as pairs of keyframes a hundredth of a percent apart, which is how
-   you get a step out of a timeline that interpolates. There is no timing
-   function that does it: steps() would quantise the entire range rather than
-   these two points, and a scroll-driven animation has no discrete time to hang
-   one on.
-
-   The thresholds are 25% and 75% — the midpoint of each pair of resting states,
-   and the pair the numbered readout below already used, so the card, the bar
-   and the lit number all change on the same line. */
-@keyframes engagement-first {
-  0%,
-  24.99% {
-    transform: translateX(0);
-  }
-
-  25%,
-  100% {
-    transform: translateX(-100%);
-  }
-}
-
-@keyframes engagement-second {
-  0%,
-  24.99% {
-    transform: translateX(100%);
-  }
-
-  25%,
-  74.99% {
-    transform: translateX(0);
-  }
-
-  75%,
-  100% {
-    transform: translateX(-100%);
-  }
-}
-
-@keyframes engagement-third {
-  0%,
-  74.99% {
-    transform: translateX(100%);
-  }
-
-  75%,
-  100% {
-    transform: translateX(0);
-  }
 }
 
 .home-engagement-title h3 {

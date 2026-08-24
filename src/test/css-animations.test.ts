@@ -24,6 +24,11 @@ import { describe, expect, it } from "vitest";
  *
  * So the rule is: never write a nameless `animation` shorthand. Put the shared
  * properties in longhands, which no minifier will fold together.
+ *
+ * The reel itself no longer runs on a scroll-driven animation — it is a
+ * transition on an index, see useEngagementReel.ts — but the stacking hazard it
+ * carried is a property of the layout rather than of the mechanism, so the last
+ * test here follows it to whatever is holding the cards apart now.
  */
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
@@ -71,15 +76,35 @@ describe("scroll-driven animation declarations", () => {
     ).toEqual([]);
   });
 
-  it("keeps the engagement reel's fill mode, which is what stops it stacking", () => {
+  it("keeps the engagement reel's parked position, which is what stops it stacking", () => {
     const home = cssFiles.find(({ file }) => file === "src/pages/Home.css");
     const css = withoutComments(home!.css);
 
-    // All three engagements share one grid cell, so the fill mode is the only
-    // thing holding them apart outside the animation's active range.
-    const reelRule = css.match(/\.home-engagement\s*\{[^}]*animation-timeline[^}]*\}/);
-    expect(reelRule, "the engagement reel rule should still drive a timeline").not.toBeNull();
-    expect(reelRule![0]).toMatch(/animation-fill-mode:\s*both/);
-    expect(reelRule![0]).toMatch(/grid-area:\s*1\s*\/\s*1/);
+    // All three engagements share one grid cell, so something has to hold them
+    // apart. It used to be a scroll-driven animation's fill mode; it is now the
+    // transform they sit at by default, with the rules below pulling exactly
+    // one of them in. Lose that default and all three land on top of each
+    // other — the same failure, from the other direction.
+    const reelRule = css.match(/\.home-engagement\s*\{[^}]*grid-area:\s*1\s*\/\s*1[^}]*\}/);
+    expect(
+      reelRule,
+      "the engagement reel rule should still share one grid cell",
+    ).not.toBeNull();
+    expect(
+      reelRule![0],
+      "every engagement must park off-screen by default, or they stack",
+    ).toMatch(/transform:\s*translateX\(100%\)/);
+    expect(
+      reelRule![0],
+      "the travel is a transition now, not a scroll-driven animation",
+    ).toMatch(/transition:\s*transform/);
+
+    // And the index has to actually pull one in. Without these the reel is
+    // three cards parked off-screen and the section is empty.
+    expect(
+      css,
+      "an active engagement must be pulled into the frame",
+    ).toMatch(/\[data-active="0"\][^{]*:nth-child\(1\)/);
   });
+
 });

@@ -15,6 +15,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { HeroVideo } from "@/components/HeroVideo";
 import { HeroLoader } from "@/components/HeroLoader";
+import { useEngagementReel } from "@/hooks/useEngagementReel";
 import { CircleMark } from "@/components/CircleMark";
 import { Masthead } from "@/components/Masthead";
 import { setPageMetadata } from "@/lib/metadata";
@@ -100,6 +101,9 @@ export default function Home() {
   const [plateRevealed, setPlateRevealed] = useState(false);
   const handlePlateReady = useCallback(() => setPlateReady(true), []);
   const handleReveal = useCallback(() => setPlateRevealed(true), []);
+  /* Which of the three engagements the reel is showing. See the hook for why
+     this is state rather than a scroll-driven animation. */
+  const { trackRef, active: activeEngagement } = useEngagementReel<HTMLElement>();
   const [showDetails, setShowDetails] = useState(false);
   const [size, setSize] = useState("");
   const [tooling, setTooling] = useState("");
@@ -325,6 +329,7 @@ export default function Home() {
             are covered, this one steps. */}
         <section
           id="engagements"
+          ref={trackRef}
           className="home-engagements-track"
           aria-labelledby="engagements-title"
         >
@@ -348,7 +353,10 @@ export default function Home() {
             </header>
 
             <div className="home-engagement-viewport">
-              <div className="home-engagement-reel">
+              <div
+                className="home-engagement-reel"
+                data-active={activeEngagement}
+              >
                 {engagements.map((engagement) => (
                   <article className="home-engagement" key={engagement.number}>
                     <div className="home-engagement-title">
@@ -371,7 +379,11 @@ export default function Home() {
             {/* Position within the sub-scroll. Hidden from assistive tech: it
                 says nothing the three engagements below it do not already say,
                 and it only exists where the scrub does. */}
-            <div className="home-engagement-progress" aria-hidden="true">
+            <div
+              className="home-engagement-progress"
+              data-active={activeEngagement}
+              aria-hidden="true"
+            >
               <span className="home-engagement-progress-rail">
                 <span className="home-engagement-progress-bar" />
               </span>
