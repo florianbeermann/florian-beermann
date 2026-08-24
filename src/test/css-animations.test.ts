@@ -76,51 +76,58 @@ describe("scroll-driven animation declarations", () => {
     ).toEqual([]);
   });
 
-  it("keeps the engagement reel's spacing, which is what stops it stacking", () => {
+  it("keeps the engagement reel's fill mode, which is what stops it stacking", () => {
     const home = cssFiles.find(({ file }) => file === "src/pages/Home.css");
     const css = withoutComments(home!.css);
 
-    // All three engagements share one grid cell, so something has to hold them
-    // apart. Two things do, and losing either lands all three on top of each
-    // other: the shared transform, which offsets a card by its own index minus
-    // the reel's position, and the per-card index that makes those offsets
-    // differ. This has failed twice before — once when a scroll-driven
-    // animation's fill mode was doing the holding, once when the index moved.
-    const reelRule = css.match(/\.home-engagement\s*\{[^}]*grid-area:\s*1\s*\/\s*1[^}]*\}/);
-    expect(
-      reelRule,
-      "the engagement reel rule should still share one grid cell",
-    ).not.toBeNull();
-    expect(
-      reelRule![0],
-      "cards must be placed by their own index against the reel's position",
-    ).toMatch(/transform:\s*translateX\(\s*calc\([^)]*var\(--card-i\)/);
-    expect(
-      reelRule![0],
-      "the reel's position is what the cards are placed against",
-    ).toMatch(/var\(--reel-pos/);
-
-    // And each card needs a different index, or the offsets are identical.
-    for (const [nth, index] of [
-      [1, 0],
-      [2, 1],
-      [3, 2],
-    ]) {
-      expect(
-        css,
-        `engagement ${nth} must carry index ${index}, or the reel stacks`,
-      ).toMatch(
-        new RegExp(`:nth-child\\(${nth}\\)\\s*\\{\\s*--card-i:\\s*${index}`),
-      );
-    }
-
-    // --reel-pos is a number to the animation engine only if it is registered.
-    // Unregistered it is a string, and calc() against a string is invalid — the
-    // transform drops and the cards stack.
-    expect(
-      css,
-      "--reel-pos must be registered as a number",
-    ).toMatch(/@property\s+--reel-pos\s*\{[^}]*syntax:\s*["']<number>["']/);
+    // All three engagements share one grid cell, so the fill mode is the only
+    // thing holding them apart outside the animation's active range. Lose it
+    // and all three land on top of one another — and only in a production
+    // build, because it takes a minifier to lose it.
+    const reelRule = css.match(/\.home-engagement\s*\{[^}]*animation-timeline[^}]*\}/);
+    expect(reelRule, "the engagement reel rule should still drive a timeline").not.toBeNull();
+    expect(reelRule![0]).toMatch(/animation-fill-mode:\s*both/);
+    expect(reelRule![0]).toMatch(/grid-area:\s*1\s*\/\s*1/);
   });
 
+  it("keeps the reel and its rail on one symmetric curve", () => {
+    const home = cssFiles.find(({ file }) => file === "src/pages/Home.css");
+    const css = withoutComments(home!.css);
+
+    // The bounce is a shape, not a duration — the reel is locked to the scroll,
+    // so there is no clock to put a duration on. Linear here is the version
+    // that reads as a strip being dragged.
+    const curve = /cubic-bezier\(\s*0?\.76\s*,\s*0\s*,\s*0?\.24\s*,\s*1\s*\)/;
+    const reelRule = css.match(/\.home-engagement\s*\{[^}]*animation-timeline[^}]*\}/);
+    expect(
+      reelRule![0],
+      "the engagements must travel on the eased curve, not linearly",
+    ).toMatch(curve);
+
+    const barRule = css.match(/\.home-engagement-progress-bar\s*\{[^}]*\}/);
+    expect(
+      barRule![0],
+      "the rail's segment must be shaped like the cards or it drifts off them",
+    ).toMatch(curve);
+
+    // And it needs its own midpoint, or one easing spans both segments and the
+    // bar crawls while a card is mid-crossing. Sliced rather than matched:
+    // a keyframes body has nested braces, which a regex character class cannot
+    // cross.
+    const progressAt = css.indexOf("@keyframes engagement-progress");
+    const progressBody = css.slice(progressAt, css.indexOf("@keyframes", progressAt + 1));
+    expect(
+      progressBody,
+      "the rail's travel needs a midpoint keyframe to be eased per card",
+    ).toMatch(/50%\s*\{\s*transform:\s*translateX\(100%\)/);
+
+    // The readout switches at the quarter points, which are the moments the
+    // cards are exactly half crossed — true only while the curve is symmetric.
+    const stepAt = css.indexOf("@keyframes engagement-step-second");
+    const stepBody = css.slice(stepAt, css.indexOf("@keyframes", stepAt + 1));
+    expect(
+      stepBody,
+      "the numbered readout must switch on the crossing points",
+    ).toMatch(/24\.99%/);
+  });
 });

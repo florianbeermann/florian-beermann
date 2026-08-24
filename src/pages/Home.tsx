@@ -15,7 +15,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { HeroVideo } from "@/components/HeroVideo";
 import { HeroLoader } from "@/components/HeroLoader";
-import { useEngagementReel } from "@/hooks/useEngagementReel";
 import { CircleMark } from "@/components/CircleMark";
 import { Masthead } from "@/components/Masthead";
 import { setPageMetadata } from "@/lib/metadata";
@@ -101,11 +100,6 @@ export default function Home() {
   const [plateRevealed, setPlateRevealed] = useState(false);
   const handlePlateReady = useCallback(() => setPlateReady(true), []);
   const handleReveal = useCallback(() => setPlateRevealed(true), []);
-  /* Which of the three engagements the reel is showing. See the hook for why
-     this is state rather than a scroll-driven animation. */
-  const { trackRef, active: activeEngagement } = useEngagementReel<HTMLElement>(
-    engagements.length,
-  );
   const [showDetails, setShowDetails] = useState(false);
   const [size, setSize] = useState("");
   const [tooling, setTooling] = useState("");
@@ -325,13 +319,13 @@ export default function Home() {
 
             The track is three screens tall and the stage inside it is sticky, so
             the frame holds while the reel behind it advances. The engagement
-            travels with the scroll and the scroll settles to a card when it
-            stops — see useEngagementReel.ts. It is deliberately not a
-            `.site-panel`: panels hold still and are covered, this one is
-            scrubbed. */}
+            travels with the scroll, and nothing in JavaScript paces it: the
+            reel, the rail and the readout are one scroll-driven animation on
+            the track's own view timeline, so they are locked to the scroll by
+            the compositor. It is deliberately not a `.site-panel`: panels hold
+            still and are covered, this one is scrubbed. */}
         <section
           id="engagements"
-          ref={trackRef}
           className="home-engagements-track"
           aria-labelledby="engagements-title"
         >
@@ -368,11 +362,7 @@ export default function Home() {
             {/* Position within the sub-scroll. Hidden from assistive tech: it
                 says nothing the three engagements below it do not already say,
                 and it only exists where the scrub does. */}
-            <div
-              className="home-engagement-progress"
-              data-active={activeEngagement}
-              aria-hidden="true"
-            >
+            <div className="home-engagement-progress" aria-hidden="true">
               <span className="home-engagement-progress-rail">
                 <span className="home-engagement-progress-bar" />
               </span>

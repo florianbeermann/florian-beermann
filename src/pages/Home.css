@@ -525,15 +525,10 @@
    is a string to the animation engine, so a transition on it snaps between
    whatever values happen to be sampled instead of easing between them — which
    would take the bounce out of the reel and leave the flip this replaced. */
-@property --reel-pos {
-  syntax: "<number>";
-  inherits: true;
-  initial-value: 0;
-}
 
 @supports (animation-timeline: view()) {
   /* Below the three-column breakpoint an engagement stacks into one tall
-     column and no longer reads as a single card, so the reel is desktop-only.
+     column and no longer reads as a single card, so the scrub is desktop-only.
      Narrow screens keep the plain stacked list above. */
   @media (prefers-reduced-motion: no-preference) and (min-width: 769px) {
     .home-engagements-track {
@@ -569,6 +564,8 @@
          a masthead and the offset is a masthead, so both reduce to the same
          distance — the last engagement lands exactly as the frame lets go. */
       height: calc(100svh + 2 * (100svh - var(--header-height)));
+      view-timeline-name: --engagement-reel;
+      view-timeline-axis: block;
     }
 
     /* The frame. Sticky at the masthead line like every panel, one screen
@@ -581,18 +578,22 @@
       padding-block: var(--panel-pad);
     }
 
-    /* No scroll snapping anywhere on this page.
+    /* No scroll snapping, and no JavaScript pacing the scroll either.
 
-       It was here for the engagements track, and the track settles itself now —
-       see useEngagementReel.ts. The two cannot both hold the scroll position.
+       Both were tried on this section and both were worse than nothing.
+       `scroll-snap-type` is declared on the scroll container, which here is the
+       whole document, so it cannot be scoped to this track: mandatory took
+       every section as binding and made both ends of the document unreachable,
+       and proximity's catch radius is not the midpoint and cannot be told to be
+       — measured at 266px against an 816px segment. A JS settle that waited for
+       the scroll to stop and then eased to the nearest card was worse still: on
+       a trackpad the scroll does not stop when the gesture does, so the settle
+       arrived long after the hand had finished, and anything that writes the
+       scroll position every frame fights everything else that moves the page.
 
-       Snapping was also never quite able to do the job. `scroll-snap-type` is
-       declared on the scroll container, which here is the whole document, so
-       the choice is not "where does it apply" but "how strongly": mandatory
-       took every section as binding and made both ends of the document
-       unreachable, and proximity's catch radius is not the midpoint and cannot
-       be told to be — measured at 266px against an 816px segment, so it
-       committed at about two thirds of a card rather than a half. */
+       What is left is the thing that was here first and is better than either:
+       the reel below is a scroll-driven animation, so it is locked to the
+       scroll by the compositor with nothing to arrive late or fight over. */
 
     /* The rule belongs to the heading now, not to the window.
     
@@ -626,37 +627,68 @@
       gap: 0;
     }
 
-    /* All three sit in one cell and are placed by one number: --reel-pos, the
-       reel's position measured in cards. Card 0 is at home when it is 0, card 1
-       when it is 1, and every value between is a real position — which is what
-       lets the reel follow the scroll rather than only ever being at one card
-       or another. Written from useEngagementReel.ts. */
     .home-engagement {
       grid-area: 1 / 1;
       border-top: 0;
       padding-block: 0;
       padding-inline: var(--gutter);
-      transform: translateX(calc((var(--card-i) - var(--reel-pos, 0)) * 100%));
+      /* Longhands, and they have to stay longhands. Written as the shorthand
+         `animation: linear both` this is a nameless animation, which means
+         `animation-name: none` — and a minifier that sees a rule whose
+         animation can never run is entitled to collapse the whole declaration
+         to `animation: none`, taking `linear` and `both` with it. The names
+         arrive from the `:nth-child` rules below, which it cannot see from
+         here, so the optimisation is locally valid and globally wrong.
+
+         Losing `both` is what breaks: with no fill mode each engagement
+         reverts to its untransformed position outside the animation's active
+         range, and since all three share one grid cell they land on top of one
+         another. It only happens in a production build, so a dev server shows
+         the reel working perfectly right up until it is deployed. */
+      /* The bounce, and it is the whole difference between this and a strip
+         being dragged.
+
+         The reel is locked to the scroll, so this cannot be a duration — there
+         is no clock to put one on. It is a shape instead: the same travel,
+         redistributed. A card barely moves through the first quarter of its
+         segment, crosses almost all of the distance in the middle half, and
+         eases into place — so a small scroll reads as the card resisting and a
+         committed one as it being thrown. Past the midpoint the next card is
+         already most of the way in, which is the "bounces once you are more
+         than half way" this section is meant to have.
+
+         Symmetric, so the crossing point stays at the exact middle of the
+         segment — which is where the rail and the numbered readout switch, and
+         they only agree because this curve is even. */
+      animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+      animation-fill-mode: both;
+      animation-timeline: --engagement-reel;
+      animation-range: contain 0% contain 100%;
     }
 
+    /* Each engagement rides the same clock, offset by one: out to the left as
+       the next comes in from the right. They are exactly one window wide, so
+       the two meet at a seam with no gap and no overlap — the outgoing edge and
+       the incoming edge are the same vertical, and the swap reads as one strip
+       being pulled across rather than two things crossfading. */
     .home-engagement:nth-child(1) {
-      --card-i: 0;
+      animation-name: engagement-first;
     }
 
     .home-engagement:nth-child(2) {
-      --card-i: 1;
+      animation-name: engagement-second;
     }
 
     .home-engagement:nth-child(3) {
-      --card-i: 2;
+      animation-name: engagement-third;
     }
 
     /* The rail sits at the foot of the frame, which is otherwise empty: the
        engagement is only as tall as its own text and the frame is a screen.
-       It earns the space by answering the question this section always raises —
-       how many of these are there, and where am I? A third-width bar sits under
-       whichever engagement is showing, so the scroll reads as position rather
-       than as the page misbehaving. */
+       It earns the space by answering the question a scrubbed section always
+       raises — how many of these are there, and where am I? A third-width bar
+       tracks the reel exactly, so the scroll reads as position rather than as
+       the page misbehaving. */
     .home-engagement-progress {
       display: grid;
       gap: 0.85rem;
@@ -697,10 +729,9 @@
       width: calc(100% / 3);
       height: 1px;
       background: var(--voltage);
-      /* Rides the same number the cards do, so it is never reporting a position
-         they are not at — including part way through a move the reader is
-         still making. */
-      transform: translateX(calc(var(--reel-pos, 0) * 100%));
+      animation: engagement-progress cubic-bezier(0.76, 0, 0.24, 1) both;
+      animation-timeline: --engagement-reel;
+      animation-range: contain 0% contain 100%;
     }
 
     .home-engagement-progress ol {
@@ -718,17 +749,130 @@
       list-style: none;
     }
 
-    /* Each number takes the ink while its engagement is showing. No fade: this
-       is a readout, and a readout that dissolves between states is harder to
-       read than one that switches. It changes on the same beat as the reel, so
-       the number is right about what is on screen throughout the travel. */
-    .home-engagement-progress[data-active="0"] li:nth-child(1),
-    .home-engagement-progress[data-active="1"] li:nth-child(2),
-    .home-engagement-progress[data-active="2"] li:nth-child(3) {
-      color: var(--ink);
+    /* Each number takes the ink while the bar's centre is inside its third.
+       Two keyframes back to back rather than a fade: this is a readout, and a
+       readout that dissolves between states is harder to read than one that
+       switches. */
+    .home-engagement-progress li {
+      /* Longhands for the same reason as `.home-engagement` above: the name
+         comes from the `:nth-child` rules, so the shorthand here would be
+         nameless and a minifier may reduce it to `animation: none`. */
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --engagement-reel;
+      animation-range: contain 0% contain 100%;
+    }
+
+    .home-engagement-progress li:nth-child(1) {
+      animation-name: engagement-step-first;
+    }
+
+    .home-engagement-progress li:nth-child(2) {
+      animation-name: engagement-step-second;
+    }
+
+    .home-engagement-progress li:nth-child(3) {
+      animation-name: engagement-step-third;
     }
   }
+}
 
+/* A stop at the middle, so the bar is eased once per card rather than once
+   across the whole track — the same shape the cards travel on, at the same
+   moments. Without the midpoint the easing would stretch over both segments and
+   the bar would be crawling while a card was mid-crossing. */
+@keyframes engagement-progress {
+  0% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+@keyframes engagement-step-first {
+  0% {
+    color: var(--ink);
+  }
+
+  24.99% {
+    color: var(--ink);
+  }
+
+  25%,
+  100% {
+    color: var(--muted);
+  }
+}
+
+@keyframes engagement-step-second {
+  0%,
+  24.99% {
+    color: var(--muted);
+  }
+
+  25%,
+  74.99% {
+    color: var(--ink);
+  }
+
+  75%,
+  100% {
+    color: var(--muted);
+  }
+}
+
+@keyframes engagement-step-third {
+  0%,
+  74.99% {
+    color: var(--muted);
+  }
+
+  75%,
+  100% {
+    color: var(--ink);
+  }
+}
+
+@keyframes engagement-first {
+  0% {
+    transform: translateX(0);
+  }
+
+  50%,
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes engagement-second {
+  0% {
+    transform: translateX(100%);
+  }
+
+  50% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes engagement-third {
+  0%,
+  50% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
 }
 
 .home-engagement-title h3 {
