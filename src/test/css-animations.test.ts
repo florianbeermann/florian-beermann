@@ -76,15 +76,16 @@ describe("scroll-driven animation declarations", () => {
     ).toEqual([]);
   });
 
-  it("keeps the engagement reel's parked position, which is what stops it stacking", () => {
+  it("keeps the engagement reel's spacing, which is what stops it stacking", () => {
     const home = cssFiles.find(({ file }) => file === "src/pages/Home.css");
     const css = withoutComments(home!.css);
 
     // All three engagements share one grid cell, so something has to hold them
-    // apart. It used to be a scroll-driven animation's fill mode; it is now the
-    // transform they sit at by default, with the rules below pulling exactly
-    // one of them in. Lose that default and all three land on top of each
-    // other — the same failure, from the other direction.
+    // apart. Two things do, and losing either lands all three on top of each
+    // other: the shared transform, which offsets a card by its own index minus
+    // the reel's position, and the per-card index that makes those offsets
+    // differ. This has failed twice before — once when a scroll-driven
+    // animation's fill mode was doing the holding, once when the index moved.
     const reelRule = css.match(/\.home-engagement\s*\{[^}]*grid-area:\s*1\s*\/\s*1[^}]*\}/);
     expect(
       reelRule,
@@ -92,19 +93,34 @@ describe("scroll-driven animation declarations", () => {
     ).not.toBeNull();
     expect(
       reelRule![0],
-      "every engagement must park off-screen by default, or they stack",
-    ).toMatch(/transform:\s*translateX\(100%\)/);
+      "cards must be placed by their own index against the reel's position",
+    ).toMatch(/transform:\s*translateX\(\s*calc\([^)]*var\(--card-i\)/);
     expect(
       reelRule![0],
-      "the travel is a transition now, not a scroll-driven animation",
-    ).toMatch(/transition:\s*transform/);
+      "the reel's position is what the cards are placed against",
+    ).toMatch(/var\(--reel-pos/);
 
-    // And the index has to actually pull one in. Without these the reel is
-    // three cards parked off-screen and the section is empty.
+    // And each card needs a different index, or the offsets are identical.
+    for (const [nth, index] of [
+      [1, 0],
+      [2, 1],
+      [3, 2],
+    ]) {
+      expect(
+        css,
+        `engagement ${nth} must carry index ${index}, or the reel stacks`,
+      ).toMatch(
+        new RegExp(`:nth-child\\(${nth}\\)\\s*\\{\\s*--card-i:\\s*${index}`),
+      );
+    }
+
+    // --reel-pos is a number to the animation engine only if it is registered.
+    // Unregistered it is a string, and calc() against a string is invalid — the
+    // transform drops and the cards stack.
     expect(
       css,
-      "an active engagement must be pulled into the frame",
-    ).toMatch(/\[data-active="0"\][^{]*:nth-child\(1\)/);
+      "--reel-pos must be registered as a number",
+    ).toMatch(/@property\s+--reel-pos\s*\{[^}]*syntax:\s*["']<number>["']/);
   });
 
 });

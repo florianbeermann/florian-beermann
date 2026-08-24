@@ -103,7 +103,9 @@ export default function Home() {
   const handleReveal = useCallback(() => setPlateRevealed(true), []);
   /* Which of the three engagements the reel is showing. See the hook for why
      this is state rather than a scroll-driven animation. */
-  const { trackRef, active: activeEngagement } = useEngagementReel<HTMLElement>();
+  const { trackRef, active: activeEngagement } = useEngagementReel<HTMLElement>(
+    engagements.length,
+  );
   const [showDetails, setShowDetails] = useState(false);
   const [size, setSize] = useState("");
   const [tooling, setTooling] = useState("");
@@ -323,26 +325,16 @@ export default function Home() {
 
             The track is three screens tall and the stage inside it is sticky, so
             the frame holds while the reel behind it advances. The engagement
-            does not travel with the scroll: it holds still for its third of the
-            track and is replaced, so this is the one part of the page that
-            jumps. It is deliberately not a `.site-panel`: panels hold still and
-            are covered, this one steps. */}
+            travels with the scroll and the scroll settles to a card when it
+            stops — see useEngagementReel.ts. It is deliberately not a
+            `.site-panel`: panels hold still and are covered, this one is
+            scrubbed. */}
         <section
           id="engagements"
           ref={trackRef}
           className="home-engagements-track"
           aria-labelledby="engagements-title"
         >
-          {/* Snap points for the second and third engagements. Nothing is
-              drawn: they exist only to give the scroller somewhere to catch
-              inside a section that is three screens tall. There is none for the
-              first — entering the section should not be a catch. CSS-only, see
-              `Home.css`. */}
-          <div className="home-engagement-steps" aria-hidden="true">
-            <span />
-            <span />
-          </div>
-
           <div className="home-engagements-stage">
             <header className="home-section-heading">
               <h2 id="engagements-title">Three ways I work</h2>
@@ -353,10 +345,7 @@ export default function Home() {
             </header>
 
             <div className="home-engagement-viewport">
-              <div
-                className="home-engagement-reel"
-                data-active={activeEngagement}
-              >
+              <div className="home-engagement-reel">
                 {engagements.map((engagement) => (
                   <article className="home-engagement" key={engagement.number}>
                     <div className="home-engagement-title">
