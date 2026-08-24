@@ -248,7 +248,7 @@
 
 
 /* The marker register inside the two ivory bands: the lead line, the employer
-   names, the headline figure, the address links, the disclosure control and the
+   names, the headline figure, the disclosure control and the
    inline privacy link. Everything here is something a reader scans — a label, a
    name, a number, a thing to click — rather than a sentence to read, and on a
    light band that whole register takes the voltage.
@@ -268,11 +268,8 @@
 .site-inverted .home-employers li,
 .site-inverted .home-facts dt,
 .site-inverted .home-facts .home-fact-metric dt,
-.site-inverted address a,
 .site-inverted .home-contact-form label,
 .site-inverted .home-details-toggle,
-.site-inverted .site-closing-legal,
-.site-inverted .site-closing-legal a,
 .site-inverted .home-form-reassure a.home-privacy-link {
   color: var(--marker);
 }
@@ -1180,82 +1177,6 @@
   line-height: 1.65;
 }
 
-.home-contact address {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(0.2rem, 1vh, 0.7rem);
-  margin-top: clamp(1rem, 4vh, 3rem);
-  font-size: var(--text-base);
-  font-style: normal;
-  font-weight: 620;
-}
-
-.home-contact address a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  width: fit-content;
-  border-bottom: 1px solid currentColor;
-}
-
-/* The legal block, at the foot of the contact panel.
-   
-   Placed into the first column's second row while the panel has two columns, so
-   it sits under the address and lines up with the bottom of the form. The copy
-   column and the form both start in row one, so neither has to know about it.
-   
-   Set quieter than the address above it — small, tracked, muted — so it reads
-   as the notice it is and does not compete with the email address, which is the
-   thing that column exists to offer. */
-/* Set in the machine voice, the same one the navigation uses: Fragment Mono in
-   tracked caps. These three are the only things in this section that stay
-   capitalised, and giving them the mono is what makes that read as a register
-   rather than as shouting — it is the typeface saying "this was printed by a
-   system", which is exactly what an imprint link and a copyright line are.
-
-   `font-weight` drops to 400 because Fragment Mono ships one weight; 520 was
-   asking the browser to synthesise a bolder cut that does not exist. Tracking
-   moves to the mono's own `--label-tracking` for the same reason: 0.16em was
-   set for Switzer's caps, and the mono is already wider. */
-.site-closing-legal {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.4rem 1.5rem;
-  padding-top: clamp(0.6rem, 1.8vh, 1.25rem);
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: var(--text-label);
-  font-variant-numeric: tabular-nums;
-  font-weight: 400;
-  letter-spacing: var(--label-tracking);
-  text-transform: uppercase;
-}
-
-.site-closing-legal nav {
-  display: flex;
-  gap: 1.5rem;
-}
-
-/* The links keep a full touch target without the block growing by two rows of
-   it: the box stays the height of the text and the reach extends past it. */
-.site-closing-legal a {
-  position: relative;
-  border-bottom: 1px solid currentColor;
-}
-
-.site-closing-legal a::after {
-  content: "";
-  position: absolute;
-  inset: -14px -6px;
-}
-
-.site-closing-legal a:hover,
-.site-closing-legal a:focus-visible {
-  color: var(--on-ink);
-}
-
 .home-contact-form {
   display: flex;
   align-self: start;
@@ -1538,8 +1459,7 @@
   }
 
   .home-contact-copy,
-  .home-contact-form,
-  .site-closing-legal {
+  .home-contact-form {
     grid-area: auto;
   }
 
@@ -1629,14 +1549,6 @@
   .home-about > .home-section-heading,
   .home-contact-copy {
     text-align: center;
-  }
-
-  /* The contact panel's address block sits in that centred column too, so its
-     links centre with it rather than hanging off the left of a centred
-     heading. The form below stays ranged left — a label that does not start
-     where its field starts is a worse form. */
-  .home-contact-copy address {
-    align-items: center;
   }
 
   /* The heading's grid is a single column here, so the two rows centre as one
@@ -1933,8 +1845,13 @@
 /* The copyright is carried visibly by the lockup below, which is presentational.
    This is the same notice as real text for assistive tech, taken out of the
    visual flow rather than hidden with display:none, which would take it out of
-   the accessibility tree as well and leave the footer with no legal line. */
-.site-closing-legal {
+   the accessibility tree as well and leave the footer with no legal line.
+
+   Not named "legal": that was the class on the contact panel's old legal row,
+   which this footer replaced, and reusing it here meant this paragraph
+   silently inherited a flex layout, a border and a font it has no use for.
+   Those rules are gone now, but the name stays distinct. */
+.site-closing-notice {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -2044,8 +1961,12 @@
     gap: 1.5rem;
   }
 
+  /* Sized to their own content rather than to equal halves. With a zero flex
+     basis both columns took the same width whatever was in them, which squeezed
+     the longest link — "LinkedIn ↗" needs 87px and was being given 74px, so the
+     arrow wrapped to a line of its own. */
   .site-closing-cols nav {
     min-width: 0;
-    flex: 1;
+    flex: 0 1 auto;
   }
 }

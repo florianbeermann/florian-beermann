@@ -466,18 +466,6 @@ export default function Home() {
               Share the challenge you are working through. I will respond with
               a practical view on whether and how I can help.
             </span>
-            <address>
-              <a href="mailto:hello@florianbeermann.com">
-                hello@florianbeermann.com
-              </a>
-              <a
-                href="https://linkedin.com/in/florian-beermann"
-                target="_blank"
-                rel="noreferrer"
-              >
-                LinkedIn ↗
-              </a>
-            </address>
           </div>
 
           <form
@@ -690,10 +678,17 @@ export default function Home() {
               <a href="#about">About</a>
               <a href="#contact">Contact</a>
             </nav>
-            <nav aria-label="Legal">
+            <nav aria-label="Elsewhere">
+              <a
+                href="https://linkedin.com/in/florian-beermann"
+                target="_blank"
+                rel="noreferrer"
+              >
+                LinkedIn ↗
+              </a>
+              <a href={`mailto:${contactEmail}`}>Email</a>
               <Link to="/imprint">Imprint</Link>
               <Link to="/privacy">Privacy</Link>
-              <a href={`mailto:${contactEmail}`}>Email</a>
             </nav>
           </div>
         </div>
@@ -707,7 +702,7 @@ export default function Home() {
           <span className="site-closing-word">Florian Beermann &amp; Partners</span>
           <span className="site-closing-year">© {new Date().getFullYear()}</span>
         </div>
-        <p className="site-closing-legal">
+        <p className="site-closing-notice">
           Florian Beermann &amp; Partners, © {new Date().getFullYear()}
         </p>
       </footer>
