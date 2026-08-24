@@ -19,14 +19,14 @@
       "paper": {
         "role": "neutral",
         "displayName": "Paper",
-        "canonical": "#e8edf5",
-        "tonalRamp": ["#2b323f", "#414753", "#5d6472", "#828997", "#a3aab8", "#c7ccd6", "#d9e1ee", "#e8edf5"]
+        "canonical": "#f1f2f3",
+        "tonalRamp": ["#2f3133", "#45484b", "#5e6265", "#818589", "#a4a8ac", "#c8cccf", "#e5e8eb", "#f1f2f3"]
       },
       "paper-deep": {
         "role": "neutral",
         "displayName": "Paper Deep",
-        "canonical": "#d9e1ee",
-        "tonalRamp": ["#262c37", "#3b4250", "#565e6d", "#79818f", "#9ba3b1", "#bcc4d1", "#d9e1ee", "#eaf0f8"]
+        "canonical": "#e5e8eb",
+        "tonalRamp": ["#2a2d30", "#404448", "#595e63", "#7c8186", "#9fa4a9", "#c2c7cb", "#e5e8eb", "#f4f6f7"]
       },
       "stock": {
         "role": "neutral",
@@ -102,7 +102,7 @@
       "refersTo": "control",
       "description": "Drawn, never filled. A rule with the machine voice inside it; the fill arrives on hover and it is the ink.",
       "html": "<a class=\"ds-control\" href=\"#\">Start a conversation</a>",
-      "css": ".ds-control { display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem; min-height: 3rem; padding: 0 1.75rem; border: 1px solid currentColor; border-radius: 4px; background: transparent; color: #181d26; font-family: \"Fragment Mono\", ui-monospace, Menlo, monospace; font-size: 0.8125rem; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease; } .ds-control:hover { background: #181d26; color: #e8edf5; }"
+      "css": ".ds-control { display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem; min-height: 3rem; padding: 0 1.75rem; border: 1px solid currentColor; border-radius: 4px; background: transparent; color: #181d26; font-family: \"Fragment Mono\", ui-monospace, Menlo, monospace; font-size: 0.8125rem; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease; } .ds-control:hover { background: #181d26; color: #f1f2f3; }"
     },
     {
       "name": "Control, solid",
@@ -110,7 +110,7 @@
       "refersTo": "control-solid",
       "description": "One per page, for the single action the hero asks for. On a washed photograph a drawn rule is a suggestion; a solid plate is an instruction.",
       "html": "<a class=\"ds-control-solid\" href=\"#\">Start a conversation</a>",
-      "css": ".ds-control-solid { display: inline-flex; align-items: center; justify-content: center; min-height: 3rem; padding: 0 1.75rem; border: 1px solid #e8edf5; border-radius: 4px; background: #e8edf5; color: #181d26; font-family: \"Fragment Mono\", ui-monospace, Menlo, monospace; font-size: 0.8125rem; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease; } .ds-control-solid:hover { background: #fff; border-color: #fff; }"
+      "css": ".ds-control-solid { display: inline-flex; align-items: center; justify-content: center; min-height: 3rem; padding: 0 1.75rem; border: 1px solid #f1f2f3; border-radius: 4px; background: #f1f2f3; color: #181d26; font-family: \"Fragment Mono\", ui-monospace, Menlo, monospace; font-size: 0.8125rem; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease; } .ds-control-solid:hover { background: #fff; border-color: #fff; }"
     },
     {
       "name": "Glass",
@@ -118,7 +118,7 @@
       "refersTo": "glass",
       "description": "The front plane's only material, and only ever over the footage. A film of light, a deep blur, a soft shadow, and no border.",
       "html": "<nav class=\"ds-glass\"><span>Work</span><span>About</span></nav>",
-      "css": ".ds-glass { display: inline-flex; gap: 1.5rem; align-items: center; height: 2.5rem; padding: 0 1.25rem; background: rgba(226, 230, 238, 0.1); border: 0; border-radius: 4px; box-shadow: 0 4px 35px rgba(0, 0, 0, 0.15); backdrop-filter: blur(50px) saturate(130%); -webkit-backdrop-filter: blur(50px) saturate(130%); color: #e8edf5; font-family: \"Fragment Mono\", ui-monospace, Menlo, monospace; font-size: 0.8125rem; letter-spacing: 0.14em; text-transform: uppercase; }"
+      "css": ".ds-glass { display: inline-flex; gap: 1.5rem; align-items: center; height: 2.5rem; padding: 0 1.25rem; background: rgba(226, 230, 238, 0.1); border: 0; border-radius: 4px; box-shadow: 0 4px 35px rgba(0, 0, 0, 0.15); backdrop-filter: blur(50px) saturate(130%); -webkit-backdrop-filter: blur(50px) saturate(130%); color: #f1f2f3; font-family: \"Fragment Mono\", ui-monospace, Menlo, monospace; font-size: 0.8125rem; letter-spacing: 0.14em; text-transform: uppercase; }"
     },
     {
       "name": "Label",
@@ -142,7 +142,7 @@
       "refersTo": "panel",
       "description": "A full-height band holding one idea. Inverts its whole subtree rather than restating colour on its children.",
       "html": "<section class=\"ds-panel\"><h2>Three ways I work</h2><p>Each engagement is scoped around the operating problem in front of you.</p></section>",
-      "css": ".ds-panel { display: grid; align-content: center; gap: 1.5rem; min-height: 60vh; padding: clamp(1.5rem, 5.5vh, 10rem) clamp(1.5rem, 4vw, 3.5rem); background: #e8edf5; color: #181d26; border-radius: 0; } .ds-panel h2 { margin: 0; font-family: Switzer, sans-serif; font-size: clamp(2.8rem, 5vw, 5.4rem); font-weight: 520; line-height: 0.95; letter-spacing: -0.03em; color: #0047ff; } .ds-panel p { margin: 0; max-width: 46ch; font-size: 1.2rem; line-height: 1.6; color: rgb(24 29 38 / 0.66); }"
+      "css": ".ds-panel { display: grid; align-content: center; gap: 1.5rem; min-height: 60vh; padding: clamp(1.5rem, 5.5vh, 10rem) clamp(1.5rem, 4vw, 3.5rem); background: #f1f2f3; color: #181d26; border-radius: 0; } .ds-panel h2 { margin: 0; font-family: Switzer, sans-serif; font-size: clamp(2.8rem, 5vw, 5.4rem); font-weight: 520; line-height: 0.95; letter-spacing: -0.03em; color: #0047ff; } .ds-panel p { margin: 0; max-width: 46ch; font-size: 1.2rem; line-height: 1.6; color: rgb(24 29 38 / 0.66); }"
     }
   ]
 }

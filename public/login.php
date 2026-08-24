@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <meta name="theme-color" content="#E8EDF5" />
+    <meta name="theme-color" content="#F1F2F3" />
 
     <!--
       Self-contained for the reason given at the top of this file. Everything it
@@ -151,10 +151,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
            are, rather than the dark plum this page used to be: the gate is the
            first thing an invited visitor sees and it should look like the site
            it is standing in front of. */
-        --paper: #e8edf5;
+        --paper: #f1f2f3;
         --ink: #181d26;
         --blue: #0047ff;
-        --on-blue: #e8edf5;
+        --on-blue: #f1f2f3;
         --muted: rgba(24, 29, 38, 0.72);
         --line: rgba(24, 29, 38, 0.28);
         --mono: "Fragment Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo,
@@ -387,7 +387,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         /* The blue closing panel, matching `.site-closing` on the site. The
            tokens flip inside it so a rule stays a rule rather than becoming an
            ink hairline on a blue ground. */
-        --line: rgba(232, 237, 245, 0.32);
+        --line: rgba(241, 242, 243, 0.32);
         display: flex;
         align-items: center;
         justify-content: space-between;

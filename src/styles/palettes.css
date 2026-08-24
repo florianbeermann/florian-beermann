@@ -14,6 +14,9 @@
 
    THE ONE RULE: slate is the ink, electric is the signal.
 
+   The sheet is taken from the hero footage — see `--p-paper`. Everything else
+   here predates that film and was measured against a procedural shader.
+
    `#0047FF` is not dark enough to be a body-text colour. It measures 5.34:1 on
    this paper — over the floor, but with no room to fade, so a tinted secondary
    register is impossible and every band collapses into one flat blue. The
@@ -49,10 +52,25 @@
   --p-blue: #0047ff;
   --p-blue-rgb: 0 71 255;
 
-  /* The sheet. */
-  --p-paper: #e8edf5;
-  --p-paper-rgb: 232 237 245;
-  --p-paper-deep: #d9e1ee;
+  /* The sheet, and it is the film's rather than a chosen blue-white.
+
+     Sampling the hero footage — eight frames, every pixel sorted by luminance —
+     the light end is not one colour but two. Above, where the sun is on the
+     cloud, it runs warm at hue 34-35. Below, in the sky, it turns cool at hue
+     191-200. A sheet taken from either end takes a side the film does not.
+
+     So: neutral, at the hue the two meet, and desaturated to 7.7% — light
+     enough to read as paper rather than as a tint of anything. It replaces a
+     blue-white chosen when the hero was a procedural shader and there was no
+     photograph for the page to agree with.
+
+     Lightness is the constraint and it is set by the blue, not by the ink.
+     `#0047FF` has almost no headroom on a light ground, so a sheet even
+     slightly darker drops every blue heading under 4.5:1. At 94.9% the blue
+     measures 5.60:1, a little better than the 5.34:1 it had before. */
+  --p-paper: #f1f2f3;
+  --p-paper-rgb: 241 242 243;
+  --p-paper-deep: #e5e8eb;
 
   /* The ink. 14.38:1 on the paper, with a measured floor of 0.63 before a tint
      of it drops under 4.5:1 — which is the headroom the blue does not have. */
@@ -66,10 +84,13 @@
      of restating it — which is how that layer came to be holding a retired
      plum long after every other surface had moved off it. */
   --p-ink-hsl: 218.57 22.58% 12.16%;
-  --p-paper-hsl: 216.92 39.39% 93.53%;
-  --p-paper-deep-hsl: 217.14 38.18% 89.22%;
+  --p-paper-hsl: 210 7.69% 94.9%;
+  --p-paper-deep-hsl: 210 13.04% 90.98%;
   --p-blue-hsl: 223.29 100% 50%;
-  /* The ink at 0.7 and 0.28 over the paper, composited flat. */
-  --p-muted-hsl: 218.57 7.53% 36.47%;
-  --p-line-hsl: 216.92 8.72% 70.78%;
+  /* The ink at 0.7 and 0.28 over the paper, composited flat. Derived from the
+     sheet, so they move whenever it does — these were still mixed against the
+     old blue-white for a moment after the sheet changed, which is a colour cast
+     nothing else on the page shares and nothing points at. */
+  --p-muted-hsl: 218.08 5.51% 36.98%;
+  --p-line-hsl: 216.27 3.72% 71.73%;
 }

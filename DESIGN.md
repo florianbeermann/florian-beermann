@@ -3,15 +3,15 @@ name: Florian Beermann & Partners
 description: Customer Success consulting for B2B SaaS companies whose customer base has moved upmarket.
 colors:
   stock: "#181d26"
-  paper: "#e8edf5"
-  paper-deep: "#d9e1ee"
+  paper: "#f1f2f3"
+  paper-deep: "#e5e8eb"
   ink: "#181d26"
   ink-muted: "rgb(24 29 38 / 0.66)"
   line: "rgb(24 29 38 / 0.28)"
   electric: "#0047ff"
-  on-dark: "#e8edf5"
-  on-dark-muted: "rgb(232 237 245 / 0.72)"
-  line-on-dark: "rgb(232 237 245 / 0.32)"
+  on-dark: "#f1f2f3"
+  on-dark-muted: "rgb(241 242 243 / 0.72)"
+  line-on-dark: "rgb(241 242 243 / 0.32)"
   field-dark: "#414753"
   field-light: "#a3aab8"
   pigment-dark: "#00227a"
@@ -121,12 +121,12 @@ Cool from end to end, with no warm note anywhere. That is a deliberate constrain
 Slate and a cool sheet, with one electric blue held in reserve.
 
 ### Primary
-- **Electric** (`#0047ff`): The signal. Headings on light bands, the marker register, hairline rules, control fills, the statement band, the mark. Measured at 5.34:1 on the paper — over the floor, but with no headroom, which is exactly why it is rationed.
+- **Electric** (`#0047ff`): The signal. Headings on the sheet, the marker register, hairline rules, control fills, the two blue bands, the mark. 5.60:1 on the sheet — over the floor, but with no headroom, which is exactly why it is rationed. It is also what sets the sheet's lightness: a darker sheet drops every blue heading under 4.5:1, so the sheet cannot be chosen without measuring the blue against it.
 
 ### Neutral
-- **Slate Ink** (`#181d26`): All running prose, and the ground of every inverted band. 14.38:1 on the paper, with a measured floor of 0.63 before a tint drops under 4.5:1 — the headroom the blue does not have.
-- **Paper** (`#e8edf5`): The sheet. Every light band, and the type on every dark one.
-- **Paper Deep** (`#d9e1ee`): The second sheet, for a surface that must separate from the first without a rule.
+- **Slate Ink** (`#181d26`): All running prose. 15.08:1 on the sheet, with room to tint: the muted register at 0.66 still measures 5.19:1, which is the headroom the blue does not have. It is almost never a background — the hero's ground sits behind the video, and the only other surfaces it fills are the mobile navigation sheet and a control on hover.
+- **Paper** (`#f1f2f3`): The sheet. Every section but the hero and the two blue bands, and the type printed on those. Taken from the hero footage: sampled across eight frames the film's light end runs warm at hue 34–35 above and cool at 191–200 below, so the sheet sits neutral where the two meet rather than taking a side the film does not.
+- **Paper Deep** (`#e5e8eb`): The second sheet, for a surface that must separate from the first without a rule.
 - **Ink Muted** (`rgb(24 29 38 / 0.66)`): Secondary prose. Only ever a tint of the ink, never a separate grey.
 - **Line** (`rgb(24 29 38 / 0.28)`): Hairlines and dividers.
 
@@ -135,6 +135,8 @@ Slate and a cool sheet, with one electric blue held in reserve.
 **The One Rule.** Slate is the ink, electric is the signal. Blue never carries running prose. It has no room to fade — a tinted secondary blue collapses under contrast — so it is spent in fewer places rather than made louder.
 
 **The Single Source Rule.** All colour is decided in `src/styles/palettes.css` and nowhere else. Both planes read those tokens, the WebGL field included, so one attribute on `<html>` repaints the entire site. A literal colour anywhere else is a bug: the page previously carried two blues and two whites because nothing forced them through one definition.
+
+Two files are the exception and cannot help it — `public/login.php` and `scripts/social-card.html` are outside the bundle and restate the palette by hand. Both have to be edited whenever a token moves, and both have shipped a retired palette before.
 
 ## Typography
 
