@@ -122,10 +122,6 @@
   --marker: var(--wow-color);
 }
 
-.hero-lockup {
-  color: var(--wow-color);
-}
-
 /* ── Beating the old world ────────────────────────────────────────────────
    `.site-page h1` and `.site-page a` in shell.css are (0,1,1) and set colour;
    a bare `.hero-title` is (0,1,0) and loses to them, which is what printed the
@@ -278,15 +274,17 @@
   display: flex;
   align-items: center;
   gap: clamp(0.7rem, 1.4vw, 1.1rem);
-  color: var(--on-dark);
+  color: var(--wow-color);
   white-space: nowrap;
   pointer-events: none;
   /* The same perceptual aid the statement uses, for the same reason: this sits
-     above the shade band, on raw field, where it measures 4.7 against the mean
-     ground and 3.6 against the brightest pixel the pool can put under it. */
+     on raw plate, above where the sky is brightest. It fades out with the same
+     --wow that brings the blue in — by the time the frame is cloud there is
+     nothing left to firm the type against, and a dark halo around blue letters
+     on white is a smudge. */
   text-shadow:
-    0 1px 2px rgba(12, 16, 24, 0.35),
-    0 2px 18px rgba(12, 16, 24, 0.4);
+    0 1px 2px rgb(12 16 24 / calc(0.35 * (1 - var(--wow)))),
+    0 2px 18px rgb(12 16 24 / calc(0.4 * (1 - var(--wow))));
 }
 
 .hero-lockup-mark {
