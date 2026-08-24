@@ -24,10 +24,15 @@ Require env FB_ACCESS
 
 # The login page and the handful of assets it is built from have to be readable
 # without the cookie, or the page a visitor is sent to in order to obtain the
-# cookie cannot render. Nothing here discloses anything: two open-licensed
-# fonts, the favicons, a logo that is already on every social card, and a page
-# whose entire content is the sentence "this is private".
-<FilesMatch "^(login\.php|favicon\.(ico|svg|png)|apple-touch-icon\.png|logo-wordmark\.svg)$">
+# cookie cannot render. Nothing here discloses anything: open-licensed fonts,
+# the favicons, and a page whose entire content is the sentence "this is
+# private".
+#
+# logo-wordmark.svg used to be on this list and is not any more. The login page
+# drew its lockup from that file; it now inlines the mark and sets the name in
+# Nippo, so the file is only reached from pages that are already behind the
+# gate. An exemption nothing needs is a file served to anyone who asks for it.
+<FilesMatch "^(login\.php|favicon\.(ico|svg|png)|apple-touch-icon\.png)$">
   Require all granted
 </FilesMatch>
 
