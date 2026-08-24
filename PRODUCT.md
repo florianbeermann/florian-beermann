@@ -105,18 +105,34 @@ this network; the legal entity is a sole trader.
 - **Voice:** first-person singular, en-GB spelling ("realisation",
   "organisations"), understated and specific. Avoids transformation-consultancy
   vocabulary.
-- **Assets:** portrait shipped as a committed duotone print of the photograph
-  (`public/portrait-plate.jpg`, tinted from the black-and-white master at
-  `scripts/assets/portrait-source.jpg`), the wordmark as outlined
-  SVG in two cuts — `public/logo-wordmark.svg` in ivory for the page's own dark
-  stock, and `public/logo-wordmark-on-light.svg` in plum for the light bands —
-  and a self-hosted licensed Outfit variable
-  font subset (`public/fonts/`, `LICENSE-OUTFIT.txt` committed) — the face the
-  wordmark was cut from, and since the palette change the face the whole site is
-  set in. The Inter and Inter Tight subsets it replaced have been removed.
-  `public/logo.png` is the retired "fb" monogram and is referenced by nothing;
-  `public/logo-lockup*.svg` and `public/logo-mark*.svg` are retired monogram
-  artwork, are referenced by nothing, and still carry the superseded palette.
+- **Assets:** the mark is a single SVG path, inlined in the components that draw
+  it (`src/components/CircleMark.tsx`, and again in `public/login.php`, which
+  cannot import from the bundle) so it takes `currentColor` and recolours with
+  the ground behind it. There is no wordmark file: the name is set as live type
+  in Nippo wherever the lockup appears whole. The favicons
+  (`public/favicon.svg`, `.png`, `.ico`, `apple-touch-icon.png`) are cuts of the
+  same path in the signal blue on nothing, and `favicon.png` at 512 is what the
+  page's structured data gives as the organisation logo.
+
+  The hero is a cut of the mountain footage (`public/hero-loop.mp4`, with
+  `hero-loop-sm.mp4` for narrow screens and `hero-poster.jpg` as its first
+  frame), assembled by `scripts/build-hero-loop.mjs` — the crossfade seam is at
+  the front of the clip, which is what makes the loop read as continuous.
+  The portrait is `public/portrait.jpg`, and `public/social-preview.jpg` is the
+  link card.
+
+  Three self-hosted licensed variable fonts, all in `public/fonts/` with their
+  licences beside them: Switzer for everything a person says, Fragment Mono for
+  everything a machine would have printed, and Nippo for the wordmark alone.
+
+  Retired and removed: the plum-world logo artwork (`logo-lockup*`, `logo-mark*`,
+  `logo-wordmark*`, `logo.png`) and the Inter subsets before it. Still shipped
+  but referenced by nothing: `public/portrait-plate.jpg`, and
+  `public/fonts/outfit-latin-variable.woff2` with `LICENSE-OUTFIT.txt` — the
+  face the site was set in between the plum world and this one. Outfit is still
+  named as a fallback in `src/styles/shell.css`, but `world.css` redefines
+  `--sans` later in the cascade, so nothing resolves to it and the browser never
+  downloads it.
 
 ## Evidence on Hand
 
