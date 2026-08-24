@@ -41,6 +41,24 @@ const FLOOR_LO = 0.14;
 const FLOOR_HI = 0.76;
 const FLOOR_PERCENTILE = 0.005;
 
+/* Where the plate starts on a fresh load.
+ *
+ * Not zero. The clip is cut to loop through its own whiteout, so its first
+ * frames are white and dissolving — which is right as a loop point and wrong as
+ * an opening. Starting there handed the loading screen over to a white picture
+ * with the type already blue, so every visit began on the effect rather than
+ * arriving at it. The blue is meant to be something the clouds do, not the
+ * first thing on the page.
+ *
+ * 2.0s is past the dissolve by measurement rather than by eye: the frame floor
+ * runs 0.256 at 0.4s, 0.169 at 1.2s and 0.127 at 2.0s, and only the last of
+ * those is below FLOOR_LO — which is to say only the last one puts --wow at a
+ * true zero and the statement in full paper.
+ *
+ * Only the opening moves. The loop is untouched: it still runs off the end into
+ * the whiteout and dissolves back through these frames. */
+const START_AT = 2;
+
 /* How fast --wow may move, per second. The floor is a percentile of a small
  * raster, so it steps when a bank's edge crosses a sample row; unsmoothed, the
  * type flickers. Fast enough to keep up with the whiteout, which crosses its
@@ -136,14 +154,31 @@ export function HeroVideo({
     const video = videoRef.current;
     if (!video) return;
 
+    /* Parked on the opening frame, held or not.
+
+       This is the whole reason the seek is not left until release: an element
+       that has never been told otherwise sits at zero, and zero is the
+       whiteout. The sampler reads whatever frame is showing, so a plate parked
+       there measured white and put the statement in blue for the length of the
+       loading screen — then snapped to paper the instant playback began. The
+       flash was the parked frame, not the effect.
+
+       Deferred to loadedmetadata when the browser does not have the duration
+       yet, because a seek before then is discarded. */
+    const park = () => {
+      if (Math.abs(video.currentTime - START_AT) > 0.01) {
+        video.currentTime = START_AT;
+      }
+    };
+
     if (hold) {
       video.pause();
-      return;
+      if (video.readyState >= 1) park();
+      else video.addEventListener("loadedmetadata", park, { once: true });
+      return () => video.removeEventListener("loadedmetadata", park);
     }
-    // From the top, whatever the element did while it was held. A browser is
-    // free to have advanced it during buffering, and the reveal is only worth
-    // anything if it uncovers the first frame.
-    video.currentTime = 0;
+
+    park();
     playRef.current?.();
   }, [hold]);
 

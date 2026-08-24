@@ -6,13 +6,10 @@ import { CircleMark } from "@/components/CircleMark";
  * It exists because the hero is a large plate and the first thing a visitor
  * would otherwise judge the site by is a poster stretched past its resolution.
  *
- * It is paper, and that is the whole idea rather than a default. The clip is
- * cut to open on its own whiteout, so when this lifts the frame underneath is
- * already white and dissolving into the mountains. The screen does not get out
- * of the way of the reveal; it is the first half of it. The mark and wordmark
- * are in the signal blue for the same reason — that is exactly what the hero's
- * type does while the picture is white, so the handover is one continuous
- * gesture instead of two states meeting.
+ * It is paper with the lockup in the signal blue, which is the pairing the site
+ * uses on every light ground — the gate page in front of it is the same. It is
+ * not trying to be the hero: the plate underneath opens on the mountains with
+ * the statement in paper, and this simply lifts off it.
  */
 
 type Props = {
@@ -20,15 +17,10 @@ type Props = {
   ready: boolean;
   /* Called when the screen has finished leaving, not when it starts.
 
-     The plate is held on its first frame until this fires, and that frame is
-     the clip's whiteout. So the fade uncovers a white picture with the type
-     already blue — the loader's own lockup is blue, and it hands over to type
-     in the same colour — and the dissolve to the mountains begins after the
-     curtain is gone rather than behind it.
-
-     Firing this at the start of the fade instead spends the whole whiteout
-     under the curtain: by the time anything was visible the picture was back on
-     the mountains and the type had gone white again. */
+     The plate is held on its opening frame until this fires, so the fade
+     uncovers a still picture rather than one already part way through a
+     movement nobody saw begin. Firing at the start of the fade instead spends
+     the first 600ms of the clip behind a curtain. */
   onLeave?: () => void;
 };
 
