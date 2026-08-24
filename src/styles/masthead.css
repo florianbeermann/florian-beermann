@@ -100,6 +100,69 @@
   color: var(--on-dark);
 }
 
+/* ── The hero's whiteout ──────────────────────────────────────────────────
+   For about a second each loop the hero's picture turns to cloud and the
+   statement crosses to blue. This row is fixed chrome sitting over it, and on
+   the dark ground it prints in paper — so left alone it goes white on white and
+   disappears for that second.
+
+   It crosses on the same --wow the statement does, rather than on a state, so
+   the two cloud banks that drift across mid-clip lean it the same fraction and
+   nothing here can be caught out of step with the picture behind it.
+
+   Scoped to the dark ground because that is the only one this hero presents;
+   over any other section --wow is still whatever the hero last published and
+   must do nothing. */
+.site-masthead[data-ground="dark"] {
+  --wow-color: color-mix(
+    in srgb,
+    var(--p-blue) calc(var(--wow, 0) * 100%),
+    var(--on-dark)
+  );
+  color: var(--wow-color);
+  /* The pane's film crosses with it. Everywhere else on the page it lifts a
+     ground; against cloud there is nothing to lift, and a light film on white
+     is invisible — the pill would stop being a pill. So it crosses to a dark
+     one over the same range. */
+  --glass-bg: color-mix(
+    in srgb,
+    rgba(24, 29, 38, 0.06) calc(var(--wow, 0) * 100%),
+    rgba(226, 230, 238, 0.16)
+  );
+}
+
+.site-masthead[data-ground="dark"] .masthead-mark {
+  color: var(--wow-color);
+}
+
+/* The action is a paper-filled button on the dark ground, which against cloud
+   reads as a white rectangle with a hairline. It crosses to the blue fill the
+   light ground already uses. */
+.site-masthead[data-ground="dark"] .masthead-cta {
+  background: color-mix(
+    in srgb,
+    var(--p-blue) calc(var(--wow, 0) * 100%),
+    var(--p-paper)
+  );
+  border-color: color-mix(
+    in srgb,
+    var(--p-blue) calc(var(--wow, 0) * 100%),
+    var(--p-paper)
+  );
+  color: color-mix(
+    in srgb,
+    var(--p-paper) calc(var(--wow, 0) * 100%),
+    var(--p-ink)
+  );
+}
+
+/* The sheet is its own dark world, so none of the above applies while it is
+   open — the same exception the ground rules already make. */
+.site-masthead:has([aria-expanded="true"]),
+.site-masthead:has([aria-expanded="true"]) .masthead-mark {
+  color: var(--on-dark);
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .site-masthead,
   .masthead-rail,

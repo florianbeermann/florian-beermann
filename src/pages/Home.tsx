@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { InkField } from "@/components/InkField";
+import { HeroVideo } from "@/components/HeroVideo";
 import { CircleMark } from "@/components/CircleMark";
 import { Masthead } from "@/components/Masthead";
 import { setPageMetadata } from "@/lib/metadata";
@@ -209,16 +209,14 @@ export default function Home() {
       <Masthead />
       <main id="site-main">
         <section id="top" className="hero on-dark">
-          {/* The whole background. No photograph: the shader generates the
-              picture, which is what lets the statement's contrast floor be a
-              property of the image rather than something layered onto it.
-              Decorative and unreadable by definition. */}
-          <InkField
-            className="hero-ink"
-            protect=".hero-statement"
-            line=".hero-title-accent"
+          {/* The whole background. Decorative and unreadable by definition —
+              the statement's legibility is handled by the scrim in hero.css,
+              which lifts when the picture goes white and the type goes blue. */}
+          <HeroVideo
+            className="hero-video"
+            src="/hero-loop.mp4"
+            poster="/hero-poster.jpg"
           />
-
 
           {/* The brand lockup: mark and wordmark together, under the pill.
               Presentational — the accessible name for the site already lives on
