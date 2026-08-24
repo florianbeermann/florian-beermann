@@ -134,21 +134,6 @@ vec2 flowOffset(float t, float seg, float speed) {
   return (acc * seg + flowDir(c) * frac) * speed;
 }
 
-/* A cheaper field for the textures that need a gradient of it: three octaves
-   rather than six, because a contour drawn through a six octave field is
-   spaghetti rather than topography. */
-float fbm3(vec2 p) {
-  float v = 0.0;
-  float a = 0.5;
-  mat2 rot = mat2(0.80, 0.60, -0.60, 0.80);
-  for (int i = 0; i < 3; i++) {
-    v += a * vnoise(p);
-    p = rot * p * 2.03;
-    a *= 0.5;
-  }
-  return v;
-}
-
 /* Texture 0: poured ink. Plates with a hard boundary and a flat interior,
    crossed by veining taken from the warp magnitude. */
 float texMarble(float n, float warp) {
@@ -159,31 +144,7 @@ float texMarble(float n, float warp) {
   return clamp(v * 0.86 + n * 0.28, 0.0, 1.0);
 }
 
-/* Texture 1: survey contours. The same kind of terrain the ink pours over,
-   read as measurement instead of as fluid.
-
-   The line weight is normalised by the field's own gradient. A fixed width in
-   field units swells wherever the ground is flat, and a flat patch large
-   enough fills in solid; dividing by the per pixel change turns the distance
-   to the nearest isoline into pixels, so every line lands at the same weight
-   and flat ground simply carries fewer of them, which is what a real map
-   does. Finite differences rather than fwidth, because this is a WebGL1
-   context and derivatives are an extension there. */
-float texContour(vec2 p, vec2 drift) {
-  float e = 2.1 / uRes.y;                // one device pixel, in p units
-  vec2 cp = p * 0.85 + drift * 1.7;
-  float h = fbm3(cp);
-  float hx = fbm3(cp + vec2(e * 0.85, 0.0));
-  float hy = fbm3(cp + vec2(0.0, e * 0.85));
-  float lines = 24.0;
-  float grad = max(length(vec2(hx - h, hy - h)) * lines, 1e-7);
-  float df = abs(fract(h * lines) - 0.5);
-  float line = 1.0 - smoothstep(0.5, 1.5, df / grad);
-  // A hypsometric wash under the lines so the sheet is not flat between them.
-  return clamp(0.08 + 0.34 * h + 0.62 * line, 0.0, 1.0);
-}
-
-/* Texture 2: interference. Two fine gratings turning against each other at
+/* Texture 1: interference. Two fine gratings turning against each other at
    slightly different pitches, so where their crests coincide the beat opens
    into broad bands that sweep across the sheet.
 
@@ -208,7 +169,7 @@ float dTeardrop(vec2 f) {
   return mix(c, s, step(f.x, 0.0) * step(0.0, f.y));
 }
 
-/* Texture 3: halftone. The field resolved onto a grid of teardrops that swell
+/* Texture 2: halftone. The field resolved onto a grid of teardrops that swell
    where it is light and close to nothing where it is dark, which is the
    masthead's mark used as a printing screen.
 
@@ -258,22 +219,21 @@ void main() {
   float warp = length(r);
 
   // ── The texture ────────────────────────────────────────────────────────
-  // Four of them, each holding for two direction changes before the next takes
-  // over, so the sheet changes material on a beat twice as slow as it changes
-  // heading. Derived from uFlowSeg rather than given its own control, because
-  // "two turns" is the relationship being asked for, not "eight seconds".
+  // Three of them, each holding for two direction changes before the next
+  // takes over, so the sheet changes material on a beat twice as slow as it
+  // changes heading. Derived from uFlowSeg rather than given its own control,
+  // because "two turns" is the relationship being asked for, not a duration.
   //
-  // A hard cut, like the turn and the inversion. The three beats then run at
-  // 4, 8 and 16 seconds against each other and the whole thing comes back
-  // round every 32.
-  float tex = mod(floor(t / (uFlowSeg * 2.0)), 4.0);
+  // A hard cut, like the turn and the inversion. Three textures against a two
+  // state polarity is deliberate: 3 and 2 are coprime, so a texture arrives in
+  // the opposite polarity to the last time it was seen and the cycle takes six
+  // segments rather than three to repeat.
+  float tex = mod(floor(t / (uFlowSeg * 2.0)), 3.0);
 
   float ink;
   if (tex < 0.5) {
     ink = texMarble(n, warp);
   } else if (tex < 1.5) {
-    ink = texContour(p, drift);
-  } else if (tex < 2.5) {
     ink = texMoire(p, drift, r, t);
   } else {
     ink = texHalftone(p, drift, n);
