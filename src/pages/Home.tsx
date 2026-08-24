@@ -261,8 +261,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Snap stop. See `.site-stop` in Home.css. */}
-        <span className="site-stop" aria-hidden="true" />
         <section className="home-proof site-inverted site-panel" aria-labelledby="proof-title">
           <div className="home-proof-heading site-reveal">
             <h2 id="proof-title">Where the experience comes from</h2>
@@ -320,11 +318,11 @@ export default function Home() {
             times rather than three sections in a row.
 
             The track is three screens tall and the stage inside it is sticky, so
-            the frame holds while the reel behind it advances. The scroller
-            snaps at each engagement, so the travel happens during the snap and
-            reads as one card replacing another rather than as a strip being
-            dragged. It is deliberately not a `.site-panel`: panels hold still
-            and are covered, this one is scrubbed. */}
+            the frame holds while the reel behind it advances. The engagement
+            does not travel with the scroll: it holds still for its third of the
+            track and is replaced, so this is the one part of the page that
+            jumps. It is deliberately not a `.site-panel`: panels hold still and
+            are covered, this one steps. */}
         <section
           id="engagements"
           className="home-engagements-track"
@@ -385,8 +383,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Snap stop. See `.site-stop` in Home.css. */}
-        <span className="site-stop" aria-hidden="true" />
         <section className="home-method site-voltage site-panel">
           <div className="home-method-inner site-reveal">
             <header>
@@ -424,8 +420,6 @@ export default function Home() {
             already leaving empty, and the two columns now run to roughly the
             same depth instead of one of them stopping a third of the way down
             and the next screen carrying five rows on its own. */}
-        {/* Snap stop. See `.site-stop` in Home.css. */}
-        <span className="site-stop" aria-hidden="true" />
         <section id="about" className="home-about home-section site-panel">
           <header className="home-section-heading site-reveal">
             <h2>I have been the person who owns the number.</h2>
@@ -475,8 +469,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Snap stop. See `.site-stop` in Home.css. */}
-        <span className="site-stop" aria-hidden="true" />
         <section id="contact" className="home-contact site-inverted site-panel">
           <div className="home-contact-copy site-reveal">
             <h2>What is getting in the way of better retention?</h2>

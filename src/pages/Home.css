@@ -573,78 +573,32 @@
       padding-block: var(--panel-pad);
     }
 
-    /* Catch a fling at each section.
-    
-       A trackpad flick carries far enough to cross several panels in one
-       gesture, so the hero can hand straight over to the engagements and the
-       proof section in between is never seen. `scroll-snap-stop: always` is the
-       browser's own answer to exactly that: it stops a fling at each snap point
-       it passes instead of letting momentum carry through.
-    
-       `mandatory` because `proximity` was not enough — its catch radius is
-       small, so a slightly quicker gesture still dragged the next section half
-       way up and stayed there. Mandatory is only safe because every part of the
-       page is represented by a snap point: each panel, each engagement inside
-       the three-screen track, and the footer at the end. Miss any of those and
-       the scroller settles on the nearest one instead, which is how the footer
-       became unreachable the first time this was tried.
-    
+    /* Snapping, and only where it belongs.
+
+       The page scrolls normally. The one place that does not is the engagements
+       track, where three cards share a frame and any resting position between
+       two of them shows half of each — so that track alone catches, and the
+       rest of the document is left alone.
+
+       `proximity` rather than `mandatory` is what makes that possible.
+       `scroll-snap-type` can only be set on the scroll container, which here is
+       the whole document, so the choice is not "where does snapping apply" but
+       "how strongly". Mandatory takes every snap point as binding everywhere,
+       which is how an earlier version of this pulled every section into
+       alignment and made both ends of the document unreachable — a reload could
+       not show the hero, and the footer could not be rested on. Proximity only
+       engages near a snap point, and the only snap points are the three below.
+
+       `scroll-snap-stop: always` still does the work inside the track: it stops
+       a fling at each point it passes rather than letting momentum carry
+       through all three. That is what makes the sub-scroll step.
+
        This is CSS and nothing else. An earlier attempt intercepted the wheel in
        JS to cap a gesture; on a real trackpad the events never pause long
        enough for the gesture to read as finished, so the page stopped scrolling
        altogether. Whatever paces this page must not be able to prevent it. */
     html {
-      scroll-snap-type: y mandatory;
-    }
-
-    /* The stops themselves, and why they are not the panels.
-    
-       A sticky element makes a useless snap target. Its snap area is taken from
-       where it currently sits, and a pinned panel sits at the masthead line
-       whatever the scroll position — so the targets drift as the page moves.
-       Measured: the six panels reported document positions of
-       [1358, 1358, 3167, …] at the top of the page and [3167, 3167, 3167, …]
-       a little way down. Snapping to a moving target is what made the lower
-       half of the page feel clunky, and it was bad enough that a plain
-       `scrollTo(0)` was pulled to the middle of the document instead.
-    
-       These markers are ordinary static elements in the flow, one immediately
-       before each panel, so each sits at exactly the position its panel starts
-       at and stays there. Zero height, nothing drawn; they only give the
-       scroller somewhere to catch. */
-    .site-stop {
-      display: block;
-      height: 0;
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
-      scroll-margin-top: min(
-        var(--header-height),
-        calc(100svh - var(--panel-h, 0px))
-      );
-    }
-
-    /* The two ends.
-
-       Mandatory snapping has to be able to rest at both extremes, and neither
-       end had anything to catch on: the markers below sit one per panel and the
-       first of them is 816px down, so the top of the page was not a snap
-       position and the scroller settled on the proof section instead — a reload
-       could not show the hero. The same at the foot, where the closing panel is
-       half a screen and the last marker is a full screen above the end of the
-       document.
-
-       The hero takes the alignment directly rather than through a marker: it is
-       static, in flow, and starts at zero, so unlike the panels below it is not
-       a moving target. The footer aligns to its end, which is the one position
-       it can be fully seen at when it is shorter than the window. */
-    .hero {
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
-    }
-
-    .site-page > footer {
-      scroll-snap-align: end;
-      scroll-snap-stop: always;
+      scroll-snap-type: y proximity;
     }
 
     /* The engagements track is three screens tall, so its own top is not enough
@@ -728,9 +682,10 @@
       animation-range: contain 0% contain 100%;
     }
 
-    /* Each engagement rides the same clock, offset by one: out to the left as
-       the next comes in from the right. See the keyframes at the foot of this
-       file for why that travel is a flip rather than a scrub. */
+    /* Each engagement rides the same clock, offset by one: parked off to the
+       right, held in the window for its third of the track, then gone to the
+       left. They are exactly one window wide, so nothing is ever half in. See
+       the keyframes at the foot of this file for why the travel is stepped. */
     .home-engagement:nth-child(1) {
       animation-name: engagement-first;
     }
@@ -745,10 +700,10 @@
 
     /* The rail sits at the foot of the frame, which is otherwise empty: the
        engagement is only as tall as its own text and the frame is a screen.
-       It earns the space by answering the question a scrubbed section always
-       raises — how many of these are there, and where am I? A third-width bar
-       tracks the reel exactly, so the scroll reads as position rather than as
-       the page misbehaving. */
+       It earns the space by answering the question this section always raises —
+       how many of these are there, and where am I? A third-width bar sits under
+       whichever engagement is showing, so the scroll reads as position rather
+       than as the page misbehaving. */
     .home-engagement-progress {
       display: grid;
       gap: 0.85rem;
@@ -837,14 +792,22 @@
   }
 }
 
-/* Travels with the reel rather than stepping with the numbers. The bar reports
-   position, and position is continuous while the snap is in flight. */
+/* Stepped, on the same thresholds as the reel and the numbers. A bar that slid
+   while the card it reports on flipped would be describing a motion that is not
+   happening. */
 @keyframes engagement-progress {
-  from {
+  0%,
+  24.99% {
     transform: translateX(0);
   }
 
-  to {
+  25%,
+  74.99% {
+    transform: translateX(100%);
+  }
+
+  75%,
+  100% {
     transform: translateX(200%);
   }
 }
@@ -893,38 +856,51 @@
   }
 }
 
-/* Each engagement rides the same clock, offset by one: out to the left as the
-   next comes in from the right. They are exactly one window wide, so the two
-   meet at a seam with no gap and no overlap — the outgoing edge and the
-   incoming edge are the same vertical.
+/* The reel flips. This is the one place on the page that jumps, and it is the
+   only place that should: three cards share a frame, so any position between
+   two of them shows half of each.
 
-   This interpolates rather than stepping, and that is right only because the
-   scroller snaps. The travel is not something a reader drags through by hand;
-   it is what happens during the snap between one engagement and the next, so
-   the motion reads as a card being replaced rather than a strip being pulled.
-   Stepping these instead was tried, and without the snap it still felt like a
-   scrub — the card simply changed at an arbitrary point mid-gesture. The snap
-   is the thing that makes it a flip. */
+   The travel is stepped rather than interpolated because the page scrolls
+   freely. Interpolating is right when the scroller snaps — then the travel only
+   ever happens during a snap and reads as a card being replaced — but page-wide
+   snapping is not something this page can have. It is set on the scroll
+   container, which is the whole document, so it would pull every section into
+   alignment; that version made both ends of the document unreachable. Left
+   interpolated on a free scroll, the reel becomes a strip the reader drags.
+
+   Written as pairs of keyframes a hundredth of a percent apart, which is how
+   you get a step out of a timeline that interpolates. There is no timing
+   function that does it: steps() would quantise the entire range rather than
+   these two points, and a scroll-driven animation has no discrete time to hang
+   one on.
+
+   The thresholds are 25% and 75% — the midpoint of each pair of resting states,
+   and the pair the numbered readout below already used, so the card, the bar
+   and the lit number all change on the same line. */
 @keyframes engagement-first {
-  0% {
+  0%,
+  24.99% {
     transform: translateX(0);
   }
 
-  50%,
+  25%,
   100% {
     transform: translateX(-100%);
   }
 }
 
 @keyframes engagement-second {
-  0% {
+  0%,
+  24.99% {
     transform: translateX(100%);
   }
 
-  50% {
+  25%,
+  74.99% {
     transform: translateX(0);
   }
 
+  75%,
   100% {
     transform: translateX(-100%);
   }
@@ -932,10 +908,11 @@
 
 @keyframes engagement-third {
   0%,
-  50% {
+  74.99% {
     transform: translateX(100%);
   }
 
+  75%,
   100% {
     transform: translateX(0);
   }
