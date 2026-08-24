@@ -317,3 +317,91 @@
     font-size: 1.1rem;
   }
 }
+
+/* ── The loading screen ───────────────────────────────────────────────────
+   See HeroLoader.tsx for why it is paper and why the lockup is blue: the clip
+   opens on its own whiteout, so this is the first half of that reveal rather
+   than a curtain in front of it.
+
+   Fixed and above everything, including the masthead, which is at 40. */
+.hero-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.75rem, 4vh, 3rem);
+  background: var(--p-paper);
+  /* The plate's own white is warmer than the paper. Fading opacity alone left
+     a visible step at the handover, so the ground crosses to it as well. */
+  transition:
+    opacity var(--loader-fade) ease-out,
+    background-color var(--loader-fade) ease-out;
+  --loader-fade: 620ms;
+}
+
+.hero-loader[data-leaving] {
+  opacity: 0;
+  background: #dedad3;
+  pointer-events: none;
+}
+
+.hero-loader-lockup {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.7rem, 1.4vw, 1.1rem);
+  color: var(--p-blue);
+  white-space: nowrap;
+}
+
+.hero-loader-mark {
+  height: clamp(2.4rem, 4.2vw, 3.6rem);
+  width: auto;
+  aspect-ratio: 1402 / 1122;
+  flex: none;
+}
+
+.hero-loader-word {
+  font-family: var(--wordmark);
+  font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+
+/* A hairline rather than a bar. The width is the wordmark's, near enough, so
+   the two read as one object. */
+.hero-loader-rule {
+  position: relative;
+  width: min(18rem, 42vw);
+  height: 2px;
+  overflow: hidden;
+  background: rgb(var(--p-blue-rgb, 0 71 255) / 0.16);
+}
+
+.hero-loader-fill {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  background: var(--p-blue);
+  /* Slower than the samples arrive, so a burst of buffering reads as the line
+     travelling rather than jumping. */
+  transition: transform 320ms ease-out;
+}
+
+/* Nothing moves behind a screen you cannot see past. */
+:root[data-hero-loading] body {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-loader {
+    --loader-fade: 1ms;
+  }
+
+  .hero-loader-fill {
+    transition: none;
+  }
+}

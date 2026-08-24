@@ -37,22 +37,27 @@
 // cropped by height and the extra width is spent on pixels that get thrown
 // away. See pickSource in HeroVideo.tsx.
 //
-// CRF 26 rather than something leaner: resolution turns out to be cheaper than
-// bitrate on footage that moves this slowly. Measured on this clip, 2560 at
-// CRF 26 is 7.7MB against 5.4MB for 1920 at CRF 24 — half again the pixels for
-// a third more bytes. Watch the sky for banding, which is the failure mode on
-// a gradient this smooth. Audio is dropped: it is a background, and a muted
-// track is also what lets the browser autoplay it.
+// CRF 20 is chosen to be indistinguishable from the source rather than merely
+// good. Measured against it on the untouched middle of the clip, CRF 20 gives
+// PSNR 47.9dB and CRF 18 gives 49.0dB — both far past the ~40dB where
+// differences stop being visible in motion — for 20.4MB and 26.1MB. CRF 20 is
+// the one that is transparent AND smaller than the 22.5MB source, so the extra
+// 5.7MB buys 1.1dB nobody can see.
+//
+// Watch the sky for banding, which is the failure mode on a gradient this
+// smooth. Audio is dropped: it is a background, and a muted track is also what
+// lets the browser autoplay it.
 
 import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
 
 const HOLD = 0.7;
 const OVERLAP = 0.35;
-const CRF = 26;
 const CUTS = [
-  { width: 2560, height: 1440, out: "public/hero-loop.mp4" },
-  { width: 1600, height: 900, out: "public/hero-loop-sm.mp4" },
+  { width: 2560, height: 1440, crf: 20, out: "public/hero-loop.mp4" },
+  // Lighter for phones, which cannot resolve the full plate anyway. See
+  // pickSource in HeroVideo.tsx.
+  { width: 1920, height: 1080, crf: 22, out: "public/hero-loop-sm.mp4" },
 ];
 
 const src = process.argv[2];
@@ -96,7 +101,7 @@ for (const cut of CUTS) {
     "-filter_complex", filter,
     "-map", "[out]",
     "-an",
-    "-c:v", "libx264", "-preset", "slow", "-crf", String(CRF),
+    "-c:v", "libx264", "-preset", "slow", "-crf", String(cut.crf),
     "-profile:v", "high", "-pix_fmt", "yuv420p",
     "-movflags", "+faststart",
     cut.out,
@@ -110,7 +115,7 @@ for (const cut of CUTS) {
 execFileSync("ffmpeg", [
   "-hide_banner", "-v", "error", "-y",
   "-ss", "1.2", "-i", CUTS[0].out, "-frames:v", "1",
-  "-vf", "scale=1600:-2", "-q:v", "5",
+  "-vf", "scale=2560:-2", "-q:v", "4",
   poster,
 ], { stdio: "inherit" });
 

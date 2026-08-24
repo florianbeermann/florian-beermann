@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { toast } from "sonner";
@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { HeroVideo } from "@/components/HeroVideo";
+import { HeroLoader } from "@/components/HeroLoader";
 import { CircleMark } from "@/components/CircleMark";
 import { Masthead } from "@/components/Masthead";
 import { setPageMetadata } from "@/lib/metadata";
@@ -91,6 +92,14 @@ const contactEmail = "hello@florianbeermann.com";
 
 export default function Home() {
   const [submitting, setSubmitting] = useState(false);
+  /* The hero plate's download, watched so the loading screen can show real
+     progress rather than an indeterminate spinner. `ready` is one-way: once the
+     plate can play through, nothing later un-readies it. */
+  const [plateProgress, setPlateProgress] = useState(0);
+  const [plateReady, setPlateReady] = useState(false);
+  const [plateRevealed, setPlateRevealed] = useState(false);
+  const handlePlateReady = useCallback(() => setPlateReady(true), []);
+  const handleReveal = useCallback(() => setPlateRevealed(true), []);
   const [showDetails, setShowDetails] = useState(false);
   const [size, setSize] = useState("");
   const [tooling, setTooling] = useState("");
@@ -206,17 +215,25 @@ export default function Home() {
 
   return (
     <div className="site-page">
+      <HeroLoader
+        progress={plateProgress}
+        ready={plateReady}
+        onLeave={handleReveal}
+      />
       <Masthead />
       <main id="site-main">
         <section id="top" className="hero on-dark">
-          {/* The whole background. Decorative and unreadable by definition —
-              the statement's legibility is handled by the scrim in hero.css,
-              which lifts when the picture goes white and the type goes blue. */}
+          {/* The whole background. Decorative and unreadable by definition.
+              Nothing is laid over it: the type carries itself, and crosses to
+              the signal blue as the picture turns to cloud. */}
           <HeroVideo
             className="hero-video"
             src="/hero-loop.mp4"
             srcSmall="/hero-loop-sm.mp4"
             poster="/hero-poster.jpg"
+            onProgress={setPlateProgress}
+            onReady={handlePlateReady}
+            hold={!plateRevealed}
           />
 
           {/* The brand lockup: mark and wordmark together, under the pill.

@@ -60,6 +60,17 @@ type Props = {
   /* The full plate, and a lighter cut for small screens. */
   src: string;
   srcSmall: string;
+  /* How much of the clip has buffered, 0 to 1, and a single call when there is
+     enough of it to play through. The loading screen is driven from these
+     rather than owning the element itself, so there is one video on the page
+     and one place that knows how to read it. */
+  onProgress?: (fraction: number) => void;
+  onReady?: () => void;
+  /* While true the plate stays paused on its first frame. The loading screen
+     holds it there so the reveal uncovers the whiteout dissolving into the
+     mountains, which is what the clip was cut to open on — left to start on its
+     own it would be most of a second in by the time anyone saw it. */
+  hold?: boolean;
 };
 
 /* Which cut to fetch.
@@ -92,17 +103,95 @@ function pickSource(src: string, srcSmall: string) {
   return window.innerWidth >= 900 ? src : srcSmall;
 }
 
-export function HeroVideo({ className, poster, src, srcSmall }: Props) {
+export function HeroVideo({
+  className,
+  poster,
+  src,
+  srcSmall,
+  onProgress,
+  onReady,
+  hold = false,
+}: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   // Resolved once on mount and kept, so a window resize cannot swap the file
   // mid-loop and restart it.
   const [chosen] = useState(() => pickSource(src, srcSmall));
+
+  // Held in refs so the effect below can stay mounted once. Callers pass
+  // inline functions, and depending on them would tear down the video and
+  // restart the download on every parent render.
+  const progressRef = useRef(onProgress);
+  const readyRef = useRef(onReady);
+  const holdRef = useRef(hold);
+  progressRef.current = onProgress;
+  readyRef.current = onReady;
+
+  /* Releasing the hold. Separate from the effect below so that one can keep an
+     empty dependency list and never tear the video down: re-running it would
+     drop the download and start again. */
+  useEffect(() => {
+    holdRef.current = hold;
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (hold) {
+      video.pause();
+      return;
+    }
+    // From the top, whatever the element did while it was held. A browser is
+    // free to have advanced it during buffering, and the reveal is only worth
+    // anything if it uncovers the first frame.
+    video.currentTime = 0;
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      void video.play().catch(() => undefined);
+    }
+  }, [hold]);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    /* ── Readiness ─────────────────────────────────────────────────────────
+       Progress comes from the buffered ranges rather than from bytes, because
+       nothing exposes the byte count of a media download. It is a fraction of
+       duration, which is close enough for a bar and has the advantage of being
+       what actually governs whether playback will stall.
+
+       Only the range containing the playhead counts. A browser is free to
+       buffer out of order, and summing every range reports a file as ready
+       when the part about to play is the part still missing. */
+    const reportProgress = () => {
+      const { buffered, duration } = video;
+      if (!duration || !buffered.length) return;
+      for (let i = 0; i < buffered.length; i++) {
+        if (buffered.start(i) <= video.currentTime && buffered.end(i) >= video.currentTime) {
+          progressRef.current?.(Math.min(1, buffered.end(i) / duration));
+          return;
+        }
+      }
+      progressRef.current?.(Math.min(1, buffered.end(0) / duration));
+    };
+
+    let announced = false;
+    const announceReady = () => {
+      if (announced) return;
+      announced = true;
+      progressRef.current?.(1);
+      readyRef.current?.();
+    };
+
+    video.addEventListener("progress", reportProgress);
+    video.addEventListener("timeupdate", reportProgress);
+    video.addEventListener("canplaythrough", announceReady);
+    // A browser that refuses autoplay never reaches canplaythrough on its own,
+    // and reduced motion never asks it to. Neither should hold the page behind
+    // a loading screen, so the poster counts as ready in both cases.
+    video.addEventListener("loadeddata", () => {
+      if (reduced.matches) announceReady();
+    });
+    if (reduced.matches) announceReady();
 
     const canvas = document.createElement("canvas");
     canvas.width = RASTER_W;
@@ -212,7 +301,7 @@ export function HeroVideo({ className, poster, src, srcSmall }: Props) {
     };
 
     const play = () => {
-      if (reduced.matches) return;
+      if (reduced.matches || holdRef.current) return;
       // A rejected play() is not an error worth surfacing: a browser that
       // refuses autoplay leaves the poster up, which is a correct fallback.
       void video.play().catch(() => undefined);
@@ -253,6 +342,9 @@ export function HeroVideo({ className, poster, src, srcSmall }: Props) {
       document.removeEventListener("visibilitychange", onVisibility);
       reduced.removeEventListener("change", onReducedChange);
       stopSampling();
+      video.removeEventListener("progress", reportProgress);
+      video.removeEventListener("timeupdate", reportProgress);
+      video.removeEventListener("canplaythrough", announceReady);
       document.documentElement.style.removeProperty("--wow");
     };
   }, []);
