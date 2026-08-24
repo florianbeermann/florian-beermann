@@ -25,10 +25,11 @@ import { describe, expect, it } from "vitest";
  * So the rule is: never write a nameless `animation` shorthand. Put the shared
  * properties in longhands, which no minifier will fold together.
  *
- * The reel itself no longer runs on a scroll-driven animation — it is a
- * transition on an index, see useEngagementReel.ts — but the stacking hazard it
- * carried is a property of the layout rather than of the mechanism, so the last
- * test here follows it to whatever is holding the cards apart now.
+ * The reel runs on a scroll-driven animation over the track's own view
+ * timeline, and the scroll that drives it is paced by the browser's snapping —
+ * no JavaScript on either side. The last tests here guard the two things that
+ * have each silently broken it: the fill mode that holds the cards apart, and
+ * the snap positions that make `mandatory` safe to use on the document.
  */
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
@@ -90,84 +91,56 @@ describe("scroll-driven animation declarations", () => {
     expect(reelRule![0]).toMatch(/grid-area:\s*1\s*\/\s*1/);
   });
 
-  it("keeps the reel and its rail on one symmetric curve", () => {
+  it("keeps a snap position on every panel, which is what makes mandatory safe", () => {
     const home = cssFiles.find(({ file }) => file === "src/pages/Home.css");
     const css = withoutComments(home!.css);
+    const markup = readFileSync(
+      path.join(root, "src/pages/Home.tsx"),
+      "utf8",
+    );
 
-    // The bounce is a shape, not a duration — the reel is locked to the scroll,
-    // so there is no clock to put a duration on. Linear here is the version
-    // that reads as a strip being dragged.
-    const curve = /cubic-bezier\(\s*0?\.62\s*,\s*0?\.09\s*,\s*0?\.38\s*,\s*0?\.91\s*\)/;
-    const reelRule = css.match(/\.home-engagement\s*\{[^}]*animation-timeline[^}]*\}/);
-    expect(
-      reelRule![0],
-      "the engagements must travel on the eased curve, not linearly",
-    ).toMatch(curve);
-
-    const barRule = css.match(/\.home-engagement-progress-bar\s*\{[^}]*\}/);
-    expect(
-      barRule![0],
-      "the rail's segment must be shaped like the cards or it drifts off them",
-    ).toMatch(curve);
-
-    // And it needs its own midpoint, or one easing spans both segments and the
-    // bar crawls while a card is mid-crossing. Sliced rather than matched:
-    // a keyframes body has nested braces, which a regex character class cannot
-    // cross.
-    const progressAt = css.indexOf("@keyframes engagement-progress");
-    const progressBody = css.slice(progressAt, css.indexOf("@keyframes", progressAt + 1));
-    expect(
-      progressBody,
-      "the rail's travel needs a midpoint keyframe to be eased per card",
-    ).toMatch(/50%\s*\{\s*transform:\s*translateX\(100%\)/);
-
-    // The readout switches at the quarter points, which are the moments the
-    // cards are exactly half crossed — true only while the curve is symmetric.
-    const stepAt = css.indexOf("@keyframes engagement-step-second");
-    const stepBody = css.slice(stepAt, css.indexOf("@keyframes", stepAt + 1));
-    expect(
-      stepBody,
-      "the numbered readout must switch on the crossing points",
-    ).toMatch(/24\.99%/);
-  });
-
-  it("keeps an engagement short enough for the snap radius to reach its middle", () => {
-    const home = cssFiles.find(({ file }) => file === "src/pages/Home.css");
-    const css = withoutComments(home!.css);
-
-    // The one number on this page that is set by a browser internal rather than
-    // by taste. Chrome's proximity snapping has a catch radius it does not let
-    // you name: measured on this page it is 220-240px against a 679px window,
-    // so about a third of it. A snap position only claims what falls within
-    // that radius, so an engagement worth more scroll than two radii leaves the
-    // middle of every crossing belonging to no card — and a gesture ending
-    // there rests on two half cards, which is what this section did at one
-    // window per engagement.
+    // This is the invariant the whole section rests on, and the one that has
+    // already been broken once.
     //
-    // Half a step has to fit inside a third of a window, so the step has to
-    // stay under about 0.66. Raise it past that and nothing fails loudly: the
-    // reel still animates, the snap positions are still there, and the section
-    // simply goes back to being able to stop halfway.
-    const step = css.match(/--reel-step:\s*calc\(\s*([0-9.]+)\s*\*\s*100svh\s*\)/);
-    expect(step, "the engagements track should size itself in windows").not.toBeNull();
-    expect(
-      Number(step![1]),
-      "half an engagement must fit inside the snap radius, which is about a third of a window",
-    ).toBeLessThanOrEqual(0.66);
-
-    // And the markers have to sit on the steps, or they are snap positions for
-    // places the reel never rests.
-    expect(css).toMatch(/:nth-child\(2\)\s*\{\s*top:\s*var\(--reel-step\)/);
-    expect(css).toMatch(/:nth-child\(3\)\s*\{\s*top:\s*calc\(2\s*\*\s*var\(--reel-step\)\)/);
-
-    // CSS snapping must stay off. The stepping is in JavaScript, and with both
-    // running the browser re-snapped the handler's own scroll forward to the
-    // next position — measured: clamped to 1432, snapped on to 1872, so the
-    // section opened on its second engagement.
+    // `mandatory` is the only strictness that cannot be overshot, and it is the
+    // reason a flick cannot cross the engagements or stop between two of them.
+    // `proximity` has a catch radius it does not let you name — measured at
+    // 220-240px against a 679px window — so a 2000px flick lands 314px past the
+    // section and is not caught at all.
+    //
+    // The price of mandatory is that the scroll can never rest anywhere that is
+    // not a snap position, so every panel needs one or it cannot be stopped on.
+    // Delete the markers and the footer becomes unreachable, which forces a
+    // retreat to proximity, which breaks the reel. They are load-bearing, and
+    // that includes the ones on panels with nothing to do with the reel.
     expect(
       css,
-      "CSS snapping and the step handler cannot both own the scroll",
-    ).not.toMatch(/scroll-snap-type:\s*y\s+(proximity|mandatory)/);
+      "snapping must stay mandatory, or a flick can cross the engagements",
+    ).toMatch(/scroll-snap-type:\s*y\s+mandatory/);
+    expect(
+      css,
+      "a snap position that can be scrolled over is not a stop",
+    ).toMatch(/scroll-snap-stop:\s*always/);
 
+    // Every section on the page, plus the closing panel, less the engagements
+    // track — which carries its own three positions instead, one per
+    // engagement, because it is three screens tall.
+    const sections = markup.match(/<section\b/g) ?? [];
+    const stops = markup.match(/className="site-stop"/g) ?? [];
+    const expected = sections.length - 1 + 1;
+    expect(
+      stops.length,
+      `every panel needs somewhere to catch: ${sections.length} sections and a closing panel, but ${stops.length} stops`,
+    ).toBe(expected);
+
+    // And the three inside the track, since it is three screens tall and its
+    // own top will not hold a fling.
+    const steps = markup.match(
+      /className="home-engagement-steps"[^>]*>\s*(<span\s*\/>\s*){3}/,
+    );
+    expect(
+      steps,
+      "the engagements track needs one snap position per engagement",
+    ).not.toBeNull();
   });
 });

@@ -17,7 +17,6 @@ import { HeroVideo } from "@/components/HeroVideo";
 import { HeroLoader } from "@/components/HeroLoader";
 import { CircleMark } from "@/components/CircleMark";
 import { Masthead } from "@/components/Masthead";
-import { useEngagementSteps } from "@/hooks/useEngagementSteps";
 import { setPageMetadata } from "@/lib/metadata";
 import "./Home.css";
 import "./hero.css";
@@ -101,10 +100,6 @@ export default function Home() {
   const [plateRevealed, setPlateRevealed] = useState(false);
   const handlePlateReady = useCallback(() => setPlateReady(true), []);
   const handleReveal = useCallback(() => setPlateRevealed(true), []);
-  /* The reel steps one engagement per gesture and none can be scrolled over.
-     CSS snapping cannot express that on a document-level scroller — see the
-     hook. Everything the reel *looks* like is still CSS. */
-  const engagementsRef = useEngagementSteps<HTMLElement>(engagements.length);
   const [showDetails, setShowDetails] = useState(false);
   const [size, setSize] = useState("");
   const [tooling, setTooling] = useState("");
@@ -227,6 +222,8 @@ export default function Home() {
       />
       <Masthead />
       <main id="site-main">
+        {/* Snap stop. See `.site-stop` in Home.css. */}
+        <span className="site-stop" aria-hidden="true" />
         <section id="top" className="hero on-dark">
           {/* The whole background. Decorative and unreadable by definition.
               Nothing is laid over it: the type carries itself, and crosses to
@@ -266,6 +263,8 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Snap stop. See `.site-stop` in Home.css. */}
+        <span className="site-stop" aria-hidden="true" />
         <section className="home-proof site-inverted site-panel" aria-labelledby="proof-title">
           <div className="home-proof-heading site-reveal">
             <h2 id="proof-title">Where the experience comes from</h2>
@@ -331,14 +330,12 @@ export default function Home() {
             still and are covered, this one is scrubbed. */}
         <section
           id="engagements"
-          ref={engagementsRef}
           className="home-engagements-track"
           aria-labelledby="engagements-title"
         >
           {/* Three places for the scroller to catch, one per engagement, so a
-              gesture that ends mid-crossing settles on a card instead of on two
-              halves of two. Nothing is drawn and nothing is read: they exist
-              only as snap positions. CSS-only, see `Home.css`. */}
+              flick cannot cross all three and a gesture cannot end between two.
+              Nothing is drawn and nothing is read. CSS-only, see `Home.css`. */}
           <div className="home-engagement-steps" aria-hidden="true">
             <span />
             <span />
@@ -391,6 +388,8 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Snap stop. See `.site-stop` in Home.css. */}
+        <span className="site-stop" aria-hidden="true" />
         <section className="home-method site-voltage site-panel">
           <div className="home-method-inner site-reveal">
             <header>
@@ -428,6 +427,8 @@ export default function Home() {
             already leaving empty, and the two columns now run to roughly the
             same depth instead of one of them stopping a third of the way down
             and the next screen carrying five rows on its own. */}
+        {/* Snap stop. See `.site-stop` in Home.css. */}
+        <span className="site-stop" aria-hidden="true" />
         <section id="about" className="home-about home-section site-panel">
           <header className="home-section-heading site-reveal">
             <h2>I have been the person who owns the number.</h2>
@@ -477,6 +478,8 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Snap stop. See `.site-stop` in Home.css. */}
+        <span className="site-stop" aria-hidden="true" />
         <section id="contact" className="home-contact site-inverted site-panel">
           <div className="home-contact-copy site-reveal">
             <h2>What is getting in the way of better retention?</h2>
@@ -684,6 +687,11 @@ export default function Home() {
           compositional one: the masthead colours itself from whichever section
           crosses its centre line, and at maximum scroll a panel shorter than
           the viewport never reaches that line. */}
+      {/* Snap stop for the closing panel. Mandatory snapping means the scroll
+          can never rest anywhere that is not a snap position, so every panel
+          needs one or it cannot be stopped on. This panel arrived after the
+          rest of them did. */}
+      <span className="site-stop" aria-hidden="true" />
       <footer className="site-closing" role="contentinfo">
         <div className="site-closing-top">
           <p className="site-closing-line">

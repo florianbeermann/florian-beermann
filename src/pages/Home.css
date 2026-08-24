@@ -501,9 +501,10 @@
   gap: clamp(1.5rem, 4vh, 3rem);
 }
 
-/* Snap positions for the sub-scroll. Inert without it — the fallback is an
-   ordinary stacked list and scrolls like one. */
-.home-engagement-steps {
+/* Snap positions, for the page and for the sub-scroll. Both are off below the
+   breakpoint, where this is an ordinary stacked document. */
+.home-engagement-steps,
+.site-stop {
   display: none;
 }
 
@@ -553,50 +554,25 @@
       --gutter: max(4vw, calc((100% - 1240px) / 2));
       padding: 0;
 
-      /* How much scroll one engagement is worth, and it is set by the snapping
-         rather than by taste.
+      /* One window to hold the frame still, plus one stage-height of scroll per
+         engagement change.
 
-         Chrome's proximity snapping has a catch radius it does not let you
-         name: measured on this page it is 220-240px against a 679px window, so
-         about a third of it. A snap position only claims what falls inside that
-         radius, so if an engagement is worth more scroll than two radii, the
-         middle of each crossing belongs to no card and a gesture ending there
-         leaves two half cards on screen. That was this section's actual defect
-         at one screen per engagement: the segment was 637px, the radius 226px,
-         and the 190px in the middle of every crossing caught on nothing.
+         Because the reel travels sideways, scroll distance and travel distance
+         are different axes and there is no 1:1 to hit — the mapping is a
+         choice. One screen per engagement is what a hand expects from a pinned
+         horizontal reel, and it keeps a full content swap deliberate rather
+         than twitchy.
 
-         At 0.55 of a window a half-segment is about 187px, comfortably inside
-         the radius, and every position on the track belongs to a card. A
-         fraction rather than a fixed length because the radius scales with the
-         window and this has to keep holding on a laptop and a 27in display.
-
-         It is also the better length on its own terms. The reel travels
-         sideways, so scroll distance and travel distance are different axes and
-         there is no 1:1 to hit — the mapping was always a choice, and a shorter
-         one makes the section answer a flick instead of absorbing it. */
-      --reel-step: calc(0.55 * 100svh);
-
-      /* The stage, plus one step per engagement change. Written this way the
-         pinned range is exactly two steps, which is what lets the snap
-         positions below be written as plain multiples of one. */
-      height: calc(100svh - var(--header-height) + 2 * var(--reel-step));
+         The two clocks stay in step whatever this height is. The reel runs over
+         the track's `contain` range, which is the track less the window; the
+         frame is held until its bottom meets the track's bottom, which is the
+         track less the stage and its sticky offset. The stage is a window less
+         a masthead and the offset is a masthead, so both reduce to the same
+         distance — the last engagement lands exactly as the frame lets go, and
+         the three snap positions below sit on those same offsets. */
+      height: calc(100svh + 2 * (100svh - var(--header-height)));
       view-timeline-name: --engagement-reel;
       view-timeline-axis: block;
-
-      /* The clock has to start when the frame pins, not when the track's top
-         reaches the top of the window.
-
-         The stage is sticky at the masthead line, so it pins one header height
-         before the track's top gets there — and the `contain` range, measured
-         against the real window, had not started yet. Measured: pinned from
-         1190 but the first card did not move until 1274. Eighty-four pixels of
-         being held by a section that was not doing anything, which is what the
-         first engagement felt like.
-
-         Insetting the timeline's scrollport by the masthead makes the clock
-         measure against the space the section actually occupies, which is the
-         window below the header. Range and pin then start and end together. */
-      view-timeline-inset: var(--header-height) 0;
     }
 
     /* The frame. Sticky at the masthead line like every panel, one screen
@@ -609,38 +585,76 @@
       padding-block: var(--panel-pad);
     }
 
-    /* No CSS snapping. The stepping is in JavaScript — see
-       useEngagementSteps.ts — and the two cannot both have the scroll.
+    /* Catch a fling at each section.
 
-       Snapping was tried here and got close. What it could never do is stop at
-       every engagement rather than the nearest one: `proximity` settles a
-       gesture wherever it ends up, and `scroll-snap-stop: always`, which is the
-       property for exactly this, only applies where the browser was going to
-       snap anyway. `mandatory` does stop at every one, but `scroll-snap-type`
-       is declared on the scroll container — here the document — so with snap
-       positions only inside this track the scroll could never rest anywhere
-       else and both ends of the page became unreachable.
+       A trackpad flick carries far enough to cross several panels in one
+       gesture, so the hero can hand straight over to the engagements and the
+       section in between is never seen. `scroll-snap-stop: always` is the
+       browser's own answer to exactly that: it stops a fling at each snap
+       position it passes instead of letting momentum carry through.
 
-       Leaving it on alongside the JavaScript was worse than either. Measured:
-       the handler clamped a gesture to the first engagement at 1432 correctly,
-       and the browser then snapped that scroll on to 1872, because a snap after
-       a downward scroll prefers the position ahead. The section opened on its
-       second engagement and the cause looked like the handler. */
+       `mandatory` because `proximity` cannot do it, and everything this section
+       got wrong came from trying to make it. Proximity has a catch radius it
+       does not let you name — measured here at 220-240px against a 679px
+       window — and it only settles a gesture that ends inside that radius. A
+       2000px flick lands 314px past the section and proximity does not catch
+       it at all; the section is skipped. `scroll-snap-stop: always` does not
+       help, because it applies only where the browser was going to snap anyway.
 
-    /* The three positions, one per engagement.
+       Mandatory is only safe because every part of the page is a snap position:
+       each panel, each engagement inside the three-screen track, and the
+       closing panel at the end. Miss one and the scroller settles on the
+       nearest of the others instead, which is how the footer became
+       unreachable the first time this was tried — and deleting these markers is
+       what forced the retreat to proximity, and with it every problem this
+       section has had since. They are load-bearing, including the ones on
+       panels that have nothing to do with the reel.
 
-       Static markers rather than the panels themselves. A sticky element makes
-       a useless snap target: its snap area is measured from where it currently
-       sits, and a pinned stage sits at the masthead line whatever the scroll
-       position, so the target moves as the page does. These are ordinary
-       absolutely-positioned points in the track, so each sits where it sits.
+       This is CSS and nothing else. Three attempts have now been made to pace
+       this section from JavaScript — capping the gesture at the wheel, easing
+       the scroll to the nearest engagement once it stopped, and giving the
+       section a scroller of its own. All were worse. On a trackpad the wheel
+       does not stop when the hand does, so anything waiting for a gesture to
+       end acts late; anything holding the scroll position holds it against
+       everything else that moves the page; and a nested scroller takes the
+       wheel while the section is still half on screen, because a browser gives
+       it to the innermost scroller under the pointer as soon as that scroller
+       has anywhere to go. Whatever paces this page must not be able to prevent
+       it. */
+    html {
+      scroll-snap-type: y mandatory;
+    }
 
-       The offsets are the reel's own clock: the track is pinned for exactly two
-       steps and the engagements rest at nought, one and two of them. The
-       masthead is subtracted because the stage pins one header height before
-       the track's top arrives — the same offset `view-timeline-inset` gives the
-       clock, so these three points and the reel's three resting states are the
-       same three places. */
+    /* The stops themselves, and why they are not the panels.
+
+       A sticky element makes a useless snap target. Its snap area is taken from
+       where it currently sits, and a pinned panel sits at the masthead line
+       whatever the scroll position — so the targets drift as the page moves.
+       Measured: the six panels reported document positions of
+       [1358, 1358, 3167, …] at the top of the page and [3167, 3167, 3167, …]
+       a little way down. Snapping to a moving target is what made the lower
+       half of the page feel clunky, and it was bad enough that a plain
+       `scrollTo(0)` was pulled to the middle of the document instead.
+
+       These markers are ordinary static elements in the flow, one immediately
+       before each panel, so each sits at exactly the position its panel starts
+       at and stays there. Zero height, nothing drawn; they only give the
+       scroller somewhere to catch. */
+    .site-stop {
+      display: block;
+      height: 0;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      scroll-margin-top: min(
+        var(--header-height),
+        calc(100svh - var(--panel-h, 0px))
+      );
+    }
+
+    /* And three more inside the engagements track, because it is three screens
+       tall and its own top is not enough to keep a fling from crossing all of
+       them. These sit at the same offsets the reel's clock uses, so a catch
+       lands on an engagement rather than between two. */
     .home-engagement-steps {
       display: block;
     }
@@ -650,10 +664,8 @@
       left: 0;
       width: 1px;
       height: 1px;
-      /* The offset the stage pins under, and the handler reads it from here
-         rather than recomputing it — so the resting positions have one
-         definition, in CSS, next to the geometry they belong to. */
-      scroll-margin-top: var(--header-height);
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
     }
 
     .home-engagement-steps > span:nth-child(1) {
@@ -661,22 +673,12 @@
     }
 
     .home-engagement-steps > span:nth-child(2) {
-      top: var(--reel-step);
+      top: calc(100svh - var(--header-height));
     }
 
     .home-engagement-steps > span:nth-child(3) {
-      top: calc(2 * var(--reel-step));
+      top: calc(2 * (100svh - var(--header-height)));
     }
-
-    /* Nothing in JavaScript paces this page.
-
-       A JS settle that waited for the scroll to stop and then eased to the
-       nearest card was tried twice and is the wrong shape for the problem: on a
-       trackpad the scroll does not stop when the gesture does, so it arrived
-       long after the hand had finished, and anything that writes the scroll
-       position every frame fights everything else that moves the page — a click
-       on the masthead included. The reel is a scroll-driven animation and the
-       settling is the browser's own snapping, both on the compositor. */
 
     /* The rule belongs to the heading now, not to the window.
     
@@ -728,42 +730,20 @@
          range, and since all three share one grid cell they land on top of one
          another. It only happens in a production build, so a dev server shows
          the reel working perfectly right up until it is deployed. */
-      /* The bounce, and it is the whole difference between this and a strip
-         being dragged.
+      /* Linear, and it has to be.
 
-         The reel is locked to the scroll, so this cannot be a duration — there
-         is no clock to put one on. It is a shape instead: the same travel,
-         redistributed. A card barely moves through the first quarter of its
-         segment, crosses almost all of the distance in the middle half, and
-         eases into place — so a small scroll reads as the card resisting and a
-         committed one as it being thrown. Past the midpoint the next card is
-         already most of the way in, which is the "bounces once you are more
-         than half way" this section is meant to have.
+         The travel was eased for a while, to give a card weight near its
+         resting place and a whip through the middle. That is the right shape
+         for a reel a reader drags, and the wrong one for a reel the browser
+         moves: with snapping, a gesture is a jump of a whole engagement, and an
+         eased curve spends that jump crossing fourteen times faster in the
+         middle than at the ends. The card does not travel, it flicks past.
 
-         The ends matter as much as the middle, and this is why the curve is
-         not an ordinary ease-in-out. Those are flat at both ends, and flat at
-         the end of a scroll-linked animation is not "weight" — it is scroll
-         that does nothing. In the middle of the track that reads as a card
-         being held so it can be read; at the two ends there is no next card for
-         it to be a pause before, so it reads as the section refusing to move.
-         That is what the first and last engagement felt like.
-
-         So both control points are pulled off the axis: the card leaves and
-         arrives at about 38% of linear speed rather than zero, and crosses the
-         middle at fourteen times that. Nothing on the track is stationary, and
-         the crossing is still quick enough that only about 18% of positions
-         leave two cards visibly split — against 40% for a linear scrub.
-
-         Sharper curves keep improving that number and were measured: at
-         (0.76, 0.03, 0.24, 0.97) it reaches 12%. They are not worth it. The
-         slow part of a steeper curve sits at the ends of each segment, which
-         includes the two ends of the track, and by then the card is moving 1.6px
-         per 12.7px of scroll — stationary again, and the original complaint
-         back.
-
-         Symmetric, so the crossing lands at the exact middle of each segment,
-         which is where the rail and the readout switch. */
-      animation-timing-function: cubic-bezier(0.62, 0.09, 0.38, 0.91);
+         Linear here is not the absence of a decision. The pacing belongs to the
+         snap animation, which the browser runs at a speed a reader recognises,
+         and the reel's job is to track it evenly rather than to add a second
+         shape on top of it. */
+      animation-timing-function: linear;
       animation-fill-mode: both;
       animation-timeline: --engagement-reel;
       animation-range: contain 0% contain 100%;
@@ -832,7 +812,7 @@
       width: calc(100% / 3);
       height: 1px;
       background: var(--voltage);
-      animation: engagement-progress cubic-bezier(0.62, 0.09, 0.38, 0.91) both;
+      animation: engagement-progress linear both;
       animation-timeline: --engagement-reel;
       animation-range: contain 0% contain 100%;
     }
@@ -880,20 +860,12 @@
   }
 }
 
-/* A stop at the middle, so the bar is eased once per card rather than once
-   across the whole track — the same shape the cards travel on, at the same
-   moments. Without the midpoint the easing would stretch over both segments and
-   the bar would be crawling while a card was mid-crossing. */
 @keyframes engagement-progress {
-  0% {
+  from {
     transform: translateX(0);
   }
 
-  50% {
-    transform: translateX(100%);
-  }
-
-  100% {
+  to {
     transform: translateX(200%);
   }
 }
