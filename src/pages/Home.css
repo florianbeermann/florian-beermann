@@ -704,11 +704,9 @@
       animation-range: contain 0% contain 100%;
     }
 
-    /* Each engagement rides the same clock, offset by one: out to the left as
-       the next comes in from the right. They are exactly one window wide, so
-       the two meet at a seam with no gap and no overlap — the outgoing edge and
-       the incoming edge are the same vertical, and the swap reads as one strip
-       being pulled across rather than two things crossfading. */
+    /* Each engagement rides the same clock, offset by one: parked off to the
+       right, held in the window for a third of the track, then gone to the
+       left. They are exactly one window wide, so nothing is ever half in. */
     .home-engagement:nth-child(1) {
       animation-name: engagement-first;
     }
@@ -723,10 +721,10 @@
 
     /* The rail sits at the foot of the frame, which is otherwise empty: the
        engagement is only as tall as its own text and the frame is a screen.
-       It earns the space by answering the question a scrubbed section always
-       raises — how many of these are there, and where am I? A third-width bar
-       tracks the reel exactly, so the scroll reads as position rather than as
-       the page misbehaving. */
+       It earns the space by answering the question this section always raises —
+       how many of these are there, and where am I? A third-width bar sits under
+       whichever engagement is showing, so the scroll reads as position rather
+       than as the page misbehaving. */
     .home-engagement-progress {
       display: grid;
       gap: 0.85rem;
@@ -815,12 +813,22 @@
   }
 }
 
+/* Stepped, on the same thresholds as everything else in this readout. A bar
+   that slid while the card it reports on flipped would be describing a motion
+   that is not happening. */
 @keyframes engagement-progress {
-  from {
+  0%,
+  24.99% {
     transform: translateX(0);
   }
 
-  to {
+  25%,
+  74.99% {
+    transform: translateX(100%);
+  }
+
+  75%,
+  100% {
     transform: translateX(200%);
   }
 }
@@ -869,26 +877,42 @@
   }
 }
 
+/* The reel flips rather than slides.
+ 
+   Each engagement holds its position for a full third of the track and is
+   replaced between one frame and the next. Written as pairs of keyframes a
+   hundredth of a percent apart, which is how you get a step out of a timeline
+   that interpolates: there is no timing function that can hold a value and then
+   jump on a scroll-driven animation, because the progress is the scroll and
+   steps() would quantise the whole range rather than these two points.
+ 
+   The thresholds are 25% and 75%, which is the midpoint of each pair of resting
+   states, and the same pair the numbered readout below already used. So the
+   card, the bar and the number all change on the same line. */
 @keyframes engagement-first {
-  0% {
+  0%,
+  24.99% {
     transform: translateX(0);
   }
 
-  50%,
+  25%,
   100% {
     transform: translateX(-100%);
   }
 }
 
 @keyframes engagement-second {
-  0% {
+  0%,
+  24.99% {
     transform: translateX(100%);
   }
 
-  50% {
+  25%,
+  74.99% {
     transform: translateX(0);
   }
 
+  75%,
   100% {
     transform: translateX(-100%);
   }
@@ -896,10 +920,11 @@
 
 @keyframes engagement-third {
   0%,
-  50% {
+  74.99% {
     transform: translateX(100%);
   }
 
+  75%,
   100% {
     transform: translateX(0);
   }

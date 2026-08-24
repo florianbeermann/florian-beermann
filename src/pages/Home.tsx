@@ -320,9 +320,11 @@ export default function Home() {
             times rather than three sections in a row.
 
             The track is three screens tall and the stage inside it is sticky, so
-            the frame holds while the reel behind it advances. It is deliberately
-            not a `.site-panel`: panels hold still and are covered, this one is
-            meant to be scrubbed. */}
+            the frame holds while the reel behind it advances. The engagement
+            does not travel with the scroll — it holds still for a third of the
+            track and is replaced, so this reads as three states rather than as
+            a strip being dragged. It is deliberately not a `.site-panel`:
+            panels hold still and are covered, this one steps. */}
         <section
           id="engagements"
           className="home-engagements-track"
