@@ -251,39 +251,11 @@ body::before {
 }
 
 /* Panels that grew to meet that minimum centre their content rather than
-   stranding it at the top of a screen of empty paper. Excluded from the hero,
-   whose grid must keep stretching so the blue plate runs the full height. */
-.site-panel:not(.home-hero) {
+   stranding it at the top of a screen of empty paper. This used to exclude the
+   hero, whose grid had to keep stretching for its blue plate; the hero is the
+   video plate now and is not a `.site-panel` at all. */
+.site-panel {
   align-content: center;
-}
-
-/* The hero is held *to* that budget, not merely started at it. `min-height` is a floor:
-   the row still grows if a column asks for more, and the portrait column does —
-   the plate carries the artwork's aspect ratio, so it derives a height from its
-   width and will happily be taller than the window. Measured at 1440x735 that
-   made the figure 754px against 659px of room, and the panel scrolled again
-   even though the copy beside it fitted with 78px to spare.
-
-   Capping the row makes the plate the thing that gives: it is a flex child with
-   `min-height: 0`, so it shrinks into whatever is left and the character grid
-   is re-fitted to that box. Only where the hero is two columns — once it stacks,
-   the copy and the portrait are additive and no single screen can hold both, so
-   there the panel is allowed to grow and be scrolled through. */
-@media (min-width: 769px) {
-  .home-hero.site-panel {
-    max-height: calc(100svh - var(--header-height));
-    /* A capped grid container is not a capped grid. Left as an auto track the
-       row still sizes to its tallest column and simply overflows the box it was
-       told to fit, which is what kept the portrait 754px tall inside a 659px
-       hero. `minmax(0, 1fr)` binds the track to the container instead, and the
-       `0` floor is what lets it go under its content's size at all. */
-    grid-template-rows: minmax(0, 1fr);
-  }
-
-  /* Grid items refuse to shrink below their content unless told they may. */
-  .home-hero.site-panel > * {
-    min-height: 0;
-  }
 }
 
 /* The edge of the incoming plate. Two of the five transitions are paper onto
@@ -618,36 +590,6 @@ body::before {
   color: var(--ink);
 }
 
-/* The label register: section numbers, eyebrows, field labels, captions.
-
-   This used to be set in a system monospace, on the argument that a second
-   family was what separated annotation from prose. It is one family now, so the
-   separation has to come from the four signals that are left — uppercase, size,
-   tracking and weight — and they carry it: at this size, tracked caps are not
-   something anyone mistakes for a sentence.
-
-   Two things were tuned rather than carried over. The size went from 0.6875rem
-   to 0.72rem because Outfit's caps are 96% of the mono's, so the old value would
-   have quietly shrunk every label; at 0.72rem the cap height matches what was
-   there before, and a long label sets to within 0.2% of its previous width, so
-   nothing in any layout moves. And the weight went from 500 to 520 — the mono
-   register was the only thing on the site still using 500, and with it gone the
-   whole page is three weights.
-
-   `tabular-nums` replaces what the monospace used to give away: Outfit's default
-   figures are proportional and very uneven — its `1` is barely half the width of
-   its `0` — which made `01` and `04` visibly different lengths in the readouts
-   that count sections. */
-.site-label {
-  display: block;
-  font-size: var(--text-label);
-  font-variant-numeric: tabular-nums;
-  font-weight: 520;
-  letter-spacing: var(--track-label);
-  line-height: 1.4;
-  text-transform: uppercase;
-}
-
 /* The marker register on a light band. Scoped rather than global: on the stock
    these elements are already the ink or a deliberate `--muted`, and colouring
    them from the token there would flatten the caption's dimming into full
@@ -657,10 +599,6 @@ body::before {
    the ink; a label, a figure, a link, a control or the footer — the things a
    reader scans rather than reads — take the voltage. That is what keeps the
    colour meaningful: it marks the page's furniture, not its argument. */
-.site-inverted .site-label {
-  color: var(--marker);
-}
-
 .site-footer,
 .site-footer a {
   color: var(--marker);

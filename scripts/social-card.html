@@ -8,145 +8,185 @@
       site is shared. It is a page rather than a drawing because the card has to
       be set in the site's own faces at the site's own weights and tracking, and
       re-drawing that by hand in a generator would drift the moment the type
-      moved.
+      moved. It has drifted twice anyway, which is the argument for regenerating
+      it whenever the world changes rather than only when the copy does.
 
         npm run dev
         open http://localhost:5199/scripts/social-card.html
         # capture the 1200x630 viewport to public/social-preview.jpg
 
-      The card it replaced still carried the retired "fb" monogram, the old blue
-      inks, rounded blob shapes and a white ground — an entire
-      identity the site had already stopped using.
+      Two cards have been retired here. The first carried the "fb" monogram,
+      rounded blob shapes and a white ground. The second was the plum world —
+      plum stock, ivory type, Outfit, and a halftone cut of the portrait — and
+      it outlived that world by long enough to be the last thing anyone saw of
+      it, because a share card is the one surface a visitor meets before the
+      site loads.
     -->
     <style>
       @font-face {
-        font-family: "Outfit Variable";
-        src: url("/fonts/outfit-latin-variable.woff2") format("woff2-variations");
+        font-family: "Switzer";
+        src: url("/fonts/Switzer-Variable.woff2") format("woff2-variations");
         font-weight: 100 900;
         font-display: block;
       }
 
+      @font-face {
+        font-family: "Nippo";
+        src: url("/fonts/Nippo-Variable.woff2") format("woff2-variations");
+        font-weight: 200 700;
+        font-display: block;
+      }
+
+      @font-face {
+        font-family: "Fragment Mono";
+        src: url("/fonts/FragmentMono-Regular.woff2") format("woff2");
+        font-weight: 400;
+        font-display: block;
+      }
+
       :root {
-        --paper: #503d42;
-        --ink: #f5fbef;
-        /* The same print grain the page carries. It matters more here than on
-           the site: this card is encoded as a JPEG, and a large flat dark field
-           is exactly what chroma subsampling turns into visible banding. The
-           noise dithers it away before the encoder ever sees a gradient. */
-        --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 .05 .05 .05 0 -.02'/%3E%3C/filter%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch' seed='19'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .05 .05 .05 0 -.02'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23a)'/%3E%3Crect width='180' height='180' filter='url(%23b)'/%3E%3C/svg%3E");
+        --ink: #181d26;
+        --paper: #e8edf5;
+        --blue: #0047ff;
       }
 
       * {
         box-sizing: border-box;
-        margin: 0;
       }
 
       html,
       body {
-        width: 1200px;
-        height: 630px;
-        overflow: hidden;
+        margin: 0;
+        padding: 0;
       }
 
       body {
         display: grid;
-        /* 750 + 450 = 1200. The plate column is pinned to exactly half the
-           halftone's own width so the screen lands on a clean 2:1 downscale.
-           At an arbitrary ratio the dot grid resamples against the pixel grid,
-           which moirés on screen and, because the artefact is high-frequency
-           noise, roughly doubles the encoded file as well. The 900x1265 plate
-           halves to 450x632, so the whole bust fits the card almost exactly.
-           This is the same asymmetric split the hero uses. */
-        grid-template-columns: 750px 450px;
-        background-color: var(--paper);
-        background-image: var(--grain);
+        grid-template-columns: 1fr 450px;
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        /* The sheet, not the stock. The card sets its second sentence in the
+           signal, and the signal is a colour that prints on paper: measured,
+           blue on the ink is 2.69:1, under even the 3:1 a headline is allowed,
+           where blue on the paper is 5.34:1. It is also what the page does —
+           a light band takes the voltage for its heading, a dark one takes the
+           paper. A card whose ground disagrees with the site's own rule is a
+           card that will drift again. */
+        background: var(--paper);
         color: var(--ink);
-        font-family: "Outfit Variable", sans-serif;
+        font-family: "Switzer", sans-serif;
       }
 
       .copy {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        padding: 56px 48px 52px 64px;
+        padding: 52px 48px 44px;
       }
 
-      .wordmark {
-        font-family: "Outfit Variable", sans-serif;
-        font-size: 15px;
+      /* Mark and wordmark, the same pairing the closing panel and the legal
+         pages use. */
+      .lockup {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .lockup svg {
+        width: 34px;
+        height: 27px;
+        color: var(--blue);
+      }
+
+      .lockup span {
+        font-family: "Nippo", serif;
+        font-size: 21px;
         font-weight: 400;
-        letter-spacing: 0.34em;
-        text-transform: uppercase;
-        line-height: 1.5;
+        letter-spacing: -0.01em;
+        line-height: 1;
       }
 
+      /* The hero's own setting: 520, tight tracking, and a line-height under 1
+         so the four lines read as one block. */
       h1 {
+        margin: 0;
         max-width: 15ch;
-        font-family: "Outfit Variable", sans-serif;
-        font-size: 78px;
+        font-size: 60px;
         font-weight: 520;
         letter-spacing: -0.03em;
         line-height: 0.94;
-        text-wrap: balance;
       }
 
+      h1 span {
+        color: var(--blue);
+      }
+
+      /* The machine voice, at the one size and tracking it takes everywhere. */
       .foot {
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
         gap: 24px;
-        padding-top: 20px;
-        border-top: 1px solid rgba(245, 251, 239, 0.32);
-        font-size: 12.5px;
+        border-top: 1px solid rgb(24 29 38 / 0.28);
+        color: rgb(24 29 38 / 0.66);
+        padding-top: 18px;
+        font-family: "Fragment Mono", monospace;
+        font-size: 13px;
         font-variant-numeric: tabular-nums;
-        font-weight: 520;
-        letter-spacing: 0.16em;
+        font-weight: 400;
+        letter-spacing: 0.14em;
         text-transform: uppercase;
       }
 
-      /* The plate. Ink dots on the ivory, because the page is printed on the
-         dark stock now and the light sheet is the exception — the same
-         relationship the hero has, where the portrait is the one lit surface on
-         a dark page. */
+      /* The portrait as it is: a neutral black-and-white master, not a duotone.
+         The halftone cut this used to show was mixed for the plum, and a tinted
+         plate beside a cool sheet reads as a colour cast. */
       .plate {
         position: relative;
         overflow: hidden;
-        background: var(--ink);
+        background: #0f1319;
       }
 
       .plate img {
-        position: absolute;
-        top: -1px;
-        left: 0;
-        width: 450px;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 22%;
       }
 
-      /* Top right, where the plate is still open paper. Sat at the foot it
-         landed on the densest part of the screen and the dots ate it. */
       .caption {
         position: absolute;
-        right: 26px;
-        top: 24px;
+        right: 24px;
+        top: 22px;
         color: var(--paper);
-        font-size: 12.5px;
+        font-family: "Fragment Mono", monospace;
+        font-size: 13px;
         font-variant-numeric: tabular-nums;
-        font-weight: 520;
-        letter-spacing: 0.16em;
+        letter-spacing: 0.14em;
         text-transform: uppercase;
       }
     </style>
   </head>
   <body>
     <div class="copy">
-      <div class="wordmark">Florian Beermann &amp; Partners</div>
-      <h1>Your customers changed. Your Customer Success motion didn’t.</h1>
+      <div class="lockup">
+        <svg viewBox="0 0 1402 1122" aria-hidden="true">
+          <path fill="currentColor" d="M627 50c16 24 19 29 25 45q12 38 0 75c-11 30-37 56-67 66q-34 11-69 0-26-10-38-24A3946 3946 0 0 0 315 49l6 9c25 34 33 75 20 111a108 108 0 0 1-157 59l-8-5 12 12 71 72c63 64 65 67 75 87 22 46 15 96-18 132a115 115 0 0 1-99 33 154 154 0 0 1-41-14l69 71 76 79q18 26 23 57a114 114 0 0 1-163 118c-9-6-15-11 56 61l54 55c20 21 30 29 49 37 15 7 25 8 47 8a117 117 0 0 0 83-32q44-42 30-100c-3-11-5-15-11-26l-3-7 72 74 71 71c24 17 57 25 89 21 46-7 85-40 96-80 2-7 2-11 2-24 0-15 0-17-2-26q-4-16-13-29l-4-8 71 71c38 39 73 73 77 76 9 7 26 15 38 18 10 2 12 3 31 3s21-1 30-3q35-9 56-31 34-31 32-75-1-30-21-56c-6-9-10-13-51-55L951 694c9 5 25 12 37 15a119 119 0 0 0 140-72q6-19 4-38-3-28-17-48c-7-11-11-15-45-50l-64-67-60-63 7 4 15 8c45 21 97 11 134-23q21-21 30-50c2-10 2-38 0-48l-12-29c-9-14-10-16-124-131l-50-46q36 54 20 109c-6 22-23 45-43 58a104 104 0 0 1-59 18c-22 0-38-4-58-16q-10-6-15-13A5108 5108 0 0 0 629 50l-3-2zm-70 244c70 71 76 78 85 94 12 22 19 50 16 73-2 18-10 39-19 52-6 8-22 23-29 28-32 21-71 24-106 9-14-6-21-11-31-23a1385 1385 0 0 0-80-84l-66-70a115 115 0 0 0 109 9c17-8 38-25 49-41a107 107 0 0 0 2-116l-1-3zm285-27 103 106c7 10 18 30 20 40q12 39 1 73c-9 27-32 51-59 63-22 10-50 13-73 7-19-5-37-14-44-22-4-5-81-86-117-122l-31-32-10-11 7 5c22 14 52 20 78 17 17-2 37-10 52-21 15-10 30-28 37-43 14-30 13-67-3-97l-4-7 9 9zM581 639c51 52 57 59 67 82q16 39 7 77a111 111 0 0 1-157 72c-12-6-15-8-25-19l-29-31-121-129q37 23 79 18c38-4 76-32 92-67 13-27 11-60-3-89l-6-11 26 26zm301-12c63 64 65 66 76 90a117 117 0 0 1 2 104 112 112 0 0 1-157 46q-9-5-13-11L638 693a119 119 0 0 0 167-42c17-30 15-71-4-102l-3-6 13 13z" />
+        </svg>
+        <span>Florian Beermann &amp; Partners</span>
+      </div>
+      <h1>
+        Your customers changed.
+        <span>Your Customer Success motion did not.</span>
+      </h1>
       <div class="foot">
         <span>Customer Success consulting</span>
         <span>florianbeermann.com</span>
       </div>
     </div>
     <div class="plate">
-      <img src="/scripts/assets/portrait-halftone.png" alt="" />
+      <img src="/portrait.jpg" alt="" />
       <span class="caption">Fig. 01</span>
     </div>
   </body>

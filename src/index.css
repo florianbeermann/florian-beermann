@@ -116,12 +116,6 @@
   }
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-}
-
 /* Reduced motion is answered specifically, not with a blanket kill.
 
    The `*, *::before, *::after { animation-duration: 0.01ms !important;
