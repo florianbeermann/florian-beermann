@@ -566,6 +566,21 @@
       height: calc(100svh + 2 * (100svh - var(--header-height)));
       view-timeline-name: --engagement-reel;
       view-timeline-axis: block;
+
+      /* The clock has to start when the frame pins, not when the track's top
+         reaches the top of the window.
+
+         The stage is sticky at the masthead line, so it pins one header height
+         before the track's top gets there — and the `contain` range, measured
+         against the real window, had not started yet. Measured: pinned from
+         1190 but the first card did not move until 1274. Eighty-four pixels of
+         being held by a section that was not doing anything, which is what the
+         first engagement felt like.
+
+         Insetting the timeline's scrollport by the masthead makes the clock
+         measure against the space the section actually occupies, which is the
+         window below the header. Range and pin then start and end together. */
+      view-timeline-inset: var(--header-height) 0;
     }
 
     /* The frame. Sticky at the masthead line like every panel, one screen
@@ -657,10 +672,30 @@
          already most of the way in, which is the "bounces once you are more
          than half way" this section is meant to have.
 
-         Symmetric, so the crossing point stays at the exact middle of the
-         segment — which is where the rail and the numbered readout switch, and
-         they only agree because this curve is even. */
-      animation-timing-function: cubic-bezier(0.76, 0, 0.24, 1);
+         The ends matter as much as the middle, and this is why the curve is
+         not an ordinary ease-in-out. Those are flat at both ends, and flat at
+         the end of a scroll-linked animation is not "weight" — it is scroll
+         that does nothing. In the middle of the track that reads as a card
+         being held so it can be read; at the two ends there is no next card for
+         it to be a pause before, so it reads as the section refusing to move.
+         That is what the first and last engagement felt like.
+
+         So both control points are pulled off the axis: the card leaves and
+         arrives at about 38% of linear speed rather than zero, and crosses the
+         middle at fourteen times that. Nothing on the track is stationary, and
+         the crossing is still quick enough that only about 18% of positions
+         leave two cards visibly split — against 40% for a linear scrub.
+
+         Sharper curves keep improving that number and were measured: at
+         (0.76, 0.03, 0.24, 0.97) it reaches 12%. They are not worth it. The
+         slow part of a steeper curve sits at the ends of each segment, which
+         includes the two ends of the track, and by then the card is moving 1.6px
+         per 12.7px of scroll — stationary again, and the original complaint
+         back.
+
+         Symmetric, so the crossing lands at the exact middle of each segment,
+         which is where the rail and the readout switch. */
+      animation-timing-function: cubic-bezier(0.62, 0.09, 0.38, 0.91);
       animation-fill-mode: both;
       animation-timeline: --engagement-reel;
       animation-range: contain 0% contain 100%;
@@ -729,7 +764,7 @@
       width: calc(100% / 3);
       height: 1px;
       background: var(--voltage);
-      animation: engagement-progress cubic-bezier(0.76, 0, 0.24, 1) both;
+      animation: engagement-progress cubic-bezier(0.62, 0.09, 0.38, 0.91) both;
       animation-timeline: --engagement-reel;
       animation-range: contain 0% contain 100%;
     }

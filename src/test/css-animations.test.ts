@@ -97,7 +97,7 @@ describe("scroll-driven animation declarations", () => {
     // The bounce is a shape, not a duration — the reel is locked to the scroll,
     // so there is no clock to put a duration on. Linear here is the version
     // that reads as a strip being dragged.
-    const curve = /cubic-bezier\(\s*0?\.76\s*,\s*0\s*,\s*0?\.24\s*,\s*1\s*\)/;
+    const curve = /cubic-bezier\(\s*0?\.62\s*,\s*0?\.09\s*,\s*0?\.38\s*,\s*0?\.91\s*\)/;
     const reelRule = css.match(/\.home-engagement\s*\{[^}]*animation-timeline[^}]*\}/);
     expect(
       reelRule![0],
