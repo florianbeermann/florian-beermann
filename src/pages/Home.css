@@ -839,20 +839,33 @@
 
 .home-about-grid {
   display: grid;
-  /* The prose takes the larger share. An even split gave the plate more width
-     than it can spend — it is sized from the height the band has left, so extra
-     width is empty column — and it squeezed the measure of the paragraphs for
-     nothing. */
-  grid-template-columns: 1.35fr 0.65fr;
+  /* The plate's column takes exactly the width the plate asks for, and the
+     prose takes the rest. It was a pair of `fr` shares, which meant the column
+     and the picture were sized by two different rules that had to be kept in
+     agreement: the plate derives its width from its height, and when that came
+     out wider than its share the ratio broke instead of the column giving way.
+     `auto` removes the negotiation. */
+  grid-template-columns: minmax(0, 1fr) auto;
   grid-template-rows: auto;
   column-gap: clamp(4rem, 9vw, 9rem);
   row-gap: 0;
-  align-items: start;
+  /* Centred, not top-aligned. The two columns hold very different amounts —
+     measured at 1440x900 the prose ran 216px against the plate's 486px — and
+     hanging both from the rule left a 270px hole under the text that read as
+     the section being unfinished. Centred, the same difference becomes a margin
+     above and below the prose, which reads as placement. */
+  align-items: center;
 }
 
 .home-about-copy {
   grid-column: 1;
   grid-row: 1;
+  /* A ceiling on the measure, not a width. The plate's column takes what the
+     picture needs and the prose is handed the rest, which on a short window is
+     more than a line should be: at 1440x679 the plate is only 280px wide and
+     the remainder ran the paragraphs past 80 characters. The slack falls into
+     the gutter between the two instead. */
+  max-width: 40rem;
 }
 
 .home-about-copy > p {
@@ -921,12 +934,10 @@
   grid-row: 1;
   justify-self: end;
   width: auto;
-  /* Sized from the band, capped in absolute terms. The cap is not decoration:
-     the width the ratio asks for grows with the height, while the column it has
-     to fit inside stops growing at the 1240px measure, so an uncapped height
-     eventually asks for a width the column cannot give and the ratio breaks.
-     At the cap the plate asks for 320px against a column of ~356px. */
-  height: min(54vh, 32rem);
+  /* Sized from the band, capped in absolute terms so the prose beside it keeps
+     a readable measure on a very tall window — uncapped, a 1440px-tall screen
+     asks for a plate wide enough to cut the text column to about 35 characters. */
+  height: min(62vh, 34rem);
   aspect-ratio: 723 / 1086;
   max-width: 100%;
 }
@@ -977,11 +988,11 @@
     }
 
     .home-about-copy .home-about-lead {
-      font-size: min(var(--text-title), 3.1vh);
+      font-size: min(var(--text-title), 4.6vh);
     }
 
     .home-about-copy > p {
-      line-height: clamp(1.4em, 3.2vh, 1.62em);
+      line-height: clamp(1.5em, 3.4vh, 1.7em);
     }
   }
 }
@@ -1284,6 +1295,63 @@
 }
 
 @media (max-width: 900px) {
+
+  /* The about band joins the collapse.
+
+     Every other two-column grid on the page becomes one column at this width,
+     and this one used to hold on until 680px. In between, the plate's column
+     took the width the picture asked for and the prose was left with whatever
+     remained — measured 265px at 768px wide, a measure of about 30 characters.
+     A band reading a third of a line at a time is worse than a stacked one. */
+  .home-about-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    row-gap: 0;
+  }
+
+  .home-about-copy {
+    grid-column: 1;
+    grid-row: auto;
+    margin-bottom: 3rem;
+  }
+
+  .home-about-note {
+    margin-bottom: 0;
+  }
+
+  /* One column, so the plate takes the width of the sheet and its height
+     follows from the ratio. The desktop rule sizes it from the band's height
+     instead, which is meaningless here: nothing is being held to one screen
+     below this width.
+
+     The cap is what stops "the width of the sheet" becoming absurd. At 900px
+     the sheet gives the plate 818px, and at this ratio that is a photograph
+     1229px tall — a portrait the reader has to scroll to get past. */
+  .home-about-portrait {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: stretch;
+    width: 100%;
+    max-width: 26rem;
+    height: auto;
+  }
+
+  .home-about-portrait img {
+    /* The photograph's own proportion, so nothing is cropped.
+
+       The plate was once a height in `vh` inside a column that is the full
+       width of the sheet here, and the two together made a landscape box for a
+       portrait picture: measured across three iPhones the box came out between
+       1.25:1 and 1.51:1 against the plate's 0.67:1, so `cover` kept 44-53% of
+       it and discarded the rest — and with the frame held near the top, what it
+       discarded was the bottom. Half a portrait, cut at the chest.
+
+       A ratio cannot do that. It also takes the viewport height out of it,
+       which matters on the browser this was reported from: iOS Safari resolves
+       `vh` against the large viewport, so the box was sized for a window taller
+       than the one actually on screen. */
+    height: auto;
+  }
   .home-proof-heading,
   .home-section-heading,
   .home-method header,
@@ -1456,54 +1524,6 @@
 
   .home-signal-flow h3 {
     margin-top: 2rem;
-  }
-
-  .home-about-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-    row-gap: 0;
-  }
-
-  .home-about-copy {
-    grid-column: 1;
-    grid-row: auto;
-  }
-
-  .home-about-copy {
-    margin-bottom: 3rem;
-  }
-
-  .home-about-note {
-    margin-bottom: 0;
-  }
-
-  /* One column, so the plate takes the full width of the sheet and its height
-     follows from the ratio. The desktop rule sizes it from the band's height
-     instead, which is meaningless here: nothing is being held to one screen
-     below this width. */
-  .home-about-portrait {
-    grid-column: 1;
-    grid-row: auto;
-    justify-self: stretch;
-    width: 100%;
-    height: auto;
-  }
-
-  .home-about-portrait img {
-    /* The photograph's own proportion, so nothing is cropped.
-
-       The plate was once a height in `vh` inside a column that is the full
-       width of the sheet here, and the two together made a landscape box for a
-       portrait picture: measured across three iPhones the box came out between
-       1.25:1 and 1.51:1 against the plate's 0.67:1, so `cover` kept 44-53% of
-       it and discarded the rest — and with the frame held near the top, what it
-       discarded was the bottom. Half a portrait, cut at the chest.
-
-       A ratio cannot do that. It also takes the viewport height out of it,
-       which matters on the browser this was reported from: iOS Safari resolves
-       `vh` against the large viewport, so the box was sized for a window taller
-       than the one actually on screen. */
-    height: auto;
   }
 
   .home-contact {
