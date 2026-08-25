@@ -286,8 +286,16 @@
 @supports (animation-timeline: view()) {
   /* Below the three-column breakpoint an engagement stacks into one tall
      column and no longer reads as a single card, so the scrub is desktop-only.
-     Narrow screens keep the plain stacked list above. */
-  @media (prefers-reduced-motion: no-preference) and (min-width: 769px) {
+     Narrow screens keep the plain stacked list above.
+
+     That breakpoint is 901px — the width every two-column grid on the page
+     collapses at — and this query used to say 769px, which put a band of
+     narrow-but-tall windows into the snapped page while their sections were
+     already stacking into one column. Measured at 800x900: about ran 59px past
+     its screen and contact 67px, with no snap position inside either, so the
+     overrun simply could not be read. A section can only be held to one screen
+     where it is laid out to fit one. */
+  @media (prefers-reduced-motion: no-preference) and (min-width: 901px) {
     .home-engagements-track {
       /* The gutter moves off the track and onto its contents.
       
@@ -316,23 +324,26 @@
          The two clocks stay in step whatever this height is. The reel runs over
          the track's `contain` range, which is the track less the window; the
          frame is held until its bottom meets the track's bottom, which is the
-         track less the stage and its sticky offset. The stage is a window less
-         a masthead and the offset is a masthead, so both reduce to the same
-         distance — the last engagement lands exactly as the frame lets go, and
-         the three snap positions below sit on those same offsets. */
-      height: calc(100svh + 2 * (100svh - var(--header-height)));
+         track less the stage and its sticky offset. The stage is a full window
+         and the offset is zero, so both reduce to the same distance — the last
+         engagement lands exactly as the frame lets go, and the three snap
+         positions below sit on those same offsets. */
+      height: calc(3 * 100svh);
       view-timeline-name: --engagement-reel;
       view-timeline-axis: block;
     }
 
-    /* The frame. Sticky at the masthead line like every panel, one screen
-       tall, holding the heading still while the engagements change under it. */
+    /* The frame. Sticky at the top of the window like every panel's ground, one
+       screen tall, holding the heading still while the engagements change under
+       it. The masthead is glass, so the frame runs the full window and takes
+       the masthead's band back as padding rather than starting below it. */
     .home-engagements-stage {
       position: sticky;
-      top: var(--header-height);
-      height: calc(100svh - var(--header-height));
+      top: 0;
+      height: 100svh;
       grid-template-rows: auto minmax(0, 1fr) auto;
       padding-block: var(--panel-pad);
+      padding-top: calc(var(--masthead-space, 5.25rem) + var(--panel-pad));
     }
 
     /* Catch a fling at each section.
@@ -377,28 +388,31 @@
 
     /* The stops themselves, and why they are not the panels.
 
-       A sticky element makes a useless snap target. Its snap area is taken from
-       where it currently sits, and a pinned panel sits at the masthead line
-       whatever the scroll position — so the targets drift as the page moves.
-       Measured: the six panels reported document positions of
-       [1358, 1358, 3167, …] at the top of the page and [3167, 3167, 3167, …]
-       a little way down. Snapping to a moving target is what made the lower
-       half of the page feel clunky, and it was bad enough that a plain
-       `scrollTo(0)` was pulled to the middle of the document instead.
+       They date from when panels were sticky, and a sticky element makes a
+       useless snap target: its snap area is taken from where it currently sits,
+       so a pinned panel reports the masthead line whatever the scroll position
+       and the targets drift as the page moves. Measured then: the six panels
+       reported document positions of [1358, 1358, 3167, …] at the top of the
+       page and [3167, 3167, 3167, …] a little way down, and snapping to a
+       moving target was bad enough that a plain `scrollTo(0)` was pulled to the
+       middle of the document instead.
 
-       These markers are ordinary static elements in the flow, one immediately
-       before each panel, so each sits at exactly the position its panel starts
-       at and stays there. Zero height, nothing drawn; they only give the
-       scroller somewhere to catch. */
+       Panels are ordinary flow elements now, so they could carry the alignment
+       themselves — but the markers stay. They cost nothing, they keep the snap
+       position independent of anything a panel's own box may later do, and the
+       engagements track already needs interior positions that no panel could
+       provide.
+
+       Zero height, nothing drawn, one immediately before each panel, so each
+       sits exactly where its panel starts. No `scroll-margin-top`: a panel now
+       fills the whole window and its ground runs under the glass masthead, so
+       the position to land on is the panel's own top edge and nothing is
+       subtracted from it. */
     .site-stop {
       display: block;
       height: 0;
       scroll-snap-align: start;
       scroll-snap-stop: always;
-      scroll-margin-top: min(
-        var(--header-height),
-        calc(100svh - var(--panel-h, 0px))
-      );
     }
 
     /* And three more inside the engagements track, because it is three screens
@@ -423,11 +437,11 @@
     }
 
     .home-engagement-steps > span:nth-child(2) {
-      top: calc(100svh - var(--header-height));
+      top: 100svh;
     }
 
     .home-engagement-steps > span:nth-child(3) {
-      top: calc(2 * (100svh - var(--header-height)));
+      top: calc(2 * 100svh);
     }
 
     /* The rule belongs to the heading now, not to the window.
@@ -809,12 +823,27 @@
   line-height: 1.5;
 }
 
+/* The band's one rule, and the reason it is on the heading.
+
+   It used to be drawn twice — once on the copy column and once on the plate —
+   so that the two tops shared a line across the spread. That worked while the
+   two columns were the same width, and stopped the moment the plate became
+   narrower than its column: the second rule ran on past the picture. Drawn
+   under the heading it spans the whole measure by itself, which is what the
+   engagements band already does, and the spread reads from one line instead of
+   two that have to be kept in agreement. */
+.home-about > .home-section-heading {
+  padding-bottom: clamp(1rem, 3.5vh, 2.75rem);
+  border-bottom: 1px solid var(--ink);
+}
+
 .home-about-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  /* One row: the argument beside the record. The record column is one cell
-     rather than a stack of grid items, so the taller copy beside it cannot
-     stretch the rows the list sits in. */
+  /* The prose takes the larger share. An even split gave the plate more width
+     than it can spend — it is sized from the height the band has left, so extra
+     width is empty column — and it squeezed the measure of the paragraphs for
+     nothing. */
+  grid-template-columns: 1.35fr 0.65fr;
   grid-template-rows: auto;
   column-gap: clamp(4rem, 9vw, 9rem);
   row-gap: 0;
@@ -824,16 +853,14 @@
 .home-about-copy {
   grid-column: 1;
   grid-row: 1;
-  border-top: 1px solid var(--ink);
-  padding-top: 1.3rem;
 }
 
 .home-about-copy > p {
   color: var(--muted);
   font-size: var(--text-body);
-  /* Leading answers to the panel's height too. Three paragraphs at 1.7 are
-     430px of the about panel's 659, and the panel has a heading to seat as
-     well; the floor is still comfortable for a 1rem measure. */
+  /* Leading answers to the panel's height too: the band has a heading and a
+     plate to seat as well, and the floor is still comfortable for this
+     measure. */
   line-height: clamp(1.5em, 3.5vh, 1.7em);
 }
 
@@ -857,87 +884,106 @@
   line-height: 1.08;
 }
 
-/* The record column: the list of companies, and the note that qualifies it. */
-.home-about-record {
-  display: flex;
-  grid-column: 2;
-  grid-row: 1;
-  flex-direction: column;
-  /* Overrides the grid's align-items: start so this column runs the full depth
-     of the row, which the copy beside it sets. The portrait then fills it. */
-  align-self: stretch;
-}
+/* The closing qualifier. It is the last thing the argument says, not a caption
+   on the picture, so it sits at the foot of the prose.
 
-/* The qualifier that closes the argument, and it now sits at the foot of the
-   prose rather than under the portrait. Beneath the photograph it read as a
-   caption on the picture; it is not about the picture, it is the last thing the
-   argument says, so it belongs at the end of the argument.
-
-   Set a step down from the prose and held apart by a rule, so it reads as a
-   footnote to the three paragraphs above rather than as a fourth one. */
+   A step down in size is enough to file it as a footnote. It used to be held
+   apart by a hairline as well, which put a third rule into a band that now
+   carries exactly one — and at 0.28 ink it was a different weight from the two
+   full-strength rules above it, so the section read as drawn by two hands. */
 .home-about-note {
   margin-top: clamp(1.25rem, 2.5vh, 1.9rem);
-  padding-top: clamp(1rem, 2vh, 1.5rem);
-  border-top: 1px solid var(--line);
   color: var(--muted);
   font-size: var(--text-sm);
   line-height: 1.6;
 }
 
-/* The portrait. It opens on the same rule the copy column does — that shared
-   line across the spread is what makes the two columns read as one page rather
-   than as two blocks that happen to sit side by side, and it is the reason the
-   employer list it replaces carried a border on its first row.
+/* The plate.
 
-   Sized to fill the row rather than to a height of its own. The row's depth is
-   set by the copy column beside it, and that depth comes from the column's
-   *width* — how the text wraps — not from the viewport. An earlier version
-   drove this from vh, which matched the copy at one window height and drifted
-   at every other: at 900px it aligned, at 700px it finished 90px short and the
-   crop tightened back to half the plate. Filling the row is exact at every
-   height, and it is also the arrangement the comments above describe. */
+   It keeps the photograph's proportion, and that is the whole of this rule.
+   Before, it was told to fill whatever depth the copy beside it happened to
+   set: the row took its height from how the prose wrapped, the plate stretched
+   to match, and `object-fit: cover` discarded whatever did not fit. As the copy
+   got shorter the frame flattened — measured at 555x422, a ratio of 1.31, from
+   a source that is 723x1086, a ratio of 0.67 — so a portrait was being shown as
+   a landscape crop of a face.
+
+   `aspect-ratio` states the proportion once and the picture is never cut. The
+   height comes from the band rather than from the prose, which is the other
+   half of the old problem: tying the plate to the copy meant every edit to a
+   paragraph resized the photograph. `justify-self: end` is what lets the width
+   follow the height — a stretched grid item would take the whole column and
+   force the ratio to spend it on height the band does not have — and it also
+   sets the plate against the measure's right edge, where the band ends. */
 .home-about-portrait {
   margin: 0;
-  /* The gap between the rule and the plate. Shared with the image's own inset,
-     which is why it is a variable rather than written twice. */
-  --plate-gap: 1.3rem;
-  position: relative;
-  border-top: 1px solid var(--ink);
-  padding-top: var(--plate-gap);
-  flex: 1;
-  /* A floor for the case where the copy is short enough that the row would
-     leave the plate a letterbox. */
-  min-height: 15rem;
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  width: auto;
+  /* Sized from the band, capped in absolute terms. The cap is not decoration:
+     the width the ratio asks for grows with the height, while the column it has
+     to fit inside stops growing at the 1240px measure, so an uncapped height
+     eventually asks for a width the column cannot give and the ratio breaks.
+     At the cap the plate asks for 320px against a column of ~356px. */
+  height: min(54vh, 32rem);
+  aspect-ratio: 723 / 1086;
+  max-width: 100%;
 }
 
 .home-about-portrait img {
-  /* Out of flow deliberately. In flow, "height: 100%" against an auto-height
-     row resolves to the plate's own 2:3 proportion, that height feeds back into
-     the row, and the record column ends up defining the depth it was supposed
-     to be matching — the plate came out 834px against copy of 510px. Taking it
-     out of flow breaks the loop: the row is sized by the copy alone, and the
-     plate then fills whatever that turns out to be. */
-  position: absolute;
-  top: var(--plate-gap);
-  right: 0;
-  left: 0;
-  /* Explicit rather than relying on top and bottom to imply it: a replaced
-     element with height auto uses its intrinsic height and ignores bottom, so
-     the plate came out at its full 834px regardless of the box around it. The
-     percentage resolves against the figure's padding box, hence the subtraction
-     of the gap the top inset already spends. */
-  height: calc(100% - var(--plate-gap));
   display: block;
+  height: 100%;
   width: 100%;
+  /* The frame is now the picture's own shape, so this crops nothing. It stays
+     because a source swapped at a different ratio should letterbox rather than
+     distort a face. */
   object-fit: cover;
-  /* Holds the frame on the face. With the taller frame there is far less to
-     discard, so this is nearer the middle of the plate than it was. */
-  object-position: 50% 26%;
   /* The seat the plate sits in before it decodes. Neutral, because the
      photograph is a neutral monochrome — the plum-tinted version that used to
      be here was graded to the old world and read as a colour cast against a
      black-and-white picture. */
   background-color: rgba(30, 32, 25, 0.06);
+}
+
+/* About, and the height it has to keep to.
+
+   This is the one panel whose content did not fit its screen on its own. The
+   others sit comfortably inside their window at every size tested; about ran
+   past its screen at both ends of the range — 122px over at a 679px window, and
+   again 12px at 982, 61px at 1050 and 44px at 1080, where the overrun came from
+   its heading taking a second line rather than from the leading.
+
+   That overflow is not cosmetic. The page snaps one section to a position and
+   there is no stop inside about, so anything past the fold is never on screen
+   at rest; it can only be glimpsed in transit.
+
+   A ceiling on the type is now the whole of the fix. The heading and the lede
+   are capped against the window's height as well as its width, so the heading
+   cannot grow into the two-line wrap that cost it ~85px. Both are written as
+   `min(token, vh)` — the same shape the section headings already use — so the
+   ramp stays the ceiling and the height only ever takes away.
+
+   There was a second block here for short windows, closing up the whole
+   vertical rhythm to buy back 122px. Cutting the band from four blocks of prose
+   to three took more than that, so it is gone: measured after the cut, about
+   sits inside its screen from 640px of window height upward with the type at
+   full size. Compressing the leading of a paragraph that already fits is a cost
+   with nothing bought. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) and (min-width: 901px) {
+    .home-about > .home-section-heading h2 {
+      font-size: min(var(--text-headline), 5vh);
+    }
+
+    .home-about-copy .home-about-lead {
+      font-size: min(var(--text-title), 3.1vh);
+    }
+
+    .home-about-copy > p {
+      line-height: clamp(1.4em, 3.2vh, 1.62em);
+    }
+  }
 }
 
 .home-contact {
@@ -1418,8 +1464,7 @@
     row-gap: 0;
   }
 
-  .home-about-copy,
-  .home-about-record {
+  .home-about-copy {
     grid-column: 1;
     grid-row: auto;
   }
@@ -1432,30 +1477,32 @@
     margin-bottom: 0;
   }
 
-  /* Back in flow: there is no second column here whose depth to match, so the
-     plate is free to take its own shape. */
+  /* One column, so the plate takes the full width of the sheet and its height
+     follows from the ratio. The desktop rule sizes it from the band's height
+     instead, which is meaningless here: nothing is being held to one screen
+     below this width. */
   .home-about-portrait {
-    flex: none;
-    min-height: 0;
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: stretch;
+    width: 100%;
+    height: auto;
   }
 
   .home-about-portrait img {
-    position: static;
-
     /* The photograph's own proportion, so nothing is cropped.
 
-       This was a height in `vh` inside a column that is now the full width of
-       the sheet, and the two together made a landscape box for a portrait
-       picture: measured across three iPhones the box came out between 1.25:1
-       and 1.51:1 against the plate's 0.67:1, so `cover` kept 44-53% of it and
-       discarded the rest — and with the frame held near the top, what it
+       The plate was once a height in `vh` inside a column that is the full
+       width of the sheet here, and the two together made a landscape box for a
+       portrait picture: measured across three iPhones the box came out between
+       1.25:1 and 1.51:1 against the plate's 0.67:1, so `cover` kept 44-53% of
+       it and discarded the rest — and with the frame held near the top, what it
        discarded was the bottom. Half a portrait, cut at the chest.
 
        A ratio cannot do that. It also takes the viewport height out of it,
        which matters on the browser this was reported from: iOS Safari resolves
        `vh` against the large viewport, so the box was sized for a window taller
        than the one actually on screen. */
-    aspect-ratio: 723 / 1086;
     height: auto;
   }
 

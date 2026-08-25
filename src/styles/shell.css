@@ -201,53 +201,65 @@ body::before {
    size it reads as the page settling as you reach it. Anything larger becomes
    an effect the visitor watches instead of copy they read, which on a page
    whose job is to be believed is a straight loss. */
-/* Cover-scroll. Each section pins once it has been read and the next one slides
-   up over it, so the page reads as a stack of plates being dealt rather than as
-   one continuous ribbon of content. It is the single change that makes the
-   scroll feel like a mechanism instead of a scrollbar.
+/* The panel, and what became of the cover-scroll.
 
-   Worth recording what this is *not*: it is not what the reference site does.
-   Measured frame by frame, that page scrolls normally — between 2.79s and 3.07s
-   of the reference capture its hero headline moves -135px and the incoming
-   section's top edge moves -130px, which is one document moving as a unit. Its
-   drama comes from an animated hero and from text arriving progressively, both
-   of which this project now has as well. The stacking here is an addition, not
-   a reproduction, and it should be judged on its own merits.
+   There was one here once — each panel sticky, the next sliding up over it —
+   and it is worth recording that it never actually ran. Its sticky offset
+   needed the panel's own height, which CSS cannot see, so it read a `--panel-h`
+   published by `lib/panel-scroll.ts`; that module was written but never
+   imported, so the offset always resolved through its deliberately absurd
+   fallback to roughly `-9320px` and no panel ever pinned. The drivers were
+   later switched off on purpose (see `Home.tsx`), snapping was put back in CSS,
+   and the dead offset was left behind pointing at a module that had since been
+   deleted. It is gone now, and panels are ordinary flow elements.
 
-   The offset is the whole trick. `top: 0` pins a panel's top edge, which is
-   right only while the panel fits the window; a taller one would park with its
-   overflow stranded below the fold. A negative offset equal to the overflow
-   parks the *bottom* edge at the bottom of the window instead, so a tall panel
-   scrolls fully into view and only then holds. `--panel-h` is published by
-   lib/panel-scroll.ts on layout — never on scroll — and its fallback is
-   deliberately absurd so that an unmeasured panel resolves to a `top` far
-   outside the document and simply never pins.
+   What is left here is the shape a panel has everywhere: a floor of one screen
+   less the masthead, and an opaque ground. The full-window sizing that the
+   snapped page needs is not here but in Home.css, under the same query that
+   turns snapping on — below that width the page scrolls plainly and none of it
+   applies.
 
-   Panels must be opaque. A transparent one shows the panel pinned beneath it,
-   which reads as a rendering fault rather than as depth. Paper sections take
-   `--paper` explicitly here; inverted ones already resolve it to blue. */
+   Panels must be opaque, or the section behind shows through and reads as a
+   rendering fault. Paper sections take `--paper` explicitly here; inverted ones
+   already resolve it to blue. */
 .site-panel {
-  position: sticky;
-  /* Pinned at the header line, not the top of the window, so a panel never
-     moves once it has arrived. The second arm is the escape hatch: a panel too
-     tall for the screen resolves to a smaller (often negative) offset and so
-     scrolls far enough to show its own bottom before it parks, rather than
-     pinning instantly and stranding its last screenful. */
-  top: min(
-    var(--header-height),
-    calc(100svh - var(--panel-h, 9999px))
-  );
-  /* Every panel fills the window below the masthead — not the whole window.
-     Panels pin under an opaque header, so the header's own band is not theirs
-     to fill, and a panel sized to the full viewport would hang its last
-     header's-worth past the fold.
-
-     The floor itself is not a nicety. A panel shorter than the window pins with
-     the *next* one already occupying the rest of the screen, so the visitor
-     never sees one plate at a time — they see two, with the upper one frozen,
-     which is exactly what a broken sticky element looks like. */
+  position: relative;
   min-height: calc(100svh - var(--header-height));
   background: var(--paper);
+}
+
+/* One panel, one screen — and the whole screen.
+
+   The conditions are the ones Home.css turns snapping on under, and they are
+   written out again rather than moved there because this is where `.site-panel`
+   is defined: the two rules carry the same specificity, this sheet loads last,
+   and a copy in Home.css would simply lose.
+
+   A snapped page rests on exact positions, so a panel that is not exactly a
+   window tall shows part of its neighbour at every one of them. Sized to a
+   window less the masthead and landed on the masthead line, each panel left
+   that header's-worth at the top of the window showing the *previous* section
+   — the masthead is fixed, transparent and `pointer-events: none`, a pane of
+   glass the page runs under rather than a bar it stops below, so there was
+   nothing up there to hide it.
+
+   So the ground takes the whole window and runs under the glass, and the band
+   the masthead occupies is bought back as padding, which holds the content
+   clear without letting the section behind show. `--masthead-space` is the
+   masthead's own measurement — its top offset plus the mark — so the two cannot
+   drift; the fallback matches the token in masthead.css. Adding `--panel-pad`
+   on top of it rather than a flat gap keeps a section starting where it started
+   before any of this changed.
+
+   Only here. Below these conditions the page scrolls plainly, nothing rests on
+   an exact position, and a panel is free to be whatever height it needs. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) and (min-width: 901px) {
+    .site-panel {
+      min-height: 100svh;
+      padding-top: calc(var(--masthead-space, 5.25rem) + var(--panel-pad));
+    }
+  }
 }
 
 /* Panels that grew to meet that minimum centre their content rather than

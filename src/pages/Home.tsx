@@ -130,9 +130,11 @@ export default function Home() {
     if (submitError) errorRef.current?.focus();
   }, [submitError]);
 
-  /* The old world pinned every section to the viewport and snapped between
-     them. The new one scrolls plainly, so both drivers are off. */
-
+  /* No scroll driver here, and there is not meant to be one. Sections were once
+     pinned from JavaScript and the reel was paced from it three separate times;
+     all of it is gone. The page is paced entirely by CSS scroll snapping, one
+     panel per screen — see the `.site-stop` block in Home.css for why that has
+     to be mandatory and page-wide. */
 
   const buildSubject = (formData: FormData) =>
     `Customer Success enquiry: ${formData.get("company") || "website"}`;
@@ -420,13 +422,22 @@ export default function Home() {
           </div>
         </section>
 
-        {/* The about section carries the argument and the evidence together.
-            They were two panels for a while: at 1219px the pair needed almost
-            twice the height a screen has, so the record was split onto its own.
-            That is no longer true — the record sits in the column the note was
-            already leaving empty, and the two columns now run to roughly the
-            same depth instead of one of them stopping a third of the way down
-            and the next screen carrying five rows on its own. */}
+        {/* The about band carries the argument beside the face.
+
+            It reads as one spread rather than two blocks: a single rule under
+            the heading runs the full measure, and the prose and the plate hang
+            from it. That rule is the band's only one — the copy column, the
+            plate and the closing line each carried their own before, three
+            rules in two different weights, which is what made this the section
+            that looked unlike the rest of the page.
+
+            The plate keeps the photograph's own proportion. It used to be told
+            to fill whatever depth the copy beside it happened to set, so as the
+            copy got shorter the frame flattened into a letterbox and `cover`
+            threw the rest of the picture away — measured at 555x422 against a
+            source of 723x1086, which is a landscape crop of a portrait. It is
+            sized from the height it has now, and the column it sits in is
+            narrower than the prose so that height has somewhere to go. */}
         {/* Snap stop. See `.site-stop` in Home.css. */}
         <span className="site-stop" aria-hidden="true" />
         <section id="about" className="home-about home-section site-panel">
@@ -441,40 +452,27 @@ export default function Home() {
                 and inside fast-moving SaaS scale-ups.
               </p>
               <p>
-                The two demand completely different things, and most of my work
-                now sits with companies discovering that mid-move, when the
-                coverage model that worked at one customer size quietly stops
-                working at the next.
-              </p>
-              <p>
-                So I know the difference between a framework that presents well
-                and one a busy team will still be using in six months. I build
-                for the second.
+                Most of my work now sits with companies discovering mid-move
+                that the coverage model which worked at one customer size
+                quietly stops working at the next.
               </p>
 
-              <aside className="home-about-note">
-                When an engagement needs deeper CS Operations, data, tooling or
-                enablement expertise, I bring in a small network of independent
-                specialists.
-              </aside>
+              <p className="home-about-note">
+                Deeper CS Operations, data, tooling or enablement work comes
+                from a small network of independent specialists.
+              </p>
             </div>
 
-            {/* The portrait sits alone in its column now. The note that
-                qualifies the practice used to sit under it, which read as a
-                caption on the photograph rather than as a closing qualifier on
-                the argument — it belongs at the end of the prose it qualifies. */}
-            <div className="home-about-record">
-              <figure className="home-about-portrait">
-                <img
-                  src="/portrait.jpg"
-                  alt="Florian Beermann"
-                  width="723"
-                  height="1086"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </figure>
-            </div>
+            <figure className="home-about-portrait">
+              <img
+                src="/portrait.jpg"
+                alt="Florian Beermann"
+                width="723"
+                height="1086"
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
           </div>
         </section>
 
