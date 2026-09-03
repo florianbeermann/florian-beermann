@@ -82,29 +82,62 @@ type Props = {
   hold?: boolean;
 };
 
-/* Which cut to fetch.
+/* Connections the plate is not worth its bytes on.
  *
- * The full plate is 2560 wide and 7.7MB, which is the right file for a desktop
- * hero and the wrong one for a phone on cellular. A portrait phone cannot use
- * the resolution in any case: the plate is 16:9 and object-fit: cover, so on a
- * tall box the crop is driven by height, and a 393pt screen at 3x wants 2556
- * device pixels of height — which no 16:9 file under 4500 wide would satisfy.
- * The extra width is spent on a crop that is thrown away.
+ * The light cut is 5.5MB. That is four seconds on good LTE, sixteen at 3Mbit,
+ * three quarters of a minute at 1Mbit — and German tariffs throttle to 32-64
+ * kbit once the allowance is gone, where it is a twelve minute download of a
+ * background nobody asked for. Below the threshold there is no video at all
+ * and the page opens on the poster, which is the same picture standing still.
+ *
+ * effectiveType is an estimate of how a connection behaves rather than a radio
+ * generation, which is exactly what makes it the right signal: a throttled LTE
+ * connection reports 2g, because 2g is what it behaves like. The spec puts the
+ * 3g ceiling at 700kbit, so everything caught here is a download of a minute
+ * or worse.
+ *
+ * Deliberately not `connection.downlink`. It reads like the precise figure
+ * this wants and is not one: Chrome returns a fixed 1.5 with an rtt of 50 when
+ * it has no estimate to give, which is every desktop visitor. Measured here
+ * against a real transfer it did not move — 1.5 reported against 985Mbit
+ * actual, unchanged afterwards — so a threshold on it would have hidden the
+ * plate from the machines most able to fetch it. effectiveType is a coarser
+ * number but an honest one.
+ *
+ * That leaves a genuinely slow connection reporting 4g uncaught, and it does
+ * not matter: nothing waits on this download any more. The page opens on the
+ * poster within a fixed window and the plate crossfades in whenever it lands,
+ * so being wrong here costs a background that arrives late rather than a
+ * visitor held in front of a loading screen. See HeroLoader. */
+const SLOW_TYPES = new Set(["slow-2g", "2g", "3g"]);
+
+type NetworkInfo = { saveData?: boolean; effectiveType?: string };
+
+/* Which cut to fetch, or whether to fetch one at all. Null means poster only.
+ *
+ * The full plate is 2560 wide and 14.7MB, which is the right file for a
+ * desktop hero and the wrong one for a phone on cellular. A portrait phone
+ * cannot use the resolution in any case: the plate is 16:9 and object-fit:
+ * cover, so on a tall box the crop is driven by height, and a 393pt screen at
+ * 3x wants 2556 device pixels of height — which no 16:9 file under 4500 wide
+ * would satisfy. The extra width is spent on a crop that is thrown away.
  *
  * Decided once, before the element gets a src, rather than with `media` on a
  * <source>: browsers only evaluate that at load time anyway, and several have
  * dropped it, so doing it here is both more portable and more honest about
  * being a one-time choice.
  *
- * Save-Data is respected where it is offered. A visitor who has asked for less
- * data has asked for less data. */
-function pickSource(src: string, srcSmall: string) {
+ * Save-Data is respected where it is offered, and respected literally. It used
+ * to select the smaller file, which still spent 5.5MB of an allowance its
+ * owner had just asked not to spend. A visitor who has asked for less data has
+ * asked for less data. */
+function pickSource(src: string, srcSmall: string): string | null {
   if (typeof window === "undefined") return src;
 
-  const conn = (
-    navigator as Navigator & { connection?: { saveData?: boolean } }
-  ).connection;
-  if (conn?.saveData) return srcSmall;
+  const conn = (navigator as Navigator & { connection?: NetworkInfo }).connection;
+
+  if (conn?.saveData) return null;
+  if (conn?.effectiveType && SLOW_TYPES.has(conn.effectiveType)) return null;
 
   // The CSS width the full cut starts paying for itself at, in the landscape
   // case. Below it the box is narrow, the crop is severe, and the light cut is
@@ -123,8 +156,15 @@ export function HeroVideo({
 }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   // Resolved once on mount and kept, so a window resize cannot swap the file
-  // mid-loop and restart it.
+  // mid-loop and restart it. Null means the connection did not justify the
+  // download and the poster is the background.
   const [chosen] = useState(() => pickSource(src, srcSmall));
+  /* Whether the plate has frames to show yet. The poster is behind it the
+     whole time, so this only governs a crossfade — see .hero-video-el. The
+     loading screen no longer waits for the plate, so there is a real window
+     where the page is up and the video is not, and a hard cut into it after
+     several seconds looks like a fault. */
+  const [showing, setShowing] = useState(false);
 
   // Held in refs so the effect below can stay mounted once. Callers pass
   // inline functions, and depending on them would tear down the video and
@@ -136,6 +176,16 @@ export function HeroVideo({
   const playRef = useRef<(() => void) | null>(null);
   progressRef.current = onProgress;
   readyRef.current = onReady;
+
+  /* Poster only. There is no element to drive, so the page is told at once that
+     there is nothing to wait for. --wow stays at its registered initial 0,
+     which is the right answer: the picture never turns to cloud, so the type
+     never leaves paper. */
+  useEffect(() => {
+    if (chosen !== null) return;
+    progressRef.current?.(1);
+    readyRef.current?.();
+  }, [chosen]);
 
   /* Releasing the hold. Separate from the effect below so that one can keep an
      empty dependency list and never tear the video down: re-running it would
@@ -175,29 +225,35 @@ export function HeroVideo({
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video || chosen === null) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     /* ── Readiness ─────────────────────────────────────────────────────────
-       Progress comes from the buffered ranges rather than from bytes, because
-       nothing exposes the byte count of a media download. It is a fraction of
-       duration, which is close enough for a bar and has the advantage of being
-       what actually governs whether playback will stall.
+       How much of the clip is held, as a fraction of its duration. Seconds
+       rather than bytes because nothing exposes the byte count of a media
+       download.
 
-       Only the range containing the playhead counts. A browser is free to
-       buffer out of order, and summing every range reports a file as ready
-       when the part about to play is the part still missing. */
+       Every buffered range counts, not only the one under the playhead. That
+       distinction is most of why the line used to sit still: the playhead is
+       parked at START_AT while the loading screen is up, and a browser filling
+       the file from a cold start has a range beginning at zero that does not
+       contain 2.4s yet — which the old reading scored as nothing at all, for
+       as long as it took to get there. Then the seek opened a second range and
+       the reading jumped to wherever that range ended, counting the 2.4s in
+       front of it as downloaded.
+
+       Summing is safe here because readiness is a separate question, answered
+       by canplay below. This number only has to describe how much of the file
+       is in hand, and out-of-order buffering does not make that untrue. */
     const reportProgress = () => {
       const { buffered, duration } = video;
-      if (!duration || !buffered.length) return;
+      if (!duration || !Number.isFinite(duration)) return;
+      let held = 0;
       for (let i = 0; i < buffered.length; i++) {
-        if (buffered.start(i) <= video.currentTime && buffered.end(i) >= video.currentTime) {
-          progressRef.current?.(Math.min(1, buffered.end(i) / duration));
-          return;
-        }
+        held += buffered.end(i) - buffered.start(i);
       }
-      progressRef.current?.(Math.min(1, buffered.end(0) / duration));
+      progressRef.current?.(Math.min(1, held / duration));
     };
 
     let announced = false;
@@ -208,15 +264,46 @@ export function HeroVideo({
       readyRef.current?.();
     };
 
+    /* The plate has frames. Distinct from ready: ready releases the loading
+       screen, this fades the picture in over the poster, and since the screen
+       stopped waiting on the download the two happen at different times. */
+    const reveal = () => setShowing(true);
+
+    /* canplay rather than canplaythrough.
+     *
+     * canplaythrough means the browser thinks the rest of the file will
+     * outrun playback, which is a question about the whole download and one
+     * that a phone on mobile data answers "no" to for fifteen seconds. Nothing
+     * here needs that promise: the plate loops a background, and a stall in it
+     * costs a held frame. canplay means there are frames to show, which is the
+     * thing actually being waited for. */
     video.addEventListener("progress", reportProgress);
     video.addEventListener("timeupdate", reportProgress);
-    video.addEventListener("canplaythrough", announceReady);
-    // A browser that refuses autoplay never reaches canplaythrough on its own,
-    // and reduced motion never asks it to. Neither should hold the page behind
-    // a loading screen, so the poster counts as ready in both cases.
-    video.addEventListener("loadeddata", () => {
+    video.addEventListener("loadedmetadata", reportProgress);
+    video.addEventListener("canplay", reportProgress);
+    /* A browser that has stopped fetching sends no more progress events, and
+       iOS Safari stops almost immediately on cellular — preload is advisory
+       there and a paused element fetches next to nothing. Reading once more on
+       the way out at least leaves the number truthful. */
+    video.addEventListener("suspend", reportProgress);
+    video.addEventListener("stalled", reportProgress);
+
+    video.addEventListener("canplay", announceReady);
+    video.addEventListener("canplay", reveal);
+    video.addEventListener("playing", reveal);
+    /* A file that will not arrive or will not decode must not hold the page.
+       Nothing handled this before, so a 404 on the plate was a full-length
+       wait behind a locked document ending in the poster — the same result,
+       several seconds later. */
+    video.addEventListener("error", announceReady);
+
+    // A browser that refuses autoplay never reaches a playing state on its
+    // own, and reduced motion never asks it to. Neither should hold the page
+    // behind a loading screen, so the poster counts as ready in both cases.
+    const onLoadedData = () => {
       if (reduced.matches) announceReady();
-    });
+    };
+    video.addEventListener("loadeddata", onLoadedData);
     if (reduced.matches) announceReady();
 
     const canvas = document.createElement("canvas");
@@ -397,29 +484,49 @@ export function HeroVideo({
       stopSampling();
       video.removeEventListener("progress", reportProgress);
       video.removeEventListener("timeupdate", reportProgress);
-      video.removeEventListener("canplaythrough", announceReady);
+      video.removeEventListener("loadedmetadata", reportProgress);
+      video.removeEventListener("canplay", reportProgress);
+      video.removeEventListener("suspend", reportProgress);
+      video.removeEventListener("stalled", reportProgress);
+      video.removeEventListener("canplay", announceReady);
+      video.removeEventListener("canplay", reveal);
+      video.removeEventListener("playing", reveal);
+      video.removeEventListener("error", announceReady);
+      video.removeEventListener("loadeddata", onLoadedData);
       document.documentElement.style.removeProperty("--wow");
     };
-  }, []);
+  }, [chosen]);
 
   return (
-    <div className={className} aria-hidden="true">
-      <video
-        ref={videoRef}
-        className="hero-video-el"
-        poster={poster}
-        src={chosen}
-        muted
-        loop
-        playsInline
-        /* The plate is the hero, so it is worth fetching eagerly — and
-           +faststart is set on the file, so playback begins long before the
-           download finishes. The poster covers the gap either way. */
-        preload="auto"
-        /* Not autoPlay: the observer starts it, so a hero scrolled past on load
-           never decodes a frame. */
-        tabIndex={-1}
-      />
+    <div
+      className={className}
+      aria-hidden="true"
+      /* The poster is the ground rather than only the video's placeholder.
+         With the loading screen no longer waiting on the download, the plate
+         can arrive well after the page does — and on a connection that did not
+         justify it, never. Something has to be the background in the meantime,
+         and it should be this picture. */
+      style={{ backgroundImage: `url(${poster})` }}
+    >
+      {chosen === null ? null : (
+        <video
+          ref={videoRef}
+          className="hero-video-el"
+          data-showing={showing ? "true" : undefined}
+          poster={poster}
+          src={chosen}
+          muted
+          loop
+          playsInline
+          /* The plate is the hero, so it is worth fetching eagerly — and
+             +faststart is set on the file, so playback begins long before the
+             download finishes. The poster covers the gap either way. */
+          preload="auto"
+          /* Not autoPlay: the observer starts it, so a hero scrolled past on
+             load never decodes a frame. */
+          tabIndex={-1}
+        />
+      )}
     </div>
   );
 }
