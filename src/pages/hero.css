@@ -71,7 +71,16 @@
   /* The colour the frame holds before the poster decodes. Taken from the
      clip's own opening rather than from a token, so the first paint is not a
      different picture from the second. */
-  background: #6d7a86;
+  background-color: #6d7a86;
+  /* The poster, set as the ground rather than only as the video's placeholder
+     — the URL comes from the same prop, inline, in HeroVideo.tsx. The loading
+     screen stopped waiting on the plate, so the picture standing still is what
+     the hero opens on, every time, and the clip is what arrives into it. On a
+     connection that did not justify the download it is the whole background
+     and no video element is rendered at all. */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .hero-video-el {
@@ -79,6 +88,25 @@
   height: 100%;
   display: block;
   object-fit: cover;
+  /* Held clear until there are frames, then crossfaded onto the poster
+     underneath — which is the same photograph, so this is the picture starting
+     to move rather than one image replacing another. Long, because there is
+     nothing to hurry: whenever it lands, it should look like it was always
+     going to. */
+  opacity: 0;
+  transition: opacity 900ms ease-out;
+}
+
+.hero-video-el[data-showing] {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The plate is paused under reduced motion and the poster is the same frame,
+     so there is nothing to fade to. */
+  .hero-video-el {
+    transition: none;
+  }
 }
 
 /* ── The wow ─────────────────────────────────────────────────────────────
