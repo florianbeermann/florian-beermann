@@ -112,11 +112,13 @@ this network; the legal entity is a sole trader.
   bounding box is 1021x524, a shade under 2:1, so anything that reserves space
   for it is sized by height and lets the width follow. There is no wordmark
   file: the name is set as live type in Nippo wherever the lockup appears whole.
-  `public/favicon.svg` and `favicon.ico` are square crops of the same path in
-  the signal blue on nothing, drawn with a stroke in the same colour so the
-  outline survives being rendered at 16px; `favicon.png` at 512 keeps the true
-  weight and is what the page's structured data gives as the organisation logo.
-  `apple-touch-icon.png` inverts it, the pale mark on a signal-blue tile.
+  `public/favicon.svg` and `favicon.ico` are a crop of that path rather than the
+  whole of it: the square holds the horn, the face and the waist, because a 2:1
+  drawing centred in a square spends half its height on air and at 16px was a
+  sliver. They are stroked in the same blue so the outline survives the size.
+  `favicon.png` at 512 keeps the whole anvil at its true weight and is what the
+  page's structured data gives as the organisation logo; `apple-touch-icon.png`
+  is the whole anvil too, inverted — the pale mark on a signal-blue tile.
 
   The hero is a cut of the mountain footage (`public/hero-loop.mp4`, with
   `hero-loop-sm.mp4` for narrow screens and `hero-poster.jpg` as its first
