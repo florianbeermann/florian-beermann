@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { CircleMark } from "@/components/CircleMark";
+import { BrandMark } from "@/components/BrandMark";
 import "./LegalPageLayout.css";
 
 interface LegalPageLayoutProps {
@@ -28,7 +28,7 @@ export const LegalPageLayout = ({
               the lockup the way the home page does. The link is labelled, so
               the name beside the mark is decoration to assistive tech rather
               than a second reading of the same thing. */}
-          <CircleMark className="site-brand-mark" />
+          <BrandMark className="site-brand-mark" />
           <span className="site-brand-word">Florian Beermann &amp; Partners</span>
         </Link>
         <nav aria-label="Primary navigation">

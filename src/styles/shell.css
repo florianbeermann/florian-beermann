@@ -683,9 +683,9 @@ body::before {
    lockup. `aspect-ratio` from the artwork's own viewBox is what stops the flex
    row crushing it — the failure described above. */
 .site-brand-mark {
-  height: 1.35em;
+  height: 0.88em;
   width: auto;
-  aspect-ratio: 1402 / 1122;
+  aspect-ratio: 1021.1 / 524;
   flex: none;
   color: var(--voltage);
 }
@@ -840,7 +840,7 @@ body::before {
     }
 
     .site-brand-mark {
-      height: 2.2em;
+      height: 1.43em;
     }
   }
 

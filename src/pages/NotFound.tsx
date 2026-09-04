@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { CircleMark } from "@/components/CircleMark";
+import { BrandMark } from "@/components/BrandMark";
 import { setPageMetadata } from "@/lib/metadata";
 import "./NotFound.css";
 
@@ -21,7 +21,7 @@ const NotFound = () => {
       <header className="site-header">
         <Link className="site-brand" to="/" aria-label="Florian Beermann &amp; Partners, home">
           {/* Mark and name, as on the legal pages — see LegalPageLayout. */}
-          <CircleMark className="site-brand-mark" />
+          <BrandMark className="site-brand-mark" />
           <span className="site-brand-word">Florian Beermann &amp; Partners</span>
         </Link>
         <nav aria-label="Primary navigation">

@@ -105,14 +105,18 @@ this network; the legal entity is a sole trader.
 - **Voice:** first-person singular, en-GB spelling ("realisation",
   "organisations"), understated and specific. Avoids transformation-consultancy
   vocabulary.
-- **Assets:** the mark is a single SVG path, inlined in the components that draw
-  it (`src/components/CircleMark.tsx`, and again in `public/login.php`, which
-  cannot import from the bundle) so it takes `currentColor` and recolours with
-  the ground behind it. There is no wordmark file: the name is set as live type
-  in Nippo wherever the lockup appears whole. The favicons
-  (`public/favicon.svg`, `.png`, `.ico`, `apple-touch-icon.png`) are cuts of the
-  same path in the signal blue on nothing, and `favicon.png` at 512 is what the
-  page's structured data gives as the organisation logo.
+- **Assets:** the mark is an anvil, a single SVG path inlined in the components
+  that draw it (`src/components/BrandMark.tsx`, and again in `public/login.php`
+  and `scripts/social-card.html`, neither of which can import from the bundle)
+  so it takes `currentColor` and recolours with the ground behind it. Its
+  bounding box is 1021x524, a shade under 2:1, so anything that reserves space
+  for it is sized by height and lets the width follow. There is no wordmark
+  file: the name is set as live type in Nippo wherever the lockup appears whole.
+  `public/favicon.svg` and `favicon.ico` are square crops of the same path in
+  the signal blue on nothing, drawn with a stroke in the same colour so the
+  outline survives being rendered at 16px; `favicon.png` at 512 keeps the true
+  weight and is what the page's structured data gives as the organisation logo.
+  `apple-touch-icon.png` inverts it, the pale mark on a signal-blue tile.
 
   The hero is a cut of the mountain footage (`public/hero-loop.mp4`, with
   `hero-loop-sm.mp4` for narrow screens and `hero-poster.jpg` as its first
@@ -125,7 +129,9 @@ this network; the legal entity is a sole trader.
   licences beside them: Switzer for everything a person says, Fragment Mono for
   everything a machine would have printed, and Nippo for the wordmark alone.
 
-  Retired and removed: the plum-world logo artwork (`logo-lockup*`, `logo-mark*`,
+  Retired and removed: the twelve-point star mark the anvil replaced (drawn
+  inline as `CircleMark`, with `logo.svg` as a stray second drawing beside it),
+  the plum-world logo artwork (`logo-lockup*`, `logo-mark*`,
   `logo-wordmark*`, `logo.png`), the Inter subsets before it, the Outfit variable
   font the site was set in between the plum world and this one, and the duotone
   portrait plate with the two scripts that generated it and its halftones. The

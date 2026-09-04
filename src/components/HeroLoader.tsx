@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CircleMark } from "@/components/CircleMark";
+import { BrandMark } from "@/components/BrandMark";
 
 /* The loading screen.
  *
@@ -162,7 +162,7 @@ export function HeroLoader({ progress, ready, onLeave }: Props) {
       aria-hidden="true"
     >
       <div className="hero-loader-lockup">
-        <CircleMark className="hero-loader-mark" />
+        <BrandMark className="hero-loader-mark" />
         <span className="hero-loader-word">Florian Beermann &amp; Partners</span>
       </div>
       <div className="hero-loader-rule">
