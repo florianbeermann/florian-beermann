@@ -15,7 +15,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { HeroVideo } from "@/components/HeroVideo";
 import { HeroLoader } from "@/components/HeroLoader";
-import { CircleMark } from "@/components/CircleMark";
+import { BrandMark } from "@/components/BrandMark";
 import { Masthead } from "@/components/Masthead";
 import { setPageMetadata } from "@/lib/metadata";
 import "./Home.css";
@@ -240,12 +240,14 @@ export default function Home() {
             hold={!plateRevealed}
           />
 
-          {/* The brand lockup: mark and wordmark together, under the pill.
+          {/* The brand lockup: the wordmark alone, under the pill. The mark
+              used to sit to its left; the masthead directly above already
+              carries the anvil, so showing it twice within one screen height
+              was saying the same thing twice.
               Presentational — the accessible name for the site already lives on
               the masthead's home link, and repeating it here would announce the
               company twice to a screen reader. */}
           <div className="hero-lockup" aria-hidden="true">
-            <CircleMark className="hero-lockup-mark" />
             <span className="hero-lockup-word">Florian Beermann &amp; Partners</span>
           </div>
 
@@ -722,7 +724,7 @@ export default function Home() {
             on the masthead's home link, and the copyright it now carries is
             given to assistive tech by the line below. */}
         <div className="site-closing-lockup" aria-hidden="true">
-          <CircleMark className="site-closing-mark" />
+          <BrandMark className="site-closing-mark" />
           <span className="site-closing-word">Florian Beermann &amp; Partners</span>
           <span className="site-closing-year">© {new Date().getFullYear()}</span>
         </div>

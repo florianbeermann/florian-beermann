@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CircleMark } from "./CircleMark";
+import { BrandMark } from "./BrandMark";
 import { MobileNav } from "./MobileNav";
 
 /* The masthead, and it now belongs to the page rather than to the hero.
@@ -162,7 +162,7 @@ export function Masthead() {
           the bar — otherwise the only route home would be an unlabelled
           graphic. */}
       <a className="masthead-mark" href="#top" aria-label="Florian Beermann &amp; Partners — home">
-        <CircleMark />
+        <BrandMark />
       </a>
       <nav className="glass masthead-rail" aria-label="Primary navigation">
         <a href="#engagements">Work</a>

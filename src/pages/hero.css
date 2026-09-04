@@ -294,10 +294,15 @@
 }
 
 /* ── The brand lockup ─────────────────────────────────────────────────────
-   Mark and wordmark, centred under the glass pill. Set in Nippo, which appears
+   The wordmark, centred under the glass pill. Set in Nippo, which appears
    nowhere else on the site — the wordmark is a piece of identity rather than
    part of the type system, and giving it its own face is what keeps it from
-   reading as a heading. */
+   reading as a heading.
+
+   The mark used to sit to its left. It is gone from here: the masthead is
+   directly above this and already carries the anvil, so the screen was showing
+   the same drawing twice inside one viewport height. Still a flex row, which
+   costs nothing and keeps the centring honest if anything joins it again. */
 .hero-lockup {
   position: absolute;
   top: calc(var(--masthead-space) + clamp(1.25rem, 3vh, 2.25rem));
@@ -306,7 +311,6 @@
   z-index: 2;
   display: flex;
   align-items: center;
-  gap: clamp(0.7rem, 1.4vw, 1.1rem);
   color: var(--wow-color);
   white-space: nowrap;
   pointer-events: none;
@@ -318,13 +322,6 @@
     0 2px 18px rgb(12 16 24 / 0.4);
 }
 
-.hero-lockup-mark {
-  height: clamp(2.4rem, 4.2vw, 3.6rem);
-  width: auto;
-  aspect-ratio: 1402 / 1122;
-  flex: none;
-}
-
 .hero-lockup-word {
   font-family: var(--wordmark);
   font-size: clamp(1.5rem, 2.6vw, 2.25rem);
@@ -334,16 +331,10 @@
 }
 
 @media (max-width: 30rem) {
-  /* At 320px the lockup ran 4px past the viewport, so the smallest step is
-     sized to fit rather than to a round number. */
-  .hero-lockup {
-    gap: 0.4rem;
-  }
-
-  .hero-lockup-mark {
-    height: 1.9rem;
-  }
-
+  /* One term now, so the budget is simple: the line is the wordmark and
+     nothing else. It used to be three fixed values tuned to fit 320px with a
+     mark and a gap beside it; with the mark gone the wordmark alone measures
+     237px inside 280. */
   .hero-lockup-word {
     font-size: 1.1rem;
   }
@@ -388,9 +379,13 @@
 }
 
 .hero-loader-mark {
-  height: clamp(2.4rem, 4.2vw, 3.6rem);
+  /* 0.65 of the height a near-square mark could carry. The loader is the only
+     place the anvil still stands beside the name: the lockup under the pill
+     dropped it, since the masthead behind that curtain carries the mark
+     already, and here there is no masthead yet. */
+  height: clamp(1.55rem, 2.75vw, 2.35rem);
   width: auto;
-  aspect-ratio: 1402 / 1122;
+  aspect-ratio: 1021.1 / 524;
   flex: none;
 }
 

@@ -138,7 +138,21 @@ fonts:
     sips -s format jpeg -s formatOptions 84 /tmp/card.png \
       --out public/social-preview.jpg
 
-The remaining raster assets (logo, company marks) have no build pipeline — they
+The favicons are cut from the same anvil path as the inline mark, in two
+weights. The anvil is outline art, so at 16px its hairlines average away to a
+smudge; `favicon.svg` and the `favicon.ico` frames therefore carry a `stroke` in
+the mark's own colour, tuned per size because one weight cannot serve 16px and
+48px — 200 path units at 16, 120 at 32 and in the SVG, 100 at 48. The large
+assets keep the true drawing.
+
+They are reproducible: render the relevant SVG with headless Chrome (a
+transparent `--default-background-color=00000000`, which is the only faithful
+renderer on a stock macOS box — `qlmanage` flattens alpha onto white), then
+downsample with Lanczos. Render at 512 and scale down rather than sizing the
+window to the target: Chrome clamps windows below roughly 500px and silently
+returns a cropped fragment instead of a small render.
+
+The remaining raster assets (company marks) have no build pipeline — they
 are committed at their final size.
 
 ## Deployment

@@ -177,10 +177,9 @@
 /* The mark sits directly on the ground with no pane behind it.
 
    Larger than the reference's 40px, and deliberately. That mark is a dense
-   solid glyph; this one is a twelve-point star built from thin tapering rays
-   with more air inside its box than ink, so at a matched 40px it reads
-   markedly smaller than the thing it is being matched to. Optical size, not
-   measured size. */
+   solid glyph; this one is an anvil drawn in outline, with far more air inside
+   its box than ink, so at a matched 40px it reads markedly smaller than the
+   thing it is being matched to. Optical size, not measured size. */
 .site-masthead .masthead-mark {
   display: inline-flex;
   align-items: center;
@@ -205,13 +204,18 @@
 
 .masthead-mark svg {
   display: block;
-  /* Sized by height: the mark is 1402x1122, so a width-based rule would make
-     it taller than the row. */
-  height: var(--masthead-h);
+  /* Sized by height: the anvil is 1021x524, so a width-based rule would make
+     it far taller than the row. Not the full row height, which is what a
+     near-square mark could afford — at 2:1 that put 117px of anvil in a row
+     where the old drawing took 75px, and the mark stopped being a mark and
+     started being furniture. 0.65 of the row is the height at which the anvil
+     occupies the width the old one did. */
+  height: calc(var(--masthead-h) * 0.65);
   width: auto;
-  aspect-ratio: 1402 / 1122;
-  /* Fifty-two tapering rays, the finest of them under a pixel wide at this
-     size. Letting the rasteriser optimise for speed turns them to mush. */
+  aspect-ratio: 1021.1 / 524;
+  /* The anvil is outline work, not a solid: its lightest strokes land near a
+     pixel at this size. Letting the rasteriser optimise for speed turns them
+     to mush. */
   shape-rendering: geometricPrecision;
 }
 
