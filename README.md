@@ -138,12 +138,32 @@ fonts:
     sips -s format jpeg -s formatOptions 84 /tmp/card.png \
       --out public/social-preview.jpg
 
-The favicons are cut from the same anvil path as the inline mark, in two
-weights. The anvil is outline art, so at 16px its hairlines average away to a
-smudge; `favicon.svg` and the `favicon.ico` frames therefore carry a `stroke` in
-the mark's own colour, tuned per size because one weight cannot serve 16px and
-48px — 200 path units at 16, 120 at 32 and in the SVG, 100 at 48. The large
-assets keep the true drawing.
+The favicons are cut from the same anvil path as the inline mark, but they are
+not the whole drawing. The anvil is 1021x524, a shade under 2:1, and a favicon
+is a square: framed whole it used 47% of the height, so at 16px it was a 15x7
+sliver of thin outline with empty bands above and below, 11% of the box inked.
+That reads as a smudge rather than a mark.
+
+So the square cuts into the drawing instead of containing it. `favicon.svg` and
+the `favicon.ico` frames hold the horn, the face and the waist — 55% of the
+anvil's width — which magnifies the artwork about 1.8x and takes 16px coverage
+from 11% to 40%. Two things about that crop are load-bearing. The horn tip is
+inside the frame, with a little air before it: the horn is the feature that
+says anvil rather than trestle, and a crop that clipped it lost the read
+entirely. And crops tighter than about 40% of the width are unusable, because
+the frame passes through the horn and leaves a detached fragment in the corner
+that looks like a rendering fault.
+
+The outline still needs help at that size, so those two carry a `stroke` in the
+mark's own colour, tuned per size because one weight cannot serve 16px and 48px
+— 110 path units at 16, 70 at 32, 55 at 48, and 80 in the SVG the tab renders.
+The crop already does most of the work, which is why these are roughly half the
+weights the uncropped version needed.
+
+`favicon.png` at 512 and `apple-touch-icon.png` keep the whole anvil. They are
+large enough to carry it, and the 512 is what the page's structured data hands
+out as the organisation logo, which should be the mark rather than a detail of
+it.
 
 They are reproducible: render the relevant SVG with headless Chrome (a
 transparent `--default-background-color=00000000`, which is the only faithful
