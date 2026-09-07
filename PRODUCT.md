@@ -95,9 +95,12 @@ this network; the legal entity is a sole trader.
 
 ## Brand Commitments
 
-- **Name:** Florian Beermann & Partners — set as a two-line wordmark, the name
-  letterspaced above "& PARTNERS", with the ampersand knocked out of a solid
-  square tile. Written in title case everywhere it appears as text.
+- **Name:** Florian Beermann & Co. — locked up as the anvil with the name in two
+  lines beside it, "Florian Beermann" over "& Co.", set in Lastica. The face is
+  unicase, so the lockup reads FLORIAN BEERMANN & CO. while the markup carries
+  title case; write it in title case everywhere it appears as text, and let the
+  drawing do the capitals. The lockup is one component, `src/components/
+  Wordmark.tsx`, and every place that shows the name uses it.
 - **Legal entity:** Florian Beermann, sole trader, Hegestr. 31, 20249 Hamburg,
   Germany.
 - **Contact:** hello@florianbeermann.com · +49 (0)40 89705822 ·
@@ -111,7 +114,10 @@ this network; the legal entity is a sole trader.
   so it takes `currentColor` and recolours with the ground behind it. Its
   bounding box is 1021x524, a shade under 2:1, so anything that reserves space
   for it is sized by height and lets the width follow. There is no wordmark
-  file: the name is set as live type in Nippo wherever the lockup appears whole.
+  file: the name is set as live type in Lastica wherever the lockup appears
+  whole. The anvil appears once per screen — the home page's masthead carries
+  the whole lockup on the hero and retracts the name once the page has scrolled
+  past it, leaving the anvil to hold the row.
   `public/favicon.svg` and `favicon.ico` are a crop of that path rather than the
   whole of it: the square holds the horn, the face and the waist, because a 2:1
   drawing centred in a square spends half its height on air and at 16px was a
@@ -127,9 +133,11 @@ this network; the legal entity is a sole trader.
   The portrait is `public/portrait.jpg`, and `public/social-preview.jpg` is the
   link card.
 
-  Three self-hosted licensed variable fonts, all in `public/fonts/` with their
-  licences beside them: Switzer for everything a person says, Fragment Mono for
-  everything a machine would have printed, and Nippo for the wordmark alone.
+  Three self-hosted fonts, all in `public/fonts/`: Switzer (variable) for
+  everything a person says, Fragment Mono for everything a machine would have
+  printed, and Lastica — one static weight, ASCII only — for the wordmark alone.
+  Switzer and Fragment Mono carry their licences beside them; Lastica does not
+  yet, and needs one added before the site ships.
 
   Retired and removed: the twelve-point star mark the anvil replaced (drawn
   inline as `CircleMark`, with `logo.svg` as a stray second drawing beside it),

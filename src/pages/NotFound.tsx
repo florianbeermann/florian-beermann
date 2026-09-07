@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { BrandMark } from "@/components/BrandMark";
+import { Wordmark } from "@/components/Wordmark";
 import { setPageMetadata } from "@/lib/metadata";
 import "./NotFound.css";
 
@@ -9,7 +9,7 @@ const NotFound = () => {
 
   useEffect(() => {
     setPageMetadata({
-      title: "Page not found | Florian Beermann & Partners",
+      title: "Page not found | Florian Beermann & Co.",
       description:
         "The page you requested does not exist on florianbeermann.com.",
       path: pathname,
@@ -19,10 +19,9 @@ const NotFound = () => {
   return (
     <div className="site-page notfound-page">
       <header className="site-header">
-        <Link className="site-brand" to="/" aria-label="Florian Beermann &amp; Partners, home">
-          {/* Mark and name, as on the legal pages — see LegalPageLayout. */}
-          <BrandMark className="site-brand-mark" />
-          <span className="site-brand-word">Florian Beermann &amp; Partners</span>
+        <Link className="site-brand" to="/" aria-label="Florian Beermann &amp; Co., home">
+          {/* The whole lockup, as on the legal pages — see LegalPageLayout. */}
+          <Wordmark className="site-brand-lockup" />
         </Link>
         <nav aria-label="Primary navigation">
           <Link to="/#engagements">Work</Link>
@@ -52,7 +51,7 @@ const NotFound = () => {
 
       <footer className="site-footer">
         <span>
-          Florian Beermann &amp; Partners · © {new Date().getFullYear()}
+          Florian Beermann &amp; Co. · © {new Date().getFullYear()}
         </span>
         <nav aria-label="Footer navigation">
           <Link to="/imprint">Imprint</Link>

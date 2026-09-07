@@ -15,9 +15,9 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <title>Florian Beermann &amp; Partners</title>
+    <title>Florian Beermann &amp; Co.</title>
     <meta name="description" content="I rebuild Customer Success for B2B SaaS companies whose customer base has outgrown the way they serve it: coverage, health scoring and playbooks that fit.">
-    <meta name="author" content="Florian Beermann &amp; Partners" />
+    <meta name="author" content="Florian Beermann &amp; Co." />
     <!-- The frame, not the paper. The browser paints this above the viewport,
          so the honest value is whatever sits under the chrome -- and that is
          now unambiguous. The old answer had to hedge between a painting band at
@@ -31,19 +31,24 @@
 
     <link rel="preload" as="font" type="font/woff2" href="/fonts/Switzer-Variable.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/FragmentMono-Regular.woff2" crossorigin />
+    <!-- The wordmark is in the first thing painted — the loader's lockup is on
+         screen before anything else is — so the face it is set in has to be
+         requested with the other two rather than discovered when the CSS that
+         needs it parses. 2.4KB, ASCII only. -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/Lastica.woff2" crossorigin />
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://florianbeermann.com/" />
-    <meta property="og:site_name" content="Florian Beermann & Partners" />
+    <meta property="og:site_name" content="Florian Beermann & Co." />
     <meta property="og:locale" content="en_GB" />
     <meta property="og:image" content="https://florianbeermann.com/social-preview.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Florian Beermann & Partners: Customer Success strategy for B2B SaaS" />
+    <meta property="og:image:alt" content="Florian Beermann & Co.: Customer Success strategy for B2B SaaS" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="https://florianbeermann.com/social-preview.jpg" />
-    <meta name="twitter:image:alt" content="Florian Beermann & Partners: Customer Success strategy for B2B SaaS" />
+    <meta name="twitter:image:alt" content="Florian Beermann & Co.: Customer Success strategy for B2B SaaS" />
     <meta property="og:title" content="Your customers changed. Your Customer Success motion didn’t.">
     <meta name="twitter:title" content="Your customers changed. Your Customer Success motion didn’t.">
     <meta property="og:description" content="I rebuild Customer Success for B2B SaaS companies whose customer base has outgrown the way they serve it: coverage, health scoring and playbooks that fit.">
@@ -56,7 +61,7 @@
       {
         "@context": "https://schema.org",
         "@type": "ProfessionalService",
-        "name": "Florian Beermann & Partners",
+        "name": "Florian Beermann & Co.",
         "url": "https://florianbeermann.com/",
         "logo": "https://florianbeermann.com/favicon.png",
         "image": "https://florianbeermann.com/social-preview.jpg",

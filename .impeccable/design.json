@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "generatedAt": "2026-08-24T20:30:00.000Z",
-  "title": "Design System: Florian Beermann & Partners",
+  "title": "Design System: Florian Beermann & Co.",
   "extensions": {
     "colorMeta": {
       "electric": {
@@ -41,7 +41,7 @@
       "title": { "displayName": "Title", "purpose": "Named things inside a band." },
       "body": { "displayName": "Body", "purpose": "Running prose, held to roughly 46-65ch." },
       "label": { "displayName": "Label", "purpose": "The machine voice: navigation, field names, captions, legal, numbers. One size and one tracking everywhere on the site." },
-      "wordmark": { "displayName": "Wordmark", "purpose": "The lockup only. Nippo appears nowhere else." }
+      "wordmark": { "displayName": "Wordmark", "purpose": "The lockup only. Lastica appears nowhere else." }
     },
     "shadows": [
       {

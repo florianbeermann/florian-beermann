@@ -30,7 +30,7 @@ Require env FB_ACCESS
 #
 # logo-wordmark.svg used to be on this list and is not any more. The login page
 # drew its lockup from that file; it now inlines the mark and sets the name in
-# Nippo, so the file is only reached from pages that are already behind the
+# Lastica, so the file is only reached from pages that are already behind the
 # gate. An exemption nothing needs is a file served to anyone who asks for it.
 <FilesMatch "^(login\.php|favicon\.(ico|svg|png)|apple-touch-icon\.png)$">
   Require all granted

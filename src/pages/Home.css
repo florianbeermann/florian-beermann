@@ -1645,20 +1645,26 @@
   white-space: nowrap;
 }
 
-/* Sized to span the page, and pushed to the foot so the panel's own edge does
-   the cropping. The negative bottom margin is what takes the descenders off the
-   sheet.
+/* Sized to span the page and pushed to the foot, so the lockup sits on the
+   panel's own bottom edge.
 
-   6.3vw, and it is measured rather than picked: at 7.4vw the lockup's content
-   ran 173px past the column. Worth noting because the container reports the
+   The negative bottom margin takes the last line's descender space off the
+   sheet rather than the letters themselves. It used to crop real descenders,
+   when the name was one line of a face that had them; Lastica's caps sit on the
+   baseline with nothing below it, so what is being pulled off the sheet now is
+   the empty band a line box reserves under the baseline. The letters land about
+   14px clear of the edge at desktop size, which is the tight-but-uncut result
+   this value was always after.
+
+   The width is measured rather than picked: an earlier setting ran the lockup's
+   content 173px past the column. Worth noting because the container reports the
    width it was *given* — it is a block-level flex box, so it fills the column
    whatever is inside it — and reading that number says everything fits while
-   the text overflows and is silently clipped. The mark and the wordmark have
+   the content overflows and is silently clipped. The wordmark and the year have
    to be measured separately. */
 .site-closing-lockup {
   display: flex;
-  align-items: center;
-  gap: 0.08em;
+  align-items: flex-start;
   width: max-content;
   margin-top: auto;
   margin-bottom: -0.19em;
@@ -1670,47 +1676,43 @@
      100vw includes the scrollbar and this panel clips — sizing in vw put the
      year up to a pixel past the edge at narrow desktop widths.
 
-     15.02 is the lockup's own aspect with a hair of margin: it is 14.95 times
-     its font-size wide, the mark, the wordmark and the year measured
-     separately. Re-measure if anything in the lockup changes size. */
+     The divisor is the lockup's own aspect with a hair of margin: the wordmark
+     is 17.65 times its font-size wide and the year adds another 0.94, so 18.59
+     content and 18.68 declared. It has been 15.02 and 12.63 before this, once
+     for a longer name and once for a different face — re-measure whenever
+     anything in the lockup changes size or proportion. */
   --wall: calc(100cqw + 8vw);
   margin-left: -4vw;
   margin-right: -4vw;
-  font-size: calc(var(--wall) / 15.02);
+  font-size: calc(var(--wall) / 18.68);
   line-height: 1;
   white-space: nowrap;
 }
 
-.site-closing-mark {
-  height: 0.51em;
-  width: auto;
-  aspect-ratio: 1021.1 / 524;
-  flex: none;
-}
-
-.site-closing-word {
-  font-family: var(--wordmark);
+.site-closing-wordmark {
   font-size: 1em;
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  line-height: 1;
 }
 
 /* The year sits below the wordmark's cap line rather than on its baseline —
    high enough to read as part of the lockup, low enough not to look like a
-   footnote pinned to the ascender. flex-start against a line whose height is
-   set by the 1em wordmark puts it at the top; the margin drops it from there.
+   footnote pinned to the ascender.
 
-   Set in the wordmark face so the lockup is one voice. */
+   Set in the mono rather than the wordmark's own face, which is what it used to
+   take. Two reasons, and either would be enough on its own: Lastica has no ©
+   glyph at all, so the character would have fallen back to whatever came next
+   in the stack and set the year in two faces; and a copyright line is exactly
+   what the design system's machine voice is for — "anything a machine would
+   have printed", which is where the labels, the figures and the legal already
+   live. The lockup is one voice either way, because the year was never part of
+   the name. */
 .site-closing-year {
-  align-self: flex-start;
-  margin-left: 0.16em;
-  margin-top: 0.30em;
-  font-family: var(--wordmark);
-  font-size: 0.26em;
+  margin-left: 0.34em;
+  margin-top: 0.26em;
+  font-family: var(--mono);
+  font-size: 0.22em;
   font-weight: 400;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0;
+  letter-spacing: 0.04em;
   line-height: 1;
   white-space: nowrap;
 }
@@ -1722,19 +1724,21 @@
   }
 
   /* The lockup is sized to span the page, so on a narrow screen the whole thing
-     is small — around 25px at 390px wide — and 0.26em of that is 6.5px. The
-     year gets an absolute floor here, which takes it out of the em scale and so
-     out of the lockup's own aspect: the rest is 14.13em and the year is a fixed
-     2.51rem beside it, hence the two terms. Re-measure both if it changes. */
+     is small — around 19px at 390px wide — and 0.22em of that is 4.1px, which
+     is below the size the mono is legible at. The year gets an absolute floor
+     here, which takes it out of the em scale and so out of the lockup's own
+     aspect: the rest is 17.73em and the year is a fixed 2.95rem beside it —
+     2.71rem of digits and 0.24rem of margin — hence the two terms. Re-measure
+     both if it changes. */
   .site-closing-year {
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
     margin-top: 0.9em;
   }
 
   .site-closing-lockup {
     font-size: min(
-      calc(var(--wall) / 15.02),
-      calc((var(--wall) - 2.51rem - 0.5rem) / 14.13)
+      calc(var(--wall) / 18.68),
+      calc((var(--wall) - 2.95rem - 0.5rem) / 17.73)
     );
   }
 }

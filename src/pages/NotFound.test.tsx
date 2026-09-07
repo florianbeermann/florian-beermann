@@ -38,7 +38,7 @@ describe("404 page", () => {
     renderNotFound();
 
     expect(document.title).toBe(
-      "Page not found | Florian Beermann & Partners",
+      "Page not found | Florian Beermann & Co.",
     );
   });
 });

@@ -671,32 +671,27 @@ body::before {
 .site-brand {
   display: flex;
   align-items: center;
-  gap: 0.6em;
   min-height: 44px;
   flex-shrink: 0;
-  font-size: clamp(0.95rem, 1.6vw, 1.15rem);
   color: var(--ink);
   text-decoration: none;
 }
 
-/* Sized against the name rather than the header, so the pair scales as one
-   lockup. `aspect-ratio` from the artwork's own viewBox is what stops the flex
-   row crushing it — the failure described above. */
-.site-brand-mark {
-  height: 0.88em;
-  width: auto;
-  aspect-ratio: 1021.1 / 524;
-  flex: none;
-  color: var(--voltage);
+/* The header's copy of the wordmark. The mark takes the voltage and the name
+   takes the ink, which is the pair the old two-element lockup used and the one
+   thing about it worth keeping: the anvil is a marker and the name is text.
+
+   Smaller than the hero's, because it is furniture rather than the subject:
+   0.72rem puts the lockup at 207px, which sits inside the header beside three
+   links without crowding them, and 1.15vw lets it grow to 0.95rem on a wide
+   screen. Below that the hairlines start losing the pixel grid, which is the
+   floor this face has and the reason it is not set smaller here. */
+.site-brand-lockup {
+  font-size: clamp(0.72rem, 1.15vw, 0.95rem);
 }
 
-.site-brand-word {
-  font-family: var(--wordmark);
-  font-size: 1em;
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  line-height: 1;
-  white-space: nowrap;
+.site-brand-lockup .wordmark-mark {
+  color: var(--voltage);
 }
 
 .site-header nav {
@@ -825,32 +820,31 @@ body::before {
     width: 100%;
   }
 
-  /* The name goes below roughly 30rem, and the mark carries the header alone.
+  /* The lockup keeps its name at this width, which is the reverse of what this
+     rule used to do.
 
-     The retired drawing was 11.81:1 and could not be given both its width and
-     its height on a phone: 375px of sheet left 27px of box and 9.4px of cap
-     against a 13px nav, so the masthead was quieter than its own navigation
-     and no value fixed it. Live type has the same problem in a different form —
-     "Florian Beermann & Partners" set small enough to fit a narrow sheet is
-     smaller than the links beneath it. Dropping it is the honest answer: the
-     mark is the logo, and it is legible at any size. */
+     It could not keep it before, and the reason was the setting rather than the
+     screen: the name ran on one long line, and set small enough to fit a narrow
+     sheet it came out smaller than the links beneath it, so dropping it and
+     letting the mark carry the header was the honest answer. Stacked on two
+     lines the lockup is a third of that width, and the brand has a row to
+     itself here, so there is room to set it *larger* rather than hide half of
+     it. The retired drawing that started all this was 11.81:1 and could not be
+     given both its width and its height on a phone at all.
+
+     0.9rem puts the lockup at 258px inside the 277px a 320px sheet leaves. */
   @media (max-width: 30rem) {
-    .site-brand-word {
-      display: none;
-    }
-
-    .site-brand-mark {
-      height: 1.43em;
+    .site-brand-lockup {
+      font-size: 0.9rem;
     }
   }
 
-  /* Centred under the name rather than flush to the sheet's edge. The artwork
-     is a centred two-line lockup -- "& PARTNERS" sits centred beneath "FLORIAN
-     BEERMANN" -- so a left-aligned nav reads as hanging off the corner of a
-     block that is plainly balanced about its own middle. Giving the nav the
-     masthead's width and centring inside it lines the two centres up exactly;
-     below roughly 500px both arms resolve to 100% and the pair simply centres
-     in the header together. */
+  /* Centred under the name rather than flush to the sheet's edge. The wordmark
+     is a single centred line, so a left-aligned nav reads as hanging off the
+     corner of a block that is plainly balanced about its own middle. Giving the
+     nav the masthead's width and centring inside it lines the two centres up
+     exactly; below roughly 500px both arms resolve to 100% and the pair simply
+     centres in the header together. */
   .site-header nav {
     width: var(--masthead);
     justify-content: center;

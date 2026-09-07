@@ -294,51 +294,15 @@
 }
 
 /* ── The brand lockup ─────────────────────────────────────────────────────
-   The wordmark, centred under the glass pill. Set in Nippo, which appears
-   nowhere else on the site — the wordmark is a piece of identity rather than
-   part of the type system, and giving it its own face is what keeps it from
-   reading as a heading.
+   There is no lockup in the hero any more. It stood centred under the glass
+   pill through two versions — the name alone, then the whole anvil-and-name
+   lockup — and it is gone because the masthead directly above it now carries
+   the wordmark itself, and retracts to the bare anvil once the page has moved
+   past this section. See `.masthead-wordmark` in masthead.css.
 
-   The mark used to sit to its left. It is gone from here: the masthead is
-   directly above this and already carries the anvil, so the screen was showing
-   the same drawing twice inside one viewport height. Still a flex row, which
-   costs nothing and keeps the centring honest if anything joins it again. */
-.hero-lockup {
-  position: absolute;
-  top: calc(var(--masthead-space) + clamp(1.25rem, 3vh, 2.25rem));
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  color: var(--wow-color);
-  white-space: nowrap;
-  pointer-events: none;
-  /* The same perceptual aid the statement uses, and constant for the same
-     reason — see the note on .hero .hero-title. This one sits on raw plate
-     above where the sky is brightest, so it has the least to spare. */
-  text-shadow:
-    0 1px 2px rgb(12 16 24 / 0.35),
-    0 2px 18px rgb(12 16 24 / 0.4);
-}
-
-.hero-lockup-word {
-  font-family: var(--wordmark);
-  font-size: clamp(1.5rem, 2.6vw, 2.25rem);
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  line-height: 1;
-}
-
-@media (max-width: 30rem) {
-  /* One term now, so the budget is simple: the line is the wordmark and
-     nothing else. It used to be three fixed values tuned to fit 320px with a
-     mark and a gap beside it; with the mark gone the wordmark alone measures
-     237px inside 280. */
-  .hero-lockup-word {
-    font-size: 1.1rem;
-  }
-}
+   Worth keeping the note: whatever goes here, the anvil may only appear once
+   within this screen. Both earlier arrangements existed to solve that, first by
+   dropping the mark from the lockup and then by holding the masthead's back. */
 
 /* ── The loading screen ───────────────────────────────────────────────────
    See HeroLoader.tsx for why it is paper and why the lockup is blue: the clip
@@ -362,6 +326,11 @@
     opacity var(--loader-fade) ease-out,
     background-color var(--loader-fade) ease-out;
   --loader-fade: 620ms;
+  /* The lockup's scale, held here rather than on the lockup itself because the
+     rule underneath has to be drawn to the same measure and is a sibling. The
+     value is the hero's, so the name is the same size behind the curtain as it
+     is in front of it. */
+  --loader-lockup: clamp(0.9rem, 1.9vw, 1.6rem);
 }
 
 .hero-loader[data-leaving] {
@@ -373,35 +342,22 @@
 .hero-loader-lockup {
   display: flex;
   align-items: center;
-  gap: clamp(0.7rem, 1.4vw, 1.1rem);
   color: var(--p-blue);
   white-space: nowrap;
 }
 
-.hero-loader-mark {
-  /* 0.65 of the height a near-square mark could carry. The loader is the only
-     place the anvil still stands beside the name: the lockup under the pill
-     dropped it, since the masthead behind that curtain carries the mark
-     already, and here there is no masthead yet. */
-  height: clamp(1.55rem, 2.75vw, 2.35rem);
-  width: auto;
-  aspect-ratio: 1021.1 / 524;
-  flex: none;
+.hero-loader-wordmark {
+  font-size: var(--loader-lockup);
 }
 
-.hero-loader-word {
-  font-family: var(--wordmark);
-  font-size: clamp(1.5rem, 2.6vw, 2.25rem);
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  line-height: 1;
-}
-
-/* A hairline rather than a bar. The width is the wordmark's, near enough, so
-   the two read as one object. */
+/* A hairline rather than a bar, drawn to the wordmark's own width so the two
+   read as one object. 17.65 is the lockup's aspect — it is 17.65 times its
+   font-size wide, the mark, the gap and the two-line name measured together —
+   so this stays matched to it at every size instead of at one. Re-measure if
+   anything inside `.wordmark` changes proportion. */
 .hero-loader-rule {
   position: relative;
-  width: min(18rem, 42vw);
+  width: calc(var(--loader-lockup) * 17.65);
   height: 2px;
   overflow: hidden;
   background: rgb(var(--p-blue-rgb, 0 71 255) / 0.16);
