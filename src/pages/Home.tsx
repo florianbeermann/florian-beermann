@@ -15,7 +15,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { HeroVideo } from "@/components/HeroVideo";
 import { HeroLoader } from "@/components/HeroLoader";
-import { BrandMark } from "@/components/BrandMark";
+import { Wordmark } from "@/components/Wordmark";
 import { Masthead } from "@/components/Masthead";
 import { setPageMetadata } from "@/lib/metadata";
 import "./Home.css";
@@ -113,7 +113,7 @@ export default function Home() {
 
   useEffect(() => {
     setPageMetadata({
-      title: "Florian Beermann & Partners",
+      title: "Florian Beermann & Co.",
       description:
         "Customer Success consulting for B2B SaaS companies whose customer base has outgrown the way they serve it. Strategy, lifecycle playbooks and CSM enablement.",
       path: "/",
@@ -178,7 +178,7 @@ export default function Home() {
     formData.set("size", size);
     formData.set("tooling", tooling);
     formData.set("access_key", accessKey);
-    formData.set("from_name", "Florian Beermann & Partners website");
+    formData.set("from_name", "Florian Beermann & Co. website");
     formData.set("subject", buildSubject(formData));
 
     try {
@@ -240,16 +240,11 @@ export default function Home() {
             hold={!plateRevealed}
           />
 
-          {/* The brand lockup: the wordmark alone, under the pill. The mark
-              used to sit to its left; the masthead directly above already
-              carries the anvil, so showing it twice within one screen height
-              was saying the same thing twice.
-              Presentational — the accessible name for the site already lives on
-              the masthead's home link, and repeating it here would announce the
-              company twice to a screen reader. */}
-          <div className="hero-lockup" aria-hidden="true">
-            <span className="hero-lockup-word">Florian Beermann &amp; Partners</span>
-          </div>
+          {/* No brand lockup here. It used to sit centred under the pill — first
+              as the name alone, then as the whole lockup — and it is gone
+              because the masthead directly above now carries the wordmark
+              itself. Two of them within one screen height was saying the same
+              thing twice, and the masthead is where a wordmark belongs. */}
 
           <div className="hero-statement">
             <h1 className="display hero-title">
@@ -724,12 +719,11 @@ export default function Home() {
             on the masthead's home link, and the copyright it now carries is
             given to assistive tech by the line below. */}
         <div className="site-closing-lockup" aria-hidden="true">
-          <BrandMark className="site-closing-mark" />
-          <span className="site-closing-word">Florian Beermann &amp; Partners</span>
+          <Wordmark className="site-closing-wordmark" />
           <span className="site-closing-year">© {new Date().getFullYear()}</span>
         </div>
         <p className="site-closing-notice">
-          Florian Beermann &amp; Partners, © {new Date().getFullYear()}
+          Florian Beermann &amp; Co., © {new Date().getFullYear()}
         </p>
       </footer>
     </div>

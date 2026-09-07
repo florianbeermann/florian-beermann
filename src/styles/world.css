@@ -30,11 +30,20 @@
    about the same layer. Icebug owns the type; Pioneer owns the surfaces.
    ───────────────────────────────────────────────────────────────────────── */
 
+/* The wordmark's face, and the only place it is used. Lastica is a unicase
+   display face — it draws one set of wide, hairline capitals, so the name sets
+   as caps whatever case the markup carries, and the markup carries title case
+   because that is what a screen reader and a search result should say.
+
+   It ships one weight, which is the same argument Fragment Mono makes: the
+   wordmark appears at exactly one weight everywhere, so there is never a
+   decision to make about it. ASCII only — it has no ©, which is why the year in
+   the footer lockup is set in the mono rather than beside the name. */
 @font-face {
-  font-family: "Nippo";
-  src: url("/fonts/Nippo-Variable.woff2") format("woff2-variations");
+  font-family: "Lastica";
+  src: url("/fonts/Lastica.woff2") format("woff2");
   font-style: normal;
-  font-weight: 200 700;
+  font-weight: 400;
   font-display: swap;
 }
 
@@ -83,8 +92,11 @@
   --on-dark-muted: rgb(var(--p-paper-rgb) / 0.72);
   --line-on-dark: rgb(var(--p-paper-rgb) / 0.32);
 
-  /* The wordmark's face, and only the wordmark's. */
-  --wordmark: "Nippo", "Switzer", Georgia, serif;
+  /* The wordmark's face, and only the wordmark's. The fallback is the sans the
+     site is already set in: Lastica is a display face with no text sibling, so
+     there is no near relative to fall back to, and the name is better read in
+     the site's own voice than in a system serif. */
+  --wordmark: "Lastica", "Switzer", "Helvetica Neue", Arial, sans-serif;
   --sans: "Switzer", "Helvetica Neue", Arial, sans-serif;
   --mono: "Fragment Mono", ui-monospace, "SF Mono", Menlo, monospace;
 

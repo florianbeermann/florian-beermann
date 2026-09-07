@@ -1,5 +1,5 @@
 ---
-name: Florian Beermann & Partners
+name: Florian Beermann & Co.
 description: Customer Success consulting for B2B SaaS companies whose customer base has moved upmarket.
 colors:
   stock: "#181d26"
@@ -48,11 +48,11 @@ typography:
     lineHeight: 1.4
     letterSpacing: "0.14em"
   wordmark:
-    fontFamily: "Nippo, Switzer, Georgia, serif"
+    fontFamily: "Lastica, Switzer, Helvetica Neue, Arial, sans-serif"
     fontSize: "1em"
     fontWeight: 400
-    lineHeight: 1
-    letterSpacing: "-0.01em"
+    lineHeight: 1.02
+    letterSpacing: "0.02em"
 rounded:
   none: "0"
   glass: "4px"
@@ -97,7 +97,7 @@ components:
     rounded: "{rounded.none}"
 ---
 
-# Design System: Florian Beermann & Partners
+# Design System: Florian Beermann & Co.
 
 ## Overview
 
@@ -142,7 +142,7 @@ Two files are the exception and cannot help it — `public/login.php` and `scrip
 
 **Display / Body Font:** Switzer (variable, 100–900)
 **Label / Machine Font:** Fragment Mono (single weight, 400)
-**Wordmark Font:** Nippo (variable, 200–700) — the lockup only, nowhere else
+**Wordmark Font:** Lastica (single weight, 400) — the lockup only, nowhere else. A unicase display face: the markup carries title case and the drawing comes out in caps.
 
 **Character:** One humanist grotesque doing all the talking, tightened hard at display sizes (−0.03em, 0.91 line-height) so a headline reads as a single object rather than a row of words. Against it, a monospace drawn on Helvetica's metrics carries everything a system would have printed. The contrast is not decorative — it is a claim about who is speaking.
 
@@ -167,7 +167,7 @@ The masthead is a fixed 5.25rem rail. Everything inside it — mark, glass pane,
 
 The page is paced by CSS scroll snapping, `mandatory`, with a stop before every panel and three inside the engagements track. This is load-bearing and the markers are not optional: `mandatory` means the scroll can never rest anywhere that is not a snap position, so a panel without one becomes unreachable. It is the only strictness that cannot be overshot, and it is what stops a trackpad flick crossing three sections in one gesture.
 
-Breakpoints are content-driven rather than device-driven: the significant ones are 769px (the engagements reel becomes a horizontal scrub above it, a stacked list below), 48rem (the masthead's pill collapses into a sheet) and 30rem (the brand drops its name and keeps its mark).
+Breakpoints are content-driven rather than device-driven: the significant ones are 769px (the engagements reel becomes a horizontal scrub above it, a stacked list below), 56rem (the masthead's wordmark drops its name and keeps its anvil, measured against the centred nav pill) and 48rem (the masthead's pill collapses into a sheet).
 
 ## Elevation & Depth
 

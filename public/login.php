@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- The only page a crawler can reach while the gate is up, and it says
          nothing worth indexing. -->
     <meta name="robots" content="noindex, nofollow" />
-    <title>Private site | Florian Beermann &amp; Partners</title>
+    <title>Private site | Florian Beermann &amp; Co.</title>
     <meta
       name="description"
       content="florianbeermann.com is not published yet and is available to invited visitors only."
@@ -126,10 +126,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       }
 
       @font-face {
-        font-family: "Nippo";
-        src: url("/fonts/Nippo-Variable.woff2") format("woff2-variations");
+        font-family: "Lastica";
+        src: url("/fonts/Lastica.woff2") format("woff2");
         font-style: normal;
-        font-weight: 200 700;
+        font-weight: 400;
         font-display: swap;
       }
 
@@ -202,43 +202,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         padding: 0 4vw;
       }
 
-      /* The lockup: mark and wordmark, the same pairing the site's masthead
-         carries. Set in the signal blue rather than the ink, because on this
-         page it is the only thing standing for the brand and the gate should
-         read as the site's own front door.
+      /* The lockup: the anvil and the two-line name, the same object the site's
+         hero carries. Set in the signal blue rather than the ink, because on
+         this page it is the only thing standing for the brand and the gate
+         should read as the site's own front door.
 
-         Sized by its own type rather than by a width cap. The old wordmark here
-         was a single 11.81:1 image, so it had to be rationed by width or it
-         took 484px and overflowed a phone; this is two elements in a row and
-         the wordmark clamps on font-size, so it shrinks on its own. */
+         This restates `styles/wordmark.css` by hand and has to be kept in step
+         with it — the page is outside the bundle and cannot import from it, the
+         same standing exception the palette has here. Every measurement is in
+         em of this row, so one font-size scales the whole thing. */
       .gate-brand {
         display: flex;
         align-items: center;
-        gap: clamp(0.55rem, 1.1vw, 0.85rem);
+        gap: 0.11em;
         min-height: 44px;
         min-width: 0;
+        font-size: clamp(0.72rem, 1.15vw, 0.95rem);
         color: var(--blue);
       }
 
       /* Sized by height, with the mark's own 1021x524 aspect doing the width.
-         The wordmark beside it is the scarce axis here, and it is set in ems of
-         the row, so the pair scales as one object. */
+         1.78em is the height of the two-line name beside it, so the lockup is
+         one rectangle rather than a tall thing next to a short one. */
       .gate-mark {
-        /* 1.05em, which is the measure the hero's loader uses: its mark clamps
-           to 2.35rem against a 2.25rem wordmark. Matched rather than eyeballed
-           so the pair is the same object here as it is on the site. */
-        height: 1.05em;
+        height: 1.78em;
         width: auto;
         aspect-ratio: 1021.1 / 524;
         flex: none;
       }
 
       .gate-wordmark {
-        font-family: "Nippo", "Switzer", sans-serif;
-        font-size: clamp(1.1rem, 2.1vw, 1.6rem);
+        font-family: "Lastica", "Switzer", sans-serif;
         font-weight: 400;
-        letter-spacing: 0.01em;
-        line-height: 1;
+        line-height: 1.02;
+        letter-spacing: 0.02em;
         white-space: nowrap;
       }
 
@@ -450,14 +447,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           class="gate-mark"
           viewBox="115.9 379 1021.1 524"
           role="img"
-          aria-label="Florian Beermann &amp; Partners"
+          aria-label="Florian Beermann &amp; Co."
         >
           <g transform="translate(0,1254) scale(0.1,-0.1)" fill="currentColor">
             <path d="M7680 8739 c-976 -3 -1949 -7 -2162 -8 l-388 -1 0 -120 0 -120 -487 -2 -488 -3 -3 -106 -3 -106 -352 -6 c-194 -4 -725 -8 -1182 -8 -456 -1 -971 -4 -1143 -8 l-313 -6 87 -110 c125 -157 499 -527 674 -667 655 -522 1340 -864 1969 -982 212 -40 314 -46 798 -46 l473 0 194 -181 193 -180 62 -157 c33 -86 70 -183 81 -215 l20 -59 -124 -141 c-68 -78 -170 -197 -227 -265 -102 -121 -107 -125 -271 -230 -159 -101 -426 -273 -818 -526 l-175 -113 -3 -430 -2 -430 650 3 651 3 37 29 c213 166 472 291 747 361 171 43 304 61 510 68 409 13 780 -63 1153 -238 104 -49 156 -78 313 -175 l86 -54 647 0 646 0 0 443 0 442 -73 47 c-39 25 -236 151 -437 278 -201 128 -425 271 -499 319 l-134 86 -206 244 c-113 134 -212 251 -219 262 -15 20 6 66 151 333 l64 118 470 477 470 476 134 59 c248 108 1130 497 1624 716 l490 216 3 362 2 362 -957 -2 c-527 -1 -1757 -5 -2733 -9z m3558 -381 l-3 -233 -2985 0 -2985 0 -3 233 -2 232 2990 0 2990 0 -2 -232z m-6130 -895 l2 -883 -410 0 -410 0 0 885 0 885 408 -2 407 -3 3 -882z m-958 -109 l0 -776 -27 6 c-16 3 -64 10 -108 16 -121 17 -384 83 -531 134 -438 150 -906 406 -1339 729 -231 173 -401 325 -588 525 l-118 127 153 5 c84 3 694 7 1356 8 l1202 2 0 -776z m6758 620 c-7 -6 -230 -108 -393 -179 -223 -97 -786 -346 -1315 -581 l-145 -65 -463 -462 -462 -462 -1265 -3 -1265 -4 -32 27 c-18 15 -97 88 -175 162 l-143 135 0 719 0 719 2832 0 c1557 0 2829 -3 2826 -6z m-2890 -1897 c-2 -7 -50 -101 -108 -210 l-105 -197 -980 0 -980 0 -75 202 c-41 110 -76 205 -78 209 -2 5 509 9 1163 9 941 0 1166 -2 1163 -13z m71 -801 l216 -257 275 -177 c151 -98 359 -231 463 -296 103 -65 187 -122 187 -126 0 -5 -211 -9 -469 -9 l-469 0 -297 189 -298 190 -875 0 -874 0 -302 -189 -301 -190 -360 0 c-198 -1 -406 2 -462 5 l-101 7 56 37 c31 20 185 119 342 220 157 100 338 217 404 259 118 75 119 77 320 310 110 129 211 246 222 260 l22 26 1042 -1 1042 -1 217 -257z m-162 -789 l272 -172 1 -307 c0 -170 -4 -308 -8 -308 -4 0 -12 4 -18 9 -21 22 -248 142 -350 187 -262 114 -482 171 -764 199 -559 56 -1114 -63 -1556 -331 -40 -24 -75 -44 -78 -44 -3 0 -6 130 -6 289 l0 289 188 118 c103 65 232 146 287 181 l100 63 830 0 830 0 272 -173z m-2639 -525 l2 -312 -532 2 -533 3 -3 300 c-1 165 0 305 3 312 3 11 113 13 532 11 l528 -3 3 -313z m4107 3 l0 -310 -527 -3 -528 -2 0 315 0 315 528 -2 527 -3 0 -310z" />
           </g>
         </svg>
         <span class="gate-wordmark" aria-hidden="true"
-          >Florian Beermann &amp; Partners</span
+          >Florian Beermann<br />&amp; Co.</span
         >
       </span>
     </header>
@@ -506,7 +503,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <footer class="gate-footer">
       <span
-        >Florian Beermann &amp; Partners · © <?= date('Y') ?></span
+        >Florian Beermann &amp; Co. · © <?= date('Y') ?></span
       >
       <a href="mailto:hello@florianbeermann.com">Request access</a>
     </footer>

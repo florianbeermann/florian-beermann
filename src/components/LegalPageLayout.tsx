@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { BrandMark } from "@/components/BrandMark";
+import { Wordmark } from "@/components/Wordmark";
 import "./LegalPageLayout.css";
 
 interface LegalPageLayoutProps {
@@ -23,13 +23,12 @@ export const LegalPageLayout = ({
   return (
     <div className="site-page legal-page">
       <header className="site-header">
-        <Link className="site-brand" to="/#top" aria-label="Florian Beermann &amp; Partners, home">
-          {/* The mark and the name, because these pages have no hero to carry
-              the lockup the way the home page does. The link is labelled, so
-              the name beside the mark is decoration to assistive tech rather
-              than a second reading of the same thing. */}
-          <BrandMark className="site-brand-mark" />
-          <span className="site-brand-word">Florian Beermann &amp; Partners</span>
+        <Link className="site-brand" to="/#top" aria-label="Florian Beermann &amp; Co., home">
+          {/* The whole lockup, because these pages have no hero to carry it the
+              way the home page does. The link is labelled, so the wordmark is
+              decoration to assistive tech rather than a second reading of the
+              same thing. */}
+          <Wordmark className="site-brand-lockup" />
         </Link>
         <nav aria-label="Primary navigation">
           <Link to="/#engagements">Work</Link>
@@ -54,7 +53,7 @@ export const LegalPageLayout = ({
 
       <footer className="site-footer">
         <span>
-          Florian Beermann &amp; Partners · © {new Date().getFullYear()}
+          Florian Beermann &amp; Co. · © {new Date().getFullYear()}
         </span>
         <nav aria-label="Footer navigation">
           <Link to="/imprint" aria-current={pathname === "/imprint" ? "page" : undefined}>

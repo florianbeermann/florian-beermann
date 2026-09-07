@@ -184,6 +184,7 @@
   display: inline-flex;
   align-items: center;
   justify-self: start;
+  min-width: 0;
   /* Set from the section under the row — see `markerOf` in Masthead.tsx. The
      fallback is the paper, which is what the hero wants and what the row starts
      on before the observer has reported anything.
@@ -194,6 +195,72 @@
      caught, after the masthead action and the sheet's action. */
   color: var(--mark-color, var(--on-dark));
   transition: color 260ms ease;
+}
+
+/* One font-size drives the lockup, mark included, because everything inside
+   `.wordmark` is in em. It is derived rather than picked: the anvil is 1.78em
+   of it, and 0.65 of the row is the height the anvil has always been given
+   here, so dividing one by the other keeps the mark exactly the size it was
+   before the name joined it. */
+.masthead-wordmark {
+  font-size: calc(var(--masthead-h) * 0.65 / 1.78);
+}
+
+.masthead-mark svg {
+  display: block;
+  /* The anvil is outline work, not a solid: its lightest strokes land near a
+     pixel at this size. Letting the rasteriser optimise for speed turns them
+     to mush. */
+  shape-rendering: geometricPrecision;
+}
+
+/* The name retracts once the row is over anything but the hero.
+
+   Width and opacity together, not opacity alone. Faded out on its own the name
+   would keep its 14em of the grid's first column, which pushes the centred nav
+   pill off the page's centre on narrow desktops — the column is `1fr` and the
+   pill is what sits between the two of them. So the element collapses as well
+   as fades, and the anvil, which is to its left, does not move while it does.
+
+   14.2em is the name's own width plus a hair. A `max-width` transition only
+   looks linear if it starts near the content width: from a round number like
+   20em the first third of the animation is the bound travelling down through
+   width it never had, and the collapse appears to stall before it starts. */
+.masthead-wordmark .wordmark-name {
+  overflow: hidden;
+  max-width: 14.2em;
+  opacity: 1;
+  transition:
+    max-width 340ms ease,
+    opacity 220ms ease 120ms;
+}
+
+.site-masthead:not([data-over-hero]) .masthead-wordmark .wordmark-name {
+  max-width: 0;
+  opacity: 0;
+  transition:
+    max-width 340ms ease 40ms,
+    opacity 180ms ease;
+}
+
+/* Below 56rem the name does not appear at all, on the hero or anywhere else.
+
+   Measured against the grid rather than guessed at. The row is
+   `1fr auto 1fr` with the nav pill in the middle, so the space the lockup has
+   is half of what the pill and the gutters leave. The lockup is 6.45 times the
+   row height wide — 284px once `--masthead-h` hits its 2.75rem floor, which it
+   does at about 65rem and holds below — while that half-column keeps shrinking
+   with the viewport. They meet at roughly 53rem: at 50rem the name is already
+   crossing into the pill. 56rem retires it with room to spare rather than at
+   the exact point of collision.
+
+   `display: none` rather than a collapsed width because there is no state here
+   to animate between. The anchor keeps its aria-label either way, so the name
+   is still announced. */
+@media (max-width: 56rem) {
+  .masthead-wordmark .wordmark-name {
+    display: none;
+  }
 }
 
 /* The sheet is its own dark world and the row sits on top of it, so the mark

@@ -4,6 +4,7 @@ import "./index.css";
 import "./styles/palettes.css";
 import "./styles/shell.css";
 import "./styles/world.css";
+import "./styles/wordmark.css";
 import "./styles/masthead.css";
 
 createRoot(document.getElementById("root")!).render(<App />);

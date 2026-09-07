@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { BrandMark } from "./BrandMark";
+import { Wordmark } from "./Wordmark";
 import { MobileNav } from "./MobileNav";
 
 /* The masthead, and it now belongs to the page rather than to the hero.
@@ -83,6 +83,15 @@ export function Masthead() {
   const ref = useRef<HTMLElement | null>(null);
   const [ground, setGround] = useState<Ground>("dark");
   const [markColor, setMarkColor] = useState<string>("");
+  /* The masthead carries the whole wordmark over the hero and retracts the name
+     once the page has moved past it, leaving the anvil alone. The lockup
+     introduces the site on the first screen; after that the visitor knows whose
+     site it is, and the row has a nav and an action to hold.
+
+     Starts true because the hero is what the page opens on, and a name that
+     appeared for one frame before the observer reported would read as a
+     glitch. */
+  const [overHero, setOverHero] = useState(true);
 
   useEffect(() => {
     const el = ref.current;
@@ -118,6 +127,11 @@ export function Masthead() {
             if (!next) continue;
             setGround(next);
             setMarkColor(markerOf(entry.target));
+            /* The hero by identity rather than by ground. "Dark" happens to be
+               the hero today, but it is a luminance bucket and any section
+               added later with a dark background would fall in it and take the
+               wordmark's name back out with it. */
+            setOverHero(entry.target.id === "top");
           }
         },
         { rootMargin: `-${line}px 0px -${vh - line - 1}px 0px`, threshold: 0 },
@@ -155,14 +169,20 @@ export function Masthead() {
       ref={ref}
       className="site-masthead"
       data-ground={ground}
+      data-over-hero={overHero ? "true" : undefined}
       style={markColor ? ({ "--mark-color": markColor } as React.CSSProperties) : undefined}
       role="banner"
     >
-      {/* The mark carries the accessible name now that the wordmark has left
-          the bar — otherwise the only route home would be an unlabelled
-          graphic. */}
-      <a className="masthead-mark" href="#top" aria-label="Florian Beermann &amp; Partners — home">
-        <BrandMark />
+      {/* The whole wordmark, and the only one on the page — the hero's centred
+          lockup is gone, because this is directly above it.
+
+          The name half of it retracts once the hero has been scrolled past,
+          leaving the anvil to carry the row: a wordmark introduces the site,
+          and after the first screen the visitor knows whose site it is. The
+          link keeps its accessible name either way — the route home has to stay
+          announced even when only the drawing is showing. */}
+      <a className="masthead-mark" href="#top" aria-label="Florian Beermann &amp; Co. — home">
+        <Wordmark className="masthead-wordmark" />
       </a>
       <nav className="glass masthead-rail" aria-label="Primary navigation">
         <a href="#engagements">Work</a>

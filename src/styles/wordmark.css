@@ -1,0 +1,49 @@
+/* ── The wordmark ─────────────────────────────────────────────────────────
+   The anvil and the name as one object, stated once and scaled by font-size
+   everywhere it is used. See `Wordmark.tsx` for why it is a component.
+
+   Everything here is in em. A caller sets a font-size on `.wordmark` and the
+   mark, the gap and the leading all follow from it, so the lockup keeps its
+   proportions from the 15px in a legal-page header to the 100px+ across the
+   foot of the home page. Nothing inside may take a rem or a px, or the lockup
+   stops being one drawing and becomes three things that happen to be adjacent.
+
+   The face is Lastica, which is unicase: the markup carries title case and the
+   drawing comes out in caps. It is also very wide — "Florian Beermann" is 14.07
+   times its own font-size — which is the reason the name is stacked rather than
+   run on. On one line it could not be set large enough to read as a wordmark
+   without running off a phone. */
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  /* Close, because that is what makes the two halves one mark rather than a
+     logo with a caption. 0.11em is measured, not picked: below about 0.08em the
+     anvil's horn touches the F at small sizes, where the hairlines are already
+     fighting the pixel grid. */
+  gap: 0.11em;
+  color: inherit;
+}
+
+.wordmark-mark {
+  /* The height of the two-line block, near enough: two lines at 1.02 leading
+     with a cap height of 0.732em measure 1.75em from the top of the first cap
+     to the baseline of the second. Matching the mark to that makes the lockup
+     one rectangle rather than a tall thing beside a short one. */
+  height: 1.78em;
+  width: auto;
+  aspect-ratio: 1021.1 / 524;
+  flex: none;
+}
+
+.wordmark-name {
+  font-family: var(--wordmark);
+  font-weight: 400;
+  /* Tight, so the two lines read as one block. Lastica's caps are 0.732em and
+     its hairlines are thin enough that a looser leading lets the lines drift
+     apart into two separate words. */
+  line-height: 1.02;
+  /* The face is wide already; this is the hair of air its hairlines need to
+     stay separate from each other at text sizes. */
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
