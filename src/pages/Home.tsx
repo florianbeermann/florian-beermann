@@ -299,31 +299,35 @@ export default function Home() {
         </section>
 
         <span className="site-stop" aria-hidden="true" />
-        <section className="home-method home-section site-voltage site-panel" aria-labelledby="method-title">
-          <h2 id="method-title">Turn customer data into clear next steps.</h2>
-          <ol className="home-signal-flow">
+        <section className="home-transition home-section site-voltage site-panel" aria-labelledby="transition-title">
+          <h2 id="transition-title">Keep what works. Change what no longer fits.</h2>
+          <ul className="home-transition-decisions" role="list">
             <li>
-              <h3>Understand</h3>
-              <p>Look at product use, support requests, billing and customer relationships.</p>
+              <h3>Customer fit</h3>
+              <p>
+                Separate a shift in customer needs from a gap in execution.
+                Reassess the assumptions behind your customer groups, health
+                measures and account priorities before adding more process.
+              </p>
             </li>
             <li>
-              <h3>Decide</h3>
-              <p>Identify which customers need attention and why.</p>
+              <h3>Service choices</h3>
+              <p>
+                Decide where a shared approach still works and where onboarding,
+                ownership or specialist involvement must differ. Balance those
+                choices against team capacity rather than letting exceptions
+                become the model.
+              </p>
             </li>
             <li>
-              <h3>Act</h3>
-              <p>Agree the next step, who owns it and when it needs to happen.</p>
+              <h3>The transition</h3>
+              <p>
+                Sequence changes around existing customer commitments and renewal
+                cycles. Introduce new responsibilities without leaving accounts
+                caught between the old and new ways of working.
+              </p>
             </li>
-            <li>
-              <h3>Review</h3>
-              <p>Review what changed for the customer and what your team should do next.</p>
-            </li>
-          </ol>
-          <p className="home-method-example">
-            For example, if a customer&apos;s product use falls, the account owner
-            investigates the cause, agrees a next step with the customer and
-            checks whether it helped.
-          </p>
+          </ul>
         </section>
 
         <span className="site-stop" aria-hidden="true" />
