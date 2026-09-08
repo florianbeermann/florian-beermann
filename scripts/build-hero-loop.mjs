@@ -42,18 +42,9 @@
 //
 // ── Encoding ─────────────────────────────────────────────────────────────────
 //
-// CRF 20 is chosen to be indistinguishable from the source rather than merely
-// good. Measured against it on the untouched middle of the clip, CRF 20 gives
-// PSNR 47.9dB and CRF 18 gives 49.0dB — both far past the ~40dB where
-// differences stop being visible in motion. Watch the sky for banding, which is
-// the failure mode on a gradient this smooth. Audio is dropped: it is a
-// background, and a muted track is also what lets the browser autoplay it.
-//
-// Two cuts, because one file cannot serve both cases. The full one keeps the
-// source's 2560 so a retina desktop is not upscaling it; the small one is for
-// phones, where a 16:9 plate under object-fit: cover is cropped by height and
-// the extra width is spent on pixels that get thrown away. See pickSource in
-// HeroVideo.tsx.
+// Keep the original visual quality and source frame rate. The desktop cut is
+// 2560 pixels wide at quality 20; mobile is 1920 wide at quality 22.
+// Do not impose a lower frame rate to reduce the download size.
 
 import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";

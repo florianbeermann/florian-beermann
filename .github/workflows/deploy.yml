@@ -215,7 +215,7 @@ jobs:
               ;;
           esac
 
-          if ! grep -q 'This site is not public yet' /tmp/gate.html; then
+          if ! grep -q 'data-site-gate="private-preview"' /tmp/gate.html; then
             echo "::error::The 403 body is not the login page. Either login.php is missing from the build or it is not exempted from Require env FB_ACCESS in .htaccess."
             exit 1
           fi

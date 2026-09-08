@@ -1,6 +1,6 @@
 ---
 name: Florian Beermann & Co.
-description: Customer Success consulting for B2B SaaS companies whose customer base has moved upmarket.
+description: Customer Success consulting for software companies serving different business customers.
 colors:
   stock: "#181d26"
   paper: "#f1f2f3"
@@ -12,34 +12,36 @@ colors:
   on-dark: "#f1f2f3"
   on-dark-muted: "rgb(241 242 243 / 0.72)"
   line-on-dark: "rgb(241 242 243 / 0.32)"
-  field-dark: "#414753"
-  field-light: "#a3aab8"
-  pigment-dark: "#00227a"
-  pigment-light: "#4d8bff"
 typography:
   display:
     fontFamily: "Switzer, Helvetica Neue, Arial, sans-serif"
-    fontSize: "clamp(4rem, 6.7vw, 7rem)"
+    fontSize: "clamp(2.8rem, 6.4vw, 6rem)"
     fontWeight: 520
-    lineHeight: 0.91
+    lineHeight: 1
     letterSpacing: "-0.03em"
   headline:
     fontFamily: "Switzer, Helvetica Neue, Arial, sans-serif"
     fontSize: "clamp(2.8rem, 5vw, 5.4rem)"
     fontWeight: 520
-    lineHeight: 0.95
+    lineHeight: 1.03
+    letterSpacing: "-0.03em"
+  mobile-headline:
+    fontFamily: "Switzer, Helvetica Neue, Arial, sans-serif"
+    fontSize: "clamp(2.25rem, 10vw, 2.8rem)"
+    fontWeight: 520
+    lineHeight: 1.05
     letterSpacing: "-0.03em"
   title:
     fontFamily: "Switzer, Helvetica Neue, Arial, sans-serif"
     fontSize: "clamp(1.8rem, 3vw, 3.1rem)"
     fontWeight: 520
-    lineHeight: 1
+    lineHeight: 1.1
     letterSpacing: "-0.03em"
   body:
     fontFamily: "Switzer, Helvetica Neue, Arial, sans-serif"
     fontSize: "clamp(1.11rem, 1.36vw, 1.26rem)"
     fontWeight: 400
-    lineHeight: 1.6
+    lineHeight: 1.65
     letterSpacing: "normal"
   label:
     fontFamily: "Fragment Mono, ui-monospace, SF Mono, Menlo, monospace"
@@ -58,7 +60,7 @@ rounded:
   glass: "4px"
 spacing:
   gutter: "clamp(1.5rem, 4vw, 3.5rem)"
-  panel: "clamp(1.5rem, 5.5vh, 10rem)"
+  section: "clamp(3.5rem, 7vw, 6rem)"
   rail: "2.5rem"
   header: "5.25rem"
 components:
@@ -69,9 +71,6 @@ components:
     rounded: "{rounded.glass}"
     padding: "0 1.75rem"
     height: "3rem"
-  control-hover:
-    backgroundColor: "{colors.ink}"
-    textColor: "{colors.paper}"
   control-solid:
     backgroundColor: "{colors.paper}"
     textColor: "{colors.ink}"
@@ -82,155 +81,186 @@ components:
     backgroundColor: "rgba(226, 230, 238, 0.1)"
     textColor: "{colors.on-dark}"
     rounded: "{rounded.glass}"
-  panel:
+  section:
     backgroundColor: "{colors.paper}"
     textColor: "{colors.ink}"
     rounded: "{rounded.none}"
-    padding: "{spacing.panel} {spacing.gutter}"
-  panel-inverted:
-    backgroundColor: "{colors.stock}"
-    textColor: "{colors.on-dark}"
-    rounded: "{rounded.none}"
-  panel-voltage:
+    padding: "{spacing.section} {spacing.gutter}"
+  section-voltage:
     backgroundColor: "{colors.electric}"
     textColor: "{colors.paper}"
     rounded: "{rounded.none}"
 ---
 
-# Design System: Florian Beermann & Co.
+# Design system
 
-## Overview
+## Identity
 
-**Creative North Star: "The Weather Station"**
+The existing "Weather Station" visual identity is retained: mountain footage,
+cool paper, slate ink, electric blue, precise rules and a personal wordmark.
+Atmosphere supports the offer. It must not delay or hide useful content.
 
-A real place at a real hour, read coolly. The site opens on live footage — mountains under moving cloud — and everything in front of it is instrument: a glass bar, a machine voice in tracked mono, one signal colour spent sparingly. The atmosphere is photographic and the interface is not. Nothing is decorated; things are *measured*.
+The site introduces an independent Customer Success consultant. Its central
+promise is helping teams adapt to **different business customers**. It is not
+exclusively about larger accounts or moving upmarket.
 
-The register is a consultancy that argues from conditions rather than from claims. That rules out the two obvious houses: the dark statement-panel arrangement the previous site shipped, and the card-grid consultancy page. Instead the page is a sequence of full-height bands, each holding one idea at a size that assumes it will be read rather than skimmed. Where a card grid would offer six things at once, this offers one and moves.
+The anvil and Lastica name lockup remain distinctive assets. The full name
+must be readable on mobile, not replaced with an unexplained symbol.
 
-Cool from end to end, with no warm note anywhere. That is a deliberate constraint, not a preference: the portrait is a neutral black-and-white, and beside a warm sheet it reads as tinted. The palette was chosen from five candidates built on the live page, and this is the one the photograph could sit inside without either of them lying.
+## Copy
 
-**Key Characteristics:**
-- Two planes, never mixed: footage behind, interface in front
-- Two voices: Fragment Mono for anything a machine would print, Switzer for anything a person says
-- Electric blue rationed to headings, rules, controls and one band
-- Full-height bands, one idea each, paced by scroll snapping
-- Flat by default; the only material is glass, and only on the front plane
+- First-person singular, British English, specific and understated.
+- No acronyms or initialisms in public-facing text. Write full terms or choose
+  a natural plain-language alternative. Do not introduce initials in brackets.
+- No em dashes. Use commas, full stops, colons or separate sentences.
+- Use "Services" consistently for the section at `#engagements`.
+- Describe customer problems, responsibilities and tangible deliverables.
+- Employer logos represent previous employment, not consultancy clients.
+- Never invent client results, testimonials, qualifications or work samples.
+- An illustrative workflow is not evidence of a completed client engagement.
 
-## Colors
+## Colour
 
-Slate and a cool sheet, with one electric blue held in reserve.
+All shared colours come from `src/styles/palettes.css`. Slate is the reading
+colour and electric blue marks headings, links, controls and the method and
+closing sections.
 
-### Primary
-- **Electric** (`#0047ff`): The signal. Headings on the sheet, the marker register, hairline rules, control fills, the two blue bands, the mark. 5.60:1 on the sheet — over the floor, but with no headroom, which is exactly why it is rationed. It is also what sets the sheet's lightness: a darker sheet drops every blue heading under 4.5:1, so the sheet cannot be chosen without measuring the blue against it.
+Running text on blue uses the full paper colour. Do not fade it until it loses
+contrast. On paper, secondary text can use the existing muted ink.
 
-### Neutral
-- **Slate Ink** (`#181d26`): All running prose. 15.08:1 on the sheet, with room to tint: the muted register at 0.66 still measures 5.19:1, which is the headroom the blue does not have. It is almost never a background — the hero's ground sits behind the video, and the only other surfaces it fills are the mobile navigation sheet and a control on hover.
-- **Paper** (`#f1f2f3`): The sheet. Every section but the hero and the two blue bands, and the type printed on those. Taken from the hero footage: sampled across eight frames the film's light end runs warm at hue 34–35 above and cool at 191–200 below, so the sheet sits neutral where the two meet rather than taking a side the film does not.
-- **Paper Deep** (`#e5e8eb`): The second sheet, for a surface that must separate from the first without a rule.
-- **Ink Muted** (`rgb(24 29 38 / 0.66)`): Secondary prose. Only ever a tint of the ink, never a separate grey.
-- **Line** (`rgb(24 29 38 / 0.28)`): Hairlines and dividers.
+The hero footage is shown without a dark overlay, tint or brightness filter.
+This is an explicit design preference. Do not dim the video or its poster.
+Headline, supporting text, navigation and the header contact action shift from paper
+towards electric blue as clouds brighten the visible video crop, then return
+as the picture darkens. This restores the original cloud-synchronised effect.
+Only the foreground changes colour. Do not add a colour layer over the footage.
 
-### Named Rules
-
-**The One Rule.** Slate is the ink, electric is the signal. Blue never carries running prose. It has no room to fade — a tinted secondary blue collapses under contrast — so it is spent in fewer places rather than made louder.
-
-**The Single Source Rule.** All colour is decided in `src/styles/palettes.css` and nowhere else. Both planes read those tokens, the WebGL field included, so one attribute on `<html>` repaints the entire site. A literal colour anywhere else is a bug: the page previously carried two blues and two whites because nothing forced them through one definition.
-
-Two files are the exception and cannot help it — `public/login.php` and `scripts/social-card.html` are outside the bundle and restate the palette by hand. Both have to be edited whenever a token moves, and both have shipped a retired palette before.
+The independent access page and social-image source restate their colours
+because they are outside the application bundle.
 
 ## Typography
 
-**Display / Body Font:** Switzer (variable, 100–900)
-**Label / Machine Font:** Fragment Mono (single weight, 400)
-**Wordmark Font:** Lastica (single weight, 400) — the lockup only, nowhere else. A unicase display face: the markup carries title case and the drawing comes out in caps.
+Switzer carries headings, prose, form labels and human instructions. Fragment
+Mono carries navigation, controls, process sequence numbers and copyright.
+Lastica is reserved for the brand name.
 
-**Character:** One humanist grotesque doing all the talking, tightened hard at display sizes (−0.03em, 0.91 line-height) so a headline reads as a single object rather than a row of words. Against it, a monospace drawn on Helvetica's metrics carries everything a system would have printed. The contrast is not decorative — it is a claim about who is speaking.
+Use the shared type tokens in `src/styles/shell.css`. Large headings are capped
+at six rem. Mobile headings use the smaller, shared mobile step instead of
+taking over an entire screen.
 
-### Hierarchy
-- **Display** (520, `clamp(4rem, 6.7vw, 7rem)`, 0.91): The hero statement. Once per page.
-- **Headline** (520, `clamp(2.8rem, 5vw, 5.4rem)`, 0.95): Band openers.
-- **Title** (520, `clamp(1.8rem, 3vw, 3.1rem)`, 1): Named things inside a band.
-- **Body** (400, `clamp(1.11rem, 1.36vw, 1.26rem)`, 1.6): Running prose, held to roughly 46–65ch.
-- **Label** (400, `0.8125rem`, `0.14em`, uppercase): Navigation, field names, captions, legal, numbers. Tabular figures on.
+Body copy is left aligned with a comfortable line length. Do not justify short
+paragraphs or automatically hyphenate the service and About copy.
 
-### Named Rules
+## Layout and reading
 
-**The Two Voices Rule.** Fragment Mono for anything a machine would have printed — navigation, labels, field names, legal, captions, prices, numbers. Switzer for anything a person says. Nothing is set in both, and there is no third family.
+The homepage retains its original screen-sized sections and mandatory stopping
+points. At widths of 901 pixels and above, with motion enabled and support for
+scroll-driven animation, each panel fills at least one viewport. Native
+mandatory snapping stops at every panel and each of the three service positions.
+Do not replace this with freely scrolling desktop sections or a comparison grid.
 
-**The One Size Rule.** The machine voice appears at exactly one size and one tracking everywhere on the site. Fragment Mono ships a single weight, which is a feature: there is never a decision to make about it.
+The service section is a sticky, three-screen track. The three services share a
+frame and move horizontally with the original linear timeline and progress
+readout. Keep the independent snap markers and explicit animation fill modes.
+Short desktop windows use more compact service text and spacing so the full
+descriptions stay inside the frame without changing its timing or stopping points.
+Expanded content, such as the optional enquiry fields, must remain reachable.
+Narrow screens and reduced-motion preferences retain the original stacked fallback.
 
-## Layout
+Main content resolves to a maximum width of 1240 pixels. Hero and navigation
+use the front-plane gutter. At narrow widths, layouts stack and keep a minimum
+side margin of approximately 1.35 rem.
 
-Full-height bands, one idea each. A band is `100svh` less the masthead, padded on `--panel` (`clamp(1.5rem, 5.5vh, 10rem)`) and inset on `--gutter` (`clamp(1.5rem, 4vw, 3.5rem)`). Content is a column that resolves against a 1240px measure and centres in whatever is left, so the heading, the prose and the rules all land on the same line regardless of what the band itself spans.
+The page sequence is:
 
-The masthead is a fixed 5.25rem rail. Everything inside it — mark, glass pane, action — runs on one 2.5rem line, which is most of why it reads as engineered rather than assembled.
+1. Clear positioning and supporting copy over the hero. Navigation and contact
+   remain in the header, without duplicate links beneath the hero copy.
+2. Genuine employment evidence.
+3. The three services in their original scroll-driven sequence.
+4. A four-step method explaining how information leads to action and review.
+5. Personal experience, the portrait and the relationship with independent
+   specialists in "Responsible for renewals and growth."
+6. A concise contact introduction, direct email and the enquiry form.
+7. The blue closing section and oversized wordmark.
 
-The page is paced by CSS scroll snapping, `mandatory`, with a stop before every panel and three inside the engagements track. This is load-bearing and the markers are not optional: `mandatory` means the scroll can never rest anywhere that is not a snap position, so a panel without one becomes unreachable. It is the only strictness that cannot be overshot, and it is what stops a trackpad flick crossing three sections in one gesture.
+The service numbers are position indicators, not buttons. All three service
+descriptions stay in the document for assistive reading and the stacked fallback.
 
-Breakpoints are content-driven rather than device-driven: the significant ones are 769px (the engagements reel becomes a horizontal scrub above it, a stacked list below), 56rem (the masthead's wordmark drops its name and keeps its anvil, measured against the centred nav pill) and 48rem (the masthead's pill collapses into a sheet).
+Legal and missing-page views prioritise reading and recovery. Their headings
+and vertical spacing are smaller than the old poster-sized treatment.
 
-## Elevation & Depth
+## Navigation
 
-Flat by default. On the sheet there are no shadows at all — depth is carried by the bands themselves, which are full-height grounds that cover each other as the page scrolls, and by hairline rules at 0.28 ink.
+The header adapts to the background behind it while retaining the full brand.
+Desktop has Services, About and a concise contact action. Mobile uses a compact
+disclosure rather than a full-screen modal.
 
-The exception is the front plane, and it exists only over the footage. There, one material: glass.
+Over paper and blue sections, the fixed header has a solid matching backing.
+Body text must not show through the name, and hidden links beneath that backing
+must not receive clicks. The hero keeps its transparent front-plane treatment.
 
-### Shadow Vocabulary
-- **Glass lift** (`box-shadow: 0 4px 35px rgba(0, 0, 0, 0.15)`): The only shadow on the site. It separates a pane from the picture behind it.
+The mobile disclosure has a labelled button, an accurate expanded state,
+keyboard-reachable links, outside-click dismissal and Escape support. It does
+not lock page scrolling or trap focus. Closed links must not be reachable.
 
-### Named Rules
+Preserve the existing section addresses so old links continue to work.
 
-**The No-Border Rule.** Glass panes have no border. A hairline draws the pane's outline, which reads as a *shape*; the shadow instead separates it from what is behind, which reads as a *sheet lying on top*. The blur is 50px, not 20px with more — at that radius everything behind resolves to one flat field, so the pane stops being a window and becomes a material.
+## Forms and state
 
-## Shapes
+Field labels stay visible. Required and optional information is explained before
+submission. The software selector supports an unlisted product without implying
+it was built in-house.
 
-Square by default. Bands, rules, inputs and images are all `0` radius; the page is a printed sheet and printed sheets do not have rounded corners.
+Enquiry text and submission state are held in the application provider across
+internal navigation. No personal draft data is written to browser storage.
+Returning from the privacy policy restores the enquiry and its reading position.
+An active submission remains locked across that navigation.
 
-`4px` exists for exactly one thing: the front plane. Large enough to say a pane is a physical object, small enough that it never reads as a rounded button. It never appears on flat ground.
+Successful delivery clears the draft and leaves a persistent confirmation.
+Failure preserves the text and gives a direct email recovery link. Email-app
+fallback explicitly says that opening a draft does not send the message.
 
-The one recurring geometry is the hairline: a 1px rule at full ink under a heading, at 0.28 ink between list items. Rules do the work borders and boxes would do elsewhere.
+Inputs and important actions have generous hit areas and visible focus
+indicators. Keep native validation and a logical keyboard order.
 
-## Components
+## Media and motion
 
-### Buttons
-- **Character:** Drawn, never filled. A 1px rule with the machine voice inside it.
-- **Shape:** 4px radius, 3rem minimum height, `0 1.75rem` padding.
-- **Default:** Transparent, `1px solid currentColor`, label typography in uppercase.
-- **Hover:** The rule fills in — background becomes the ink, text becomes the paper, over 180ms. On a dark ground the fill inverts so it still reads as *filling in* rather than as a different component.
-- **Solid:** One per page, reserved for the single action the hero asks for. On a washed photograph a drawn rule is a suggestion and a solid plate is an instruction.
+The opening is available immediately over `hero-poster.jpg`. There is no
+loading curtain or whole-document entrance animation.
 
-### Cards / Containers
-- **Corner Style:** Square. There are no cards in the card sense; there are bands and columns.
-- **Background:** The sheet, the deep sheet, the ink or the electric — a band picks one and inverts its whole subtree via `.site-inverted`, so headings, rules and secondary type all follow from one source.
-- **Border:** Hairline rules only, never a box.
+Use the original high-quality video files, with a 2560-pixel desktop cut and a
+1920-pixel mobile cut at their original frame rate. Do not reduce resolution or
+frame rate just to shrink these files without explicit approval.
+There is no visible playback button. It plays
+automatically when visible and pauses when offscreen or in a hidden tab.
 
-### Inputs / Fields
-- **Style:** No box. A field is a baseline: transparent background, a single rule underneath, label above it in the machine voice.
-- **Focus:** The rule takes the electric and thickens.
+Reduced motion and reduced-data connections use the still image without
+downloading the video.
 
-### Navigation
-- **Style:** Label typography, uppercase, tracked. On the home page the links sit in a glass pane; on the legal pages they are plain text on the sheet.
-- **The mark adapts to its ground.** The masthead samples what is behind it and transitions the mark's colour between grounds rather than switching it.
+The cloud colour signal reads a 32-by-18-pixel sample of the visible crop from
+decoded video frames. Retain the original brightness curve and rate limiting.
+Downscale on an accelerated drawing canvas before copying that small sample to
+the pixel-reading canvas. Do not copy full-resolution video frames into the
+pixel-reading canvas, as this can interrupt smooth playback.
+Do not replace the cloud response with a timed colour loop. The signal is scoped
+to the homepage and resets when the hero is offscreen, the tab is hidden or
+reduced motion is requested.
 
-### The Reel (signature component)
-The engagements section is three cards sharing one grid cell, moved horizontally by a scroll-driven CSS animation on the track's own view timeline. It is pure CSS — the cards, the rail and the numbered readout all run on one clock, and the pacing comes from the browser's snapping. Timing is `linear` deliberately: with snapping, a gesture is a jump of a whole engagement, and an eased curve spends that jump crossing far faster in the middle than at the ends, so the card flicks past instead of travelling.
+The portrait stays in the responsibility section, beside the copy on desktop
+and below it on narrow screens, at its original proportion with meaningful
+alternative text.
+The social-preview image must use the same approved headline as its source and
+sharing metadata.
 
-### The Plate (signature component)
-The hero is looping footage with a sampler reading a 32×18 raster of the frame each tick. When cloud fills the frame the type shifts from paper toward electric — `--wow`, 0 to 1 — and the masthead's action follows it. The signal is a 0.5th-percentile floor rather than a mean, because a mean cannot tell "uniformly cloud" from "half cloud, half mountain".
+## Maintenance boundaries
 
-## Do's and Don'ts
+The browser's route metadata and the initial page metadata must agree. Legal
+pages describe themselves when shared, not the homepage. Missing-page views
+should not be indexed.
 
-### Do:
-- **Do** take every colour from `palettes.css`. One attribute on `<html>` has to be able to repaint the site, shader included.
-- **Do** set anything a machine would have printed in Fragment Mono, uppercase, at `0.8125rem` / `0.14em`. One size, one weight, everywhere.
-- **Do** give a new full-height panel a `.site-stop` marker immediately before it. Under `mandatory` snapping a panel without one cannot be scrolled to.
-- **Do** invert a whole band with `.site-inverted` rather than restating colours on its children.
-- **Do** keep prose on the slate. It has the contrast headroom for a real muted step; the blue does not.
+Keep the server-side access gate independent of wording. Deployment recognises
+its stable `data-site-gate` marker rather than matching a headline.
 
-### Don't:
-- **Don't** run body text in electric. It measures 5.34:1 — over the floor with nothing left, so a tinted secondary register is impossible and the band collapses into one flat blue.
-- **Don't** put a radius, a blur or a shadow on flat ground. The front plane's material exists only over the footage.
-- **Don't** give a glass pane a border. The shadow does the separating; an outline turns a sheet into a shape.
-- **Don't** add a warm neutral. The palette is cool end to end because the portrait is neutral black-and-white and would read as tinted beside anything warm.
-- **Don't** pace this page from JavaScript. Three attempts — a settle on scroll end, a wheel handler, a nested scroller — were each worse than the browser's own snapping. On a trackpad the wheel does not stop when the hand does.
-- **Don't** write a nameless `animation` shorthand. `animation: linear both` means `animation-name: none`, and a minifier is entitled to collapse the whole declaration, taking the fill mode with it — which drops all three reel cards onto each other in production only.
+Actual hosting-log retention, international-transfer safeguards and permission
+to publish client evidence must be confirmed by the owner. Do not replace
+missing facts with plausible-sounding claims.

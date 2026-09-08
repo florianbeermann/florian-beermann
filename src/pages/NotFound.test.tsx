@@ -18,7 +18,7 @@ describe("404 page", () => {
     renderNotFound();
 
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-      "This page does not exist.",
+      "Page not found",
     );
     expect(screen.getByText("Error 404")).toBeInTheDocument();
 
@@ -27,10 +27,10 @@ describe("404 page", () => {
     });
     expect(suggestions).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "Homepage" }),
+      screen.getByRole("link", { name: "Back to homepage" }),
     ).toHaveAttribute("href", "/");
     expect(
-      screen.getByRole("link", { name: "Email directly" }),
+      screen.getByRole("link", { name: "Email me directly" }),
     ).toHaveAttribute("href", "mailto:hello@florianbeermann.com");
   });
 

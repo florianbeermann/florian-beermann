@@ -1,29 +1,24 @@
 import { useEffect } from "react";
 import { LegalPageLayout } from "@/components/LegalPageLayout";
-import { setPageMetadata } from "@/lib/metadata";
+import { pageMetadata, setPageMetadata } from "@/lib/metadata";
 
 export const Privacy = () => {
   useEffect(() => {
-    setPageMetadata({
-      title: "Privacy policy | Florian Beermann & Co.",
-      description:
-        "Information about how personal data is processed on florianbeermann.com.",
-      path: "/privacy",
-    });
+    setPageMetadata(pageMetadata.privacy);
   }, []);
 
   return (
     <LegalPageLayout
       title="Privacy policy"
       description="How personal data is processed when you visit this website or contact me."
-      updated="Last updated: 13 July 2026"
+      updated="Last updated: 7 September 2026"
       contentClassName="legal-privacy"
     >
       <div className="legal-sections">
         <section className="legal-section">
           <span className="legal-section-number">01</span>
           <div className="legal-section-copy">
-            <h2>Controller</h2>
+            <h2>Who is responsible for your data</h2>
             <div className="legal-section-body">
               <p>
                 Florian Beermann, trading as{" "}
@@ -46,17 +41,18 @@ export const Privacy = () => {
             <h2>Website hosting and server logs</h2>
             <div className="legal-section-body">
               <p>
-                This website is hosted by Hetzner Online GmbH, Industriestr.
-                25, 91710 Gunzenhausen, Germany. Hetzner may process technical
-                access data including IP address, time of request, requested
-                resource, referrer, browser and operating-system information in
-                server logs.
+                This website is hosted by Hetzner, Industriestr. 25, 91710
+                Gunzenhausen, Germany. Its server logs may record your Internet
+                Protocol address, the time of your visit, the pages or files you
+                request, the referring page, and information about your browser
+                and operating system.
               </p>
               <p>
-                Processing is based on Article 6(1)(f) GDPR. My legitimate
-                interest is the secure, reliable and efficient delivery of the
-                website. Log retention is governed by the hosting configuration
-                and applicable security and legal requirements.
+                This processing is based on Article 6(1)(f) of the General Data
+                Protection Regulation. It supports my legitimate interest in
+                running a secure and reliable website. How long access logs are
+                kept depends on the hosting settings and applicable security
+                and legal requirements.
               </p>
               <p>
                 <a
@@ -74,26 +70,34 @@ export const Privacy = () => {
         <section className="legal-section">
           <span className="legal-section-number">03</span>
           <div className="legal-section-copy">
-            <h2>Contact requests and Web3Forms</h2>
+            <h2>What happens when you contact me</h2>
             <div className="legal-section-body">
               <p>
                 When you contact me, I process the information you provide,
-                such as your name, work email, company, optional company size
-                and tooling, and message, to respond to your request and manage
-                any resulting business relationship.
+                including your name, work email, company and message, together
+                with any optional details about company size and software. I use
+                this information to answer your enquiry and manage any resulting
+                business relationship.
               </p>
               <p>
-                Processing is based on Article 6(1)(b) GDPR where your request
-                concerns pre-contractual measures and otherwise on Article
-                6(1)(f) GDPR, reflecting my legitimate interest in responding
-                to business enquiries. I retain correspondence only as long as
-                necessary for those purposes and any applicable statutory
-                retention obligations.
+                Where your enquiry concerns steps you ask me to take before
+                entering into a contract, processing is based on Article 6(1)(b)
+                of the General Data Protection Regulation. Other business
+                enquiries are handled under Article 6(1)(f), based on my
+                legitimate interest in responding to them. I keep correspondence
+                for as long as needed for these purposes and any legal
+                record-keeping obligations.
               </p>
               <p>
-                The website form uses Web3Forms, a service operated by
-                Web3Creative. Form data is transmitted to Web3Forms and
-                forwarded to my email inbox. According to Web3Forms,
+                Your unfinished message remains available while you visit other
+                pages in this website. It is held in memory in your current
+                browser tab, not saved to browser storage, and is cleared when
+                you reload or close the page or successfully submit the form.
+              </p>
+              <p>
+                When the form sends a message directly, it uses Web3Forms, a
+                service operated by Web3Creative. Your form information is sent
+                to Web3Forms and forwarded to my email inbox. According to Web3Forms,
                 submissions are not stored as form records, while server logs
                 containing personal data may be retained for up to two months.
                 Web3Forms states that its servers are located in the United
@@ -108,10 +112,12 @@ export const Privacy = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Web3Forms privacy and GDPR information
+                  Web3Forms privacy information
                 </a>
-                . You can avoid using Web3Forms by contacting me directly by
-                email.
+                . You can avoid sending information to Web3Forms by emailing me
+                directly. If the form instead offers to continue in your email
+                app, it creates an email draft and does not send your information
+                to Web3Forms.
               </p>
             </div>
           </div>
@@ -143,10 +149,12 @@ export const Privacy = () => {
             <h2>Your rights</h2>
             <div className="legal-section-body">
               <p>
-                Subject to the conditions of the GDPR, you may have rights of
-                access, rectification, erasure, restriction, data portability
-                and objection. You may also lodge a complaint with a data
-                protection supervisory authority.
+                Under the conditions set out in the General Data Protection
+                Regulation, you can request access to your personal data, ask
+                for it to be corrected or deleted, request restrictions on its
+                use, receive certain data in a reusable format, or object to
+                processing. You can also complain to a data protection
+                supervisory authority.
               </p>
               <p>
                 The competent local authority is the Hamburg Commissioner for

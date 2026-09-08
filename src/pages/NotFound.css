@@ -29,8 +29,8 @@
 }
 
 .notfound-body h1 {
-  font-size: clamp(3.4rem, 7.5vw, 6.4rem);
-  line-height: 0.88;
+  font-size: var(--text-display);
+  line-height: 1.05;
 }
 
 .notfound-body > p {
@@ -52,6 +52,24 @@
   font-weight: 520;
 }
 
+.notfound-body .notfound-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  margin-top: 2rem;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid var(--p-blue);
+  background: var(--p-blue);
+  color: var(--p-paper);
+  font-size: var(--text-base);
+}
+
+.notfound-body .notfound-primary:hover {
+  background: var(--p-paper);
+  color: var(--p-blue);
+}
+
 .notfound-links a {
   display: inline-flex;
   align-items: center;
@@ -66,6 +84,10 @@
 }
 
 @media (max-width: 768px) {
+  .notfound-body h1 {
+    font-size: var(--text-mobile-headline);
+  }
+
   .notfound-inner {
     grid-template-columns: 1fr;
     gap: 1.5rem;

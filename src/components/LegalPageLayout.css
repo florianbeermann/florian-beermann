@@ -9,14 +9,15 @@
   gap: clamp(2.5rem, 6vw, 7rem);
   align-items: end;
   border-bottom: 1px solid var(--ink);
-  padding: clamp(6rem, 10vw, 10rem) 0 clamp(3rem, 5vw, 5rem);
+  padding: clamp(3rem, 6vw, 6rem) 0 clamp(2rem, 4vw, 4rem);
 }
 
 
 
 .legal-hero h1 {
-  font-size: clamp(4.8rem, 9vw, 9rem);
-  line-height: 0.82;
+  font-size: var(--text-display);
+  line-height: 1.05;
+  text-wrap: balance;
 }
 
 .legal-hero-meta {
@@ -36,8 +37,22 @@
   text-transform: uppercase;
 }
 
+.legal-return {
+  align-self: start;
+  min-height: 44px;
+  padding: 0.5rem 0;
+  border: 0;
+  background: transparent;
+  color: var(--p-blue);
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
 .legal-content {
-  padding: clamp(4rem, 8vw, 8rem) 0 clamp(6rem, 10vw, 10rem);
+  padding: clamp(2.5rem, 5vw, 5rem) 0 clamp(4rem, 7vw, 7rem);
 }
 
 .legal-imprint-grid {
@@ -122,7 +137,7 @@
 }
 
 .legal-section h2 {
-  font-size: clamp(1.55rem, 2.8vw, 2.65rem);
+  font-size: var(--text-title);
   line-height: 1.05;
 }
 
@@ -151,11 +166,11 @@
   .legal-hero {
     grid-template-columns: 1fr;
     gap: 1.7rem;
-    padding-top: 5rem;
+    padding-top: 3rem;
   }
 
   .legal-hero h1 {
-    font-size: clamp(4.2rem, 16vw, 7rem);
+    font-size: var(--text-mobile-headline);
   }
 
   .legal-hero-meta {
@@ -177,7 +192,7 @@
   }
 
   .legal-content {
-    padding-top: 4rem;
+    padding-top: 2.5rem;
   }
 
   .legal-section {
