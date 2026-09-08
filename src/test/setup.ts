@@ -35,10 +35,12 @@ class NoopIntersectionObserver implements IntersectionObserver {
 }
 
 Object.defineProperty(window, "IntersectionObserver", {
+  configurable: true,
   writable: true,
   value: NoopIntersectionObserver,
 });
 Object.defineProperty(globalThis, "IntersectionObserver", {
+  configurable: true,
   writable: true,
   value: NoopIntersectionObserver,
 });

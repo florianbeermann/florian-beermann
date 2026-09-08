@@ -89,7 +89,8 @@
   --text-body: clamp(1.11rem, 1.36vw, 1.26rem);
   --text-title: clamp(1.8rem, 3vw, 3.1rem);
   --text-headline: clamp(2.8rem, 5vw, 5.4rem);
-  --text-display: clamp(4rem, 6.7vw, 7rem);
+  --text-display: clamp(2.8rem, 6.4vw, 6rem);
+  --text-mobile-headline: clamp(2.25rem, 10vw, 2.8rem);
 
   /* Tracking is load-bearing now, so it is a token rather than a number copied
      into six rules. When the label register was monospace, the family did most
@@ -104,12 +105,6 @@
      site has been set in Switzer — two declarations of one token naming two
      different families is exactly the drift the token exists to prevent. */
 
-  /* Intro sequence. A short rise and fade on load, in place of the taller one
-     the framed layout used — that travel was tuned to reveal the band above the
-     sheet, and with no band there is nothing to uncover, so the page only needs
-     enough motion to arrive rather than appear. */
-  --intro-rise: 18px;
-  --intro-arrive: 850ms;
 }
 
 /* Elastic overscroll is incompatible with a fixed frame. Rubber-banding past
@@ -146,245 +141,10 @@ body::before {
   pointer-events: none;
 }
 
-/* The intro: the page settles into place. One motion for the whole document,
-   not a stagger — a printed page arrives as a single object. `#root` is the
-   target because it persists across routes, so client-side navigation cannot
-   replay it. */
-@keyframes sheet-arrive {
-  from {
-    opacity: 0;
-    transform: translate3d(0, var(--intro-rise), 0);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-#root {
-  /* `backwards`, deliberately not `both`. The animation's final keyframe is
-     `transform: none`, but a forwards fill keeps *applying* it, and an applied
-     transform computes to an identity matrix rather than to `none` — enough to
-     make `#root` a containing block for every `position: fixed` descendant,
-     permanently. Backwards fill supplies the from-state before the animation
-     starts and then gets out of the way, which is all this needs: the
-     to-state is the element's natural state. This is load-bearing, not
-     hygiene: the sheet has fixed-position descendants, so a forwards fill
-     would trap them in its coordinate space and they would scroll away with
-     the page. */
-  animation: sheet-arrive var(--intro-arrive) cubic-bezier(0.16, 1, 0.3, 1)
-    backwards;
-}
-
-/* Set by the inline script in index.html on any load after the first in a
-   session, so a reload or a direct hit on a legal URL skips the intro. */
-.intro-done #root {
-  animation: none;
-}
-
 /* The sticky header docks at the viewport top, so anchor targets only have to
    clear the header. */
 :where(.site-page) [id] {
   scroll-margin-top: calc(var(--header-height, 76px) + 12px);
-}
-
-/* Scroll reveal. The page is a long single column of bands, and a document that
-   arrives all at once gives the scroll nothing to do — the reference this
-   direction came from spends a WebGL runtime on exactly this problem. It does
-   not need one. A view-progress timeline ties the transition to the element's
-   own position in the viewport, so it is scrubbed by the scroll rather than
-   fired by an observer and then playing on its own clock. Nothing runs on the
-   main thread, and there is no library.
-
-   Deliberately small: a fifth of a line of upward travel and a fade. At this
-   size it reads as the page settling as you reach it. Anything larger becomes
-   an effect the visitor watches instead of copy they read, which on a page
-   whose job is to be believed is a straight loss. */
-/* The panel, and what became of the cover-scroll.
-
-   There was one here once — each panel sticky, the next sliding up over it —
-   and it is worth recording that it never actually ran. Its sticky offset
-   needed the panel's own height, which CSS cannot see, so it read a `--panel-h`
-   published by `lib/panel-scroll.ts`; that module was written but never
-   imported, so the offset always resolved through its deliberately absurd
-   fallback to roughly `-9320px` and no panel ever pinned. The drivers were
-   later switched off on purpose (see `Home.tsx`), snapping was put back in CSS,
-   and the dead offset was left behind pointing at a module that had since been
-   deleted. It is gone now, and panels are ordinary flow elements.
-
-   What is left here is the shape a panel has everywhere: a floor of one screen
-   less the masthead, and an opaque ground. The full-window sizing that the
-   snapped page needs is not here but in Home.css, under the same query that
-   turns snapping on — below that width the page scrolls plainly and none of it
-   applies.
-
-   Panels must be opaque, or the section behind shows through and reads as a
-   rendering fault. Paper sections take `--paper` explicitly here; inverted ones
-   already resolve it to blue. */
-.site-panel {
-  position: relative;
-  min-height: calc(100svh - var(--header-height));
-  background: var(--paper);
-}
-
-/* One panel, one screen — and the whole screen.
-
-   The conditions are the ones Home.css turns snapping on under, and they are
-   written out again rather than moved there because this is where `.site-panel`
-   is defined: the two rules carry the same specificity, this sheet loads last,
-   and a copy in Home.css would simply lose.
-
-   A snapped page rests on exact positions, so a panel that is not exactly a
-   window tall shows part of its neighbour at every one of them. Sized to a
-   window less the masthead and landed on the masthead line, each panel left
-   that header's-worth at the top of the window showing the *previous* section
-   — the masthead is fixed, transparent and `pointer-events: none`, a pane of
-   glass the page runs under rather than a bar it stops below, so there was
-   nothing up there to hide it.
-
-   So the ground takes the whole window and runs under the glass, and the band
-   the masthead occupies is bought back as padding, which holds the content
-   clear without letting the section behind show. `--masthead-space` is the
-   masthead's own measurement — its top offset plus the mark — so the two cannot
-   drift; the fallback matches the token in masthead.css. Adding `--panel-pad`
-   on top of it rather than a flat gap keeps a section starting where it started
-   before any of this changed.
-
-   Only here. Below these conditions the page scrolls plainly, nothing rests on
-   an exact position, and a panel is free to be whatever height it needs. */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) and (min-width: 901px) {
-    .site-panel {
-      min-height: 100svh;
-      padding-top: calc(var(--masthead-space, 5.25rem) + var(--panel-pad));
-    }
-  }
-}
-
-/* Panels that grew to meet that minimum centre their content rather than
-   stranding it at the top of a screen of empty paper. This used to exclude the
-   hero, whose grid had to keep stretching for its blue plate; the hero is the
-   video plate now and is not a `.site-panel` at all. */
-.site-panel {
-  align-content: center;
-}
-
-/* The edge of the incoming plate. Two of the five transitions are paper onto
-   paper, and with no edge the cover has nothing to show there: one section
-   simply stops moving while the next slides up in the same colour, which reads
-   as a stuck page rather than as a plate being dealt. The rule is what makes
-   the gesture legible when the grounds do not change. */
-.site-panel:not(:first-child) {
-  border-top: 1px solid var(--line);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  /* Not a decorative flourish that can simply be turned off: pinning changes
-     what scrolling *does*, and a visitor who has asked for reduced motion has
-     asked for the plain behaviour. The full-height minimum goes with it, since
-     its only purpose is to make the pinning legible. */
-  .site-panel {
-    position: static;
-    min-height: 0;
-  }
-}
-
-@keyframes reveal-rise {
-  from {
-    opacity: 0;
-    transform: translateY(1.4rem);
-  }
-
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* `view()` is a scroll-progress timeline, so both of the transitions below are
-   scrubbed by the scroll rather than fired by an observer and then playing on
-   their own clock. Without support every element simply renders in its final
-   state, which is the design with the motion removed rather than a broken
-   version of it. */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .site-reveal {
-      animation: reveal-rise linear both;
-      animation-timeline: view();
-      /* Both endpoints are in `entry`, and that is load-bearing rather than a
-         preference. A `cover` endpoint runs past the moment its panel pins, and
-         a pinned panel's contents stop moving relative to the scrollport — so
-         view progress freezes and the element is left half-revealed for good.
-         Measured at 1920x1080 this stranded the proof heading at opacity 0.61
-         permanently. Ending inside `entry` means the transition is finished
-         before the panel can pin, whatever the panel's height. */
-      animation-range: entry 8% entry 78%;
-    }
-
-    .site-sweep {
-      -webkit-mask-image: var(--sweep-mask);
-      mask-image: var(--sweep-mask);
-      animation: sweep-reveal linear both;
-      animation-timeline: view();
-      /* Longer than the block reveal on purpose — this one is meant to be
-         *read* while it resolves — but still ending inside `entry`, for the
-         pinning reason above. */
-      animation-range: entry 12% entry 96%;
-    }
-  }
-}
-
-/* The reading sweep: a paragraph resolves top-down, a line or two ahead of the
-   eye, as the visitor scrolls it into place.
-
-   This is the effect the reference site is actually built around. Measured
-   frame by frame, its sections do not stack or cover each other — the page
-   scrolls normally and the whole impression comes from text arriving
-   progressively instead of all at once. The reference splits every paragraph
-   into line elements at runtime and drives them from a scroll library.
-
-   A gradient mask gets the same read with no DOM surgery and no library, and it
-   has the better failure mode: nothing to re-split on resize, on a font swap or
-   when a paragraph reflows, because the mask is geometry over the rendered box
-   rather than a snapshot of where the lines happened to break.
-
-   `--sweep-band` is the depth of the soft edge. It is a length, not a fraction
-   of the box: these blocks run from two lines to a dozen, and a percentage band
-   would fade a short paragraph over half a line and a long one over eight. At
-   6rem roughly three lines are mid-fade whatever the block's height, which is
-   what makes it read as text arriving rather than as a wipe passing over it.
-
-   Only ever put this on copy that starts below the fold. An element already on
-   screen at rest has no scroll behind it to scrub, so it would sit permanently
-   half-masked — which is exactly what the hero's opening paragraph did before
-   the class came back off it. */
-@property --sweep {
-  syntax: "<length-percentage>";
-  inherits: false;
-  initial-value: 100%;
-}
-
-.site-sweep {
-  --sweep-band: 6rem;
-  --sweep-mask: linear-gradient(
-    to bottom,
-    #000 var(--sweep),
-    transparent calc(var(--sweep) + var(--sweep-band))
-  );
-}
-
-/* Starts one full band above the box so the first line is already mid-fade
-   rather than fully hidden, and ends one band past the bottom so the last line
-   finishes clean. */
-@keyframes sweep-reveal {
-  from {
-    --sweep: calc(var(--sweep-band) * -1);
-  }
-
-  to {
-    --sweep: 100%;
-  }
 }
 
 .site-page {
@@ -449,19 +209,6 @@ body::before {
      without the other. */
   --marker: var(--ink);
   --header-height: 76px;
-  /* The rhythm between a full-screen section's edge and its content, paid for
-     out of its height rather than its width. At `10vw` the old value spent
-     288px of a 659px screen on padding alone — 44% of the section, before a
-     word of it was set. Driving it from `vh` means the air scales with the room
-     there is to give; the 10rem ceiling is what it used to reach on a wide
-     desktop.
-
-     Declared here rather than on `.site-panel` because the engagements track is
-     not a panel and needs the same measure. When it lived on the panel, the
-     track's `padding` shorthand referenced an undefined variable, which makes
-     the whole declaration invalid at computed-value time — the section lost its
-     side margins entirely and ran edge to edge. */
-  --panel-pad: clamp(1.5rem, 5.5vh, 10rem);
   position: relative;
   z-index: 1;
   /* Edge to edge. The safe-area insets become padding rather than margin, so the
@@ -483,10 +230,7 @@ body::before {
   box-sizing: border-box;
 }
 
-.site-page h1,
-.site-page h2,
-.site-page h3,
-.site-page p {
+:where(.site-page) :where(h1, h2, h3, p) {
   margin: 0;
 }
 
@@ -900,7 +644,4 @@ body::before {
     scroll-behavior: auto;
   }
 
-  #root {
-    animation: none;
-  }
 }

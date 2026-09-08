@@ -1,21 +1,16 @@
 import { useEffect } from "react";
 import { LegalPageLayout } from "@/components/LegalPageLayout";
-import { setPageMetadata } from "@/lib/metadata";
+import { pageMetadata, setPageMetadata } from "@/lib/metadata";
 
 export const Imprint = () => {
   useEffect(() => {
-    setPageMetadata({
-      title: "Imprint | Florian Beermann & Co.",
-      description:
-        "Legal information and contact details for Florian Beermann & Co..",
-      path: "/imprint",
-    });
+    setPageMetadata(pageMetadata.imprint);
   }, []);
 
   return (
     <LegalPageLayout
-      title="Imprint"
-      description="Information pursuant to Section 5 of the German Digital Services Act (DDG)."
+      title="Legal notice"
+      description="Provider information required by Section 5 of the German Digital Services Act."
       contentClassName="legal-imprint-grid"
     >
       <aside className="legal-contact" aria-labelledby="legal-contact-title">
@@ -67,7 +62,7 @@ export const Imprint = () => {
               <p>
                 Florian Beermann, at the address stated above, is responsible
                 for editorial content pursuant to Section 18(2) of the German
-                State Media Treaty (MStV).
+                State Media Treaty.
               </p>
             </div>
           </div>
