@@ -115,14 +115,15 @@ must be readable on mobile, not replaced with an unexplained symbol.
 - No em dashes. Use commas, full stops, colons or separate sentences.
 - Use "Services" consistently for the section at `#engagements`.
 - Describe customer problems, responsibilities and tangible deliverables.
+- Write for people who already understand Customer Success. Focus on the
+  decisions and trade-offs of a changing customer base, not basic workflows.
 - Employer logos represent previous employment, not consultancy clients.
 - Never invent client results, testimonials, qualifications or work samples.
-- An illustrative workflow is not evidence of a completed client engagement.
 
 ## Colour
 
 All shared colours come from `src/styles/palettes.css`. Slate is the reading
-colour and electric blue marks headings, links, controls and the method and
+colour and electric blue marks headings, links, controls and the transition and
 closing sections.
 
 Running text on blue uses the full paper colour. Do not fade it until it loses
@@ -141,7 +142,7 @@ because they are outside the application bundle.
 ## Typography
 
 Switzer carries headings, prose, form labels and human instructions. Fragment
-Mono carries navigation, controls, process sequence numbers and copyright.
+Mono carries navigation, controls, service position indicators and copyright.
 Lastica is reserved for the brand name.
 
 Use the shared type tokens in `src/styles/shell.css`. Large headings are capped
@@ -177,7 +178,9 @@ The page sequence is:
    remain in the header, without duplicate links beneath the hero copy.
 2. Genuine employment evidence.
 3. The three services in their original scroll-driven sequence.
-4. A four-step method explaining how information leads to action and review.
+4. Three decisions behind a changing customer base: customer fit, service choices
+   and the transition. This blue section addresses experienced buyers and is not
+   a numbered tutorial.
 5. Personal experience, the portrait and the relationship with independent
    specialists in "Responsible for renewals and growth."
 6. A concise contact introduction, direct email and the enquiry form.

@@ -92,6 +92,27 @@ describe("homepage", () => {
     expect(document.querySelector(".home-engagement-progress")).toHaveAttribute("aria-hidden", "true");
   });
 
+  it("addresses changing-customer-base decisions rather than teaching the basics", () => {
+    renderHome();
+    const section = screen.getByRole("region", {
+      name: "Keep what works. Change what no longer fits.",
+    });
+    expect(section).toHaveClass("site-voltage", "site-panel");
+    expect(section.previousElementSibling).toHaveClass("site-stop");
+    expect(within(section).getAllByRole("heading", { level: 3 }).map((heading) => heading.textContent)).toEqual([
+      "Customer fit",
+      "Service choices",
+      "The transition",
+    ]);
+    expect(within(section).getByRole("list").tagName).toBe("UL");
+    expect(within(section).getAllByRole("listitem")).toHaveLength(3);
+    expect(section).toHaveTextContent("Separate a shift in customer needs from a gap in execution.");
+    expect(section).toHaveTextContent("Balance those choices against team capacity");
+    expect(section).toHaveTextContent("existing customer commitments and renewal cycles");
+    expect(section).not.toHaveTextContent("For example");
+    expect(screen.queryByRole("heading", { name: "Turn customer data into clear next steps." })).not.toBeInTheDocument();
+  });
+
   it("reveals optional company details without hiding required fields", () => {
     renderHome();
     expect(screen.queryByText("Company size")).not.toBeInTheDocument();

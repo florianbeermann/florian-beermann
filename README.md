@@ -20,7 +20,7 @@ They are not saved to browser storage. A successful submission clears the draft.
 
 | Path | Purpose |
 | --- | --- |
-| `src/pages/Home.tsx` | The single-page site: hero, proof, engagements, method, about, contact |
+| `src/pages/Home.tsx` | The single-page site: hero, proof, engagements, transition decisions, about, contact |
 | `src/pages/Imprint.tsx`, `src/pages/Privacy.tsx` | English-language legal notice and privacy policy for the German practice |
 | `src/pages/NotFound.tsx` | 404 page |
 | `src/styles/shell.css` | Shared shell: palette tokens, typography, header, footer |

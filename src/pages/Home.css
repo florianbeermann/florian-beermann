@@ -168,59 +168,41 @@
   line-height: 1.55;
 }
 
-.home-method h2 {
+.home-transition h2 {
   max-width: 900px;
 }
 
-.home-signal-flow {
+.home-transition-decisions {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  margin: 3rem 0 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: clamp(1.5rem, 4vh, 3rem) 0 0;
   padding: 0;
   border-block: 1px solid var(--line);
   list-style: none;
-  counter-reset: method;
 }
 
-.home-signal-flow li {
-  padding: 1.75rem;
+.home-transition-decisions li {
+  padding: clamp(1rem, 2.75vh, 1.75rem);
   border-right: 1px solid var(--line);
-  counter-increment: method;
 }
 
-.home-signal-flow li::before {
-  display: block;
-  margin-bottom: 1.5rem;
-  content: counter(method, decimal-leading-zero);
-  color: var(--prose);
-  font-family: var(--mono);
-  font-size: var(--label-size);
-}
-
-.home-signal-flow li:first-child {
+.home-transition-decisions li:first-child {
   padding-left: 0;
 }
 
-.home-signal-flow li:last-child {
+.home-transition-decisions li:last-child {
   border-right: 0;
 }
 
-.home-signal-flow h3 {
+.home-transition-decisions h3 {
   font-size: var(--text-title);
   line-height: 1.1;
 }
 
-.home-signal-flow p {
+.home-transition-decisions p {
   margin-top: 0.8rem;
   color: var(--prose);
   font-size: var(--text-base);
-}
-
-.home-method .home-method-example {
-  max-width: 65ch;
-  margin-top: 2rem;
-  color: var(--prose);
-  font-size: var(--text-body);
 }
 
 .home-about {
@@ -627,20 +609,18 @@
     height: auto;
   }
 
-  .home-signal-flow {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .home-transition-decisions {
+    grid-template-columns: 1fr;
   }
 
-  .home-signal-flow li:nth-child(2) {
+  .home-transition-decisions li {
+    padding: 1.5rem 0;
     border-right: 0;
-  }
-
-  .home-signal-flow li:nth-child(-n + 2) {
     border-bottom: 1px solid var(--line);
   }
 
-  .home-signal-flow li:nth-child(3) {
-    padding-left: 0;
+  .home-transition-decisions li:last-child {
+    border-bottom: 0;
   }
 }
 
@@ -703,28 +683,6 @@
   .site-closing-cols nav {
     flex: 1;
     min-width: 0;
-  }
-}
-
-@media (max-width: 420px) {
-  .home-signal-flow {
-    grid-template-columns: 1fr;
-  }
-
-  .home-signal-flow li,
-  .home-signal-flow li:first-child,
-  .home-signal-flow li:nth-child(3) {
-    padding: 1.5rem 0;
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .home-signal-flow li:last-child {
-    border-bottom: 0;
-  }
-
-  .home-signal-flow li::before {
-    margin-bottom: 0.75rem;
   }
 }
 

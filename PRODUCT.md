@@ -18,6 +18,12 @@ number, and the way Customer Success currently runs is no longer producing it.
 Often the customer base itself has shifted and the existing way of working was
 designed for a different kind of customer.
 
+**Audience knowledge:** buyers already understand how Customer Success works.
+Write in plain language for experienced people, not as an introduction to
+customer management. Show the decisions behind adapting to different customers:
+which assumptions still fit, where service and ownership need to differ, and
+how to make the transition while protecting existing customer relationships.
+
 The enquiry form qualifies on company size (1–50 through 5,000+ employees) and
 incumbent CS tooling (Gainsight, ChurnZero, Salesforce, Vitally, HubSpot,
 Planhat, custom/in-house, or none yet), so engagements are not restricted to a
