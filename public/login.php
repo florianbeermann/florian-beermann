@@ -100,8 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       name="description"
       content="florianbeermann.com is not published yet and is available to invited visitors only."
     />
-    <link rel="icon" type="image/x-icon" sizes="16x16 32x32 48x48" href="/favicon.ico?v=anvil-crop" />
-    <link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=anvil-crop" />
+    <link rel="icon" type="image/x-icon" sizes="16x16 32x32 48x48" href="/favicon-crop.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-crop.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="theme-color" content="#F1F2F3" />
 
