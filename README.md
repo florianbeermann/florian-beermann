@@ -179,6 +179,13 @@ large enough to carry it, and the 512 is what the page's structured data hands
 out as the organisation logo, which should be the mark rather than a detail of
 it.
 
+Both `index.html` and `public/login.php` link the cropped ICO first and the SVG
+with `sizes="any"` last. Browsers without SVG favicon support, including older
+Safari versions, get the same crop instead of the full-size PNG. Keep
+`favicon.png` out of `rel="icon"` links. Both tab-icon URLs carry
+`?v=anvil-crop` so browsers do not reuse cached, uncropped artwork; change that
+version in both page heads when updating the tab icons.
+
 They are reproducible: render the relevant SVG with headless Chrome (a
 transparent `--default-background-color=00000000`, which is the only faithful
 renderer on a stock macOS box — `qlmanage` flattens alpha onto white), then

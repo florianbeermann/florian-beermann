@@ -100,8 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       name="description"
       content="A private preview of Florian Beermann's Customer Success consulting website, available to invited visitors."
     />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png" />
+    <link rel="icon" type="image/x-icon" sizes="16x16 32x32 48x48" href="/favicon.ico?v=anvil-crop" />
+    <link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=anvil-crop" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="theme-color" content="#F1F2F3" />
 
