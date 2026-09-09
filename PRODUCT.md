@@ -139,6 +139,8 @@ this network; the legal entity is a sole trader.
   whole of it: the square holds the horn, the face and the waist, because a 2:1
   drawing centred in a square spends half its height on air and at 16px was a
   sliver. They are stroked in the same blue so the outline survives the size.
+  Both page heads serve the crop as `favicon-crop.ico` and `favicon-crop.png`,
+  a direct export of its 32px frame, so tab icons do not depend on SVG rendering.
   `favicon.png` at 512 keeps the whole anvil at its true weight and is what the
   page's structured data gives as the organisation logo; `apple-touch-icon.png`
   is the whole anvil too, inverted — the pale mark on a signal-blue tile.

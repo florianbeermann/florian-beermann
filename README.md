@@ -170,7 +170,7 @@ that looks like a rendering fault.
 
 The outline still needs help at that size, so those two carry a `stroke` in the
 mark's own colour, tuned per size because one weight cannot serve 16px and 48px
-— 110 path units at 16, 70 at 32, 55 at 48, and 80 in the SVG the tab renders.
+— 110 path units at 16, 70 at 32, 55 at 48, and 80 in the source SVG.
 The crop already does most of the work, which is why these are roughly half the
 weights the uncropped version needed.
 
@@ -179,12 +179,17 @@ large enough to carry it, and the 512 is what the page's structured data hands
 out as the organisation logo, which should be the mark rather than a detail of
 it.
 
-Both `index.html` and `public/login.php` link the cropped ICO first and the SVG
-with `sizes="any"` last. Browsers without SVG favicon support, including older
-Safari versions, get the same crop instead of the full-size PNG. Keep
-`favicon.png` out of `rel="icon"` links. Both tab-icon URLs carry
-`?v=anvil-crop` so browsers do not reuse cached, uncropped artwork; change that
-version in both page heads when updating the tab icons.
+Both `index.html` and `public/login.php` link `favicon-crop.ico` first, then
+`favicon-crop.png` at 32x32. The ICO is a byte-for-byte copy of `favicon.ico`;
+the PNG is its existing 32px frame, extracted without rescaling. The crop is
+therefore baked into the pixels rather than left to the browser's SVG renderer.
+The source SVG stays available but is no longer advertised as a tab icon.
+
+The fresh filenames replace the query-only URLs used by the first Safari fix.
+Keep `favicon.png` out of `rel="icon"` links: it is still the full-size
+organisation logo. When changing the crop, update both generated assets and
+their filenames in both page heads, keeping the new names exempt from the
+pre-launch gate in `.htaccess`.
 
 They are reproducible: render the relevant SVG with headless Chrome (a
 transparent `--default-background-color=00000000`, which is the only faithful

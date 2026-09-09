@@ -32,7 +32,7 @@ Require env FB_ACCESS
 # drew its lockup from that file; it now inlines the mark and sets the name in
 # Lastica, so the file is only reached from pages that are already behind the
 # gate. An exemption nothing needs is a file served to anyone who asks for it.
-<FilesMatch "^(login\.php|favicon\.(ico|svg|png)|apple-touch-icon\.png)$">
+<FilesMatch "^(login\.php|favicon\.(ico|svg|png)|favicon-crop\.(ico|png)|apple-touch-icon\.png)$">
   Require all granted
 </FilesMatch>
 
