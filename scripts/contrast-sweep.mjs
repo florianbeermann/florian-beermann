@@ -46,6 +46,8 @@
 export const SWEEP = `(async () => {
   const root = document.documentElement;
   const W = Math.round(root.clientWidth), H = Math.round(root.clientHeight);
+  const colourRoot = document.querySelector('.home-page');
+  if (!colourRoot) return { error: 'no homepage colour scope' };
 
   const box = document.querySelector('.hero-video');
   const video = document.querySelector('.hero-video-el');
@@ -67,7 +69,7 @@ export const SWEEP = `(async () => {
     ctx.drawImage(video, r.left + (r.width - dw) / 2, r.top + (r.height - dh) / 2, dw, dh);
   };
 
-  // Mirrors the curve in HeroVideo.tsx: a low percentile of the visible frame
+  // Mirrors the curve in cloud-colour.ts: a low percentile of the visible frame
   // mapped onto 0..1. See that file for why the floor is the statistic that
   // matters. The rate limit is not modelled — this measures the settled value
   // each frame is heading for, which is the worse case of the two.
@@ -201,14 +203,14 @@ export const SWEEP = `(async () => {
     video.currentTime = t;
   });
 
-  // The same curve HeroVideo.tsx applies. Kept in step with it by hand: if the
+  // The same curve cloud-colour.ts applies. Kept in step with it by hand: if the
   // constants there move, these have to move too or this measures a crossing
   // the page does not perform.
   const FLOOR_LO = 0.14, FLOOR_HI = 0.76;
 
   const wasPaused = video.paused;
   const startedAt = video.currentTime;
-  const startedWow = root.style.getPropertyValue('--wow');
+  const startedWow = colourRoot.style.getPropertyValue('--wow');
   video.pause();
 
   // The type crossfades between white and blue over 260ms. This sweep seeks
@@ -233,7 +235,7 @@ export const SWEEP = `(async () => {
 
     const floor = floorOfFrame();
     const wow = Math.min(1, Math.max(0, (floor - FLOOR_LO) / (FLOOR_HI - FLOOR_LO)));
-    root.style.setProperty('--wow', String(wow));
+    colourRoot.style.setProperty('--wow', String(wow));
 
     // Force style resolution so the colours read below are the ones this value
     // produces, not the previous sample's.
@@ -257,8 +259,8 @@ export const SWEEP = `(async () => {
 
   await seek(startedAt);
   freeze.remove();
-  if (startedWow) root.style.setProperty('--wow', startedWow);
-  else root.style.removeProperty('--wow');
+  if (startedWow) colourRoot.style.setProperty('--wow', startedWow);
+  else colourRoot.style.removeProperty('--wow');
   if (!wasPaused) void video.play().catch(() => undefined);
 
   const results = targets.filter(t => t.total).map(t => ({

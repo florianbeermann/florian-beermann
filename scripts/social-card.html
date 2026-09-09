@@ -11,8 +11,8 @@
       moved. It has drifted twice anyway, which is the argument for regenerating
       it whenever the world changes rather than only when the copy does.
 
-        npm run dev
-        open http://localhost:5199/scripts/social-card.html
+        npm run dev -- --host 127.0.0.1 --port 4178 --strictPort
+        open http://127.0.0.1:4178/scripts/social-card.html
         # capture the 1200x630 viewport to public/social-preview.jpg
 
       Two cards have been retired here. The first carried the "fb" monogram,
@@ -129,6 +129,7 @@
       }
 
       h1 span {
+        display: block;
         color: var(--blue);
       }
 
@@ -165,17 +166,6 @@
         object-position: 50% 22%;
       }
 
-      .caption {
-        position: absolute;
-        right: 24px;
-        top: 22px;
-        color: var(--paper);
-        font-family: "Fragment Mono", monospace;
-        font-size: 13px;
-        font-variant-numeric: tabular-nums;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-      }
     </style>
   </head>
   <body>
@@ -189,8 +179,8 @@
         <span>Florian Beermann<br />&amp; Co.</span>
       </div>
       <h1>
-        Your customers changed.
-        <span>Your Customer Success motion did not.</span>
+        Your customers have changed.
+        <span>Your approach should too.</span>
       </h1>
       <div class="foot">
         <span>Customer Success consulting</span>
@@ -199,7 +189,6 @@
     </div>
     <div class="plate">
       <img src="/portrait.jpg" alt="" />
-      <span class="caption">Fig. 01</span>
     </div>
   </body>
 </html>

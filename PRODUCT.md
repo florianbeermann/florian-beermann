@@ -15,8 +15,14 @@ DACH / German-speaking market. Engagements are open to the whole of Europe.
 
 They arrive at a specific moment: retention or expansion is now a board-level
 number, and the way Customer Success currently runs is no longer producing it.
-Often the customer base itself has shifted (typically upmarket) and the existing
-CS motion was designed for a different kind of customer.
+Often the customer base itself has shifted and the existing way of working was
+designed for a different kind of customer.
+
+**Audience knowledge:** buyers already understand how Customer Success works.
+Write in plain language for experienced people, not as an introduction to
+customer management. Show the decisions behind adapting to different customers:
+which assumptions still fit, where service and ownership need to differ, and
+how to make the transition while protecting existing customer relationships.
 
 The enquiry form qualifies on company size (1–50 through 5,000+ employees) and
 incumbent CS tooling (Gainsight, ChurnZero, Salesforce, Vitally, HubSpot,
@@ -44,10 +50,14 @@ Florian has **operated** Customer Success himself across the full customer-size
 spectrum — from small and mid-sized customers up to DAX40 enterprise accounts —
 and has seen how CS works differently in each of those environments.
 
-The differentiated claim: he helps when **a CS system has to change because the
-customer base has changed** — for example a company moving upmarket toward
-enterprise customers, where the existing motion, coverage model and health
-signals no longer fit.
+The differentiated claim: he helps when **Customer Success has to change because
+the customer base has changed**. Different business customers may need different
+onboarding, account ownership, levels of service and renewal planning.
+
+**Resolved (2026-09-07):** use **different business customers**, not "larger
+business customers", throughout public copy and future suggestions. This is not
+exclusively about moving upmarket. Changes in customer size, industry, needs or
+complexity can all require a different approach.
 
 A consultant who has only worked one segment cannot truthfully make this claim.
 This is the practice's core asset and should not be diluted into generic
@@ -67,13 +77,14 @@ First contact is asynchronous and self-served via the enquiry form.
 
 **Three named engagements**, each with published deliverables:
 
-1. **Customer Success strategy** — segmentation and coverage model,
-   health-score architecture, renewal and expansion forecasting, 12-month
-   execution roadmap.
-2. **Lifecycle playbooks** — onboarding and time-to-value, risk and save
-   motions, QBR/EBR frameworks, expansion qualification.
-3. **CSM enablement** — commercial conversation framework, stakeholder mapping
-   workshops, value-realisation storytelling, account-plan certification.
+1. **Customer Success strategy**: customer groups, account ownership and levels
+   of service; customer health measures; renewal and account growth forecasts;
+   a prioritised plan for the next twelve months.
+2. **Customer lifecycle processes**: onboarding, customers at risk of leaving,
+   quarterly and executive business reviews, and account growth opportunities.
+3. **Customer Success team training**: renewal and growth conversations,
+   decision-maker workshops, demonstrating customer value, and account planning.
+   Do not promise a formal qualification without confirmed assessment details.
 
 **Tooling fluency:** Salesforce, Gainsight, HubSpot, Dynamics, Power BI, Looker,
 Tableau, Vitally.
@@ -108,6 +119,13 @@ this network; the legal entity is a sole trader.
 - **Voice:** first-person singular, en-GB spelling ("realisation",
   "organisations"), understated and specific. Avoids transformation-consultancy
   vocabulary.
+- **No acronyms:** never use acronyms or initialisms in public-facing text.
+  Write terms in full or choose a natural plain-language alternative; do not
+  introduce shortened forms in parentheses. This applies to headings, body
+  copy, navigation, forms, legal explanations, and search and social-sharing
+  descriptions.
+- **No em dashes:** never use em dashes in public-facing text or suggested
+  copy. Use a full stop, comma, colon or separate sentence instead.
 - **Assets:** the mark is an anvil, a single SVG path inlined in the components
   that draw it (`src/components/BrandMark.tsx`, and again in `public/login.php`
   and `scripts/social-card.html`, neither of which can import from the bundle)
@@ -115,9 +133,8 @@ this network; the legal entity is a sole trader.
   bounding box is 1021x524, a shade under 2:1, so anything that reserves space
   for it is sized by height and lets the width follow. There is no wordmark
   file: the name is set as live type in Lastica wherever the lockup appears
-  whole. The anvil appears once per screen — the home page's masthead carries
-  the whole lockup on the hero and retracts the name once the page has scrolled
-  past it, leaving the anvil to hold the row.
+  whole. The masthead keeps the name readable, including on mobile and after
+  scrolling past the hero.
   `public/favicon.svg` and `favicon.ico` are a crop of that path rather than the
   whole of it: the square holds the horn, the face and the waist, because a 2:1
   drawing centred in a square spends half its height on air and at 16px was a
@@ -130,10 +147,19 @@ this network; the legal entity is a sole trader.
 
   The hero is a cut of the mountain footage (`public/hero-loop.mp4`, with
   `hero-loop-sm.mp4` for narrow screens and `hero-poster.jpg` as its first
-  frame), assembled by `scripts/build-hero-loop.mjs` — the crossfade seam is at
+  frame), assembled by `scripts/build-hero-loop.mjs`. The crossfade seam is at
   the front of the clip, which is what makes the loop read as continuous.
-  The portrait is `public/portrait.jpg`, and `public/social-preview.jpg` is the
-  link card.
+  Preserve the original video quality and frame rate. Smaller downloads must
+  not come at the expense of image detail or smooth motion.
+  Content appears immediately over the poster, with no loading curtain. The
+  background plays automatically without a visible playback button, and
+  reduced-motion and reduced-data preferences keep the opening still. The
+  headline and navigation shift towards blue as clouds brighten the visible
+  video crop, using the original frame-driven colour effect without tinting
+  or darkening the footage. The
+  portrait is `public/portrait.jpg`, shown in "Responsible for renewals and
+  growth." The original screen-sized desktop sections and mandatory stopping
+  points are retained. `public/social-preview.jpg` is the link card.
 
   Three self-hosted fonts, all in `public/fonts/`: Switzer (variable) for
   everything a person says, Fragment Mono for everything a machine would have
@@ -172,8 +198,9 @@ material, never with invented or illustrative numbers.
 
 ## Product Principles
 
-1. **The transition is the product.** Lead with the moment a CS system has to
-   change (segment shift, move upmarket), not with generic CS capability.
+1. **The transition is the product.** Lead with the moment Customer Success has
+   to change because the business serves different customers, not with generic
+   capability or an assumption that the change is always upmarket.
 2. **Operator proof over framework proof.** Credibility comes from having owned
    the work across segments, not from the elegance of a model.
 3. **It must run without me.** Deliverables live in the client's existing tools

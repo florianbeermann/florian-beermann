@@ -1,50 +1,78 @@
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation, useNavigationType } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
+import { EnquiryProvider } from "@/components/EnquiryProvider";
 import Home from "./pages/Home.tsx";
 import Imprint from "./pages/Imprint.tsx";
 import Privacy from "./pages/Privacy.tsx";
 import NotFound from "./pages/NotFound.tsx";
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 
-// ScrollToTop component to handle scroll restoration and anchor/hash-based navigation
-const ScrollToTop = () => {
-  const { pathname, hash } = useLocation();
+const ScrollRestoration = () => {
+  const { key, pathname, search, hash } = useLocation();
+  const navigationType = useNavigationType();
+  const positions = useRef(new Map<string, { left: number; top: number }>());
+  const entryKey = `${key}:${pathname}${search}${hash}`;
+  const currentKey = useRef(entryKey);
+  const previousLocation = useRef({ pathname, search, hash });
 
   useEffect(() => {
-    if (hash) {
-      const id = hash.replace("#", "");
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      } else {
-        // Fallback: wait a tiny bit for rendering
-        const timer = setTimeout(() => {
-          const el = document.getElementById(id);
-          if (el) el.scrollIntoView({ behavior: "smooth" });
-        }, 100);
-        return () => clearTimeout(timer);
-      }
-    } else {
-      /* Explicitly instant. The document sets `scroll-behavior: smooth` for the
-         masthead's anchor links, and the two-argument form of scrollTo obeys
-         it — so this animated the whole page back to the top instead of landing
-         there, with the newly-rendered route flying past on the way. */
-      window.scrollTo({ top: 0, behavior: "instant" });
+    const previous = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
+    const rememberPosition = () => {
+      positions.current.set(currentKey.current, {
+        left: window.scrollX,
+        top: window.scrollY,
+      });
+    };
+    window.addEventListener("scroll", rememberPosition, { passive: true });
+    // Capture the position before a link replaces the long homepage.
+    document.addEventListener("click", rememberPosition, true);
+    return () => {
+      window.history.scrollRestoration = previous;
+      window.removeEventListener("scroll", rememberPosition);
+      document.removeEventListener("click", rememberPosition, true);
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    const previous = previousLocation.current;
+    const fragmentNavigation =
+      previous.pathname === pathname &&
+      previous.search === search &&
+      previous.hash !== hash;
+    previousLocation.current = { pathname, search, hash };
+    currentKey.current = entryKey;
+    // Native fragment links are reported as POP too. Their destination takes
+    // priority over an earlier position stored under the same history key.
+    const saved = navigationType === "POP" && !fragmentNavigation
+      ? positions.current.get(entryKey)
+      : undefined;
+    if (saved) {
+      window.scrollTo({ ...saved, behavior: "instant" });
+      return;
     }
-  }, [pathname, hash]);
+    const target = hash ? document.getElementById(hash.slice(1)) : null;
+    if (target) {
+      target.scrollIntoView({ behavior: "instant" });
+      return;
+    }
+    window.scrollTo({ left: 0, top: 0, behavior: "instant" });
+  }, [entryKey, pathname, search, hash, navigationType]);
 
   return null;
 };
 
 const App = () => (
   <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-    <ScrollToTop />
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/imprint" element={<Imprint />} />
-      <Route path="/privacy" element={<Privacy />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <EnquiryProvider>
+      <ScrollRestoration />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/imprint" element={<Imprint />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </EnquiryProvider>
     <Sonner />
   </BrowserRouter>
 );

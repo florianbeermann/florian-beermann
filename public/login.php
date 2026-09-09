@@ -95,10 +95,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- The only page a crawler can reach while the gate is up, and it says
          nothing worth indexing. -->
     <meta name="robots" content="noindex, nofollow" />
-    <title>Private site | Florian Beermann &amp; Co.</title>
+    <title>Private preview | Florian Beermann &amp; Co.</title>
     <meta
       name="description"
-      content="florianbeermann.com is not published yet and is available to invited visitors only."
+      content="A private preview of Florian Beermann's Customer Success consulting website, available to invited visitors."
     />
     <link rel="icon" type="image/x-icon" sizes="16x16 32x32 48x48" href="/favicon-crop.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-crop.png" />
@@ -459,15 +459,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </span>
     </header>
 
-    <main class="gate-main">
+    <main class="gate-main" data-site-gate="private-preview">
       <div class="gate-inner">
-        <p class="gate-code">Private</p>
+        <p class="gate-code">Invitation required</p>
         <div class="gate-body">
-          <h1>This site is not public yet.</h1>
+          <h1>Private preview</h1>
           <p>
-            florianbeermann.com is behind a password while it is being built. If
-            you have been given one, enter it below. If you have not, there is
-            nothing here to read yet — but there will be.
+            This website is being prepared for launch. Enter your invitation
+            password to view it, or contact me to request access.
           </p>
 
           <form class="gate-form" method="post" action="/login.php">

@@ -15,8 +15,29 @@
     <link rel="icon" type="image/x-icon" sizes="16x16 32x32 48x48" href="/favicon-crop.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-crop.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <title>Florian Beermann &amp; Co.</title>
-    <meta name="description" content="I rebuild Customer Success for B2B SaaS companies whose customer base has outgrown the way they serve it: coverage, health scoring and playbooks that fit.">
+    <!-- page-metadata:start -->
+    <title>Customer Success consulting | Florian Beermann &amp; Co.</title>
+    <link rel="canonical" href="https://florianbeermann.com/" />
+    <meta name="description" content="Customer Success consulting for software companies serving different business customers. Strategy, practical customer processes and team training." />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Florian Beermann &amp; Co." />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:title" content="Your customers have changed. Your approach should too." />
+    <meta property="og:description" content="Customer Success consulting for software companies serving different business customers. Strategy, practical customer processes and team training." />
+    <meta property="og:url" content="https://florianbeermann.com/" />
+    <meta property="og:image" content="https://florianbeermann.com/social-preview.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Florian Beermann &amp; Co. with a portrait of Florian Beermann. Your customers have changed. Your approach should too." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Your customers have changed. Your approach should too." />
+    <meta name="twitter:description" content="Customer Success consulting for software companies serving different business customers. Strategy, practical customer processes and team training." />
+    <meta name="twitter:url" content="https://florianbeermann.com/" />
+    <meta name="twitter:image" content="https://florianbeermann.com/social-preview.jpg" />
+    <meta name="twitter:image:alt" content="Florian Beermann &amp; Co. with a portrait of Florian Beermann. Your customers have changed. Your approach should too." />
+    <!-- page-metadata:end -->
     <meta name="author" content="Florian Beermann &amp; Co." />
     <!-- The frame, not the paper. The browser paints this above the viewport,
          so the honest value is whatever sits under the chrome -- and that is
@@ -27,32 +48,13 @@
          can simply continue it: the frame runs off the top of the screen into
          the status bar instead of stopping at a seam. -->
     <meta name="theme-color" content="#181D26" />
-    <link rel="canonical" href="https://florianbeermann.com/" />
 
     <link rel="preload" as="font" type="font/woff2" href="/fonts/Switzer-Variable.woff2" crossorigin />
     <link rel="preload" as="font" type="font/woff2" href="/fonts/FragmentMono-Regular.woff2" crossorigin />
-    <!-- The wordmark is in the first thing painted — the loader's lockup is on
-         screen before anything else is — so the face it is set in has to be
-         requested with the other two rather than discovered when the CSS that
-         needs it parses. 2.4KB, ASCII only. -->
+    <!-- The wordmark appears in the first paint, so request its font
+         alongside the other faces. -->
     <link rel="preload" as="font" type="font/woff2" href="/fonts/Lastica.woff2" crossorigin />
 
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://florianbeermann.com/" />
-    <meta property="og:site_name" content="Florian Beermann & Co." />
-    <meta property="og:locale" content="en_GB" />
-    <meta property="og:image" content="https://florianbeermann.com/social-preview.jpg" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Florian Beermann & Co.: Customer Success strategy for B2B SaaS" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://florianbeermann.com/social-preview.jpg" />
-    <meta name="twitter:image:alt" content="Florian Beermann & Co.: Customer Success strategy for B2B SaaS" />
-    <meta property="og:title" content="Your customers changed. Your Customer Success motion didn’t.">
-    <meta name="twitter:title" content="Your customers changed. Your Customer Success motion didn’t.">
-    <meta property="og:description" content="I rebuild Customer Success for B2B SaaS companies whose customer base has outgrown the way they serve it: coverage, health scoring and playbooks that fit.">
-    <meta name="twitter:description" content="I rebuild Customer Success for B2B SaaS companies whose customer base has outgrown the way they serve it: coverage, health scoring and playbooks that fit.">
     <!-- `logo` is the mark at 512. It used to point at logo-lockup.png, a
          plum-world lockup retired everywhere else on the site, so search
          engines were being handed an identity the site no longer uses. It is
@@ -65,7 +67,7 @@
         "url": "https://florianbeermann.com/",
         "logo": "https://florianbeermann.com/favicon.png",
         "image": "https://florianbeermann.com/social-preview.jpg",
-        "description": "Customer Success strategy, playbooks and operations for B2B SaaS teams.",
+        "description": "Customer Success consulting for software companies serving different business customers. Strategy, practical customer processes and team training.",
         "founder": {
           "@type": "Person",
           "name": "Florian Beermann",
@@ -78,27 +80,10 @@
           "addressCountry": "DE"
         },
         "areaServed": "Europe",
-        "serviceType": ["Customer Success Strategy", "Customer Success Playbooks", "CSM Training"]
+        "serviceType": ["Customer Success strategy", "Customer lifecycle processes", "Customer Success team training"]
       }
     </script>
 
-    <!-- The intro (backdrop holds, then the sheet arrives) plays once per
-         session. This runs before first paint so a repeat load never flashes
-         hidden content. If sessionStorage is unavailable, skip the intro
-         rather than replaying it on every navigation. -->
-    <script>
-      (function () {
-        try {
-          if (sessionStorage.getItem("fb-intro") === "seen") {
-            document.documentElement.classList.add("intro-done");
-          } else {
-            sessionStorage.setItem("fb-intro", "seen");
-          }
-        } catch (e) {
-          document.documentElement.classList.add("intro-done");
-        }
-      })();
-    </script>
 </head>
 
   <body>

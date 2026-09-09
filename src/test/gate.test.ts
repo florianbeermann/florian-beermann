@@ -152,11 +152,11 @@ describe("pre-launch gate", () => {
     }
   });
 
-  it("keeps the sentence the deploy greps for to prove the page is live", () => {
-    // deploy.yml reads the 403 body back off the wire and looks for this
-    // string. Rewording the headline without updating the workflow turns a
-    // working deploy into a failing one.
-    expect(loginPage).toContain("This site is not public yet");
+  it("keeps the stable marker used to identify the deployed gate", () => {
+    const marker = 'data-site-gate="private-preview"';
+    const workflow = readFileSync(path.join(root, ".github/workflows/deploy.yml"), "utf8");
+    expect(loginPage).toContain(marker);
+    expect(workflow).toContain(marker);
   });
 
   it("stays out of the index while it is the only reachable page", () => {

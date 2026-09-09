@@ -1,389 +1,128 @@
-/* The first viewport. Two planes.
-
-   BEHIND: a mountain plate above a sea of cloud, cut to loop through its own
-   whiteout — see `src/components/HeroVideo.tsx` for how the loop is made and
-   `scripts/build-hero-loop.mjs` for how the file is cut.
-
-   Nothing is laid over it. This replaces a generated ink field whose whole
-   argument was that it could carry the statement's contrast floor inside the
-   picture; footage cannot do that, and the answer chosen here is to leave the
-   plate alone rather than dim it. The type carries itself on a shadow, which
-   buys no WCAG credit and is not pretending to — see the note on
-   `.hero .hero-title`.
-
-   IN FRONT: interface, floating clear of it in glass. One rail, one statement,
-   nothing else. */
-
-/* One in-flow child now: the statement. The masthead used to be the `auto` row
-   here and is `position: fixed` page chrome since — see `styles/masthead.css`.
-   Left at `auto 1fr` the statement would take the auto row and sit at the top;
-   and simply dropping the row would centre it in the full viewport, which is
-   35px higher than it was drawn. `--masthead-space` reserves what the header
-   used to occupy, so the composition is unchanged. */
-.hero {
-  position: relative;
-  min-height: 100svh;
-  padding-top: var(--masthead-space);
-  display: grid;
-  grid-template-rows: 1fr;
-  isolation: isolate;
-  background: var(--ink);
-  color: var(--on-dark);
-  /* The hero is a dark scope and now has to say so in the tokens, not only in
-     its own rules. It never declared `--heading` or `--marker` because nothing
-     inside it reads them — the statement sets its colour directly — so both
-     inherited `.site-page`'s slate while the hero actually prints in paper.
-
-     That went unnoticed until the masthead started colouring its mark from
-     whichever section is behind it. Reading `--marker` is the right signal
-     precisely because it is the token the marker register already uses, and a
-     scope that reports the wrong one is a bug wherever it is read from.
-
-     Both follow the wow rather than sitting on paper, so the masthead's mark
-     crosses to blue with everything else. Declared further down, where
-     --wow-color is defined. */
-}
-
-/* Grid items default to `min-width: auto`, so a row whose contents refuse to
-   shrink — the rail, where the name is one unbreakable string — pushes past
-   the track and takes the document with it. This is what put 13px of
-   horizontal scroll on the page at 490px. */
-.hero > * {
-  min-width: 0;
-}
-
-/* ── The background ───────────────────────────────────────────────────────
-   The entire background: a mountain plate above a cloud sea, cut to loop
-   through its own whiteout. See HeroVideo.tsx for how the loop is made and
-   how the white moment is detected.
-
-   Nothing is laid over it: no wash, no veil, no shade band. The shader this
-   replaces carried its own contrast floor because a picture that is being
-   generated can be told what to be, and footage cannot — but the answer here
-   is to leave the plate alone and let the type carry itself. See the shadow on
-   .hero-title, which is a perceptual aid rather than a contrast mechanism. */
-.hero-video {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  overflow: hidden;
-  pointer-events: none;
-  /* The colour the frame holds before the poster decodes. Taken from the
-     clip's own opening rather than from a token, so the first paint is not a
-     different picture from the second. */
-  background-color: #6d7a86;
-  /* The poster, set as the ground rather than only as the video's placeholder
-     — the URL comes from the same prop, inline, in HeroVideo.tsx. The loading
-     screen stopped waiting on the plate, so the picture standing still is what
-     the hero opens on, every time, and the clip is what arrives into it. On a
-     connection that did not justify the download it is the whole background
-     and no video element is rendered at all. */
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.hero-video-el {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-  /* Held clear until there are frames, then crossfaded onto the poster
-     underneath — which is the same photograph, so this is the picture starting
-     to move rather than one image replacing another. Long, because there is
-     nothing to hurry: whenever it lands, it should look like it was always
-     going to. */
-  opacity: 0;
-  transition: opacity 900ms ease-out;
-}
-
-.hero-video-el[data-showing] {
-  opacity: 1;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  /* The plate is paused under reduced motion and the poster is the same frame,
-     so there is nothing to fade to. */
-  .hero-video-el {
-    transition: none;
-  }
-}
-
-/* ── The wow ─────────────────────────────────────────────────────────────
-   --wow is how much of the picture has turned to cloud, 0 to 1, published on
-   the root every video frame by HeroVideo.tsx. The type crosses from paper to
-   the signal blue by that amount.
-
-   Continuous rather than a switch, because the clip has three cloud events and
-   only one of them is the big one: a bank drifts across at about 8.4s and
-   another at 13.2s, each lifting the picture's floor to roughly a third of what
-   the final whiteout reaches. On a threshold those two are invisible. On a ramp
-   they read as the colour leaning blue and settling back — a tell that
-   something is coming, twice, before it arrives.
-
-   Driven from the root rather than from the section because the masthead is
-   fixed page chrome: it sits outside this section and over it, and it would go
-   white-on-white otherwise.
-
-   Registered so it interpolates as a number. An unregistered custom property is
-   a string to the animation engine, and a colour-mix built on one snaps between
-   whatever values happen to be sampled instead of sliding between them. */
 @property --wow {
   syntax: "<number>";
   inherits: true;
   initial-value: 0;
 }
 
-:root {
+.home-page {
   --wow: 0;
-}
-
-.hero {
-  /* Resolved once and read by everything below, so the mix is written in one
-     place rather than at every element that needs it. */
   --wow-color: color-mix(
     in srgb,
     var(--p-blue) calc(var(--wow) * 100%),
-    var(--on-dark)
+    var(--p-paper)
   );
+  --wow-ink: color-mix(
+    in srgb,
+    var(--p-paper) calc(var(--wow) * 100%),
+    var(--p-ink)
+  );
+}
+
+.hero {
+  position: relative;
+  display: grid;
+  align-items: center;
+  min-height: 100svh;
+  padding-top: var(--masthead-space, 5.25rem);
+  isolation: isolate;
+  background: var(--p-stock);
+  color: var(--wow-color);
   --heading: var(--wow-color);
   --marker: var(--wow-color);
 }
 
-/* ── Beating the old world ────────────────────────────────────────────────
-   `.site-page h1` and `.site-page a` in shell.css are (0,1,1) and set colour;
-   a bare `.hero-title` is (0,1,0) and loses to them, which is what printed the
-   headline in the retired ink and the action's label in white on a white
-   plate. Scoping to `.hero` takes these to (0,2,0). Every rule in this block
-   exists only to outrank a world that is on its way out. */
-.hero .hero-title,
-.hero .hero-lede {
-  color: var(--wow-color);
-  /* A perceptual aid, and named as one: WCAG computes contrast against the
-     background and gives a shadow no credit. With the scrim gone this is the
-     only thing standing between the type and the plate, and it is not enough
-     to make the formal numbers pass — see the note on .hero-video. What it
-     does do is firm the type up over the bright snow and the cloud sea, and it
-     costs the picture nothing, which is the whole argument for it over dimming
-     the frame.
-
-     Two stops: a tight one for edge definition and a wide soft one that reads
-     as depth rather than as a drop shadow.
-
-     Constant, and it used to fade out as --wow came in. That was right while
-     the clip ended on a whiteout: at full blue on a white frame the halo was a
-     smudge with nothing left to fight. The loop no longer goes white and the
-     blue only ever leans — it peaks around 0.29 — so there is no moment the
-     shadow is not earning its place, and fading it took definition away from
-     the brightest frames, which are exactly the ones that need it most. */
-  text-shadow:
-    0 1px 2px rgb(12 16 24 / 0.3),
-    0 2px 26px rgb(12 16 24 / 0.38);
+.hero > * {
+  min-width: 0;
 }
 
-/* ── The statement ────────────────────────────────────────────────────────
-   Centred both ways. The photograph can carry it there now: the colour field's
-   indigo pool sits under exactly this band, so the middle of the frame is the
-   part with the most contrast to give rather than the least.
-
-   `scripts/contrast-sweep.mjs` measures the type against that band. Re-run it
-   after any change to the type scale, the crop, the field or the anchor. */
-
-.hero-statement {
-  align-self: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: clamp(1.25rem, 3vh, 2.25rem);
-  padding: clamp(2rem, 6vh, 5rem) var(--gutter);
-}
-
-/* Height-aware, because the constraint is height rather than width: the
-   statement has to fit between the rail and the foot of the frame, and a
-   width-only clamp cannot see a short window. The `min()` against vh is
-   load-bearing — without it, 1366×768 sets 82px and the lede is pushed off
-   the bottom. */
-.hero-title {
-  margin: 0;
-  font-size: clamp(2.75rem, min(7.6vw, 11.5vh), 9.5rem);
-  /* Wide enough that the second sentence holds one line at every desktop size
-     — the `<br />` is the only break this headline should have, because the
-     two sentences are a parallel pair and breaking inside the second one
-     destroys the rhyme. Bounded in `em` so the measure scales with the type
-     rather than with the window. */
-  max-width: 24em;
-}
-
-/* Verbatim from the site it replaces — the first sentence of the original
-   introduction, which was always the one doing the work. Set in the human
-   voice, capped near 60 characters so it stays a paragraph and not a banner.
-
-   24px at the top of its range, and that number does two jobs. A 19px line
-   under a 90px headline was underweight — the hierarchy had a hole in the
-   middle of it. And 24px is exactly WCAG's large-text threshold, which drops
-   the requirement from 4.5:1 to 3:1. That is not a loophole being worked: the
-   requirement is lower because larger type genuinely survives lower contrast,
-   and this line now sits on a photograph that moves underneath it. The
-   alternative was to keep deepening the veil to protect eight pixels, which
-   would have cost the whole frame its light. */
-/* One line again, so it goes back to centre under the headline. It was ranged
-   left only while it ran to seven, where a ragged left edge left the eye
-   nothing to return to; at this length centring is simply correct. */
-.hero-lede {
-  margin: 0;
-  max-width: 42rem;
-  font-family: var(--sans);
-  font-size: clamp(1.0625rem, 0.9rem + 1vw, 1.5rem);
-  font-weight: 400;
-  line-height: 1.5;
-  letter-spacing: -0.008em;
-  color: var(--on-dark);
-  /* The old world's `.site-page p` resets margins at (0,1,1) and would
-     otherwise win. */
-  text-wrap: pretty;
-}
-
-/* The lede's `clamp` reaches its 1.5rem ceiling at 960px, and 24px is exactly
-   where WCAG stops holding text to 4.5:1 and starts allowing 3:1. So the real
-   boundary for how hard this band has to work is not a layout breakpoint at
-   all — it is the width at which the paragraph becomes large text. Below it
-   the same paragraph needs half as much light behind it again, which is why
-   900px measured as the worst case on the whole page and 1024px did not. */
-@media (max-width: 48rem) {
-  /* The masthead breaks to two rows here, dropping the glass pane to roughly
-     13% of the frame height — half way down a strip that used to be spent by
-     24%. And the statement keeps its lines while the picture shrinks around
-     it, so the band has to work harder for the same result. */
-}
-
-@media (max-width: 30rem) {
-  /* Shortest frame, tallest statement. The headline runs to four lines and the
-     lede to three, so together they cover well over half the picture, and the
-     pane sits lower still. Both shapes grow again. */
-  .hero-title {
-    font-size: clamp(2.25rem, 10.5vw, 3rem);
-  }
-
-  .hero-statement {
-    gap: 1.25rem;
-    padding-block: 2.5rem;
-  }
-
-  .hero-lede {
-    font-size: 0.9375rem;
-  }
-}
-
-/* The second line of the statement, and the one place on the hero that is not
-   the paper.
-
-   Derived from the palette rather than picked: a 40% tint of the signal blue
-   over the paper, so it is the same colour the rest of the site prints in,
-   lightened until this ground can carry it. Not a second blue.
-
-   It has to be a tint, and that was measured rather than assumed. The signal
-   blue itself is luminance 0.117, which falls inside the range the shader's
-   ground covers under this line, so there is no band depth that separates
-   them — it measures 1.79:1 on the band as it was, and 1.33:1 against a fully
-   black one. Every blue with real chroma sits in the same trap. This tint is
-   luminance 0.41 and clears 3:1 against the deepened band, which is the bar
-   for text at this size. */
-.hero-title-accent {
-  color: inherit;
-}
-
-/* ── The brand lockup ─────────────────────────────────────────────────────
-   There is no lockup in the hero any more. It stood centred under the glass
-   pill through two versions — the name alone, then the whole anvil-and-name
-   lockup — and it is gone because the masthead directly above it now carries
-   the wordmark itself, and retracts to the bare anvil once the page has moved
-   past this section. See `.masthead-wordmark` in masthead.css.
-
-   Worth keeping the note: whatever goes here, the anvil may only appear once
-   within this screen. Both earlier arrangements existed to solve that, first by
-   dropping the mark from the lockup and then by holding the masthead's back. */
-
-/* ── The loading screen ───────────────────────────────────────────────────
-   See HeroLoader.tsx for why it is paper and why the lockup is blue: the clip
-   opens on its own whiteout, so this is the first half of that reveal rather
-   than a curtain in front of it.
-
-   Fixed and above everything, including the masthead, which is at 40. */
-.hero-loader {
-  position: fixed;
+.hero-video {
+  position: absolute;
   inset: 0;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(1.75rem, 4vh, 3rem);
-  background: var(--p-paper);
-  /* The plate's own white is warmer than the paper. Fading opacity alone left
-     a visible step at the handover, so the ground crosses to it as well. */
-  transition:
-    opacity var(--loader-fade) ease-out,
-    background-color var(--loader-fade) ease-out;
-  --loader-fade: 620ms;
-  /* The lockup's scale, held here rather than on the lockup itself because the
-     rule underneath has to be drawn to the same measure and is a sibling. The
-     value is the hero's, so the name is the same size behind the curtain as it
-     is in front of it. */
-  --loader-lockup: clamp(0.9rem, 1.9vw, 1.6rem);
-}
-
-.hero-loader[data-leaving] {
-  opacity: 0;
-  background: #dedad3;
+  z-index: -2;
+  overflow: hidden;
+  background: var(--p-stock) center / cover no-repeat;
   pointer-events: none;
 }
 
-.hero-loader-lockup {
+.hero-video-el {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 400ms ease-out;
+}
+
+.hero-video-el[data-showing] {
+  opacity: 1;
+}
+
+.hero-statement {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  color: var(--p-blue);
-  white-space: nowrap;
+  gap: 1.25rem;
+  padding: clamp(2.5rem, 6vh, 5rem) var(--gutter);
+  text-align: center;
 }
 
-.hero-loader-wordmark {
-  font-size: var(--loader-lockup);
+.hero .hero-title {
+  max-width: 1240px;
+  color: var(--wow-color);
+  font-size: var(--text-display);
+  line-height: 1;
+  text-wrap: balance;
 }
 
-/* A hairline rather than a bar, drawn to the wordmark's own width so the two
-   read as one object. 17.65 is the lockup's aspect — it is 17.65 times its
-   font-size wide, the mark, the gap and the two-line name measured together —
-   so this stays matched to it at every size instead of at one. Re-measure if
-   anything inside `.wordmark` changes proportion. */
-.hero-loader-rule {
-  position: relative;
-  width: calc(var(--loader-lockup) * 17.65);
-  height: 2px;
-  overflow: hidden;
-  background: rgb(var(--p-blue-rgb, 0 71 255) / 0.16);
+.hero .hero-lede {
+  max-width: 58ch;
+  margin-top: 0.5rem;
+  color: var(--wow-color);
+  font-size: var(--text-body);
+  line-height: 1.6;
 }
 
-.hero-loader-fill {
+.hero .hero-support {
+  max-width: 58ch;
+  color: var(--wow-color);
+  font-size: var(--text-base);
+  line-height: 1.6;
+}
+
+.hero .hero-video-status {
   position: absolute;
-  inset: 0;
-  transform-origin: left center;
-  background: var(--p-blue);
-  /* Slower than the samples arrive, so a burst of buffering reads as the line
-     travelling rather than jumping. */
-  transition: transform 320ms ease-out;
+  bottom: 1.25rem;
+  left: var(--gutter);
+  right: var(--gutter);
+  max-width: 50ch;
+  color: var(--on-dark);
+  font-size: var(--text-sm);
+  line-height: 1.5;
 }
 
-/* Nothing moves behind a screen you cannot see past. */
-:root[data-hero-loading] body {
-  overflow: hidden;
+@media (max-width: 680px) {
+  .hero-statement {
+    gap: 1rem;
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .hero .hero-title {
+    font-size: var(--text-mobile-headline);
+    line-height: 1.05;
+  }
+
+  .hero .hero-lede,
+  .hero .hero-support {
+    max-width: 36ch;
+    font-size: var(--text-base);
+    line-height: 1.55;
+  }
+
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-loader {
-    --loader-fade: 1ms;
-  }
-
-  .hero-loader-fill {
+  .hero-video-el {
     transition: none;
   }
 }
