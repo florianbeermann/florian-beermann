@@ -64,7 +64,7 @@ describe("page metadata", () => {
 
   it("uses the approved homepage search description, title and sharing headline", () => {
     expect(pageMetadata.home).toEqual({
-      title: "Customer Success consulting | Florian Beermann & Co.",
+      title: "Florian Beermann & Co.",
       description:
         "Customer Success consulting for software companies serving different business customers. Strategy, practical customer processes and team training.",
       path: "/",
