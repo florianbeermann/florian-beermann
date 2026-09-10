@@ -26,6 +26,7 @@ They are not saved to browser storage. A successful submission clears the draft.
 | `src/styles/shell.css` | Shared shell: palette tokens, typography, header, footer |
 | `src/pages/Home.css` | Homepage-only styles |
 | `src/pages/scroll-panels.css` | Screen-sized panels, mandatory stopping points and the service reel |
+| `src/hooks/useEngagementReel.ts` | Passive animation fallback for browsers without CSS scroll timelines |
 | `src/components/ui/` | The shadcn/ui primitives actually in use (button, input, label, select, textarea, sonner) |
 | `src/lib/metadata.ts` | Shared route metadata for initial page output, search and social sharing |
 | `src/components/EnquiryProvider.tsx` | In-memory enquiry draft and submission state |
@@ -33,6 +34,12 @@ They are not saved to browser storage. A successful submission clears the draft.
 Styling is deliberately split: the design uses hand-written CSS with the
 `site-` and `home-` prefixes, while Tailwind is retained only for the
 shadcn/ui form primitives.
+
+Desktop snapping is native in every browser. Browsers with CSS scroll timelines
+animate the service reel entirely in CSS; Safari 18 and other unsupported
+browsers seek the same paused keyframes through the Web Animations API.
+The fallback does not drive scrolling and is disabled for narrow screens and
+reduced motion, where the services remain stacked.
 
 ## Pre-launch gate
 

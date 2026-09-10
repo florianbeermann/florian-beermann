@@ -155,14 +155,17 @@ paragraphs or automatically hyphenate the service and About copy.
 ## Layout and reading
 
 The homepage retains its original screen-sized sections and mandatory stopping
-points. At widths of 901 pixels and above, with motion enabled and support for
-scroll-driven animation, each panel fills at least one viewport. Native
+points. At widths of 901 pixels and above, with motion enabled,
+each panel fills at least one viewport. Native
 mandatory snapping stops at every panel and each of the three service positions.
 Do not replace this with freely scrolling desktop sections or a comparison grid.
 
 The service section is a sticky, three-screen track. The three services share a
 frame and move horizontally with the original linear timeline and progress
 readout. Keep the independent snap markers and explicit animation fill modes.
+Browsers without CSS scroll timelines, including Safari 18, seek the same
+paused CSS keyframes from a passive scroll listener. This only paints the reel:
+it must not intercept wheel or keyboard events or move the page itself.
 Short desktop windows use more compact service text and spacing so the full
 descriptions stay inside the frame without changing its timing or stopping points.
 Expanded content, such as the optional enquiry fields, must remain reachable.
