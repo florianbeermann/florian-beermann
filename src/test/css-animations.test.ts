@@ -1,6 +1,7 @@
 import { globSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import postcss from "postcss";
 import { describe, expect, it } from "vitest";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
@@ -49,6 +50,44 @@ describe("homepage reading and motion", () => {
     const reelRule = styles.match(/\.home-engagement\s*\{[^}]*animation-timeline[^}]*\}/);
     expect(reelRule?.[0]).toContain("animation-fill-mode: both");
     expect(reelRule?.[0]).toContain("grid-area: 1 / 1");
+  });
+
+  it("does not hide native snap points behind scroll-animation support", () => {
+    const source = cssFiles.find(({ file }) => file === "src/pages/scroll-panels.css")!;
+    const rules = postcss.parse(source.css);
+    let snapRules = 0;
+    rules.walkDecls(/^scroll-snap-/, (declaration) => {
+      snapRules++;
+      const guards: string[] = [];
+      let parent: postcss.AtRule | postcss.Rule | postcss.Root | postcss.Document | undefined = declaration.parent;
+      while (parent) {
+        if (parent.type === "atrule") guards.push(`@${parent.name} ${parent.params}`);
+        parent = parent.parent;
+      }
+      expect(guards).not.toEqual(expect.arrayContaining([expect.stringContaining("animation-timeline")]));
+      expect(guards).toContain(
+        "@media (prefers-reduced-motion: no-preference) and (min-width: 901px)",
+      );
+    });
+    expect(snapRules).toBeGreaterThan(0);
+  });
+
+  it("pauses the same reel keyframes for the non-native timeline fallback", () => {
+    const source = cssFiles.find(({ file }) => file === "src/pages/scroll-panels.css")!;
+    const rules = postcss.parse(source.css);
+    const fallbacks: string[] = [];
+    rules.walkAtRules("supports", (rule) => {
+      if (rule.params === "not (animation-timeline: view())") fallbacks.push(rule.toString());
+    });
+    expect(fallbacks).toHaveLength(1);
+    for (const selector of [".home-engagement,", ".home-engagement-progress-bar,", ".home-engagement-progress li"]) {
+      expect(fallbacks[0]).toContain(selector);
+    }
+    expect(fallbacks[0]).toContain("animation-duration: 1s");
+    expect(fallbacks[0]).toContain("animation-play-state: paused");
+    const markup = readFileSync(path.join(root, "src/pages/Home.tsx"), "utf8");
+    expect(markup).toContain("useEngagementReel(engagementTrackRef)");
+    expect(markup).toContain('ref={engagementTrackRef} id="engagements"');
   });
 
   it("keeps body copy left aligned and the opening immediately available", () => {

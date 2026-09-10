@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { HeroVideo } from "@/components/HeroVideo";
 import { Wordmark } from "@/components/Wordmark";
 import { Masthead } from "@/components/Masthead";
+import { useEngagementReel } from "@/hooks/useEngagementReel";
 import { emptyEnquiry, useEnquiry, type EnquiryDraft } from "@/lib/enquiry";
 import { pageMetadata, setPageMetadata } from "@/lib/metadata";
 import "./Home.css";
@@ -88,6 +89,8 @@ const contactEmail = "hello@florianbeermann.com";
 
 export default function Home() {
   const pageRef = useRef<HTMLDivElement>(null);
+  const engagementTrackRef = useRef<HTMLElement>(null);
+  useEngagementReel(engagementTrackRef);
   const updateCloudPhase = useCallback((phase: number) => {
     pageRef.current?.style.setProperty("--wow", String(phase));
   }, []);
@@ -253,7 +256,7 @@ export default function Home() {
           </dl>
         </section>
 
-        <section id="engagements" className="home-engagements-track" aria-labelledby="engagements-title">
+        <section ref={engagementTrackRef} id="engagements" className="home-engagements-track" aria-labelledby="engagements-title">
           <div className="home-engagement-steps" aria-hidden="true">
             <span />
             <span />
