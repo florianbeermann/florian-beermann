@@ -174,6 +174,11 @@ still committed at `scripts/assets/portrait-source.jpg`.
 
 To change the portrait, replace `public/portrait.jpg`. It retains its own
 proportion and appears in the responsibility section.
+Its desktop width is explicitly derived from its displayed height and aspect
+ratio. Keep that width definite: Safari otherwise reserves the JPEG's full
+intrinsic width for the grid column after decoding, squeezing the copy and
+pushing the portrait below the viewport. Narrow screens still stack the image
+below the text.
 
 The retired mountain assets (`public/hero-loop.mp4`, `hero-loop-sm.mp4` and
 `hero-poster.jpg`) and their source-generation record,

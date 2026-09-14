@@ -99,6 +99,15 @@ describe("homepage reading and motion", () => {
     expect(markup).not.toContain("HeroLoader");
   });
 
+  it("reserves the portrait's displayed width before and after image decoding", () => {
+    const home = withoutComments(cssFiles.find(({ file }) => file === "src/pages/Home.css")!.css);
+    const portrait = home.match(/\.home-about-portrait\s*\{([^}]+)\}/)?.[1];
+    expect(portrait).toContain("width: calc(min(62vh, 34rem) * 723 / 1086)");
+    expect(portrait).toContain("height: min(62vh, 34rem)");
+    expect(portrait).toContain("aspect-ratio: 723 / 1086");
+    expect(portrait).not.toMatch(/(?:^|;)\s*width:\s*auto/);
+  });
+
   it("uses ordinary section colours after the intro without mountain or cloud effects", () => {
     const styles = cssFiles.map(({ css }) => withoutComments(css)).join("\n");
     const markup = readFileSync(path.join(root, "src/pages/Home.tsx"), "utf8");

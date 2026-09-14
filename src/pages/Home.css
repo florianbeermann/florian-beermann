@@ -269,7 +269,8 @@
 .home-about-portrait {
   margin: 0;
   justify-self: end;
-  width: auto;
+  /* Keep Safari's auto grid track from reserving the JPEG's intrinsic width. */
+  width: calc(min(62vh, 34rem) * 723 / 1086);
   height: min(62vh, 34rem);
   aspect-ratio: 723 / 1086;
   max-width: 100%;
