@@ -1,5 +1,5 @@
 :root {
-  /* Shared with the hero and section scroll offsets. */
+  /* Shared with the section scroll offsets. */
   --masthead-top: clamp(1rem, 2.2vh, 1.75rem);
   --masthead-h: 2.75rem;
   --masthead-space: calc(var(--masthead-top) + var(--masthead-h));
@@ -31,6 +31,10 @@
   min-width: 0;
 }
 
+.site-masthead[data-intro-hidden="true"] {
+  visibility: hidden;
+}
+
 .site-masthead[data-ground="light"] {
   --masthead-focus: var(--p-blue);
   --masthead-panel-bg: var(--p-paper);
@@ -51,13 +55,34 @@
 }
 
 .site-masthead[data-ground="dark"] {
-  --masthead-focus: var(--wow-color, var(--on-dark));
-  --glass-bg: color-mix(
-    in srgb,
-    rgb(var(--p-stock-rgb) / 0.06) calc(var(--wow, 0) * 100%),
-    rgb(var(--p-paper-rgb) / 0.16)
-  );
-  color: var(--wow-color, var(--on-dark));
+  --masthead-focus: var(--on-dark);
+  --glass-bg: rgb(var(--p-paper-rgb) / 0.16);
+  color: var(--on-dark);
+}
+
+.site-masthead[data-ground="intro"] {
+  --masthead-focus: var(--p-paper);
+  --glass-bg: var(--p-stock);
+  color: var(--p-paper);
+}
+
+/* Opaque controls stay readable over every gradient phase without covering the art. */
+.site-masthead[data-ground="intro"] .masthead-mark {
+  position: relative;
+  isolation: isolate;
+}
+
+.site-masthead[data-ground="intro"] .masthead-mark::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -0.25rem -0.5rem;
+  border-radius: var(--radius);
+  background: var(--p-stock);
+}
+
+.site-masthead[data-ground="intro"] .masthead-disclosure {
+  background: var(--p-stock);
 }
 
 .site-masthead .masthead-mark {
@@ -156,12 +181,6 @@
 .site-masthead[data-ground="light"] .masthead-cta:hover {
   background: var(--p-ink);
   border-color: var(--p-ink);
-}
-
-.site-masthead[data-ground="dark"] .masthead-cta {
-  background: var(--wow-color, var(--p-paper));
-  border-color: var(--wow-color, var(--p-paper));
-  color: var(--wow-ink, var(--p-ink));
 }
 
 .masthead-mobile-nav {

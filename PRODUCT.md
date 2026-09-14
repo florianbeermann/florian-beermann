@@ -145,19 +145,19 @@ this network; the legal entity is a sole trader.
   page's structured data gives as the organisation logo; `apple-touch-icon.png`
   is the whole anvil too, inverted — the pale mark on a signal-blue tile.
 
-  The hero is a cut of the mountain footage (`public/hero-loop.mp4`, with
-  `hero-loop-sm.mp4` for narrow screens and `hero-poster.jpg` as its first
-  frame), assembled by `scripts/build-hero-loop.mjs`. The crossfade seam is at
-  the front of the clip, which is what makes the loop read as continuous.
-  Preserve the original video quality and frame rate. Smaller downloads must
-  not come at the expense of image detail or smooth motion.
-  Content appears immediately over the poster, with no loading curtain. The
-  background plays automatically without a visible playback button, and
-  reduced-motion and reduced-data preferences keep the opening still. The
-  headline and navigation shift towards blue as clouds brighten the visible
-  video crop, using the original frame-driven colour effect without tinting
-  or darkening the footage. The
-  portrait is `public/portrait.jpg`, shown in "Responsible for renewals and
+  **Resolved (2026-09-11):** add the approved five-column signature-blue animated
+  brand intro as a new first section, with the original still, centred wordmark.
+  The existing positioning text remains immediately underneath at `#top`, now
+  using the site's regular flat paper, ink and blue styling. Remove its mountain
+  video/poster background and cloud-driven foreground, not its content.
+  The intro is immediately scrollable, never a loading curtain or timed gate.
+  Preserve its 24-second loop, independent block travel and 2x internal morphing,
+  full device-pixel rendering and reduced motion.
+  **Resolved (2026-09-13):** the intro shows only the lockup and a small centred
+  scroll indicator at the bottom. Remove its visible navigation, Continue and
+  pause/play buttons; navigation remains available in the content below.
+  The retired mountain files and generation script are retained without being
+  requested by the site. The portrait is `public/portrait.jpg`, shown in "Responsible for renewals and
   growth." The original screen-sized desktop sections and mandatory stopping
   points are retained. `public/social-preview.jpg` is the link card.
 

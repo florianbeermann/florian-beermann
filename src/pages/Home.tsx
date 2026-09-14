@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { toast } from "sonner";
@@ -13,14 +13,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { HeroVideo } from "@/components/HeroVideo";
+import { BrandIntro } from "@/components/BrandIntro";
 import { Wordmark } from "@/components/Wordmark";
 import { Masthead } from "@/components/Masthead";
 import { useEngagementReel } from "@/hooks/useEngagementReel";
 import { emptyEnquiry, useEnquiry, type EnquiryDraft } from "@/lib/enquiry";
 import { pageMetadata, setPageMetadata } from "@/lib/metadata";
 import "./Home.css";
-import "./hero.css";
 import "./scroll-panels.css";
 
 const employers = [
@@ -88,12 +87,8 @@ const softwareOptions = [
 const contactEmail = "hello@florianbeermann.com";
 
 export default function Home() {
-  const pageRef = useRef<HTMLDivElement>(null);
   const engagementTrackRef = useRef<HTMLElement>(null);
   useEngagementReel(engagementTrackRef);
-  const updateCloudPhase = useCallback((phase: number) => {
-    pageRef.current?.style.setProperty("--wow", String(phase));
-  }, []);
   const { draft, setDraft, submission, setSubmission } = useEnquiry();
   const submitting = submission.status === "sending";
   const submitError = submission.status === "error" ? submission.message : "";
@@ -186,32 +181,28 @@ export default function Home() {
   };
 
   return (
-    <div className="site-page home-page" ref={pageRef}>
-      <Masthead />
+    <div className="site-page home-page">
+      <Masthead hideOnIntro />
       <main id="site-main">
+        <BrandIntro />
         <span className="site-stop" aria-hidden="true" />
-        <section id="top" className="hero on-dark">
-          <HeroVideo
-            className="hero-video"
-            src="/hero-loop.mp4?v=51ff34c5"
-            srcSmall="/hero-loop-sm.mp4?v=2ea7920f"
-            poster="/hero-poster.jpg"
-            onCloudPhase={updateCloudPhase}
-          />
-          <div className="hero-statement">
-            <h1 className="display hero-title">
+        <section id="top" className="home-opening home-section site-inverted site-panel" aria-labelledby="opening-title">
+          <div className="home-section-heading">
+            <h1 id="opening-title">
               Your customers have changed.{" "}
               <br />
               Your approach should too.
             </h1>
-            <p className="hero-lede">
-              I help software companies adapt Customer Success as they begin
-              serving different business customers.
-            </p>
-            <p className="hero-support">
-              Clear account ownership, repeatable onboarding and better renewal
-              planning. All in the tools your team already uses.
-            </p>
+            <div className="home-opening-copy">
+              <p>
+                I help software companies adapt Customer Success as they begin
+                serving different business customers.
+              </p>
+              <p>
+                Clear account ownership, repeatable onboarding and better renewal
+                planning. All in the tools your team already uses.
+              </p>
+            </div>
           </div>
         </section>
 

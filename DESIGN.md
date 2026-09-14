@@ -96,8 +96,9 @@ components:
 
 ## Identity
 
-The existing "Weather Station" visual identity is retained: mountain footage,
-cool paper, slate ink, electric blue, precise rules and a personal wordmark.
+The existing visual identity is retained: cool paper, slate ink, electric blue,
+precise rules and a personal wordmark. The approved signature-blue gradient
+intro now leads the site; the mountain footage is retired.
 Atmosphere supports the offer. It must not delay or hide useful content.
 
 The site introduces an independent Customer Success consultant. Its central
@@ -129,12 +130,11 @@ closing sections.
 Running text on blue uses the full paper colour. Do not fade it until it loses
 contrast. On paper, secondary text can use the existing muted ink.
 
-The hero footage is shown without a dark overlay, tint or brightness filter.
-This is an explicit design preference. Do not dim the video or its poster.
-Headline, supporting text, navigation and the header contact action shift from paper
-towards electric blue as clouds brighten the visible video crop, then return
-as the picture darkens. This restores the original cloud-synchronised effect.
-Only the foreground changes colour. Do not add a colour layer over the footage.
+The brand intro uses five equal-width, full-bleed gradient columns derived from
+`--p-blue` (`#0047ff`). Default ink is 6% blue with black; ice is 10% blue with
+white. Keep the approved electric blue, not the earlier cyan reference.
+The section underneath uses ordinary paper, ink and blue styling, with no
+mountain image, video or cloud-synchronised foreground.
 
 The independent access page and social-image source restate their colours
 because they are outside the application bundle.
@@ -148,6 +148,11 @@ Lastica is reserved for the brand name.
 Use the shared type tokens in `src/styles/shell.css`. Large headings are capped
 at six rem. Mobile headings use the smaller, shared mobile step instead of
 taking over an entire screen.
+
+The approved intro wordmark is the deliberate exception to the heading ramp:
+`clamp(0.875rem, 4vw, 7rem)`. It reuses `Wordmark.tsx`, `BrandMark.tsx` and the
+existing Lastica font, with the shared 0.11em gap, 1.78em mark, 1.02 name leading
+and 0.02em tracking. The whole horizontal lockup stays centred and still.
 
 Body copy is left aligned with a comfortable line length. Do not justify short
 paragraphs or automatically hyphenate the service and About copy.
@@ -171,23 +176,27 @@ descriptions stay inside the frame without changing its timing or stopping point
 Expanded content, such as the optional enquiry fields, must remain reachable.
 Narrow screens and reduced-motion preferences retain the original stacked fallback.
 
-Main content resolves to a maximum width of 1240 pixels. Hero and navigation
+Main content resolves to a maximum width of 1240 pixels. Intro and navigation
 use the front-plane gutter. At narrow widths, layouts stack and keep a minimum
 side margin of approximately 1.35 rem.
 
 The page sequence is:
 
-1. Clear positioning and supporting copy over the hero. Navigation and contact
-   remain in the header, without duplicate links beneath the hero copy.
-2. Genuine employment evidence.
-3. The three services in their original scroll-driven sequence.
-4. Three decisions behind a changing customer base: customer fit, service choices
+1. The full-viewport animated brand intro at `#intro`, showing only the original
+   lockup and a small bottom-centred scroll chevron. No masthead or text buttons
+   cover this section. The cue links to `#top`; this is not a timed gate.
+2. Unchanged positioning and supporting copy at `#top`, now on a regular paper
+   section. Its offer remains the single page-level heading. Navigation and
+   contact remain in the header, without duplicate links beneath the copy.
+3. Genuine employment evidence.
+4. The three services in their original scroll-driven sequence.
+5. Three decisions behind a changing customer base: customer fit, service choices
    and the transition. This blue section addresses experienced buyers and is not
    a numbered tutorial.
-5. Personal experience, the portrait and the relationship with independent
+6. Personal experience, the portrait and the relationship with independent
    specialists in "Responsible for renewals and growth."
-6. A concise contact introduction, direct email and the enquiry form.
-7. The blue closing section and oversized wordmark.
+7. A concise contact introduction, direct email and the enquiry form.
+8. The blue closing section and oversized wordmark.
 
 The service numbers are position indicators, not buttons. All three service
 descriptions stay in the document for assistive reading and the stacked fallback.
@@ -203,7 +212,9 @@ disclosure rather than a full-screen modal.
 
 Over paper and blue sections, the fixed header has a solid matching backing.
 Body text must not show through the name, and hidden links beneath that backing
-must not receive clicks. The hero keeps its transparent front-plane treatment.
+must not receive clicks. The masthead is hidden and not keyboard-reachable over
+the intro, then returns over the content below.
+The home wordmark links to `#intro`; the existing `#top` address is preserved.
 
 The mobile disclosure has a labelled button, an accurate expanded state,
 keyboard-reachable links, outside-click dismissal and Escape support. It does
@@ -231,26 +242,26 @@ indicators. Keep native validation and a logical keyboard order.
 
 ## Media and motion
 
-The opening is available immediately over `hero-poster.jpg`. There is no
-loading curtain or whole-document entrance animation.
+The intro is available immediately, with no loading curtain or scroll lock.
+Five columns travel vertically while the stops and colours inside their blocks
+independently drift, stretch, contract and change. Preserve the final approved
+2x internal morph multiplier, independent slow/fast ramps and faster ripples;
+do not substitute scrolling static gradients.
 
-Use the original high-quality video files, with a 2560-pixel desktop cut and a
-1920-pixel mobile cut at their original frame rate. Do not reduce resolution or
-frame rate just to shrink these files without explicit approval.
-There is no visible playback button. It plays
-automatically when visible and pauses when offscreen or in a hidden tab.
+The complete composition loops seamlessly every 24 seconds, including its
+velocity and tile-boundary colours. Render at native device-pixel resolution:
+a small WebGL mesh, then an animated Canvas 2D fallback, then static CSS gradients
+when graphics are unavailable. Do not cap resolution below the device's actual
+canvas limits or replace the effect with a video.
 
-Reduced motion and reduced-data connections use the still image without
-downloading the video.
+The owner requested removal of the visible pause/play control on 13 September
+2026. The renderer retains its pause/play API; the only intro affordance is the
+scroll cue. Reduced motion prevents playback. Hidden tabs and offscreen sections
+pause automatically, and graphics recovery, reconnects and full-DPR resizing
+must work without leaking observers or animation frames.
 
-The cloud colour signal reads a 32-by-18-pixel sample of the visible crop from
-decoded video frames. Retain the original brightness curve and rate limiting.
-Downscale on an accelerated drawing canvas before copying that small sample to
-the pixel-reading canvas. Do not copy full-resolution video frames into the
-pixel-reading canvas, as this can interrupt smooth playback.
-Do not replace the cloud response with a timed colour loop. The signal is scoped
-to the homepage and resets when the hero is offscreen, the tab is hidden or
-reduced motion is requested.
+Mountain videos, their poster and cloud-colour runtime are not part of the
+website. The old media files remain only as retained source assets.
 
 The portrait stays in the responsibility section, beside the copy on desktop
 and below it on narrow screens, at its original proportion with meaningful

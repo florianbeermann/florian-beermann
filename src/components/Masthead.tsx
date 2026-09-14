@@ -11,9 +11,10 @@ const NAV_LINKS = [
   { href: "#contact", label: "Contact" },
 ];
 
-type Ground = "dark" | "deep" | "light";
+type Ground = "intro" | "dark" | "deep" | "light";
 
 function groundOf(el: Element): Ground | null {
+  if (el.getAttribute("data-masthead-ground") === "intro") return "intro";
   const parts = getComputedStyle(el).backgroundColor.match(/[\d.]+/g);
   if (!parts) return null;
   const [r, g, b, a = 1] = parts.map(Number);
@@ -32,11 +33,14 @@ function markerOf(el: Element): string {
   return getComputedStyle(el).getPropertyValue("--marker").trim();
 }
 
-export function Masthead() {
+export function Masthead({ hideOnIntro = false }: { hideOnIntro?: boolean }) {
   const ref = useRef<HTMLElement | null>(null);
   const desktopLinkRef = useRef<HTMLAnchorElement>(null);
-  const [ground, setGround] = useState<Ground>("dark");
+  const [ground, setGround] = useState<Ground>(() =>
+    hideOnIntro && typeof IntersectionObserver !== "undefined" ? "intro" : "dark",
+  );
   const [markColor, setMarkColor] = useState<string>("");
+  const hiddenOnIntro = hideOnIntro && ground === "intro";
 
   useEffect(() => {
     const el = ref.current;
@@ -97,10 +101,12 @@ export function Masthead() {
       ref={ref}
       className="site-masthead"
       data-ground={ground}
+      data-intro-hidden={hiddenOnIntro || undefined}
+      aria-hidden={hiddenOnIntro || undefined}
       style={markColor ? ({ "--mark-color": markColor } as CSSProperties) : undefined}
       role="banner"
     >
-      <a className="masthead-mark" href="#top" aria-label="Florian Beermann, home">
+      <a className="masthead-mark" href="#intro" aria-label="Florian Beermann, home">
         <Wordmark className="masthead-wordmark" />
       </a>
       <nav className="glass masthead-rail" aria-label="Primary navigation">
@@ -117,7 +123,7 @@ export function Masthead() {
       <a className="control control--solid masthead-cta" href="#contact">
         Get in touch
       </a>
-      <MobileNav links={NAV_LINKS} desktopFocusRef={desktopLinkRef} />
+      {!hiddenOnIntro && <MobileNav links={NAV_LINKS} desktopFocusRef={desktopLinkRef} />}
     </header>
   );
 }

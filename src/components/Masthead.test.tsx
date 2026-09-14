@@ -24,7 +24,7 @@ describe("masthead", () => {
     const home = screen.getByRole("link", { name: "Florian Beermann, home" });
     const name = home.querySelector(".wordmark-name");
 
-    expect(home).toHaveAttribute("href", "#top");
+    expect(home).toHaveAttribute("href", "#intro");
     expect(name).toHaveTextContent(/Florian Beermann.*& Co\./);
     expect(name?.querySelectorAll("br")).toHaveLength(1);
     expect(home.querySelector(".wordmark-mark")).toBeInTheDocument();
@@ -44,7 +44,7 @@ describe("masthead", () => {
     expect(within(banner).queryByText("Start a conversation")).not.toBeInTheDocument();
   });
 
-  it("adapts to paper, blue and dark sections without retracting the brand", () => {
+  it("stays hidden over the intro and restores navigation over the content grounds", () => {
     let report!: IntersectionObserverCallback;
     const observe = vi.fn();
     const disconnect = vi.fn();
@@ -58,8 +58,9 @@ describe("masthead", () => {
 
     const { container, unmount } = render(
       <div className="site-page">
-        <Masthead />
+        <Masthead hideOnIntro />
         <main>
+          <section id="intro" data-masthead-ground="intro" style={{ backgroundColor: "rgb(0, 71, 255)" }} />
           <section id="top" style={{ backgroundColor: "rgb(24, 29, 38)" }} />
           <section
             id="engagements"
@@ -73,7 +74,7 @@ describe("masthead", () => {
         </main>
       </div>,
     );
-    const banner = screen.getByRole("banner");
+    const banner = screen.getByRole("banner", { hidden: true });
     const reportSection = (id: string, isIntersecting = true) => {
       act(() => report(
         [{ target: container.querySelector(`#${id}`)!, isIntersecting }] as IntersectionObserverEntry[],
@@ -81,9 +82,17 @@ describe("masthead", () => {
       ));
     };
 
-    expect(observe).toHaveBeenCalledTimes(4);
+    expect(observe).toHaveBeenCalledTimes(5);
+    expect(banner).toHaveAttribute("data-intro-hidden", "true");
+    expect(screen.queryByRole("banner")).not.toBeInTheDocument();
+    reportSection("intro");
+    expect(banner).toHaveAttribute("data-ground", "intro");
+    expect(banner).toHaveAttribute("aria-hidden", "true");
     reportSection("engagements");
     expect(banner).toHaveAttribute("data-ground", "light");
+    expect(banner).not.toHaveAttribute("aria-hidden");
+    expect(banner).not.toHaveAttribute("data-intro-hidden");
+    expect(screen.getByRole("link", { name: "Services" })).toBeInTheDocument();
     expect(banner.style.getPropertyValue("--mark-color")).toBe("rgb(0, 71, 255)");
     reportSection("method", false);
     expect(banner).toHaveAttribute("data-ground", "light");
@@ -95,6 +104,9 @@ describe("masthead", () => {
     expect(banner).toHaveAttribute("data-ground", "dark");
     expect(banner.querySelector(".wordmark-name")).toBeVisible();
     expect(banner).not.toHaveAttribute("data-over-hero");
+    reportSection("intro");
+    expect(banner).toHaveAttribute("aria-hidden", "true");
+    expect(screen.queryByRole("button", { name: "Open menu" })).not.toBeInTheDocument();
 
     unmount();
     expect(disconnect).toHaveBeenCalledOnce();
@@ -102,7 +114,7 @@ describe("masthead", () => {
 
   it("still provides navigation when intersection observation is unavailable", () => {
     setObserver(undefined);
-    render(<Masthead />);
+    render(<Masthead hideOnIntro />);
     expect(screen.getByRole("link", { name: "Services" })).toHaveAttribute("href", "#engagements");
     expect(screen.getByRole("link", { name: "Florian Beermann, home" })).toBeVisible();
   });

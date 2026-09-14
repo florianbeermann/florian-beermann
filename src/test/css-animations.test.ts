@@ -99,27 +99,14 @@ describe("homepage reading and motion", () => {
     expect(markup).not.toContain("HeroLoader");
   });
 
-  it("does not cover the hero footage with an overlay", () => {
-    const hero = withoutComments(
-      cssFiles.find(({ file }) => file === "src/pages/hero.css")!.css,
-    );
-    expect(hero).not.toMatch(/\.hero::(?:before|after)\s*\{/);
-  });
-
-  it("binds the hero text and header to the cloud colour signal", () => {
-    const hero = withoutComments(
-      cssFiles.find(({ file }) => file === "src/pages/hero.css")!.css,
-    );
-    const masthead = withoutComments(
-      cssFiles.find(({ file }) => file === "src/styles/masthead.css")!.css,
-    );
-    expect(hero).toContain("@property --wow");
-    expect(hero).toMatch(/\.hero \.hero-title\s*\{[^}]*color:\s*var\(--wow-color\)/);
-    expect(masthead).toMatch(
-      /\.site-masthead\[data-ground="dark"\]\s*\{[^}]*color:\s*var\(--wow-color/,
-    );
-    const video = hero.match(/\.hero-video-el\s*\{([^}]+)\}/);
-    expect(video?.[1]).not.toMatch(/\bfilter\s*:/);
+  it("uses ordinary section colours after the intro without mountain or cloud effects", () => {
+    const styles = cssFiles.map(({ css }) => withoutComments(css)).join("\n");
+    const markup = readFileSync(path.join(root, "src/pages/Home.tsx"), "utf8");
+    expect(styles).not.toContain("--wow");
+    expect(markup).not.toMatch(/HeroVideo|hero-loop|hero-poster|onCloudPhase/);
+    expect(markup).toContain('id="top" className="home-opening home-section site-inverted site-panel"');
+    expect(styles).toMatch(/\.home-opening \.home-opening-copy p\s*\{[^}]*color:\s*var\(--prose\)/);
+    expect(styles).toMatch(/\.home-page \.home-opening\s*\{[^}]*scroll-margin-top:\s*0/);
   });
 
   it("keeps scrolling content from showing or receiving clicks through the header", () => {

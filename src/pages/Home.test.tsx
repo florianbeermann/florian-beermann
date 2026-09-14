@@ -39,6 +39,21 @@ afterEach(() => {
 });
 
 describe("homepage", () => {
+  it("adds the brand intro before the intact opening copy without loading mountain media", () => {
+    renderHome();
+    const sections = document.querySelectorAll("main > section");
+    expect(sections[0]).toHaveAttribute("id", "intro");
+    expect(sections[1]).toHaveAttribute("id", "top");
+    expect(sections[1]).toHaveClass("home-section", "site-inverted", "site-panel");
+    expect(within(sections[0] as HTMLElement).queryByRole("heading")).not.toBeInTheDocument();
+    expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+    expect(screen.getByRole("link", { name: "Scroll to content" })).toHaveAttribute("href", "#top");
+    expect(document.querySelector(".site-masthead")).toHaveAttribute("aria-hidden", "true");
+    expect(document.querySelector("video, .hero-video")).not.toBeInTheDocument();
+    expect(document.querySelector('[src*="hero-loop"], [src*="hero-poster"]')).not.toBeInTheDocument();
+    expect(document.getElementById("site-main")).toBeInTheDocument();
+  });
+
   it("leads with changing customers rather than an exclusively upmarket offer", () => {
     renderHome();
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
@@ -47,9 +62,7 @@ describe("homepage", () => {
     expect(screen.getByText(/I help software companies adapt Customer Success/)).toHaveTextContent(
       "different business customers",
     );
-    for (const action of screen.getAllByRole("link", { name: "Get in touch" })) {
-      expect(action).toHaveAttribute("href", "#contact");
-    }
+    expect(document.querySelector(".masthead-cta")).toHaveAttribute("href", "#contact");
     expect(document.querySelector(".hero-loader")).not.toBeInTheDocument();
   });
 
@@ -70,7 +83,7 @@ describe("homepage", () => {
     const hero = document.getElementById("top")!;
     expect(within(hero).getByText(/Clear account ownership, repeatable onboarding/)).toBeInTheDocument();
     expect(within(hero).queryAllByRole("link")).toHaveLength(0);
-    const contact = screen.getByRole("link", { name: "Get in touch" });
+    const contact = document.querySelector(".masthead-cta")!;
     expect(contact).toHaveAttribute("href", "#contact");
     expect(contact.closest("header")).toHaveClass("site-masthead");
   });

@@ -1,4 +1,12 @@
 import "@testing-library/jest-dom";
+import { vi } from "vitest";
+
+// jsdom has no graphics backend; exercise the explicit static fallback here.
+Object.defineProperty(HTMLCanvasElement.prototype, "getContext", {
+  configurable: true,
+  writable: true,
+  value: vi.fn(() => null),
+});
 
 Object.defineProperty(window, "matchMedia", {
   writable: true,
@@ -14,14 +22,7 @@ Object.defineProperty(window, "matchMedia", {
   }),
 });
 
-/* jsdom does not implement IntersectionObserver, and the hero's background uses
-   one to avoid decoding a video nobody is looking at.
- 
-   This gap was here before and went unnoticed: the shader that used to hold
-   that spot also constructed one, but only after asking for a WebGL context,
-   which jsdom refuses — so it always returned first and never reached the line
-   that would have thrown. A stub rather than a mock: no test asserts on
-   visibility behaviour, they just need the constructor to exist. */
+// Real visibility, resizing and graphics recovery are checked in the browser.
 class NoopIntersectionObserver implements IntersectionObserver {
   readonly root = null;
   readonly rootMargin = "";
