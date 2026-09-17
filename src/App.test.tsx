@@ -57,8 +57,27 @@ describe("page and fragment navigation", () => {
     nativeFragment("contact");
     recordScroll(2400);
     nativeFragment("about");
-    expect(document.documentElement).toHaveAttribute("data-active-screen", "florian");
-    expect(document.querySelector<HTMLElement>('.section-screen[data-screen="florian"]')?.scrollTop).toBe(1800);
+    expect(document.documentElement).toHaveAttribute("data-active-screen", "about");
+    expect(document.querySelector<HTMLElement>('.section-screen[data-screen="about"]')?.scrollTop).toBe(1800);
+  });
+
+  it("replaces legacy fragments without adding an extra history entry", () => {
+    render(<App />);
+    const initialLength = window.history.length;
+    nativeFragment("florian");
+    expect(document.documentElement).toHaveAttribute("data-active-screen", "expertise");
+    expect(window.location.hash).toBe("#expertise");
+    expect(window.history.length).toBe(initialLength + 1);
+  });
+
+  it("preserves the reading position when a restored bookmark is canonicalised", () => {
+    render(<App />);
+    nativeFragment("expertise");
+    recordScroll(900);
+    nativeFragment("contact");
+    nativeFragment("florian");
+    expect(window.location.hash).toBe("#expertise");
+    expect(document.querySelector<HTMLElement>('.section-screen[data-screen="expertise"]')?.scrollTop).toBe(900);
   });
 
   it("restores the enquiry position when returning from the privacy policy", async () => {

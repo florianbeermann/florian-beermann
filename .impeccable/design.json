@@ -41,9 +41,9 @@
       ],
       "rules": [
         { "name": "Whole viewport", "text": "Centre the Home logo in the whole viewport. Open mobile menus occupy separate space above it." },
-        { "name": "Stable navigation", "text": "Retain the hidden Home header brand's dimensions. Use About, Services, Approach, Expertise and Contact." },
+        { "name": "Stable navigation", "text": "Retain the hidden Home header brand's dimensions. Use About, Services, Approach, Expertise and Contact with matching URL fragments." },
         { "name": "True italic", "text": "One readable label, invisible sizing copies, real italic faces and no hover underlines." },
-        { "name": "Genuine evidence", "text": "Prominent former-employer evidence belongs below the colour portrait, explicitly not presented as clients." },
+        { "name": "Genuine evidence", "text": "The employer list concludes the Expertise text in the same column, with body-sized Caslon text and no divider. Explicitly identify previous employers, not clients." },
         { "name": "Approved images", "text": "Marbling, sky, gallery, then Hamburg at night. Only marbling and gallery are shaded." },
         { "name": "Production continuity", "text": "Preserve real enquiry delivery, legal routes, metadata and the server-side password gate." }
       ]

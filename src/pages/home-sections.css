@@ -86,11 +86,11 @@ html.fixed-sections,
 }
 
 /* Contact paints its own blue section; the footer below it needs paper. */
-.fixed-sections .section-screen[data-screen="expertise"] {
+.fixed-sections .section-screen[data-screen="services"] {
   background: var(--blue);
 }
 
-.fixed-sections .section-screen[data-screen="florian"] {
+.fixed-sections .section-screen[data-screen="expertise"] {
   background: var(--paper-deep);
 }
 
@@ -98,7 +98,7 @@ html.fixed-sections,
   min-height: 100%;
 }
 
-.fixed-sections .section-screen > :is(.chapter, .expertise, .person-section, .contact) {
+.fixed-sections .section-screen > :is(.chapter, .services, .person-section, .contact) {
   padding-block: clamp(32px, 6vh, 76px);
 }
 

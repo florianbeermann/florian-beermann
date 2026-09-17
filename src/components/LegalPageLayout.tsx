@@ -27,12 +27,12 @@ export const LegalPageLayout = ({
   return (
     <div className="site-page legal-page">
       <header className="site-header">
-        <Link className="site-brand" to="/#top" aria-label="Beermann &amp; Company, home">
+        <Link className="site-brand" to="/" aria-label="Beermann &amp; Company, home">
           <Wordmark className="site-brand-lockup" />
         </Link>
         <nav aria-label="Primary navigation">
-          <Link to="/#expertise">Services</Link>
-          <Link to="/#practice">About</Link>
+          <Link to="/#services">Services</Link>
+          <Link to="/#about">About</Link>
           <Link to="/#contact">Contact</Link>
         </nav>
       </header>

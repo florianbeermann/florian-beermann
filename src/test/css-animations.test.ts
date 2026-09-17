@@ -81,6 +81,31 @@ describe("homepage reading and motion", () => {
     expect(home).not.toMatch(/grayscale\(/);
   });
 
+  it("integrates the employer list using body typography rather than a divided panel", () => {
+    const styles = postcss.parse(home);
+    const experienceBorders: string[] = [];
+    const listFonts: string[] = [];
+    styles.walkRules(".boutique-page .experience", rule => {
+      rule.walkDecls(/^border/, declaration => { experienceBorders.push(declaration.value); });
+    });
+    styles.walkRules(".boutique-page .experience ul", rule => {
+      rule.walkDecls("font", declaration => { listFonts.push(declaration.value); });
+      expect(rule.toString()).not.toContain("font-size:");
+    });
+    expect(experienceBorders).toEqual([]);
+    expect(listFonts).toEqual(["inherit"]);
+    expect(home).not.toContain(".experience-heading");
+  });
+
+  it("keeps the correct backgrounds after renaming Services and Expertise", () => {
+    const backgrounds: Record<string, string> = {};
+    postcss.parse(sections).walkRules(rule => {
+      rule.walkDecls("background", declaration => { backgrounds[rule.selector] = declaration.value; });
+    });
+    expect(backgrounds['.fixed-sections .section-screen[data-screen="services"]']).toBe("var(--blue)");
+    expect(backgrounds['.fixed-sections .section-screen[data-screen="expertise"]']).toBe("var(--paper-deep)");
+  });
+
   it("removes only reading-focus boxes from section headings, not control focus indicators", () => {
     const selector = '.fixed-sections .section-screen :is(h1, h2, h3)[tabindex="-1"]:focus';
     const rules = postcss.parse(sections);

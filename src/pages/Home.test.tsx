@@ -1,5 +1,5 @@
 import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { EnquiryProvider } from "@/components/EnquiryProvider";
 import Home from "@/pages/Home";
@@ -9,8 +9,14 @@ vi.mock("@/lib/artwork-slideshow", () => ({
   initArtworkSlideshow: () => ({ destroy() {} }),
 }));
 
+function CurrentAddress() {
+  const { pathname, search, hash } = useLocation();
+  return <span data-testid="current-address" hidden>{pathname}{search}{hash}</span>;
+}
+
 const renderHome = (entry = "/") => render(
   <MemoryRouter initialEntries={[entry]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <CurrentAddress />
     <EnquiryProvider>
       <Routes>
         <Route path="/" element={<Home />} />
@@ -70,11 +76,15 @@ describe("boutique homepage", () => {
     renderHome();
     expect(document.querySelectorAll(".section-screen")).toHaveLength(6);
     for (const [label, id] of [
-      ["About", "practice"], ["Services", "expertise"], ["Approach", "approach"],
-      ["Expertise", "florian"], ["Contact", "contact"],
+      ["About", "about"], ["Services", "services"], ["Approach", "approach"],
+      ["Expertise", "expertise"], ["Contact", "contact"],
     ]) {
       navigate(label);
       expect(document.documentElement).toHaveAttribute("data-active-screen", id);
+      expect(screen.getByTestId("current-address")).toHaveTextContent(`/#${id}`);
+      const links = document.querySelectorAll<HTMLAnchorElement>(`.masthead nav a[href="/#${id}"]`);
+      expect(links).toHaveLength(2);
+      links.forEach(link => expect(link).toHaveAttribute("aria-current", "location"));
       expect(document.querySelectorAll(".section-screen:not([hidden])")).toHaveLength(1);
       const heading = document.querySelector<HTMLElement>(`#${id} h2`)!;
       expect(heading).toHaveFocus();
@@ -87,16 +97,22 @@ describe("boutique homepage", () => {
     }
     fireEvent.click(screen.getByRole("link", { name: "Beermann & Company, home" }));
     expect(document.documentElement).toHaveAttribute("data-active-screen", "top");
+    expect(screen.getByTestId("current-address").textContent).toBe("/");
     expect(screen.getByRole("heading", { level: 1, name: "Beermann & Company" })).toHaveFocus();
   });
 
-  it("keeps the operator's experience and larger employer evidence below the colour portrait", () => {
-    renderHome("/#florian");
+  it("integrates the employer evidence beneath the Expertise text in the same column", () => {
+    renderHome("/#expertise");
     const portrait = screen.getByRole("img", { name: "Florian Beermann" });
     expect(portrait).toHaveAttribute("src", "/boutique/portrait-colour.png");
     expect(portrait).toHaveAttribute("width", "1023");
     expect(portrait).toHaveAttribute("height", "1537");
-    expect(document.querySelector(".person")?.nextElementSibling).toHaveClass("experience");
+    const copy = document.querySelector(".person-copy")!;
+    expect(copy.lastElementChild).toHaveClass("experience");
+    expect(copy.lastElementChild).not.toHaveClass("page-width");
+    expect(document.querySelector(".person")?.children).toHaveLength(2);
+    expect(within(copy as HTMLElement).getByRole("heading", { level: 3, name: "Experience behind the advice." }))
+      .toBeInTheDocument();
     expect(screen.getByText("Previous employers, not consultancy clients.")).toBeInTheDocument();
     expect(within(screen.getByRole("list", { name: "Previous employers" })).getAllByRole("listitem")).toHaveLength(5);
     expect(document.querySelectorAll(".employer-mark")[1]).toHaveAttribute(
@@ -105,7 +121,7 @@ describe("boutique homepage", () => {
   });
 
   it("keeps three expandable services and four tangible deliverables in each", () => {
-    renderHome("/#expertise");
+    renderHome("/#services");
     const engagements = [...document.querySelectorAll<HTMLDetailsElement>(".engagement")];
     expect(engagements.map(item => item.querySelector("h3")?.textContent)).toEqual([
       "Customer Success strategy", "Customer lifecycle processes", "Customer Success team training",
@@ -119,16 +135,33 @@ describe("boutique homepage", () => {
     expect(screen.queryByText("Discuss an engagement")).not.toBeInTheDocument();
   });
 
-  it("preserves existing bookmarks and reports invalid addresses", () => {
+  it.each([
+    ["practice", "about"],
+    ["florian", "expertise"],
+    ["engagements", "services"],
+    ["transition", "approach"],
+    ["intro", "top"],
+    ["home", "top"],
+    ["top", "top"],
+  ])("normalises the old #%s bookmark to its current address", async (oldId, id) => {
+    renderHome(`/?source=bookmark#${oldId}`);
+    await waitFor(() => expect(screen.getByTestId("current-address").textContent).toBe(
+      `/?source=bookmark${id === "top" ? "" : `#${id}`}`,
+    ));
+    expect(document.documentElement).toHaveAttribute("data-active-screen", id);
+  });
+
+  it.each(["about", "expertise"])("gives the current #%s name priority over its historical meaning", id => {
+    renderHome(`/#${id}`);
+    expect(document.documentElement).toHaveAttribute("data-active-screen", id);
+    expect(screen.getByTestId("current-address").textContent).toBe(`/#${id}`);
+  });
+
+  it("reports invalid addresses and returns to the clean homepage URL", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
-    const first = renderHome("/#about");
-    expect(document.documentElement).toHaveAttribute("data-active-screen", "florian");
-    first.unmount();
-    const second = renderHome("/#engagements");
-    expect(document.documentElement).toHaveAttribute("data-active-screen", "expertise");
-    second.unmount();
     renderHome("/#missing-section");
     expect(document.documentElement).toHaveAttribute("data-active-screen", "top");
+    await waitFor(() => expect(screen.getByTestId("current-address").textContent).toBe("/"));
     expect(warn).toHaveBeenCalledWith("The requested section does not exist. Showing Home instead.", "missing-section");
   });
 

@@ -107,7 +107,7 @@ this network; the legal entity is a sole trader.
 ## Brand Commitments
 
 - **Name:** Beermann & Company. The logo reads only **BEERMANN**, in Libre
-  Caslon Display regular, with the existing anvil. Home at `#top` stacks the
+  Caslon Display regular, with the existing anvil. The homepage stacks the
   anvil above the name, centred in the full viewport. Its transparent header
   shows navigation but hides the header brand without moving it. Other screens
   have a horizontal header logo. Contact's footer is text-only. Legal pages,
@@ -154,8 +154,10 @@ this network; the legal entity is a sole trader.
   Home, About, Services, Approach, Expertise and Contact. Long screens scroll
   internally. Caslon Display carries headings and branding, Caslon Text carries
   prose and navigation, and Switzer carries utility text. Interactions use real
-  italic fonts instead of hover underlines. The colour portrait sits above
-  prominent former-employer evidence. Home crossfades marbling, blue sky, gallery
+  italic fonts instead of hover underlines. Former-employer evidence is
+  integrated beneath the Expertise text in the same column, without a divider
+  or different type size. URLs match the current navigation labels.
+  Home crossfades marbling, blue sky, gallery
   interior and Hamburg at night every four seconds, without controls. The sky
   and night stay unshaded. An open mobile menu occupies separate space above
   the logo; closing it restores full-viewport centring. Preserve the existing

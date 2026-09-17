@@ -31,6 +31,9 @@ describe("404 page", () => {
       name: "Suggested pages",
     });
     expect(suggestions).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Services" })).toHaveAttribute("href", "/#services");
+    expect(screen.getByRole("link", { name: "View services" })).toHaveAttribute("href", "/#services");
+    expect(screen.getByRole("link", { name: "About" })).toHaveAttribute("href", "/#about");
     expect(
       screen.getByRole("link", { name: "Back to homepage" }),
     ).toHaveAttribute("href", "/");

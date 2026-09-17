@@ -22,7 +22,7 @@ const NotFound = () => {
           <Wordmark className="site-brand-lockup" />
         </Link>
         <nav aria-label="Primary navigation">
-          <Link to="/#engagements">Services</Link>
+          <Link to="/#services">Services</Link>
           <Link to="/#about">About</Link>
           <Link to="/#contact">Contact</Link>
         </nav>
@@ -38,7 +38,7 @@ const NotFound = () => {
             </p>
             <Link className="notfound-primary" to="/">Back to homepage</Link>
             <nav className="notfound-links" aria-label="Suggested pages">
-              <Link to="/#engagements">View services</Link>
+              <Link to="/#services">View services</Link>
               <a href="mailto:hello@florianbeermann.com">Email me directly</a>
             </nav>
           </div>

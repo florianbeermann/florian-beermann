@@ -378,7 +378,7 @@ html.fixed-sections {
   color: inherit;
 }
 
-.boutique-page .expertise {
+.boutique-page .services {
   padding-block: clamp(72px, 7.5vw, 116px);
 }
 
@@ -508,7 +508,7 @@ html.fixed-sections {
   display: grid;
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
   gap: clamp(48px, 9vw, 140px);
-  align-items: center;
+  align-items: start;
 }
 
 .boutique-page .portrait {
@@ -530,57 +530,43 @@ html.fixed-sections {
 }
 
 .boutique-page .experience {
-  margin-top: clamp(40px, 6vh, 72px);
-  padding-top: clamp(28px, 3vw, 40px);
-  border-top: 1px solid var(--line);
+  margin-top: 32px;
 }
 
-.boutique-page .experience-heading {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 24px 40px;
-}
-
-.boutique-page .experience-heading h2 {
-  max-width: 18ch;
-  color: var(--blue);
-}
-
-.boutique-page .experience-heading p {
-  max-width: 26ch;
-  margin-top: 8px;
-  color: var(--muted);
-  font-family: var(--utility);
-  font-size: 0.9375rem;
-  line-height: 1.6;
+.boutique-page .experience h3 {
+  margin-bottom: 16px;
+  font: inherit;
+  font-weight: 700;
 }
 
 .boutique-page .experience ul {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 24px 32px;
-  margin: 36px 0 0;
+  gap: 16px 24px;
+  margin: 0;
   padding: 0;
   list-style: none;
-  color: var(--blue);
-  font-size: clamp(1.2rem, 1.9vw, 1.5rem);
+  font: inherit;
+}
+
+.boutique-page .experience p {
+  margin-top: 16px;
 }
 
 .boutique-page .experience li {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   min-width: 0;
   white-space: nowrap;
 }
 
 .boutique-page .employer-mark {
-  width: 32px;
-  height: 32px;
+  width: 1.25em;
+  height: 1.25em;
   flex: none;
+  color: var(--blue);
   background: currentColor;
   -webkit-mask: var(--employer-logo) center / contain no-repeat;
   mask: var(--employer-logo) center / contain no-repeat;
@@ -771,10 +757,6 @@ html.fixed-sections {
     gap: 48px;
   }
 
-  .boutique-page .experience ul {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
 }
 
 @media (max-width: 800px) {
@@ -954,7 +936,7 @@ html.fixed-sections {
     font-size: 1.85rem;
   }
 
-  .boutique-page .expertise,
+  .boutique-page .services,
   .boutique-page .contact {
     padding-block: 65px;
   }
@@ -974,32 +956,6 @@ html.fixed-sections {
 
   .boutique-page .person-copy h2 {
     margin-bottom: 24px;
-  }
-
-  .boutique-page .experience-heading {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .boutique-page .experience-heading p {
-    max-width: none;
-    margin-top: 0;
-  }
-
-  .boutique-page .experience ul {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 24px 16px;
-    margin-top: 28px;
-    font-size: clamp(1rem, 4.1vw, 1.125rem);
-  }
-
-  .boutique-page .experience li {
-    gap: 10px;
-  }
-
-  .boutique-page .employer-mark {
-    width: 24px;
-    height: 24px;
   }
 
   .boutique-page .contact-email {

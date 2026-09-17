@@ -1,10 +1,14 @@
-import { useLayoutEffect, useRef, type RefObject } from "react";
+import { useEffect, useLayoutEffect, useRef, type RefObject } from "react";
 import { useLocation, useNavigate, useNavigationType } from "react-router-dom";
 
 const previousAddresses = new Map([
   ["intro", "top"],
-  ["engagements", "expertise"],
-  ["about", "florian"],
+  ["home", "top"],
+  ["practice", "about"],
+  ["practice-title", "about-title"],
+  ["engagements", "services"],
+  ["florian", "expertise"],
+  ["person-title", "expertise-title"],
   ["transition", "approach"],
 ]);
 
@@ -62,13 +66,11 @@ function initHomeSections(page: HTMLElement) {
   return {
     show(hash: string, { focus, restore }: { focus: boolean; restore: boolean }) {
       let id = "top";
-      let invalid = false;
       try {
         id = decodeURIComponent(hash.replace(/^#/, "")) || "top";
       } catch (error) {
         if (!(error instanceof URIError)) throw error;
         console.warn("The section address is malformed. Showing Home instead.", hash);
-        invalid = true;
       }
       id = previousAddresses.get(id) ?? id;
       let target = document.getElementById(id);
@@ -77,7 +79,6 @@ function initHomeSections(page: HTMLElement) {
         console.warn("The requested section does not exist. Showing Home instead.", id);
         screen = home;
         target = homeTarget;
-        invalid = true;
       }
 
       if (active) positions.set(active, active.scrollTop);
@@ -108,7 +109,7 @@ function initHomeSections(page: HTMLElement) {
           heading.focus({ preventScroll: true });
         }
       }
-      return { invalid };
+      return { hash: target === homeTarget ? "" : `#${encodeURIComponent(target.id)}` };
     },
     destroy() {
       observer?.disconnect();
@@ -136,11 +137,12 @@ function initHomeSections(page: HTMLElement) {
 }
 
 export function useHomeSections(page: RefObject<HTMLElement>) {
-  const { hash, key, search } = useLocation();
+  const { hash, key, search, state } = useLocation();
   const navigationType = useNavigationType();
   const navigate = useNavigate();
   const controller = useRef<ReturnType<typeof initHomeSections>>();
   const hasSelected = useRef(false);
+  const canonicalizingTo = useRef<string>();
 
   useLayoutEffect(() => {
     if (!page.current) throw new Error("The homepage must be mounted before its navigation.");
@@ -149,15 +151,28 @@ export function useHomeSections(page: RefObject<HTMLElement>) {
       controller.current?.destroy();
       controller.current = undefined;
       hasSelected.current = false;
+      canonicalizingTo.current = undefined;
     };
   }, [page]);
 
   useLayoutEffect(() => {
+    const restoringCanonicalAddress = canonicalizingTo.current === hash;
+    canonicalizingTo.current = undefined;
     const result = controller.current?.show(hash, {
       focus: hasSelected.current,
-      restore: navigationType === "POP",
+      restore: navigationType === "POP" || restoringCanonicalAddress,
     });
     hasSelected.current = true;
-    if (result?.invalid) navigate({ pathname: "/", search, hash: "#top" }, { replace: true });
-  }, [hash, key, search, navigationType, navigate]);
+    if (result && hash !== result.hash) {
+      canonicalizingTo.current = result.hash;
+    }
+  }, [hash, key, navigationType]);
+
+  useEffect(() => {
+    // Initial deep links must wait until the router has subscribed to history.
+    const canonicalHash = canonicalizingTo.current;
+    if (canonicalHash !== undefined && hash !== canonicalHash) {
+      navigate({ pathname: "/", search, hash: canonicalHash }, { replace: true, state });
+    }
+  }, [hash, key, search, state, navigate]);
 }

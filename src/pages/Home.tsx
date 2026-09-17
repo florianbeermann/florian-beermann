@@ -11,10 +11,10 @@ import "./artwork-slideshow.css";
 import "./home-sections.css";
 
 const navigation = [
-  { id: "practice", label: "About" },
-  { id: "expertise", label: "Services" },
+  { id: "about", label: "About" },
+  { id: "services", label: "Services" },
   { id: "approach", label: "Approach" },
-  { id: "florian", label: "Expertise" },
+  { id: "expertise", label: "Expertise" },
   { id: "contact", label: "Contact" },
 ];
 
@@ -88,7 +88,7 @@ export default function Home() {
     <div className="boutique-page" ref={page}>
       <header className="masthead">
         <div className="masthead-inner">
-          <Link className="brand" to="/#top" aria-label="Beermann & Company, home">
+          <Link className="brand" to="/" aria-label="Beermann & Company, home">
             <BrandMark className="brand-mark" />
             <span>BEERMANN</span>
           </Link>
@@ -114,9 +114,9 @@ export default function Home() {
           </section>
         </SectionScreen>
 
-        <SectionScreen id="practice">
-          <section className="practice page-width chapter" id="practice" aria-labelledby="practice-title">
-            <h2 id="practice-title">Independent advice.<br />Practical experience.</h2>
+        <SectionScreen id="about">
+          <section className="practice page-width chapter" id="about" aria-labelledby="about-title">
+            <h2 id="about-title">Independent advice.<br />Practical experience.</h2>
             <div className="practice-copy">
               <p className="large-copy">When the customer base changes, the way Customer Success works needs to change with it.</p>
               <p>I help software companies make that adjustment: from account ownership and levels of service to the processes and conversations that support renewals and growth.</p>
@@ -125,11 +125,11 @@ export default function Home() {
           </section>
         </SectionScreen>
 
-        <SectionScreen id="expertise">
-          <section className="expertise blue-section" id="expertise" aria-labelledby="expertise-title">
+        <SectionScreen id="services">
+          <section className="services blue-section" id="services" aria-labelledby="services-title">
             <div className="page-width">
               <div className="chapter-heading">
-                <h2 id="expertise-title">The work.</h2>
+                <h2 id="services-title">The work.</h2>
                 <p>We start with the problem your team needs to solve, then agree the work and what you will receive.</p>
               </div>
               <div className="engagements">
@@ -174,8 +174,8 @@ export default function Home() {
           </section>
         </SectionScreen>
 
-        <SectionScreen id="florian">
-          <section className="person-section" id="florian" aria-labelledby="person-title">
+        <SectionScreen id="expertise">
+          <section className="person-section" id="expertise" aria-labelledby="expertise-title">
             <div className="person page-width">
               <figure className="portrait">
                 <picture>
@@ -184,7 +184,7 @@ export default function Home() {
                 </picture>
               </figure>
               <div className="person-copy">
-                <h2 id="person-title">Advice from someone<br />who has done the work.</h2>
+                <h2 id="expertise-title">Advice from someone<br />who has done the work.</h2>
                 <h3>Florian Beermann</h3>
                 <p>I have run Customer Success in global technology companies and growing software businesses.</p>
                 <p>Today, I help teams adapt as they begin serving different business customers. Different industries, expectations or levels of complexity can each call for a different approach.</p>
@@ -192,25 +192,23 @@ export default function Home() {
                 <a className="text-link" href="https://www.linkedin.com/in/florian-beermann" target="_blank" rel="noopener noreferrer">
                   <LinkLabel>Connect on LinkedIn</LinkLabel>
                 </a>
+                <div className="experience">
+                  <h3 id="experience-title">Experience behind the advice.</h3>
+                  <ul aria-label="Previous employers" aria-describedby="experience-context">
+                    {employers.map(employer => (
+                      <li key={employer.name}>
+                        <span
+                          className="employer-mark"
+                          style={{ "--employer-logo": `url('/boutique/employers/${employer.logo}')` } as CSSProperties}
+                          aria-hidden="true"
+                        />
+                        {employer.name}
+                      </li>
+                    ))}
+                  </ul>
+                  <p id="experience-context">Previous employers, not consultancy clients.</p>
+                </div>
               </div>
-            </div>
-            <div className="experience page-width">
-              <div className="experience-heading">
-                <h2 id="experience-title">Experience behind the advice.</h2>
-                <p id="experience-context">Previous employers, not consultancy clients.</p>
-              </div>
-              <ul aria-label="Previous employers" aria-describedby="experience-context">
-                {employers.map(employer => (
-                  <li key={employer.name}>
-                    <span
-                      className="employer-mark"
-                      style={{ "--employer-logo": `url('/boutique/employers/${employer.logo}')` } as CSSProperties}
-                      aria-hidden="true"
-                    />
-                    {employer.name}
-                  </li>
-                ))}
-              </ul>
             </div>
           </section>
         </SectionScreen>
@@ -233,7 +231,7 @@ export default function Home() {
           </section>
           <footer className="footer" role="contentinfo">
             <div className="footer-top page-width">
-              <Link className="brand" to="/#top" aria-label="Beermann & Company, back to top">
+              <Link className="brand" to="/" aria-label="Beermann & Company, back to top">
                 <span>Beermann <span className="brand-amp">&amp;</span> Company</span>
               </Link>
               <p>Independent Customer Success advice.<br />Hamburg, working across Europe.</p>

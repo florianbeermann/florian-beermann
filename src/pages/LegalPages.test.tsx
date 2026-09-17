@@ -26,8 +26,10 @@ describe("legal pages", () => {
     ).toHaveAttribute("href", "mailto:hello@florianbeermann.com");
     expect(screen.getByRole("link", { name: "Services" })).toHaveAttribute(
       "href",
-      "/#expertise",
+      "/#services",
     );
+    expect(screen.getByRole("link", { name: "About" })).toHaveAttribute("href", "/#about");
+    expect(screen.getByRole("link", { name: "Beermann & Company, home" })).toHaveAttribute("href", "/");
     expect(screen.getByRole("link", { name: "Legal notice" })).toHaveAttribute(
       "aria-current",
       "page",

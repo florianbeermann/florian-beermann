@@ -69,8 +69,12 @@ typography:
     fontWeight: 400
   employers:
     fontFamily: "Libre Caslon Text, Georgia, Times New Roman, serif"
-    fontSize: "clamp(1.2rem, 1.9vw, 1.5rem)"
+    fontSize: "1.0625rem"
     fontWeight: 400
+  evidence-heading:
+    fontFamily: "Libre Caslon Text, Georgia, Times New Roman, serif"
+    fontSize: "1.0625rem"
+    fontWeight: 700
   email:
     fontFamily: "Libre Caslon Text, Georgia, Times New Roman, serif"
     fontSize: "clamp(1.125rem, 1.6vw, 1.5rem)"
@@ -140,8 +144,9 @@ restore duplicated readable labels or hover underlines. Keep visible focus
 outlines and resting underlines on inline privacy links.
 
 The responsive sizes above are owner-approved exceptions, not drift from the
-retired Switzer ramp. Small-screen employer names adapt from 1 to 1.125rem;
-contact email adapts from 1 to 1.25rem. The Apple New York font remains excluded
+retired Switzer ramp. Employer names and their heading inherit the surrounding
+body size, including 1rem on mobile. Contact email adapts from 1 to 1.25rem.
+The Apple New York font remains excluded
 by its licence. Font licences live beside their self-hosted assets.
 
 ## Screens and navigation
@@ -151,16 +156,18 @@ Inactive screens are hidden and inert; other routes restore document scrolling.
 
 | Label | Screen |
 | --- | --- |
-| Home, through the brand | `#top` |
-| About | `#practice` |
-| Services | `#expertise` |
+| Home, through the brand | `/` |
+| About | `#about` |
+| Services | `#services` |
 | Approach | `#approach` |
-| Expertise | `#florian` |
+| Expertise | `#expertise` |
 | Contact | `#contact` |
 
-Keep these labels despite the legacy names of their addresses. Aliases preserve
-`#intro`, `#engagements`, `#about` and `#transition`. Browser history, keyboard
-focus and reading-position restoration must continue working.
+URLs must match the visible labels. Unambiguous old addresses such as `#practice`,
+`#florian`, `#engagements`, `#intro`, `#top` and `#transition` normalise to their
+current destinations through history replacement, preserving query parameters.
+Current `#about` and `#expertise` meanings take precedence over historical uses.
+Browser history, keyboard focus and reading-position restoration must work.
 
 The anvil above BEERMANN is centred in the **whole Home viewport**, including
 fullscreen. Do not subtract the header. The Home header is completely
@@ -193,9 +200,12 @@ night have no additional overlay. The light logo's offset shadow supports
 readability without changing the source photography.
 
 The colour portrait keeps its 1023-by-1537 proportions and definite responsive
-width. Prominent employer evidence sits **below** the profile with the note
-that these are previous employers, not clients. Capgemini uses the official
-vector spade. Provenance and licences are recorded in `public/boutique/`.
+width. The employer list sits **beneath the Expertise text in the same column**,
+not in a separate full-width section. Remove the divider and oversized secondary
+heading. Its heading, company names and explanatory note use the body font and
+size; the heading is bold and the blue marks scale with the text. Keep the
+explicit previous-employer qualification. Capgemini uses the official vector
+spade. Provenance and licences are recorded in `public/boutique/`.
 
 ## Copy and contact
 

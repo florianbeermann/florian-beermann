@@ -62,11 +62,19 @@ reduced motion, where the services remain stacked.
 ## Boutique homepage
 
 The approved September 2026 design uses navigation-selected fixed screens:
-Home (`#top`), About (`#practice`), Services (`#expertise`), Approach (`#approach`),
-Expertise (`#florian`) and Contact (`#contact`). Longer screens scroll internally.
-The earlier `#intro`, `#engagements`, `#about` and `#transition` addresses remain
-usable through aliases. Browser history and legal-page returns restore reading
-positions and preserve enquiries. Leaving Home removes its document scroll lock.
+Home (`/`), About (`#about`), Services (`#services`), Approach (`#approach`),
+Expertise (`#expertise`) and Contact (`#contact`). Longer screens scroll internally.
+Earlier `#practice`, `#florian`, `#engagements`, `#intro`, `#top` and `#transition`
+bookmarks are replaced with their current addresses without adding a history
+entry. Current names take priority: `#about` means About and `#expertise` means
+Expertise, not their historical destinations. Query parameters are retained.
+Browser history and legal-page returns restore reading positions and preserve
+enquiries. Leaving Home removes its document scroll lock.
+
+The employer list concludes the Expertise text in the same column. It has no
+separator or standalone full-width panel. The heading, names and explanatory
+note share the body type family and size, with bold emphasis on the heading and
+proportional blue icons. The previous-employer qualification remains explicit.
 
 The Home logo is centred in the entire viewport, including fullscreen, not
 below the header. Navigation is transparent and white. Its hidden header brand
