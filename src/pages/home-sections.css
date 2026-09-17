@@ -110,6 +110,11 @@ html.fixed-sections,
   scroll-margin-top: 24px;
 }
 
+/* Section headings receive reading focus, not an interactive control outline. */
+.fixed-sections .section-screen :is(h1, h2, h3)[tabindex="-1"]:focus {
+  outline: none;
+}
+
 .fixed-sections .section-screen[data-screen="top"] {
   overflow: hidden;
   scrollbar-gutter: auto;

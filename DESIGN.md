@@ -173,6 +173,9 @@ scrolling region above the logo; its measured edge positions the logo separately
 below. Closing restores full centring. Preserve every link on short screens,
 outside-click dismissal, Escape and focus return.
 
+Section headings receive reading focus without a visible box after navigation.
+Keep keyboard focus outlines on links, menus, buttons and form fields.
+
 ## Photography and evidence
 
 Home contains only the stacked logo over the edge-to-edge slideshow. No intro

@@ -76,6 +76,9 @@ describe("boutique homepage", () => {
       navigate(label);
       expect(document.documentElement).toHaveAttribute("data-active-screen", id);
       expect(document.querySelectorAll(".section-screen:not([hidden])")).toHaveLength(1);
+      const heading = document.querySelector<HTMLElement>(`#${id} h2`)!;
+      expect(heading).toHaveFocus();
+      expect(heading).toHaveAttribute("tabindex", "-1");
       for (const element of document.querySelectorAll<HTMLElement>(".section-screen")) {
         expect(element.inert).toBe(element.dataset.screen !== id);
         expect(element).toHaveAttribute("aria-hidden", String(element.dataset.screen !== id));
@@ -84,6 +87,7 @@ describe("boutique homepage", () => {
     }
     fireEvent.click(screen.getByRole("link", { name: "Beermann & Company, home" }));
     expect(document.documentElement).toHaveAttribute("data-active-screen", "top");
+    expect(screen.getByRole("heading", { level: 1, name: "Beermann & Company" })).toHaveFocus();
   });
 
   it("keeps the operator's experience and larger employer evidence below the colour portrait", () => {

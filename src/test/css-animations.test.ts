@@ -81,6 +81,21 @@ describe("homepage reading and motion", () => {
     expect(home).not.toMatch(/grayscale\(/);
   });
 
+  it("removes only reading-focus boxes from section headings, not control focus indicators", () => {
+    const selector = '.fixed-sections .section-screen :is(h1, h2, h3)[tabindex="-1"]:focus';
+    const rules = postcss.parse(sections);
+    const headingOutlines: string[] = [];
+    rules.walkRules(selector, rule => {
+      rule.walkDecls("outline", declaration => { headingOutlines.push(declaration.value); });
+    });
+    expect(headingOutlines).toEqual(["none"]);
+    const controlOutlines: string[] = [];
+    postcss.parse(home).walkRules(".boutique-page :is(a, button, input, textarea, summary):focus-visible", rule => {
+      rule.walkDecls("outline", declaration => { controlOutlines.push(declaration.value); });
+    });
+    expect(controlOutlines).toEqual(["2px solid currentColor"]);
+  });
+
   it("uses real italic faces and one readable label without hover underlines", () => {
     expect(home).toContain('font-family: "Libre Caslon Text"');
     expect(home).toContain("LibreCaslonText-Italic.woff2");
