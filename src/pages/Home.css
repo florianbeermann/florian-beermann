@@ -533,12 +533,6 @@ html.fixed-sections {
   margin-top: 32px;
 }
 
-.boutique-page .experience h3 {
-  margin-bottom: 16px;
-  font: inherit;
-  font-weight: 700;
-}
-
 .boutique-page .experience ul {
   display: flex;
   flex-wrap: wrap;

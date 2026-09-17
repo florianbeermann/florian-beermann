@@ -111,10 +111,12 @@ describe("boutique homepage", () => {
     expect(copy.lastElementChild).toHaveClass("experience");
     expect(copy.lastElementChild).not.toHaveClass("page-width");
     expect(document.querySelector(".person")?.children).toHaveLength(2);
-    expect(within(copy as HTMLElement).getByRole("heading", { level: 3, name: "Experience behind the advice." }))
-      .toBeInTheDocument();
-    expect(screen.getByText("Previous employers, not consultancy clients.")).toBeInTheDocument();
-    expect(within(screen.getByRole("list", { name: "Previous employers" })).getAllByRole("listitem")).toHaveLength(5);
+    expect(copy.querySelector(".experience h3")).not.toBeInTheDocument();
+    expect(document.getElementById("experience-title")).not.toBeInTheDocument();
+    expect(document.getElementById("experience-context")?.textContent).toBe("Previous employers");
+    const employers = screen.getByRole("list", { name: "Previous employers" });
+    expect(employers).toHaveAttribute("aria-labelledby", "experience-context");
+    expect(within(employers).getAllByRole("listitem")).toHaveLength(5);
     expect(document.querySelectorAll(".employer-mark")[1]).toHaveAttribute(
       "style", "--employer-logo: url('/boutique/employers/capgemini.svg');",
     );

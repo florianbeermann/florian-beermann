@@ -193,8 +193,7 @@ export default function Home() {
                   <LinkLabel>Connect on LinkedIn</LinkLabel>
                 </a>
                 <div className="experience">
-                  <h3 id="experience-title">Experience behind the advice.</h3>
-                  <ul aria-label="Previous employers" aria-describedby="experience-context">
+                  <ul aria-labelledby="experience-context">
                     {employers.map(employer => (
                       <li key={employer.name}>
                         <span
@@ -206,7 +205,7 @@ export default function Home() {
                       </li>
                     ))}
                   </ul>
-                  <p id="experience-context">Previous employers, not consultancy clients.</p>
+                  <p id="experience-context">Previous employers</p>
                 </div>
               </div>
             </div>
