@@ -9,7 +9,7 @@ const mix = (a: GradientColor, b: GradientColor, amount: number): GradientColor 
   a[1] * amount + b[1] * (1 - amount),
   a[2] * amount + b[2] * (1 - amount),
 ];
-const blue: GradientColor = [0, 71 / 255, 1];
+const blue: GradientColor = [48 / 255, 92 / 255, 222 / 255];
 const ink = mix(blue, [0, 0, 0], 0.06);
 const ice = mix(blue, [1, 1, 1], 0.1);
 const colors: GradientColors = {

@@ -106,7 +106,7 @@ export function Masthead({ hideOnIntro = false }: { hideOnIntro?: boolean }) {
       style={markColor ? ({ "--mark-color": markColor } as CSSProperties) : undefined}
       role="banner"
     >
-      <a className="masthead-mark" href="#intro" aria-label="Florian Beermann, home">
+      <a className="masthead-mark" href="#intro" aria-label="Beermann &amp; Company, home">
         <Wordmark className="masthead-wordmark" />
       </a>
       <nav className="glass masthead-rail" aria-label="Primary navigation">

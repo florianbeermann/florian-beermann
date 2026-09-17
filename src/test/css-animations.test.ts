@@ -5,17 +5,14 @@ import postcss from "postcss";
 import { describe, expect, it } from "vitest";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
-const cssFiles = globSync("src/**/*.css", { cwd: root }).map((file) => ({
-  file,
-  css: readFileSync(path.join(root, file), "utf8"),
-}));
+const read = (file: string) => readFileSync(path.join(root, file), "utf8");
+const cssFiles = globSync("src/**/*.css", { cwd: root }).map(file => ({ file, css: read(file) }));
+const home = read("src/pages/Home.css");
+const sections = read("src/pages/home-sections.css");
+const markup = read("src/pages/Home.tsx");
 const withoutComments = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, "");
 
 describe("homepage reading and motion", () => {
-  it("scans the page stylesheets", () => {
-    expect(cssFiles.map(({ file }) => file)).toContain("src/pages/Home.css");
-  });
-
   it("never uses a nameless animation shorthand that minification could break", () => {
     const offenders: string[] = [];
     for (const { file, css } of cssFiles) {
@@ -23,8 +20,7 @@ describe("homepage reading and motion", () => {
       const names = [...source.matchAll(/@keyframes\s+([\w-]+)/g)].map(([, name]) => name);
       for (const match of source.matchAll(/(^|[;{])\s*animation:\s*([^;}]+)/g)) {
         const value = match[2].trim();
-        if (value === "none") continue;
-        if (!names.some((name) => new RegExp(`\\b${name}\\b`).test(value))) {
+        if (value !== "none" && !names.some(name => new RegExp(`\\b${name}\\b`).test(value))) {
           offenders.push(`${file}: animation: ${value}`);
         }
       }
@@ -32,102 +28,73 @@ describe("homepage reading and motion", () => {
     expect(offenders).toEqual([]);
   });
 
-  it("restores mandatory panel stops and the original three-screen service reel", () => {
-    const styles = cssFiles.map(({ css }) => withoutComments(css)).join("\n");
-    const markup = readFileSync(path.join(root, "src/pages/Home.tsx"), "utf8");
-    expect(styles).toMatch(/scroll-snap-type:\s*y\s+mandatory/);
-    expect(styles).toMatch(/scroll-snap-stop:\s*always/);
-    expect(styles).toContain("height: calc(3 * 100svh)");
-    expect(styles).toContain("animation-timeline: --engagement-reel");
-    expect(styles).toContain("animation-range: contain 0% contain 100%");
-    expect(styles).toContain("(prefers-reduced-motion: no-preference) and (min-width: 901px)");
-    expect(markup).toContain('className="home-engagement-reel"');
-    expect(markup).not.toContain("home-service-overview");
-    expect(markup.match(/className="site-stop"/g)).toHaveLength(
-      (markup.match(/<section\b/g) ?? []).length,
-    );
-    expect(markup).toMatch(/className="home-engagement-steps"[^>]*>\s*(<span\s*\/>\s*){3}/);
-    const reelRule = styles.match(/\.home-engagement\s*\{[^}]*animation-timeline[^}]*\}/);
-    expect(reelRule?.[0]).toContain("animation-fill-mode: both");
-    expect(reelRule?.[0]).toContain("grid-area: 1 / 1");
+  it("uses fixed, internally scrolling screens instead of the retired service reel", () => {
+    expect(markup).toContain("useHomeSections(page)");
+    expect(markup.match(/<SectionScreen id=/g)).toHaveLength(6);
+    expect(markup).not.toMatch(/useEngagementReel|scroll-panels\.css|site-stop|home-engagement-reel/);
+    expect(sections).toContain("height: calc(100dvh - var(--screen-header))");
+    expect(sections).toContain("overflow-y: auto");
+    expect(sections).toContain("overscroll-behavior: contain");
+    expect(sections).toContain(".fixed-sections .section-screen[hidden]");
   });
 
-  it("does not hide native snap points behind scroll-animation support", () => {
-    const source = cssFiles.find(({ file }) => file === "src/pages/scroll-panels.css")!;
-    const rules = postcss.parse(source.css);
-    let snapRules = 0;
-    rules.walkDecls(/^scroll-snap-/, (declaration) => {
-      snapRules++;
-      const guards: string[] = [];
-      let parent: postcss.AtRule | postcss.Rule | postcss.Root | postcss.Document | undefined = declaration.parent;
-      while (parent) {
-        if (parent.type === "atrule") guards.push(`@${parent.name} ${parent.params}`);
-        parent = parent.parent;
+  it("centres the stacked Home logo against the full viewport", () => {
+    expect(home).toMatch(/\.boutique-page \.opening-brand\s*\{[^}]*inset:\s*0/);
+    expect(sections).toMatch(/\.fixed-sections\[data-active-screen="top"\] #section-viewport\s*\{[^}]*top:\s*0/);
+    expect(sections).not.toMatch(/\.fixed-sections\[data-active-screen="top"\] \.opening-brand\s*\{[^}]*top:\s*var\(--screen-header\)/);
+    expect(sections).toContain("height: 100dvh");
+  });
+
+  it("reserves separate, measured space for the mobile menu", () => {
+    expect(sections).toContain(":has(.mobile-menu[open]) .opening-brand");
+    expect(sections).toContain("top: var(--mobile-menu-bottom, var(--screen-header))");
+    expect(sections).toContain("clamp(96px, 30dvh, 160px)");
+    const navigation = read("src/hooks/useHomeSections.ts");
+    expect(navigation).toContain("dropdown.getBoundingClientRect().bottom");
+    expect(navigation).toContain("observer?.observe(dropdown)");
+  });
+
+  it("keeps the legacy custom scrollbar from narrowing the approved homepage", () => {
+    const rules = postcss.parse(read("src/index.css"));
+    rules.walkRules(rule => {
+      if (rule.selector.includes("::-webkit-scrollbar")) {
+        expect(rule.selectors.every(selector => selector.startsWith("html:not(.fixed-sections)"))).toBe(true);
       }
-      expect(guards).not.toEqual(expect.arrayContaining([expect.stringContaining("animation-timeline")]));
-      expect(guards).toContain(
-        "@media (prefers-reduced-motion: no-preference) and (min-width: 901px)",
-      );
     });
-    expect(snapRules).toBeGreaterThan(0);
   });
 
-  it("pauses the same reel keyframes for the non-native timeline fallback", () => {
-    const source = cssFiles.find(({ file }) => file === "src/pages/scroll-panels.css")!;
-    const rules = postcss.parse(source.css);
-    const fallbacks: string[] = [];
-    rules.walkAtRules("supports", (rule) => {
-      if (rule.params === "not (animation-timeline: view())") fallbacks.push(rule.toString());
-    });
-    expect(fallbacks).toHaveLength(1);
-    for (const selector of [".home-engagement,", ".home-engagement-progress-bar,", ".home-engagement-progress li"]) {
-      expect(fallbacks[0]).toContain(selector);
-    }
-    expect(fallbacks[0]).toContain("animation-duration: 1s");
-    expect(fallbacks[0]).toContain("animation-play-state: paused");
-    const markup = readFileSync(path.join(root, "src/pages/Home.tsx"), "utf8");
-    expect(markup).toContain("useEngagementReel(engagementTrackRef)");
-    expect(markup).toContain('ref={engagementTrackRef} id="engagements"');
+  it("preserves navigation dimensions while hiding only the Home header brand", () => {
+    const rules = postcss.parse(sections);
+    const hiddenBrand: string[] = [];
+    rules.walkRules('.fixed-sections .masthead .brand[aria-hidden="true"]', rule => { hiddenBrand.push(rule.toString()); });
+    expect(hiddenBrand).toHaveLength(1);
+    expect(hiddenBrand[0]).toContain("visibility: hidden");
+    expect(hiddenBrand[0]).not.toContain("display: none");
+    expect(home).toMatch(/\.boutique-page \.masthead\s*\{[^}]*background:\s*var\(--paper\)/);
+    expect(sections).toMatch(/\.fixed-sections\[data-active-screen="top"\] \.masthead\s*\{[^}]*background:\s*transparent/);
   });
 
-  it("keeps body copy left aligned and the opening immediately available", () => {
-    const home = cssFiles.find(({ file }) => file === "src/pages/Home.css")!;
-    const styles = cssFiles.map(({ css }) => withoutComments(css)).join("\n");
-    const markup = readFileSync(path.join(root, "src/pages/Home.tsx"), "utf8");
-    expect(withoutComments(home.css)).not.toMatch(/text-align:\s*justify/);
-    expect(styles).not.toMatch(/animation:\s*sheet-arrive/);
-    expect(markup).not.toContain("HeroLoader");
+  it("preserves the colour portrait's definite width and original ratio", () => {
+    expect(home).toMatch(/\.boutique-page \.portrait\s*\{[^}]*width:\s*min\(100%, 390px\)/);
+    expect(home).toMatch(/\.boutique-page \.portrait img\s*\{[^}]*width:\s*100%[^}]*height:\s*auto/);
+    expect(markup).toContain('width="1023" height="1537"');
+    expect(home).not.toMatch(/grayscale\(/);
   });
 
-  it("reserves the portrait's displayed width before and after image decoding", () => {
-    const home = withoutComments(cssFiles.find(({ file }) => file === "src/pages/Home.css")!.css);
-    const portrait = home.match(/\.home-about-portrait\s*\{([^}]+)\}/)?.[1];
-    expect(portrait).toContain("width: calc(min(62vh, 34rem) * 723 / 1086)");
-    expect(portrait).toContain("height: min(62vh, 34rem)");
-    expect(portrait).toContain("aspect-ratio: 723 / 1086");
-    expect(portrait).not.toMatch(/(?:^|;)\s*width:\s*auto/);
+  it("uses real italic faces and one readable label without hover underlines", () => {
+    expect(home).toContain('font-family: "Libre Caslon Text"');
+    expect(home).toContain("LibreCaslonText-Italic.woff2");
+    expect(home).toContain("Switzer-Italic.woff2");
+    expect(home).toContain("font-synthesis: none");
+    expect(home).toContain("text-decoration-line: none");
+    expect(home).toContain("visibility: hidden");
+    expect(read("src/components/LinkLabel.tsx").match(/<span/g)).toHaveLength(2);
   });
 
-  it("uses ordinary section colours after the intro without mountain or cloud effects", () => {
-    const styles = cssFiles.map(({ css }) => withoutComments(css)).join("\n");
-    const markup = readFileSync(path.join(root, "src/pages/Home.tsx"), "utf8");
-    expect(styles).not.toContain("--wow");
-    expect(markup).not.toMatch(/HeroVideo|hero-loop|hero-poster|onCloudPhase/);
-    expect(markup).toContain('id="top" className="home-opening home-section site-inverted site-panel"');
-    expect(styles).toMatch(/\.home-opening \.home-opening-copy p\s*\{[^}]*color:\s*var\(--prose\)/);
-    expect(styles).toMatch(/\.home-page \.home-opening\s*\{[^}]*scroll-margin-top:\s*0/);
-  });
-
-  it("keeps scrolling content from showing or receiving clicks through the header", () => {
-    const masthead = withoutComments(
-      cssFiles.find(({ file }) => file === "src/styles/masthead.css")!.css,
-    );
-    for (const [ground, token] of [["light", "--p-paper"], ["deep", "--p-blue"]]) {
-      const rule = masthead.match(
-        new RegExp(`\\.site-masthead\\[data-ground="${ground}"\\]\\s*\\{([^}]+)\\}`),
-      );
-      expect(rule?.[1]).toContain(`background: var(${token})`);
-      expect(rule?.[1]).toContain("pointer-events: auto");
-    }
+  it("keeps the opening immediately available without retired video or gradient effects", () => {
+    expect(withoutComments(home)).not.toMatch(/text-align:\s*justify/);
+    expect(markup).not.toMatch(/HeroLoader|HeroVideo|BrandIntro|hero-loop|hero-poster/);
+    expect(read("src/components/ArtworkGallery.tsx")).toContain('data-interval="4000"');
+    expect(read("src/components/ArtworkGallery.tsx")).toContain('data-fade-duration="1200"');
   });
 });

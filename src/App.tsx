@@ -10,7 +10,7 @@ import { useEffect, useLayoutEffect, useRef } from "react";
 const ScrollRestoration = () => {
   const { key, pathname, search, hash } = useLocation();
   const navigationType = useNavigationType();
-  const positions = useRef(new Map<string, { left: number; top: number }>());
+  const positions = useRef(new Map<string, { left: number; top: number; screen?: string }>());
   const entryKey = `${key}:${pathname}${search}${hash}`;
   const currentKey = useRef(entryKey);
   const previousLocation = useRef({ pathname, search, hash });
@@ -19,17 +19,24 @@ const ScrollRestoration = () => {
     const previous = window.history.scrollRestoration;
     window.history.scrollRestoration = "manual";
     const rememberPosition = () => {
-      positions.current.set(currentKey.current, {
+      const screen = document.querySelector<HTMLElement>(".section-screen:not([hidden])");
+      positions.current.set(currentKey.current, screen ? {
+        left: screen.scrollLeft,
+        top: screen.scrollTop,
+        screen: screen.dataset.screen,
+      } : {
         left: window.scrollX,
         top: window.scrollY,
       });
     };
     window.addEventListener("scroll", rememberPosition, { passive: true });
-    // Capture the position before a link replaces the long homepage.
+    document.addEventListener("scroll", rememberPosition, true);
+    // Capture the position before a link replaces the current page.
     document.addEventListener("click", rememberPosition, true);
     return () => {
       window.history.scrollRestoration = previous;
       window.removeEventListener("scroll", rememberPosition);
+      document.removeEventListener("scroll", rememberPosition, true);
       document.removeEventListener("click", rememberPosition, true);
     };
   }, []);
@@ -47,6 +54,14 @@ const ScrollRestoration = () => {
     const saved = navigationType === "POP" && !fragmentNavigation
       ? positions.current.get(entryKey)
       : undefined;
+    if (pathname === "/") {
+      const screen = document.querySelector<HTMLElement>(".section-screen:not([hidden])");
+      if (screen && saved?.screen === screen.dataset.screen) {
+        screen.scrollLeft = saved.left;
+        screen.scrollTop = saved.top;
+      }
+      return;
+    }
     if (saved) {
       window.scrollTo({ ...saved, behavior: "instant" });
       return;
@@ -65,13 +80,13 @@ const ScrollRestoration = () => {
 const App = () => (
   <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
     <EnquiryProvider>
-      <ScrollRestoration />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/imprint" element={<Imprint />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <ScrollRestoration />
     </EnquiryProvider>
     <Sonner />
   </BrowserRouter>

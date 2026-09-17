@@ -1,5 +1,5 @@
 /* The site's faces are declared in `src/styles/world.css`: Switzer for prose,
-   Fragment Mono for the machine voice, Lastica for the wordmark. Outfit used to
+   Fragment Mono for the machine voice, Libre Caslon Display for the wordmark. Outfit used to
    be declared here — it was the face the site was set in between the plum world
    and this one, and it stayed for a while after nothing resolved to it. */
 
@@ -131,17 +131,21 @@
    surfaces that cannot inherit a scope, so it has to name its colours, and
    naming them as fixed hexes is what left it painted in a retired plum long
    after the rest of the page had moved. */
-::-webkit-scrollbar {
+html:not(.fixed-sections)::-webkit-scrollbar,
+html:not(.fixed-sections) ::-webkit-scrollbar {
   width: 10px;
 }
-::-webkit-scrollbar-track {
+html:not(.fixed-sections)::-webkit-scrollbar-track,
+html:not(.fixed-sections) ::-webkit-scrollbar-track {
   background: color-mix(in srgb, var(--p-stock) 88%, #000);
 }
-::-webkit-scrollbar-thumb {
+html:not(.fixed-sections)::-webkit-scrollbar-thumb,
+html:not(.fixed-sections) ::-webkit-scrollbar-thumb {
   background: color-mix(in srgb, var(--p-stock) 58%, var(--p-paper));
   border-radius: 0;
   border: 2px solid color-mix(in srgb, var(--p-stock) 88%, #000);
 }
-::-webkit-scrollbar-thumb:hover {
+html:not(.fixed-sections)::-webkit-scrollbar-thumb:hover,
+html:not(.fixed-sections) ::-webkit-scrollbar-thumb:hover {
   background: color-mix(in srgb, var(--p-stock) 38%, var(--p-paper));
 }

@@ -1,0 +1,59 @@
+Marbled artwork
+Supplied by the user on 16 September 2026, replacing the townhouse illustration.
+Original attachment: 35678cb8-e4af-49b2-bf18-2c18217eeba2-b86bb003-c1a6-4931-873a-dd93ea787f0f-clipboard.png
+Stored original: artwork-marbling-02.png (1632 x 942)
+The full-resolution WebP is lossless and preserves the original pixels.
+The 768px WebP is a proportional, lossless-encoded responsive derivative.
+The caption is descriptive, not an attributed artwork title.
+
+Additional selected artwork
+Supplied by the user on 16 September 2026 with the marbled artwork.
+Original attachment: f41c09dd-c9f8-4ea8-8303-834758b937cb-3fe18335-dcb4-48e6-acc3-cbdf5d588c50-clipboard.jpg
+Stored original: artwork-study-03.jpg (1920 x 1280)
+The full-resolution WebP preserves the decoded original image pixels.
+The 768px WebP is a proportional, lossless-encoded responsive derivative.
+No title, artist or location attribution was supplied, so none is invented.
+
+Art gallery photograph
+Supplied by the user on 17 September 2026 to replace the house background.
+Original attachment: 46a30293-b361-4b0e-8b1c-e0dd9f4466a8-ae632865-ab2d-4165-af37-94314d867fca-clipboard.png
+Stored original: artwork-gallery-04.png (1980 x 1320)
+The full-resolution WebP is lossless and preserves the original pixels.
+The 768px WebP is a proportional, lossless-encoded responsive derivative.
+No photographer or location attribution was supplied, so neither is invented.
+
+Hamburg night photograph
+Supplied by the user on 17 September 2026 as the final slideshow image.
+Original attachment: c1af21f0-72b1-471e-a198-5fe830cfd5d1-15f89aef-2d2e-4d79-aaac-202cb56d8a05-clipboard.png
+Stored original: artwork-hamburg-night-05.png (2000 x 1281)
+The full-resolution WebP is lossless and preserves the original pixels.
+The 768px WebP is a proportional, lossless-encoded responsive derivative.
+No photographer attribution was supplied. No additional dark layer is applied.
+
+The original Hamburg illustration, townhouse illustration, white-house
+photograph with trees and architectural-facade photograph have been removed
+at the user's request. The remaining
+images use responsive cover cropping in the full-width slideshow; source files
+themselves remain unaltered.
+
+Portrait
+Colour portrait supplied by the user on 16 September 2026.
+Original attachment: 11e7e960-73dc-447d-a85f-d3383330c1bf-6e4663d4-51ca-4051-9536-1a6f77108bc0-clipboard.png
+Stored original: portrait-colour.png (1023 x 1537)
+The full-resolution WebP is lossless and preserves the original colour pixels.
+The 512px WebP is a proportional, lossless-encoded responsive derivative.
+The image is shown in its original proportions, without monochrome or colour filters.
+This replaces the black-and-white portrait in the isolated boutique concept only.
+
+Employer marks
+Microsoft, HubSpot, Personio and Spendesk marks are copied unchanged
+from the existing website's public/company-logos directory into assets/employers.
+They identify Florian's previous employers, not consultancy clients.
+No client endorsement or ownership of these company marks is implied.
+
+The Capgemini spade replaces the former 64px bitmap with vector artwork from
+Capgemini's official website:
+https://www.capgemini.com/wp-content/themes/capgemini2025/assets/images/capgeminiBlue.svg
+Retrieved: 17 September 2026.
+The spade's two path segments are preserved exactly and framed separately
+from the wordmark. It is not a raster enlargement or an automatic tracing.

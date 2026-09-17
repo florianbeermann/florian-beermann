@@ -42,7 +42,7 @@ export const Imprint = () => {
               <p>
                 <strong>Florian Beermann</strong>
                 <br />
-                trading as Florian Beermann &amp; Co.
+                trading as Beermann &amp; Company
                 <br />
                 Hegestr. 31
                 <br />

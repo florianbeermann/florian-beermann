@@ -11,7 +11,7 @@ export const Privacy = () => {
     <LegalPageLayout
       title="Privacy policy"
       description="How personal data is processed when you visit this website or contact me."
-      updated="Last updated: 7 September 2026"
+      updated="Last updated: 16 September 2026"
       contentClassName="legal-privacy"
     >
       <div className="legal-sections">
@@ -22,7 +22,7 @@ export const Privacy = () => {
             <div className="legal-section-body">
               <p>
                 Florian Beermann, trading as{" "}
-                <strong>Florian Beermann &amp; Co.</strong>
+                <strong>Beermann &amp; Company</strong>
                 <br />
                 Hegestr. 31, 20249 Hamburg, Germany
                 <br />

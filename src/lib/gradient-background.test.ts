@@ -47,7 +47,7 @@ beforeEach(() => {
     fillStyle: "",
     createLinearGradient: () => ({ addColorStop: vi.fn() }),
     getImageData: () => ({
-      data: new Uint8ClampedArray([0, 71, 255, 255]), width: 1, height: 1, colorSpace: "srgb",
+      data: new Uint8ClampedArray([48, 92, 222, 255]), width: 1, height: 1, colorSpace: "srgb",
     }),
   };
   vi.spyOn(HTMLCanvasElement.prototype, "getContext")

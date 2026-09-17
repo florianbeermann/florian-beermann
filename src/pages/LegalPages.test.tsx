@@ -26,11 +26,18 @@ describe("legal pages", () => {
     ).toHaveAttribute("href", "mailto:hello@florianbeermann.com");
     expect(screen.getByRole("link", { name: "Services" })).toHaveAttribute(
       "href",
-      "/#engagements",
+      "/#expertise",
     );
     expect(screen.getByRole("link", { name: "Legal notice" })).toHaveAttribute(
       "aria-current",
       "page",
+    );
+    expect(screen.getByRole("link", { name: "Beermann & Company, home" })).toBeVisible();
+    expect(screen.getByText("Florian Beermann", { selector: "strong" })).toBeInTheDocument();
+    expect(screen.getByText(/trading as Beermann & Company/)).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Beermann & Company" })).toHaveAttribute(
+      "data-layout",
+      "horizontal",
     );
   });
 
@@ -40,7 +47,8 @@ describe("legal pages", () => {
     expect(
       screen.getByRole("heading", { level: 1, name: "Privacy policy" }),
     ).toBeInTheDocument();
-    expect(screen.getByText("Last updated: 7 September 2026")).toBeInTheDocument();
+    expect(screen.getByText("Last updated: 16 September 2026")).toBeInTheDocument();
+    expect(screen.getByText("Beermann & Company", { selector: "strong" })).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: "Hetzner privacy policy" }),
     ).toHaveAttribute(

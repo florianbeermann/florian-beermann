@@ -21,6 +21,11 @@ describe("404 page", () => {
       "Page not found",
     );
     expect(screen.getByText("Error 404")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Beermann & Company, home" })).toBeVisible();
+    expect(screen.getByRole("img", { name: "Beermann & Company" })).toHaveAttribute(
+      "data-layout",
+      "horizontal",
+    );
 
     const suggestions = screen.getByRole("navigation", {
       name: "Suggested pages",
@@ -38,7 +43,7 @@ describe("404 page", () => {
     renderNotFound();
 
     expect(document.title).toBe(
-      "Page not found | Florian Beermann & Co.",
+      "Page not found | Beermann & Company",
     );
   });
 });

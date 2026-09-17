@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import { EnquiryProvider } from "@/components/EnquiryProvider";
@@ -40,7 +40,10 @@ describe("public copy preferences", () => {
       );
       expectPlainCopy(container);
       if (name === "home") {
-        fireEvent.click(screen.getByRole("button", { name: "Add company details (optional)" }));
+        fireEvent.click(within(screen.getByRole("navigation", { name: "Primary navigation" })).getByRole("link", { name: "Contact" }));
+        const enquiry = container.querySelector<HTMLDetailsElement>(".enquiry")!;
+        fireEvent.click(enquiry.querySelector("summary")!);
+        fireEvent(enquiry, new Event("toggle"));
         expectPlainCopy(container);
       }
     });

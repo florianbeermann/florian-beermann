@@ -27,16 +27,12 @@ export const LegalPageLayout = ({
   return (
     <div className="site-page legal-page">
       <header className="site-header">
-        <Link className="site-brand" to="/#top" aria-label="Florian Beermann &amp; Co., home">
-          {/* The whole lockup, because these pages have no hero to carry it the
-              way the home page does. The link is labelled, so the wordmark is
-              decoration to assistive tech rather than a second reading of the
-              same thing. */}
+        <Link className="site-brand" to="/#top" aria-label="Beermann &amp; Company, home">
           <Wordmark className="site-brand-lockup" />
         </Link>
         <nav aria-label="Primary navigation">
-          <Link to="/#engagements">Services</Link>
-          <Link to="/#about">About</Link>
+          <Link to="/#expertise">Services</Link>
+          <Link to="/#practice">About</Link>
           <Link to="/#contact">Contact</Link>
         </nav>
       </header>
@@ -62,7 +58,7 @@ export const LegalPageLayout = ({
 
       <footer className="site-footer">
         <span>
-          Florian Beermann &amp; Co. · © {new Date().getFullYear()}
+          Beermann &amp; Company · © {new Date().getFullYear()}
         </span>
         <nav aria-label="Footer navigation">
           <Link to="/imprint" aria-current={pathname === "/imprint" ? "page" : undefined}>

@@ -10,38 +10,38 @@ export interface PageMetadata {
 
 export const pageMetadata = {
   home: {
-    title: "Florian Beermann & Co.",
+    title: "Beermann & Company",
     description:
       "Customer Success consulting for software companies serving different business customers. Strategy, practical customer processes and team training.",
     path: "/",
     socialTitle: "Your customers have changed. Your approach should too.",
   },
   imprint: {
-    title: "Legal notice | Florian Beermann & Co.",
+    title: "Legal notice | Beermann & Company",
     description:
-      "Legal notice and company information for Florian Beermann & Co., Customer Success consulting in Hamburg, Germany.",
+      "Legal notice and company information for Beermann & Company, Customer Success consulting in Hamburg, Germany.",
     path: "/imprint",
   },
   privacy: {
-    title: "Privacy policy | Florian Beermann & Co.",
+    title: "Privacy policy | Beermann & Company",
     description:
-      "How Florian Beermann & Co. handles personal data, which information this website collects and how to exercise your rights.",
+      "How Beermann & Company handles personal data, which information this website collects and how to exercise your rights.",
     path: "/privacy",
   },
   notFound: {
-    title: "Page not found | Florian Beermann & Co.",
+    title: "Page not found | Beermann & Company",
     description:
-      "This page could not be found. Return to the homepage to explore Customer Success consulting from Florian Beermann & Co.",
+      "This page could not be found. Return to the homepage to explore Customer Success consulting from Beermann & Company.",
     path: "/",
     noIndex: true,
   },
 } as const satisfies Record<"home" | "imprint" | "privacy" | "notFound", PageMetadata>;
 
 const siteOrigin = "https://florianbeermann.com";
-const siteName = "Florian Beermann & Co.";
+const siteName = "Beermann & Company";
 const socialImage = `${siteOrigin}/social-preview.jpg`;
 const socialImageDescription =
-  "Florian Beermann & Co. with a portrait of Florian Beermann. Your customers have changed. Your approach should too.";
+  "Beermann & Company with a portrait of Florian Beermann. Your customers have changed. Your approach should too.";
 
 export function canonicalUrl(path: string): string {
   const url = new URL(path, `${siteOrigin}/`);

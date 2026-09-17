@@ -1,0 +1,87 @@
+.artwork-gallery {
+  width: 100%;
+  margin: 0;
+}
+
+.artwork-stage {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - var(--header-height) - 1px);
+  height: calc(100svh - var(--header-height) - 1px);
+  min-height: 360px;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--paper-deep);
+}
+
+.artwork-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.artwork-slide[hidden] {
+  display: none;
+}
+
+.artwork-slide.is-active {
+  opacity: 1;
+}
+
+.artwork-slide picture,
+.artwork-slide img {
+  width: 100%;
+  height: 100%;
+}
+
+.artwork-slide img {
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Each shade belongs to its slide and crossfades with it; the sky image has none. */
+.artwork-slide[data-shade]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgb(0 0 0 / 0.54) 0,
+    rgb(0 0 0 / 0.54) var(--artwork-nav-shade-depth, var(--screen-header, 128px)),
+    rgb(0 0 0 / 0.45) calc(var(--artwork-nav-shade-depth, var(--screen-header, 128px)) + 6rem),
+    rgb(0 0 0 / 0.45) 75%,
+    rgb(0 0 0 / 0.25) 100%
+  );
+}
+
+:root:has(.mobile-menu[open]) {
+  --artwork-nav-shade-depth: calc(var(--screen-header, 128px) + 19rem);
+}
+
+.artwork-caption {
+  position: absolute;
+  inset: auto var(--gutter) 16px;
+  z-index: 3;
+  font-family: var(--utility);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.artwork-caption-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.artwork-status:not([hidden]) {
+  display: inline-block;
+  padding: 8px 12px;
+  color: var(--ink);
+  background: var(--paper);
+}

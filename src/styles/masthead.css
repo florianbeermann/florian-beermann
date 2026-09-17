@@ -99,7 +99,7 @@
 }
 
 .masthead-wordmark {
-  font-size: clamp(0.8125rem, 3.5vw, 1rem);
+  font-size: clamp(1.125rem, 4.6vw, 1.25rem);
 }
 
 .masthead-mark svg {
@@ -325,7 +325,7 @@
   }
 
   .masthead-wordmark {
-    font-size: clamp(1rem, 1.65vw, 1.25rem);
+    font-size: clamp(1.25rem, 1.8vw, 1.375rem);
   }
 
   .masthead-rail {

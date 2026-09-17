@@ -37,13 +37,13 @@ function expectMetadata(page: Document, metadata: PageMetadata) {
   expect(metaContent(page, "og:image:width", "property")).toBe("1200");
   expect(metaContent(page, "og:image:height", "property")).toBe("630");
   expect(metaContent(page, "og:image:alt", "property")).toBe(
-    "Florian Beermann & Co. with a portrait of Florian Beermann. Your customers have changed. Your approach should too.",
+    "Beermann & Company with a portrait of Florian Beermann. Your customers have changed. Your approach should too.",
   );
   expect(metaContent(page, "twitter:image:alt")).toBe(
     metaContent(page, "og:image:alt", "property"),
   );
   expect(metaContent(page, "og:type", "property")).toBe("website");
-  expect(metaContent(page, "og:site_name", "property")).toBe("Florian Beermann & Co.");
+  expect(metaContent(page, "og:site_name", "property")).toBe("Beermann & Company");
   expect(metaContent(page, "og:locale", "property")).toBe("en_GB");
   expect(metaContent(page, "twitter:card")).toBe("summary_large_image");
 }
@@ -64,7 +64,7 @@ describe("page metadata", () => {
 
   it("uses the approved homepage search description, title and sharing headline", () => {
     expect(pageMetadata.home).toEqual({
-      title: "Florian Beermann & Co.",
+      title: "Beermann & Company",
       description:
         "Customer Success consulting for software companies serving different business customers. Strategy, practical customer processes and team training.",
       path: "/",
@@ -81,6 +81,17 @@ describe("page metadata", () => {
     setPageMetadata(pageMetadata.home);
     expectMetadata(document, pageMetadata.home);
     expect(document.head.innerHTML).toBe(before);
+  });
+
+  it("changes the trading name without renaming the founder or changing the domain", () => {
+    const page = parseHtml(indexHtml);
+    const organisation = JSON.parse(
+      page.querySelector('script[type="application/ld+json"]')!.textContent!,
+    );
+    expect(organisation.name).toBe("Beermann & Company");
+    expect(organisation.founder.name).toBe("Florian Beermann");
+    expect(organisation.url).toBe("https://florianbeermann.com/");
+    expect(metaContent(page, "author")).toBe("Beermann & Company");
   });
 
   it("updates all metadata between routes and restores indexing after a missing page", () => {
@@ -110,7 +121,7 @@ describe("page metadata", () => {
   });
 
   it("uses page-specific legal and missing-page sharing titles", () => {
-    expect(pageMetadata.imprint.title).toBe("Legal notice | Florian Beermann & Co.");
+    expect(pageMetadata.imprint.title).toBe("Legal notice | Beermann & Company");
     expect(pageMetadata.imprint.path).toBe("/imprint");
     expect(pageMetadata.imprint.description).not.toContain("..");
     for (const metadata of [pageMetadata.imprint, pageMetadata.privacy, pageMetadata.notFound]) {
@@ -293,7 +304,9 @@ describe("public metadata copy", () => {
     expect(page.querySelector("h1")?.textContent?.replace(/\s+/g, " ").trim()).toBe(
       pageMetadata.home.socialTitle,
     );
-    expect(page.querySelector(".lockup br")).not.toBeNull();
+    expect(page.querySelector(".lockup br")).toBeNull();
+    expect(page.querySelector(".lockup span")?.textContent).toBe("BEERMANN");
+    expect(page.querySelector(".lockup")?.getAttribute("aria-label")).toBe("Beermann & Company");
     expect(page.querySelector(".plate img")?.getAttribute("src")).toBe("/portrait.jpg");
     expect(page.querySelector(".caption")).toBeNull();
     expect(page.body.textContent).not.toContain("Fig. 01");

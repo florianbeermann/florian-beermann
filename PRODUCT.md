@@ -24,10 +24,9 @@ customer management. Show the decisions behind adapting to different customers:
 which assumptions still fit, where service and ownership need to differ, and
 how to make the transition while protecting existing customer relationships.
 
-The enquiry form qualifies on company size (1–50 through 5,000+ employees) and
-incumbent CS tooling (Gainsight, ChurnZero, Salesforce, Vitally, HubSpot,
-Planhat, custom/in-house, or none yet), so engagements are not restricted to a
-single company stage.
+The approved enquiry form asks only for name, work email, company and message.
+It does not require company-size or software-selection questions before someone
+can make contact. Engagements are not restricted to a single company stage.
 
 **Resolved (2026-08-06):** the site stays **en-GB, English-only**. Although the
 strongest concentration of buyers is DACH, Florian takes engagements from
@@ -91,7 +90,7 @@ Tableau, Vitally.
 
 **Specialist network:** real and available — specific independent specialists
 Florian has worked with and can bring into an engagement today, for deeper CS
-Operations, data, tooling or enablement work. The "& partners" name is backed by
+Operations, data, tooling or enablement work. The "& Company" name is backed by
 this network; the legal entity is a sole trader.
 
 **Technical constraints:**
@@ -99,19 +98,24 @@ this network; the legal entity is a sole trader.
 - Deployed to Hetzner shared hosting over FTPS from GitHub Actions; `.htaccess`
   provides HTTPS redirect, SPA fallback, caching and security headers.
 - Contact form posts to Web3Forms (key injected at build time from a CI secret);
-  with no key it falls back to opening a pre-addressed email. There is no
+  with no key it prepares a pre-addressed draft and an explicit link to open it.
+  Nothing is sent until the visitor sends that email. There is no
   server-side form handling available.
 - German legal pages are mandatory: Imprint per Section 5 DDG and Section 18(2)
   MStV, plus a GDPR privacy policy.
 
 ## Brand Commitments
 
-- **Name:** Florian Beermann & Co. — locked up as the anvil with the name in two
-  lines beside it, "Florian Beermann" over "& Co.", set in Lastica. The face is
-  unicase, so the lockup reads FLORIAN BEERMANN & CO. while the markup carries
-  title case; write it in title case everywhere it appears as text, and let the
-  drawing do the capitals. The lockup is one component, `src/components/
-  Wordmark.tsx`, and every place that shows the name uses it.
+- **Name:** Beermann & Company. The logo reads only **BEERMANN**, in Libre
+  Caslon Display regular, with the existing anvil. Home at `#top` stacks the
+  anvil above the name, centred in the full viewport. Its transparent header
+  shows navigation but hides the header brand without moving it. Other screens
+  have a horizontal header logo. Contact's footer is text-only. Legal pages,
+  access page and sharing artwork retain their horizontal brand.
+  Accessible labels and company copy use the full trading name.
+- **Signature colour:** #305CDE everywhere the brand blue appears, including
+  page sections, access page, sharing artwork and favicons. Blue tints
+  derive from it.
 - **Legal entity:** Florian Beermann, sole trader, Hegestr. 31, 20249 Hamburg,
   Germany.
 - **Contact:** hello@florianbeermann.com · +49 (0)40 89705822 ·
@@ -132,9 +136,9 @@ this network; the legal entity is a sole trader.
   so it takes `currentColor` and recolours with the ground behind it. Its
   bounding box is 1021x524, a shade under 2:1, so anything that reserves space
   for it is sized by height and lets the width follow. There is no wordmark
-  file: the name is set as live type in Lastica wherever the lockup appears
+  file: the name is set as live type in Libre Caslon Display wherever the lockup appears
   whole. The masthead keeps the name readable, including on mobile and after
-  scrolling past the hero.
+  scrolling past the intro.
   `public/favicon.svg` and `favicon.ico` are a crop of that path rather than the
   whole of it: the square holds the horn, the face and the waist, because a 2:1
   drawing centred in a square spends half its height on air and at 16px was a
@@ -145,8 +149,23 @@ this network; the legal entity is a sole trader.
   page's structured data gives as the organisation logo; `apple-touch-icon.png`
   is the whole anvil too, inverted — the pale mark on a signal-blue tile.
 
+  **Resolved (2026-09-17):** deploy the approved boutique advisory design,
+  informed by Hakluyt's restraint, with six navigation-selected fixed screens:
+  Home, About, Services, Approach, Expertise and Contact. Long screens scroll
+  internally. Caslon Display carries headings and branding, Caslon Text carries
+  prose and navigation, and Switzer carries utility text. Interactions use real
+  italic fonts instead of hover underlines. The colour portrait sits above
+  prominent former-employer evidence. Home crossfades marbling, blue sky, gallery
+  interior and Hamburg at night every four seconds, without controls. The sky
+  and night stay unshaded. An open mobile menu occupies separate space above
+  the logo; closing it restores full-viewport centring. Preserve the existing
+  password protection and real enquiry delivery in production.
+
+  **The historical intro decisions below are superseded by the boutique design.**
+  Their implementations remain retained, not mounted by Home.
+
   **Resolved (2026-09-11):** add the approved five-column signature-blue animated
-  brand intro as a new first section, with the original still, centred wordmark.
+  brand intro as a new first section, with a still, centred wordmark.
   The existing positioning text remains immediately underneath at `#top`, now
   using the site's regular flat paper, ink and blue styling. Remove its mountain
   video/poster background and cloud-driven foreground, not its content.
@@ -161,16 +180,18 @@ this network; the legal entity is a sole trader.
   growth." The original screen-sized desktop sections and mandatory stopping
   points are retained. `public/social-preview.jpg` is the link card.
 
-  Three self-hosted fonts, all in `public/fonts/`: Switzer (variable) for
+  The earlier shared shell uses three self-hosted fonts in `public/fonts/`:
+  Switzer (variable) for
   everything a person says, Fragment Mono for everything a machine would have
-  printed, and Lastica — one static weight, ASCII only — for the wordmark alone.
-  Switzer and Fragment Mono carry their licences beside them; Lastica does not
-  yet, and needs one added before the site ships.
+  printed, and Libre Caslon Display (regular, Latin subset) for the wordmark
+  alone. Boutique additions and their licences live in `public/boutique/`.
+  All fonts carry their licences beside them. Apple New York was not
+  adopted because its supplied licence excludes this logo and website use.
 
   Retired and removed: the twelve-point star mark the anvil replaced (drawn
   inline as `CircleMark`, with `logo.svg` as a stray second drawing beside it),
   the plum-world logo artwork (`logo-lockup*`, `logo-mark*`,
-  `logo-wordmark*`, `logo.png`), the Inter subsets before it, the Outfit variable
+  `logo-wordmark*`, `logo.png`), the Lastica wordmark face, the Inter subsets before it, the Outfit variable
   font the site was set in between the plum world and this one, and the duotone
   portrait plate with the two scripts that generated it and its halftones. The
   black-and-white master stays at `scripts/assets/portrait-source.jpg`.

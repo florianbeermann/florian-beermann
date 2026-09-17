@@ -19,14 +19,15 @@ afterEach(() => {
 });
 
 describe("masthead", () => {
-  it("retains the complete two-line wordmark and a clearly named home link", () => {
+  it("uses a horizontal BEERMANN logo below the intro with the full company home link", () => {
     render(<Masthead />);
-    const home = screen.getByRole("link", { name: "Florian Beermann, home" });
+    const home = screen.getByRole("link", { name: "Beermann & Company, home" });
     const name = home.querySelector(".wordmark-name");
 
     expect(home).toHaveAttribute("href", "#intro");
-    expect(name).toHaveTextContent(/Florian Beermann.*& Co\./);
-    expect(name?.querySelectorAll("br")).toHaveLength(1);
+    expect(name).toHaveTextContent(/^BEERMANN$/);
+    expect(name?.querySelectorAll("br")).toHaveLength(0);
+    expect(home.querySelector(".wordmark")).toHaveAttribute("data-layout", "horizontal");
     expect(home.querySelector(".wordmark-mark")).toBeInTheDocument();
     expect(home).not.toHaveAccessibleName(/—/);
   });
@@ -60,16 +61,16 @@ describe("masthead", () => {
       <div className="site-page">
         <Masthead hideOnIntro />
         <main>
-          <section id="intro" data-masthead-ground="intro" style={{ backgroundColor: "rgb(0, 71, 255)" }} />
+          <section id="intro" data-masthead-ground="intro" style={{ backgroundColor: "rgb(48, 92, 222)" }} />
           <section id="top" style={{ backgroundColor: "rgb(24, 29, 38)" }} />
           <section
             id="engagements"
             style={{
               backgroundColor: "rgb(241, 242, 243)",
-              "--marker": "rgb(0, 71, 255)",
+              "--marker": "rgb(48, 92, 222)",
             } as CSSProperties}
           />
-          <section id="method" style={{ backgroundColor: "rgb(0, 71, 255)" }} />
+          <section id="method" style={{ backgroundColor: "rgb(48, 92, 222)" }} />
           <section id="transparent" style={{ backgroundColor: "transparent" }} />
         </main>
       </div>,
@@ -93,16 +94,19 @@ describe("masthead", () => {
     expect(banner).not.toHaveAttribute("aria-hidden");
     expect(banner).not.toHaveAttribute("data-intro-hidden");
     expect(screen.getByRole("link", { name: "Services" })).toBeInTheDocument();
-    expect(banner.style.getPropertyValue("--mark-color")).toBe("rgb(0, 71, 255)");
+    expect(banner.style.getPropertyValue("--mark-color")).toBe("rgb(48, 92, 222)");
+    expect(banner.querySelector(".wordmark")).toHaveAttribute("data-layout", "horizontal");
     reportSection("method", false);
     expect(banner).toHaveAttribute("data-ground", "light");
     reportSection("method");
     expect(banner).toHaveAttribute("data-ground", "deep");
+    expect(banner.querySelector(".wordmark")).toHaveAttribute("data-layout", "horizontal");
     reportSection("transparent");
     expect(banner).toHaveAttribute("data-ground", "deep");
     reportSection("top");
     expect(banner).toHaveAttribute("data-ground", "dark");
     expect(banner.querySelector(".wordmark-name")).toBeVisible();
+    expect(banner.querySelector(".wordmark")).toHaveAttribute("data-layout", "horizontal");
     expect(banner).not.toHaveAttribute("data-over-hero");
     reportSection("intro");
     expect(banner).toHaveAttribute("aria-hidden", "true");
@@ -116,6 +120,6 @@ describe("masthead", () => {
     setObserver(undefined);
     render(<Masthead hideOnIntro />);
     expect(screen.getByRole("link", { name: "Services" })).toHaveAttribute("href", "#engagements");
-    expect(screen.getByRole("link", { name: "Florian Beermann, home" })).toBeVisible();
+    expect(screen.getByRole("link", { name: "Beermann & Company, home" })).toBeVisible();
   });
 });

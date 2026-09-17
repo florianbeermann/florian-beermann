@@ -274,10 +274,8 @@ body::before {
      rails. What it no longer does is carry running prose, which is the change
      that stopped these bands reading as one flat sheet of blue.
 
-     `#0047FF` measures 5.34:1 here, so a 0.7 tint of it lands at 3.32:1 and
-     fails. With no tint available every register — heading, lede, body,
-     secondary, label, figure — arrived at exactly the same value, and the
-     hierarchy came from size alone. */
+     The signature blue clears 4.5:1 at full opacity. Use slate rather than
+     faded blue when prose needs a secondary register. */
   --ink: var(--p-blue);
   /* Running prose, and the reason this token exists. The slate at 14.38:1 has
      the headroom the blue does not, so a real secondary step is possible. */
@@ -291,7 +289,7 @@ body::before {
   --line: rgb(var(--p-blue-rgb) / 0.42);
   /* Type on a filled control, which on this band is a blue fill — so the
      submit button is blue with paper on it, the same pair the statement band
-     runs, at 5.34:1. */
+     runs, at 5.05:1. */
   --on-ink: var(--p-paper);
   --on-ink-muted: rgb(var(--p-paper-rgb) / 0.82);
   /* Both stay the blue. These are the scan layer — headings, labels, figures,
@@ -314,9 +312,7 @@ body::before {
    is one of these on the site and there should stay one, because a second one
    halves the value of the first.
 
-   The polarity is the opposite of the chartreuse band this replaced. That green
-   was a light and took dark type; the blue is a dark and takes the ivory, which
-   holds 8.15:1 on it. The plum measures 1.17:1 here and must never appear.
+   The blue takes the paper foreground at 5.05:1. Keep that text fully opaque.
 
    It still goes on a statement, never on a form, but for a different reason
    than before. The headroom is no longer the problem — the ivory has plenty —
@@ -389,29 +385,7 @@ body::before {
   padding: 0 4vw;
 }
 
-/* The brand on the pages that have no hero to carry it.
-
-   The home page's masthead is the bare mark: the lockup is set large in the
-   hero directly beneath it, so repeating the name in the bar would be saying it
-   twice. Imprint, privacy and the 404 have no hero, so here the mark keeps its
-   name beside it — the same pairing as the closing panel, in the same face, so
-   the two places the lockup appears whole agree with each other.
-
-   It used to be a cut of the retired wordmark drawing, `logo-wordmark.svg`,
-   sized by a clamp derived from the share of that artwork its caps occupied.
-   None of that survives the drawing: the mark is a path that takes
-   `currentColor`, and the name is live type in the wordmark face.
-
-   `flex-shrink: 0` is load-bearing, not defensive. The header is
-   `space-between`, so once its content exceeds its box the flex algorithm picks
-   something to compress — and it picks the brand, squeezing the mark below its
-   own aspect ratio rather than merely crowding it. Measured on the Galaxy
-   Fold's 280px outer screen the old monogram rendered 43.3x32 against an
-   artwork ratio of 1.763: a 23% horizontal crush, and 41% once a classic
-   scrollbar took its 10px. Nothing caught it because the page never overflowed
-   — the mark deformed inside a header that still fitted. It has to sit here
-   and not on the child: the shrinking item is this wrapper. A logo is allowed
-   to be crowded; it is never allowed to be the wrong shape. */
+/* Prevent the shared logo from being compressed by the legal-page navigation. */
 .site-brand {
   display: flex;
   align-items: center;
@@ -421,21 +395,9 @@ body::before {
   text-decoration: none;
 }
 
-/* The header's copy of the wordmark. The mark takes the voltage and the name
-   takes the ink, which is the pair the old two-element lockup used and the one
-   thing about it worth keeping: the anvil is a marker and the name is text.
-
-   Smaller than the hero's, because it is furniture rather than the subject:
-   0.72rem puts the lockup at 207px, which sits inside the header beside three
-   links without crowding them, and 1.15vw lets it grow to 0.95rem on a wide
-   screen. Below that the hairlines start losing the pixel grid, which is the
-   floor this face has and the reason it is not set smaller here. */
 .site-brand-lockup {
-  font-size: clamp(0.72rem, 1.15vw, 0.95rem);
-}
-
-.site-brand-lockup .wordmark-mark {
-  color: var(--voltage);
+  font-size: clamp(1.125rem, 1.5vw, 1.25rem);
+  color: var(--p-blue);
 }
 
 .site-header nav {
@@ -498,54 +460,11 @@ body::before {
   border-color: currentColor;
 }
 
-/* Below this the wordmark and the nav cannot share a line on any terms worth
-   having, and the number is measured rather than estimated. The name is
-   11.81:1, so at its 41px floor it takes 484px of the header to itself and the
-   nav takes about 233px. At 901px of viewport the header's own 4vw padding has
-   eaten 72px, leaving 829px of content and 112px of clear air between the name
-   and the first nav item. The nav narrows as the viewport does, but never fast
-   enough to keep up: by 790px the two are touching, and by 768px they overlap.
-   There is no band below this where one row is comfortable, so the header takes
-   a second row instead.
-
-   901px is inherited rather than re-derived, and it is worth saying why it
-   survived a much wider drawing. The previous artwork ran out of room at 761px
-   and this one runs out at 790px, so the same breakpoint clears both -- it was
-   never sitting at the true limit, and moving it down to chase the last 30px
-   would spend the header's remaining air to save one narrow band of widths.
-
-   The old system dropped the name at 760px and let the monogram carry the
-   header alone. That is the option that no longer exists: with no monogram
-   there is nothing to drop to, and a masthead cannot stand down.
-
-   Deliberately not `flex-wrap`, which would find this threshold on its own and
-   without a magic number. `--header-height` is what anchor targets subtract to
-   clear the sticky header, so the box has to be a value the stylesheet knows
-   rather than one the flex algorithm discovers: a wrapped header that grew past
-   its declared height would leave every in-page link landing about 30px under
-   the masthead.
-
-   This block sets `padding-block` rather than the `padding` shorthand, and the
-   narrower blocks below set `padding-inline`, so the two never clobber each
-   other regardless of source order. */
+/* Retain the two-row navigation and its explicit anchor offset on small
+   screens. At 1rem the compact logo fits inside its 44px link target. */
 @media (max-width: 900px) {
   .site-page {
-    /* Two 44px rows, which is the brand link's and the nav links' touch target,
-       plus the vertical padding. Nothing here is the wordmark's own height --
-       at 44px and below it sits inside the row the tap target already demands,
-       so the name costs the header nothing that accessibility was not charging
-       it anyway. */
     --header-height: 100px;
-    /* The masthead's own width once it has a row to itself. Shared by the
-       wordmark and the nav below it so the two stay in step. The ceiling is the
-       44px desktop cap expressed in the other axis -- 44 x 11.81 is 519.6, taken
-       down to 519 so the derived height lands at 43.9px and stays inside the
-       44px row rather than 0.1px over it. That margin is the whole reason the
-       row above can claim the name costs the header nothing.
-
-       It was 311px against the previous 7.07:1 drawing; the artwork changed, so
-       the derived number had to change with it, or the mark would have been
-       pinned to two thirds of the width it is entitled to. */
     --masthead: min(100%, 519px);
   }
 
@@ -561,34 +480,14 @@ body::before {
   }
 
   .site-brand {
-    width: 100%;
+    width: var(--masthead);
+    justify-content: center;
   }
 
-  /* The lockup keeps its name at this width, which is the reverse of what this
-     rule used to do.
-
-     It could not keep it before, and the reason was the setting rather than the
-     screen: the name ran on one long line, and set small enough to fit a narrow
-     sheet it came out smaller than the links beneath it, so dropping it and
-     letting the mark carry the header was the honest answer. Stacked on two
-     lines the lockup is a third of that width, and the brand has a row to
-     itself here, so there is room to set it *larger* rather than hide half of
-     it. The retired drawing that started all this was 11.81:1 and could not be
-     given both its width and its height on a phone at all.
-
-     0.9rem puts the lockup at 258px inside the 277px a 320px sheet leaves. */
-  @media (max-width: 30rem) {
-    .site-brand-lockup {
-      font-size: 0.9rem;
-    }
+  .site-brand-lockup {
+    font-size: 1rem;
   }
 
-  /* Centred under the name rather than flush to the sheet's edge. The wordmark
-     is a single centred line, so a left-aligned nav reads as hanging off the
-     corner of a block that is plainly balanced about its own middle. Giving the
-     nav the masthead's width and centring inside it lines the two centres up
-     exactly; below roughly 500px both arms resolve to 100% and the pair simply
-     centres in the header together. */
   .site-header nav {
     width: var(--masthead);
     justify-content: center;

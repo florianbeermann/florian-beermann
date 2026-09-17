@@ -1,33 +1,6 @@
-/* ─────────────────────────────────────────────────────────────────────────────
-   PALETTE — ELECTRIC ON SLATE
-
-   The site's colour is decided here and nowhere else. Both planes read these
-   tokens: the WebGL ink field in the hero and the flat bands below it. Before
-   this file existed the page carried two blues (the hero's azure and the
-   statement band's `#0000FF`) and two whites (warm ivory above the fold,
-   honeydew below), and nothing forced them through a single definition.
-
-   Chosen from five candidates after building all five on the live page. This
-   one is cool from end to end with no warm note anywhere, which matters because
-   the portrait is a neutral black-and-white: beside a warm sheet it would read
-   as tinted, and beside this one it reads as itself.
-
-   THE ONE RULE: slate is the ink, electric is the signal.
-
-   The sheet is taken from the hero footage — see `--p-paper`. Everything else
-   here predates that film and was measured against a procedural shader.
-
-   `#0047FF` is not dark enough to be a body-text colour. It measures 5.34:1 on
-   this paper — over the floor, but with no room to fade, so a tinted secondary
-   register is impossible and every band collapses into one flat blue. The
-   earlier system got away with printing whole sections in blue only because its
-   `#0000FF` measured 8.15:1 and could still drop to a 0.7 tint.
-
-   So the blue is rationed instead. It carries headings, the marker register,
-   rules, control fills and the statement band; running prose is the slate at
-   14.4:1, which has room for a real muted step. That keeps the blue electric by
-   spending it in fewer places rather than by making it louder.
-   ───────────────────────────────────────────────────────────────────────── */
+/* Shared brand palette. The signature blue is #305CDE, with 5.05:1 contrast
+   against the paper. Keep text on blue fully opaque; use slate for prose.
+   Standalone access, sharing and icon artwork use the same palette. */
 
 :root {
   /* The dark ground below the fold. Only `--backdrop` and the scrollbar reach
@@ -44,30 +17,13 @@
   /* The shader's pigment ramp. It runs through the same dark-to-light ramp as
      the ink rather than mixing to a flat colour — a flat core reads as a lamp
      shining on the field, where a ramped one reads as pigment suspended in it. */
-  --p-pig-dark: #00227a;
-  --p-pig-light: #4d8bff;
+  --p-pig-dark: color-mix(in srgb, var(--p-blue) 48%, #000);
+  --p-pig-light: color-mix(in srgb, var(--p-blue) 70%, #fff);
 
-  /* The signal. The sRGB primary lifted just into green, which keeps it
-     electric while clearing 5.34:1 on the paper. */
-  --p-blue: #0047ff;
-  --p-blue-rgb: 0 71 255;
+  --p-blue: #305cde;
+  --p-blue-rgb: 48 92 222;
 
-  /* The sheet, and it is the film's rather than a chosen blue-white.
-
-     Sampling the hero footage — eight frames, every pixel sorted by luminance —
-     the light end is not one colour but two. Above, where the sun is on the
-     cloud, it runs warm at hue 34-35. Below, in the sky, it turns cool at hue
-     191-200. A sheet taken from either end takes a side the film does not.
-
-     So: neutral, at the hue the two meet, and desaturated to 7.7% — light
-     enough to read as paper rather than as a tint of anything. It replaces a
-     blue-white chosen when the hero was a procedural shader and there was no
-     photograph for the page to agree with.
-
-     Lightness is the constraint and it is set by the blue, not by the ink.
-     `#0047FF` has almost no headroom on a light ground, so a sheet even
-     slightly darker drops every blue heading under 4.5:1. At 94.9% the blue
-     measures 5.60:1, a little better than the 5.34:1 it had before. */
+  /* The neutral paper is retained from the hero footage. */
   --p-paper: #f1f2f3;
   --p-paper-rgb: 241 242 243;
   --p-paper-deep: #e5e8eb;
@@ -86,7 +42,7 @@
   --p-ink-hsl: 218.57 22.58% 12.16%;
   --p-paper-hsl: 210 7.69% 94.9%;
   --p-paper-deep-hsl: 210 13.04% 90.98%;
-  --p-blue-hsl: 223.29 100% 50%;
+  --p-blue-hsl: 224.83 72.5% 52.94%;
   /* The ink at 0.7 and 0.28 over the paper, composited flat. Derived from the
      sheet, so they move whenever it does — these were still mixed against the
      old blue-white for a moment after the sheet changed, which is a colour cast

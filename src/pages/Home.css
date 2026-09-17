@@ -1,714 +1,1047 @@
-.home-section {
-  padding: clamp(3.5rem, 7vw, 6rem) max(1.35rem, calc((100% - 1240px) / 2));
-  border-top: 1px solid var(--line);
-  background: var(--paper);
+@font-face {
+  font-family: "Libre Caslon Text";
+  src: url("/boutique/LibreCaslonText-Regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
 }
 
-.home-section h1,
-.home-section h2,
-.home-section-heading h2 {
-  max-width: 17ch;
-  font-size: var(--text-headline);
-  line-height: 1.03;
+@font-face {
+  font-family: "Libre Caslon Text";
+  src: url("/boutique/LibreCaslonText-Italic.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Libre Caslon Text";
+  src: url("/boutique/LibreCaslonText-Bold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Switzer";
+  src: url("/boutique/Switzer-Italic.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
+
+.boutique-page {
+  color-scheme: light;
+  position: relative;
+  z-index: 1;
+  min-height: 100dvh;
+  --blue: var(--p-blue);
+  --paper: #f7f7f5;
+  --paper-deep: #eeeeea;
+  --ink: #222b38;
+  --muted: #59616a;
+  --line: rgb(34 43 56 / 0.23);
+  --display: "Libre Caslon Display", Georgia, "Times New Roman", serif;
+  --reading: "Libre Caslon Text", Georgia, "Times New Roman", serif;
+  --utility: "Switzer", "Helvetica Neue", Arial, sans-serif;
+  --gutter: clamp(24px, 5.4vw, 88px);
+  --header-height: 128px;
+}
+
+.boutique-page *,
+.boutique-page *::before,
+.boutique-page *::after {
+  box-sizing: border-box;
+}
+
+html.fixed-sections {
+  scroll-behavior: smooth;
+}
+
+.boutique-page {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--reading);
+  font-size: 1.0625rem;
+  font-weight: 400;
+  line-height: 1.7;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.boutique-page ::selection {
+  color: var(--paper);
+  background: var(--blue);
+}
+
+.boutique-page img,
+.boutique-page picture,
+.boutique-page svg {
+  display: block;
+}
+
+.boutique-page img {
+  max-width: 100%;
+}
+
+.boutique-page h1,
+.boutique-page h2,
+.boutique-page h3,
+.boutique-page p,
+.boutique-page figure {
+  margin: 0;
+}
+
+.boutique-page h1,
+.boutique-page h2,
+.boutique-page h3 {
+  font-family: var(--display);
+  font-weight: 400;
   text-wrap: balance;
 }
 
-.home-section p {
-  line-height: 1.65;
+.boutique-page h1 {
+  font-size: clamp(3.25rem, 5.4vw, 5.3rem);
+  line-height: 1.04;
+  letter-spacing: -0.025em;
 }
 
-.home-page .home-opening {
-  padding-top: calc(var(--masthead-space, 5.25rem) + var(--panel-pad));
-  scroll-margin-top: 0;
+.boutique-page h2 {
+  font-size: clamp(2.4rem, 3.45vw, 3.7rem);
+  line-height: 1.08;
+  letter-spacing: -0.012em;
 }
 
-.home-opening > .home-section-heading {
-  align-items: start;
-  margin-bottom: 0;
+.boutique-page h3 {
+  font-size: clamp(1.65rem, 2.2vw, 2.25rem);
+  line-height: 1.18;
+  letter-spacing: -0.008em;
 }
 
-.home-opening-copy p + p {
-  margin-top: 1.25rem;
+.boutique-page a {
+  color: inherit;
+  text-decoration: none;
 }
 
-.home-opening .home-opening-copy p {
-  color: var(--prose);
+.boutique-page .link-label {
+  display: inline-grid;
+  grid-template-areas: "label";
+  min-width: 0;
+  max-width: 100%;
 }
 
-.home-proof-heading {
-  display: grid;
-  grid-template-columns: 0.8fr 1.2fr;
-  align-items: start;
-  gap: 4rem;
+.boutique-page .link-label > span,
+.boutique-page .link-label::before,
+.boutique-page .link-label::after {
+  grid-area: label;
 }
 
-.home-proof-heading h2 {
-  max-width: 470px;
-  font-size: clamp(2rem, 3.4vw, 3.2rem);
-  line-height: 1;
+/* Reserve regular and italic widths without duplicating readable text. */
+.boutique-page .link-label::before,
+.boutique-page .link-label::after {
+  content: attr(data-label);
+  visibility: hidden;
+  pointer-events: none;
 }
 
-.home-proof-heading p {
-  max-width: 52ch;
-  margin-top: 1.5rem;
-  color: var(--prose);
-  font-size: var(--text-body);
+.boutique-page .link-label::before {
+  font-style: normal;
 }
 
-.home-proof-heading .home-proof-note {
-  color: var(--muted);
-  font-size: var(--text-sm);
+.boutique-page .link-label::after {
+  font-style: italic;
 }
 
-.home-proof-copy > p:first-child {
-  margin-top: 0;
+.boutique-page a:not(.brand):is(:hover, :focus-visible),
+.boutique-page button.text-link:is(:hover, :focus-visible),
+.boutique-page .mobile-menu > summary:is(:hover, :focus-visible) {
+  font-style: italic;
+  text-decoration-line: none;
 }
 
-.home-employers {
+.boutique-page button,
+.boutique-page input,
+.boutique-page textarea {
+  font: inherit;
+}
+
+.boutique-page button,
+.boutique-page summary {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.boutique-page button {
+  cursor: pointer;
+}
+
+.boutique-page :is(a, button, input, textarea, summary):focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 5px;
+}
+
+.boutique-page [id] {
+  scroll-margin-top: calc(var(--header-height) + 28px);
+}
+
+.boutique-page .page-width {
+  width: min(100% - 2 * var(--gutter), 1328px);
+  margin-inline: auto;
+}
+
+.boutique-page .masthead {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+
+.boutique-page .masthead-inner {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: min(100% - 2 * var(--gutter), 1500px);
+  min-height: var(--header-height);
+  margin-inline: auto;
+  padding-block: 14px 10px;
+}
+
+.boutique-page .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  flex: none;
+  min-height: 44px;
+  color: var(--blue);
+  font-family: var(--display);
+  font-size: clamp(1.5rem, 2.1vw, 2rem);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.boutique-page .brand-mark {
+  width: 46px;
+  height: auto;
+  aspect-ratio: 1021.1 / 524;
+  flex: none;
+}
+
+.boutique-page .brand-amp {
+  margin-inline: 0.04em;
+}
+
+.boutique-page .masthead .brand {
+  gap: 0.35em;
+  font-size: clamp(1.25rem, 2vw, 1.625rem);
+  letter-spacing: 0.05em;
+}
+
+.boutique-page .masthead .brand-mark {
+  width: 1.65em;
+}
+
+.boutique-page .desktop-nav {
+  display: flex;
+  gap: clamp(20px, 2.6vw, 40px);
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9375rem;
+}
+
+.boutique-page .desktop-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.boutique-page .desktop-nav a:hover,
+.boutique-page .desktop-nav a:focus-visible,
+.boutique-page .desktop-nav a[aria-current="location"] {
+  color: var(--blue);
+  font-style: italic;
+}
+
+.boutique-page .mobile-menu {
+  display: none;
+}
+
+.boutique-page .opening {
+  position: relative;
+  scroll-margin-top: var(--header-height);
+}
+
+.boutique-page .opening-brand {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(18px, 3vh, 32px);
+  padding: 24px var(--gutter);
+  color: var(--paper);
+  font-size: clamp(1.7rem, 6.8vw, 6rem);
+  line-height: 1.08;
+  letter-spacing: -0.012em;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 6px rgb(34 43 56 / 0.55));
+}
+
+.boutique-page .opening-brand-mark {
+  width: 3em;
+  max-width: 45vw;
+  height: auto;
+  aspect-ratio: 1021.1 / 524;
+  flex: none;
+}
+
+.boutique-page .opening-brand-name {
+  letter-spacing: 0.04em;
+}
+
+.boutique-page .text-link {
+  display: inline-flex;
+  align-items: center;
   justify-content: space-between;
-  gap: 1.5rem 2rem;
-  margin: 2.5rem 0 0;
-  padding: 1.6rem 0;
-  border-block: 1px solid var(--line);
+  gap: 24px;
+  min-height: 44px;
+  margin-top: 24px;
+  padding: 4px 0;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  color: var(--blue);
+  background: transparent;
+  font-family: var(--reading);
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.boutique-page .text-link svg,
+.boutique-page .contact-email svg {
+  width: 34px;
+  height: 16px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.2;
+}
+
+.boutique-page .text-link:is(:hover, :focus-visible),
+.boutique-page .contact-email:is(:hover, :focus-visible) {
+  border-bottom-color: transparent;
+}
+
+.boutique-page .chapter {
+  display: grid;
+  grid-template-columns: minmax(0, 0.93fr) minmax(0, 1.15fr);
+  gap: clamp(40px, 9vw, 140px);
+  padding-block: clamp(80px, 8.5vw, 132px);
+}
+
+.boutique-page .practice h2,
+.boutique-page .approach h2,
+.boutique-page .person h2 {
+  color: var(--blue);
+}
+
+.boutique-page .practice-copy p,
+.boutique-page .person-copy p {
+  max-width: 64ch;
+}
+
+.boutique-page .practice-copy p + p,
+.boutique-page .person-copy p + p {
+  margin-top: 22px;
+}
+
+.boutique-page .practice-copy .large-copy {
+  margin-top: -4px;
+  font-family: var(--display);
+  font-size: clamp(1.75rem, 2.2vw, 2.25rem);
+  line-height: 1.3;
+}
+
+.boutique-page .blue-section {
+  --line: rgb(247 247 245 / 0.38);
+  color: var(--paper);
+  background: var(--blue);
+}
+
+.boutique-page .blue-section .text-link {
+  color: inherit;
+}
+
+.boutique-page .expertise {
+  padding-block: clamp(72px, 7.5vw, 116px);
+}
+
+.boutique-page .chapter-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 0.93fr) minmax(0, 1.15fr);
+  gap: clamp(40px, 9vw, 140px);
+  align-items: start;
+  margin-bottom: 60px;
+}
+
+.boutique-page .chapter-heading p {
+  max-width: 52ch;
+  margin-top: 3px;
+}
+
+.boutique-page .engagement {
+  border-top: 1px solid var(--line);
+}
+
+.boutique-page .engagement:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.boutique-page summary {
+  cursor: pointer;
   list-style: none;
 }
 
-.home-employers li {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  color: var(--marker);
-  font-size: var(--text-base);
-  font-weight: 520;
+.boutique-page summary::-webkit-details-marker {
+  display: none;
 }
 
-.home-employer-mark {
+.boutique-page .engagement > summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.03fr) 20px;
+  gap: clamp(20px, 3.8vw, 58px);
+  align-items: center;
+  padding-block: 29px;
+}
+
+.boutique-page .service-summary {
+  max-width: 49ch;
+  font-size: inherit;
+  line-height: 1.6;
+}
+
+.boutique-page .disclosure-symbol,
+.boutique-page .menu-symbol {
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 18px;
   flex: none;
-  width: 20px;
-  height: 20px;
+}
+
+.boutique-page .disclosure-symbol::before,
+.boutique-page .disclosure-symbol::after,
+.boutique-page .menu-symbol::before,
+.boutique-page .menu-symbol::after {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  width: 18px;
+  height: 1px;
+  background: currentColor;
+  content: "";
+}
+
+.boutique-page .disclosure-symbol::after,
+.boutique-page .menu-symbol::after {
+  transform: rotate(90deg);
+}
+
+.boutique-page details[open] > summary .disclosure-symbol::after,
+.boutique-page details[open] > summary .menu-symbol::after {
+  transform: rotate(0deg);
+}
+
+.boutique-page .engagement-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 76px);
+  padding: 0 64px 36px 0;
+  font-size: inherit;
+}
+
+.boutique-page .engagement-body p {
+  max-width: 62ch;
+}
+
+.boutique-page .engagement-body ul {
+  margin: 0;
+  padding-left: 20px;
+  list-style: disc;
+}
+
+.boutique-page .engagement-body li + li {
+  margin-top: 9px;
+}
+
+.boutique-page .approach-heading > p {
+  max-width: 34ch;
+  margin-top: 28px;
+}
+
+.boutique-page .approach-decisions article + article {
+  margin-top: 34px;
+  border-top: 1px solid var(--line);
+  padding-top: 30px;
+}
+
+.boutique-page .approach-decisions h3 {
+  margin-bottom: 15px;
+}
+
+.boutique-page .approach-decisions p {
+  max-width: 60ch;
+}
+
+.boutique-page .person-section {
+  background: var(--paper-deep);
+  padding-block: clamp(72px, 7.5vw, 112px) 44px;
+}
+
+.boutique-page .person {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: clamp(48px, 9vw, 140px);
+  align-items: center;
+}
+
+.boutique-page .portrait {
+  width: min(100%, 390px);
+}
+
+.boutique-page .portrait img {
+  width: 100%;
+  height: auto;
+}
+
+.boutique-page .person h2 {
+  margin-bottom: 30px;
+}
+
+.boutique-page .person h3 {
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+}
+
+.boutique-page .experience {
+  margin-top: clamp(40px, 6vh, 72px);
+  padding-top: clamp(28px, 3vw, 40px);
+  border-top: 1px solid var(--line);
+}
+
+.boutique-page .experience-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px 40px;
+}
+
+.boutique-page .experience-heading h2 {
+  max-width: 18ch;
+  color: var(--blue);
+}
+
+.boutique-page .experience-heading p {
+  max-width: 26ch;
+  margin-top: 8px;
+  color: var(--muted);
+  font-family: var(--utility);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.boutique-page .experience ul {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px 32px;
+  margin: 36px 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--blue);
+  font-size: clamp(1.2rem, 1.9vw, 1.5rem);
+}
+
+.boutique-page .experience li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.boutique-page .employer-mark {
+  width: 32px;
+  height: 32px;
+  flex: none;
   background: currentColor;
   -webkit-mask: var(--employer-logo) center / contain no-repeat;
   mask: var(--employer-logo) center / contain no-repeat;
 }
 
-.home-facts {
+.boutique-page .contact {
+  padding-block: clamp(80px, 8vw, 124px);
+}
+
+.boutique-page .contact-inner {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin: 0;
+  grid-template-columns: minmax(0, 0.93fr) minmax(0, 1.15fr);
+  gap: clamp(40px, 9vw, 140px);
 }
 
-.home-facts > div {
-  padding: 1.75rem;
-  border-right: 1px solid var(--line);
+.boutique-page .contact-copy p {
+  max-width: 53ch;
 }
 
-.home-facts > div:first-child {
-  padding-left: 0;
+.boutique-page .contact-copy p + p {
+  margin-top: 20px;
 }
 
-.home-facts > div:last-child {
-  padding-right: 0;
-  border-right: 0;
-}
-
-.home-facts dt {
-  color: var(--marker);
-  font-size: var(--text-base);
-  font-weight: 600;
-}
-
-.home-facts dd {
-  margin: 0.65rem 0 0;
-  color: var(--prose);
-  font-size: var(--text-base);
-  line-height: 1.55;
-}
-
-.home-section-heading {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: end;
-  gap: 2rem 5rem;
-  margin-bottom: 2.5rem;
-}
-
-.home-section-heading p {
-  max-width: 50ch;
-  color: var(--muted);
-  font-size: var(--text-body);
-}
-
-.home-engagement {
-  display: grid;
-  grid-template-columns: 0.9fr 1.15fr;
-  gap: 3rem;
-  border-top: 1px solid var(--ink);
-  padding: 2.8rem 0 4rem;
-}
-
-.home-engagement-title h3 {
-  max-width: 18ch;
-  font-size: var(--text-title);
-  line-height: 1.1;
-  text-wrap: balance;
-}
-
-.home-engagement-title p {
-  max-width: 35ch;
-  margin-top: 1rem;
-  color: var(--muted);
-  font-size: var(--text-base);
-}
-
-.home-engagement-detail > p {
-  max-width: 65ch;
-  color: var(--prose);
-  font-size: var(--text-body);
-  text-align: left;
-  hyphens: none;
-}
-
-.home-engagement-detail ul {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem 1.5rem;
-  margin: 1.75rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.home-engagement-detail li {
-  padding-top: 0.75rem;
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-  font-size: var(--text-sm);
-  line-height: 1.55;
-}
-
-.home-transition h2 {
-  max-width: 900px;
-}
-
-.home-transition-decisions {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin: clamp(1.5rem, 4vh, 3rem) 0 0;
-  padding: 0;
-  border-block: 1px solid var(--line);
-  list-style: none;
-}
-
-.home-transition-decisions li {
-  padding: clamp(1rem, 2.75vh, 1.75rem);
-  border-right: 1px solid var(--line);
-}
-
-.home-transition-decisions li:first-child {
-  padding-left: 0;
-}
-
-.home-transition-decisions li:last-child {
-  border-right: 0;
-}
-
-.home-transition-decisions h3 {
-  font-size: var(--text-title);
-  line-height: 1.1;
-}
-
-.home-transition-decisions p {
-  margin-top: 0.8rem;
-  color: var(--prose);
-  font-size: var(--text-base);
-}
-
-.home-about {
-  display: block;
-}
-
-.home-about > .home-section-heading {
-  grid-template-columns: 1fr;
-  padding-bottom: clamp(1rem, 3.5vh, 2.75rem);
-  border-bottom: 1px solid var(--ink);
-}
-
-.home-about > .home-section-heading h2 {
-  max-width: none;
-}
-
-.home-about-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  column-gap: clamp(4rem, 9vw, 9rem);
-  align-items: center;
-}
-
-.home-about-copy {
-  max-width: 40rem;
-}
-
-.home-about-copy p {
-  color: var(--prose);
-  font-size: var(--text-body);
-  text-align: left;
-  hyphens: none;
-}
-
-.home-about-copy p + p {
-  margin-top: 1.25rem;
-}
-
-.home-about-copy .home-about-lead {
-  font-size: var(--text-title);
-  font-weight: 520;
-  line-height: 1.08;
-}
-
-.home-about-portrait {
-  margin: 0;
-  justify-self: end;
-  /* Keep Safari's auto grid track from reserving the JPEG's intrinsic width. */
-  width: calc(min(62vh, 34rem) * 723 / 1086);
-  height: min(62vh, 34rem);
-  aspect-ratio: 723 / 1086;
-  max-width: 100%;
-}
-
-.home-about-portrait img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  background: var(--paper-deep);
-}
-
-.home-contact {
-  display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-  align-items: start;
-  gap: clamp(2.5rem, 7vw, 6rem);
-}
-
-.home-contact-copy p {
-  max-width: 45ch;
-  margin-top: 1.25rem;
-  color: var(--prose);
-  font-size: var(--text-body);
-}
-
-.home-direct-email {
+.boutique-page .contact-email {
   display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
   width: fit-content;
   max-width: 100%;
   min-height: 44px;
-  margin-top: 1.75rem;
-  padding-block: 0.4rem;
-  color: var(--marker);
-  font-size: var(--text-base);
-  font-weight: 560;
+  margin-top: 30px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid currentColor;
+  font-family: var(--reading);
+  font-size: clamp(1.125rem, 1.6vw, 1.5rem);
+  line-height: 1.3;
   overflow-wrap: anywhere;
 }
 
-.home-direct-email span {
-  font-weight: 400;
+.boutique-page .contact-phone {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 8px;
+  font-size: 0.9375rem;
 }
 
-.home-direct-email:hover,
-.home-direct-email:focus-visible {
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
+.boutique-page .enquiry {
+  margin-top: 26px;
+  border-top: 1px solid var(--line);
 }
 
-.home-contact-form {
+.boutique-page .enquiry > summary {
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  min-width: 0;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--marker);
-  text-align: left;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 64px;
+  font-size: 0.9375rem;
 }
 
-.home-form-fields {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+.boutique-page .enquiry form {
+  padding-block: 10px 0;
+}
+
+.boutique-page .enquiry fieldset {
   min-width: 0;
   margin: 0;
   padding: 0;
   border: 0;
 }
 
-.home-form-row,
-.home-optional-details {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.5rem;
+.boutique-page .enquiry input[hidden] {
+  display: none;
 }
 
-.home-form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-  min-width: 0;
-}
-
-.home-contact-form label {
-  color: var(--marker);
-  font-size: var(--text-base);
-  font-weight: 560;
-}
-
-.home-contact-form .home-form-control,
-.home-contact-form .home-select-trigger {
-  width: 100%;
-  height: auto;
-  min-height: 48px;
-  padding: 0.65rem 0;
-  border: 0;
-  border-bottom: 1px solid var(--line);
-  border-radius: 0;
-  background: transparent;
-  color: var(--prose);
-  box-shadow: none;
-  font: inherit;
-  font-size: var(--text-base);
-}
-
-.home-contact-form textarea.home-form-control {
-  min-height: 9rem;
-  padding: 0.9rem;
-  border: 1px solid var(--line);
-  resize: vertical;
-}
-
-.home-contact-form .home-form-control::placeholder {
-  color: var(--muted);
-  opacity: 1;
-}
-
-.home-contact-form .home-form-control:-webkit-autofill {
-  box-shadow: inset 0 0 0 1000px var(--paper);
-  -webkit-text-fill-color: var(--prose);
-}
-
-.home-contact-form .home-form-control:focus-visible,
-.home-contact-form .home-select-trigger:focus-visible,
-.home-details-toggle:focus-visible,
-.home-contact-form .home-submit:focus-visible,
-.home-direct-email:focus-visible {
-  outline: 2px solid var(--marker);
-  outline-offset: 3px;
-  box-shadow: none;
-}
-
-.home-details-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  width: 100%;
-  min-height: 48px;
-  padding: 0.75rem 0;
-  border: 0;
-  border-block: 1px solid var(--line);
-  background: transparent;
-  color: var(--marker);
-  font: inherit;
-  font-size: var(--text-base);
-  text-align: left;
-  cursor: pointer;
-}
-
-.home-details-toggle:hover {
-  border-color: var(--marker);
-}
-
-.home-details-icon {
-  flex: none;
-  width: 1rem;
-  height: 1rem;
-  transition: transform 180ms ease;
-}
-
-.home-other-software {
-  grid-column: 1 / -1;
-}
-
-.home-select-content {
-  border: 1px solid var(--p-blue);
-  border-radius: 0;
-  background: var(--p-paper);
-  color: var(--p-ink);
-  box-shadow: none;
-  font-size: var(--text-base);
-}
-
-.home-select-content [role="option"] {
-  min-height: 44px;
-  border-radius: 0;
-}
-
-.home-contact-form .home-submit {
-  width: 100%;
-  height: auto;
-  min-height: 54px;
-  padding: 1rem 1.5rem;
-  border: 1px solid var(--marker);
-  border-radius: 0;
-  background: var(--marker);
-  color: var(--on-ink);
-  font: inherit;
-  font-size: var(--text-base);
-  font-weight: 600;
-}
-
-.home-contact-form .home-submit:hover {
-  background: var(--paper);
-  color: var(--marker);
-}
-
-.home-contact-form .home-submit:disabled {
+.boutique-page .enquiry :disabled {
+  opacity: 0.65;
   cursor: wait;
 }
 
-.home-contact-form .home-form-help,
-.home-contact-form .home-form-reassure {
-  color: var(--muted);
-  font-size: var(--text-sm);
+.boutique-page .enquiry label {
+  display: grid;
+  gap: 8px;
+  margin-top: 22px;
+  font-family: var(--utility);
+  font-size: 0.9375rem;
+}
+
+.boutique-page .form-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+}
+
+.boutique-page .enquiry input,
+.boutique-page .enquiry textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 46px;
+  padding: 10px;
+  border: 1px solid rgb(247 247 245 / 0.65);
+  border-radius: 0;
+  color: var(--paper);
+  background: transparent;
+  font-family: var(--reading);
+  font-size: 1rem;
   line-height: 1.6;
 }
 
-.home-form-notice {
-  padding-block: 1rem;
-  border-block: 1px solid var(--marker);
-  color: var(--prose);
-  font-size: var(--text-base);
+.boutique-page .enquiry textarea {
+  resize: vertical;
 }
 
-.home-form-notice:focus-visible {
-  outline: 2px solid var(--marker);
-  outline-offset: 4px;
+.boutique-page .enquiry .form-privacy,
+.boutique-page #enquiry-help,
+.boutique-page #draft-status {
+  margin-top: 18px;
+  font-family: var(--utility);
+  font-size: 0.875rem;
+  line-height: 1.6;
 }
 
-.home-form-notice a,
-.home-contact-form .home-privacy-link {
-  color: var(--marker);
+.boutique-page .form-privacy a,
+.boutique-page #draft-status a {
   text-decoration: underline;
-  text-underline-offset: 0.2em;
+  text-underline-offset: 3px;
 }
 
-.site-closing {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 3.5rem;
-  min-height: 50svh;
-  padding: clamp(3rem, 6vw, 5rem) 4vw 0;
-  overflow: hidden;
-  container-type: inline-size;
-  background: var(--p-blue);
-  color: var(--p-paper);
-  --paper: var(--p-blue);
-  --ink: var(--p-paper);
-  --prose: var(--p-paper);
-  --line: rgb(var(--p-paper-rgb) / 0.3);
-  --heading: var(--p-paper);
-  --marker: var(--p-paper);
+.boutique-page .form-privacy a:is(:hover, :focus-visible),
+.boutique-page #draft-status a:is(:hover, :focus-visible) {
+  text-decoration-line: none;
 }
 
-.site-closing-top {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 2.5rem;
+.boutique-page .footer {
+  padding-block: 58px 28px;
 }
 
-.site-closing-line {
-  max-width: 32ch;
-  font-size: var(--text-body);
-  line-height: 1.5;
-}
-
-.site-closing-cols {
-  display: flex;
-  gap: clamp(2rem, 5vw, 4.5rem);
-}
-
-.site-closing-cols nav {
-  display: flex;
-  flex-direction: column;
-  min-width: 9rem;
-}
-
-.site-closing-cols a {
+.boutique-page .footer-top,
+.boutique-page .footer-bottom {
   display: flex;
   align-items: center;
-  min-height: 44px;
-  padding: 0.65rem 0;
-  border-bottom: 1px solid var(--line);
-  font-family: var(--mono);
-  font-size: var(--label-size);
-  letter-spacing: var(--label-tracking);
-  text-transform: uppercase;
+  justify-content: space-between;
+  gap: 28px;
 }
 
-.site-closing-cols a:hover,
-.site-closing-cols a:focus-visible {
-  border-color: currentColor;
+.boutique-page .footer-top > p {
+  font-size: 0.9375rem;
+  line-height: 1.7;
 }
 
-.site-closing-cols a:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 3px;
+.boutique-page .footer-bottom {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  font-family: var(--utility);
+  font-size: 0.8125rem;
 }
 
-.site-closing-notice {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
-.site-closing-lockup {
-  --wall: calc(100cqw + 8vw);
+.boutique-page .footer-bottom nav {
   display: flex;
-  align-items: flex-start;
-  width: max-content;
-  margin: auto -4vw -0.19em;
-  font-size: min(calc(var(--wall) / 18.68), calc((var(--wall) - 3.8rem) / 17.73));
-  line-height: 1;
-  white-space: nowrap;
+  gap: 26px;
 }
 
-.site-closing-wordmark {
-  font-size: 1em;
+.boutique-page .footer-bottom a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
 }
 
-.site-closing-year {
-  margin: 0.26em 0 0 0.34em;
-  font-family: var(--mono);
-  font-size: max(var(--label-size), 0.22em);
-  letter-spacing: 0.04em;
-  line-height: 1;
+.boutique-page .footer-bottom a:is(:hover, :focus-visible) {
+  color: var(--blue);
 }
 
-@media (max-width: 900px) {
-  .home-proof-heading,
-  .home-section-heading,
-  .home-about-grid,
-  .home-contact {
-    grid-template-columns: 1fr;
+@media (max-width: 1000px) {
+  .boutique-page .desktop-break {
+    display: none;
   }
 
-  .home-section-heading {
-    align-items: start;
-    gap: 1.25rem;
+  .boutique-page .engagement > summary {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) 18px;
+    gap: 28px;
   }
 
-  .home-about-copy {
-    margin-bottom: 3rem;
+  .boutique-page .person {
+    gap: 48px;
   }
 
-  .home-about-portrait {
-    justify-self: start;
-    width: 100%;
-    max-width: 26rem;
-    height: auto;
-  }
-
-  .home-about-portrait img {
-    height: auto;
-  }
-
-  .home-transition-decisions {
-    grid-template-columns: 1fr;
-  }
-
-  .home-transition-decisions li {
-    padding: 1.5rem 0;
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .home-transition-decisions li:last-child {
-    border-bottom: 0;
-  }
-}
-
-@media (max-width: 680px) {
-  .home-section h1,
-  .home-section h2,
-  .home-section-heading h2 {
-    font-size: var(--text-mobile-headline);
-  }
-
-  .home-proof-heading,
-  .home-facts,
-  .home-engagement,
-  .home-engagement-detail ul,
-  .home-form-row,
-  .home-optional-details {
-    grid-template-columns: 1fr;
-  }
-
-  .home-employers {
+  .boutique-page .experience ul {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 800px) {
+  .boutique-page {
+    --header-height: 112px;
+    --gutter: 28px;
   }
 
-  .home-employers li {
-    font-size: var(--text-sm);
+  .boutique-page .masthead-inner {
+    padding-block: 8px;
   }
 
-  .home-facts > div,
-  .home-facts > div:first-child,
-  .home-facts > div:last-child {
-    padding: 1.5rem 0;
-    border-right: 0;
+  .boutique-page .desktop-nav {
+    display: none;
+  }
+
+  .boutique-page .brand {
+    gap: 10px;
+    font-size: 1.5rem;
+  }
+
+  .boutique-page .brand-mark {
+    width: 34px;
+  }
+
+  .boutique-page .mobile-menu {
+    display: block;
+    flex: none;
+    font-size: 0.875rem;
+  }
+
+  .boutique-page .mobile-menu summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    color: var(--blue);
+  }
+
+  .boutique-page .mobile-menu nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: grid;
+    padding: 18px var(--gutter) 24px;
     border-bottom: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--blue);
   }
 
-  .home-facts > div:last-child {
-    padding-bottom: 0;
-    border-bottom: 0;
+  .boutique-page .mobile-menu nav a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    border-top: 1px solid var(--line);
+    font-size: 1.125rem;
   }
 
-  .home-engagement {
-    gap: 1.5rem;
-    padding-block: 2.5rem;
+  .boutique-page .chapter,
+  .boutique-page .chapter-heading,
+  .boutique-page .contact-inner {
+    grid-template-columns: 1fr;
+    gap: 36px;
   }
 
-  .home-engagement-title h3 {
-    max-width: 20ch;
-    font-size: var(--text-title);
+  .boutique-page .chapter-heading {
+    margin-bottom: 42px;
   }
 
-  .home-contact {
-    gap: 2.5rem;
+  .boutique-page .chapter > h2,
+  .boutique-page .approach-heading h2,
+  .boutique-page .contact h2 {
+    max-width: 21ch;
   }
 
-  .site-closing-cols {
-    width: 100%;
-    gap: 2rem;
+  .boutique-page .practice-copy {
+    max-width: 64ch;
   }
 
-  .site-closing-cols nav {
-    flex: 1;
-    min-width: 0;
+  .boutique-page .engagement > summary {
+    grid-template-columns: minmax(0, 1fr) 18px;
+    gap: 14px 22px;
+    padding-block: 25px;
+  }
+
+  .boutique-page .service-summary {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .boutique-page .engagement summary .disclosure-symbol {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+  }
+
+  .boutique-page .engagement-body {
+    grid-template-columns: 1fr;
+    padding-right: 0;
+    gap: 20px;
+  }
+
+  .boutique-page .person {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 30px;
+    align-items: start;
+  }
+
+  .boutique-page .person h2 {
+    font-size: 2.45rem;
+  }
+
+  .boutique-page .footer-top,
+  .boutique-page .footer-bottom {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .boutique-page .footer-bottom {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 560px) {
+  .boutique-page {
+    --gutter: 23px;
+    --header-height: 108px;
+  }
+
+  .boutique-page {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .boutique-page .masthead-inner {
+    gap: 4px;
+  }
+
+  .boutique-page .brand {
+    font-size: 1.25rem;
+    gap: 9px;
+  }
+
+  .boutique-page .brand-mark {
+    width: 28px;
+  }
+
+  .boutique-page .brand-amp {
+    margin-inline: 0;
+  }
+
+  .boutique-page .mobile-menu summary {
+    gap: 8px;
+  }
+
+  .boutique-page .text-link {
+    margin-top: 18px;
+  }
+
+  .boutique-page h2,
+  .boutique-page .person h2 {
+    font-size: 2.5rem;
+  }
+
+  .boutique-page h3 {
+    font-size: 1.8rem;
+  }
+
+  .boutique-page .chapter {
+    padding-block: 68px;
+    gap: 28px;
+  }
+
+  .boutique-page .practice-copy .large-copy {
+    font-size: 1.85rem;
+  }
+
+  .boutique-page .expertise,
+  .boutique-page .contact {
+    padding-block: 65px;
+  }
+
+  .boutique-page .person-section {
+    padding-top: 58px;
+  }
+
+  .boutique-page .person {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .boutique-page .portrait {
+    width: min(100%, 310px);
+  }
+
+  .boutique-page .person-copy h2 {
+    margin-bottom: 24px;
+  }
+
+  .boutique-page .experience-heading {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .boutique-page .experience-heading p {
+    max-width: none;
+    margin-top: 0;
+  }
+
+  .boutique-page .experience ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px 16px;
+    margin-top: 28px;
+    font-size: clamp(1rem, 4.1vw, 1.125rem);
+  }
+
+  .boutique-page .experience li {
+    gap: 10px;
+  }
+
+  .boutique-page .employer-mark {
+    width: 24px;
+    height: 24px;
+  }
+
+  .boutique-page .contact-email {
+    font-size: clamp(1rem, 5.1vw, 1.25rem);
+    gap: 12px;
+  }
+
+  .boutique-page .contact-email svg {
+    width: 26px;
+  }
+
+  .boutique-page .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .boutique-page .footer {
+    padding-top: 42px;
+  }
+
+  .boutique-page .footer .brand {
+    font-size: 1.5rem;
+  }
+
+  .boutique-page .footer-bottom {
+    margin-top: 34px;
+  }
+
+}
+
+@media (max-width: 360px) {
+  .boutique-page {
+    --gutter: 18px;
+  }
+
+  .boutique-page .mobile-menu summary {
+    font-size: 0.8125rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home-details-icon {
-    transition: none;
+  html.fixed-sections {
+    scroll-behavior: auto;
   }
 }

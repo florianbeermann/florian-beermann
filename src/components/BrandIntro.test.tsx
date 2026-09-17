@@ -18,9 +18,13 @@ describe("brand intro", () => {
     expect(screen.getByRole("link", { name: "Scroll to content" })).toHaveAttribute("href", "#top");
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
     expect(screen.queryByRole("heading")).not.toBeInTheDocument();
+    expect(screen.getByRole("img", { name: "Beermann & Company" })).toHaveAttribute(
+      "data-layout",
+      "stacked",
+    );
     const name = document.querySelector(".brand-intro-wordmark .wordmark-name")!;
-    expect(name).toHaveTextContent(/Florian Beermann.*& Co\./);
-    expect(name.querySelectorAll("br")).toHaveLength(1);
+    expect(name).toHaveTextContent(/^BEERMANN$/);
+    expect(name.querySelectorAll("br")).toHaveLength(0);
     expect(document.querySelector(".brand-intro-wordmark .wordmark-mark")).toBeInTheDocument();
   });
 

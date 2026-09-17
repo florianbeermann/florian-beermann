@@ -1,148 +1,62 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-24T20:30:00.000Z",
-  "title": "Design System: Florian Beermann & Co.",
+  "generatedAt": "2026-09-17T13:29:16.000Z",
+  "title": "Design System: Beermann & Company",
   "extensions": {
     "colorMeta": {
-      "electric": {
-        "role": "primary",
-        "displayName": "Electric",
-        "canonical": "#0047ff",
-        "tonalRamp": ["#000d33", "#001a66", "#00227a", "#0034bf", "#0047ff", "#4d8bff", "#99b8ff", "#ccdbff"]
-      },
-      "ink": {
-        "role": "neutral",
-        "displayName": "Slate Ink",
-        "canonical": "#181d26",
-        "tonalRamp": ["#0c0f13", "#181d26", "#2b323f", "#414753", "#5d6472", "#828997", "#a3aab8", "#c7ccd6"]
-      },
-      "paper": {
-        "role": "neutral",
-        "displayName": "Paper",
-        "canonical": "#f1f2f3",
-        "tonalRamp": ["#2f3133", "#45484b", "#5e6265", "#818589", "#a4a8ac", "#c8cccf", "#e5e8eb", "#f1f2f3"]
-      },
-      "paper-deep": {
-        "role": "neutral",
-        "displayName": "Paper Deep",
-        "canonical": "#e5e8eb",
-        "tonalRamp": ["#2a2d30", "#404448", "#595e63", "#7c8186", "#9fa4a9", "#c2c7cb", "#e5e8eb", "#f4f6f7"]
-      },
-      "stock": {
-        "role": "neutral",
-        "displayName": "Stock",
-        "canonical": "#181d26",
-        "tonalRamp": ["#0c0f13", "#181d26", "#2b323f", "#414753", "#5d6472", "#828997", "#a3aab8", "#c7ccd6"]
-      }
+      "electric": { "role": "primary", "displayName": "Signature blue", "canonical": "#305cde", "tonalRamp": ["#0a122c", "#132559", "#2445a6", "#305cde", "#6e8de8", "#acbef2", "#d6def8"] },
+      "paper": { "role": "neutral", "displayName": "Paper", "canonical": "#f7f7f5", "tonalRamp": ["#eeeeea", "#f7f7f5", "#ffffff"] },
+      "paper-deep": { "role": "neutral", "displayName": "Deeper paper", "canonical": "#eeeeea", "tonalRamp": ["#eeeeea", "#f7f7f5"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#222b38", "tonalRamp": ["#181d26", "#222b38", "#59616a"] }
     },
     "typographyMeta": {
-      "display": { "displayName": "Display", "purpose": "The hero statement. Once per page." },
-      "headline": { "displayName": "Headline", "purpose": "Band openers." },
-      "title": { "displayName": "Title", "purpose": "Named things inside a band." },
-      "body": { "displayName": "Body", "purpose": "Running prose, held to roughly 46-65ch." },
-      "label": { "displayName": "Label", "purpose": "The machine voice: navigation, field names, captions, legal, numbers. One size and one tracking everywhere on the site." },
-      "wordmark": { "displayName": "Wordmark", "purpose": "The lockup only. Lastica appears nowhere else." }
+      "display": { "displayName": "Display", "purpose": "Caslon Display for established editorial headings." },
+      "headline": { "displayName": "Headline", "purpose": "Section headings, blue on paper." },
+      "body": { "displayName": "Body", "purpose": "Caslon Text prose, left aligned and comfortably spaced." },
+      "navigation": { "displayName": "Navigation", "purpose": "Caslon Text with real italic hover and stable label widths." },
+      "utility": { "displayName": "Utility", "purpose": "Switzer field labels and supporting text, also with a real italic." },
+      "wordmark": { "displayName": "Home wordmark", "purpose": "Anvil above BEERMANN, centred in the full viewport." },
+      "header-wordmark": { "displayName": "Header wordmark", "purpose": "Horizontal anvil + BEERMANN, invisible with dimensions retained only on Home." },
+      "footer-wordmark": { "displayName": "Footer wordmark", "purpose": "Text-only Beermann & Company, without an anvil." }
     },
     "shadows": [
-      {
-        "name": "glass-lift",
-        "value": "0 4px 35px rgba(0, 0, 0, 0.15)",
-        "purpose": "The only shadow on the site. Separates a glass pane from the footage behind it. Never used on flat ground."
-      }
+      { "name": "logo-readability", "value": "0 2px 6px rgb(34 43 56 / 0.55)", "purpose": "Offset shadow beneath the light Home logo over photography." }
     ],
     "motion": [
-      { "name": "state", "value": "180ms ease", "purpose": "Control fills: background, colour and border together." },
-      { "name": "ground", "value": "260ms ease", "purpose": "The masthead crossing between grounds, and the mark's colour with it." },
-      { "name": "reel", "value": "linear", "purpose": "The engagements reel. Deliberately unshaped: with snapping a gesture is a jump of a whole engagement, and an eased curve spends it crossing far faster in the middle than at the ends, so the card flicks past instead of travelling. The pacing belongs to the snap animation." }
+      { "name": "slideshow", "value": "1200ms", "purpose": "One crossfade every four seconds including fade time, without controls or hover pausing." }
     ],
     "breakpoints": [
-      { "name": "brand-word", "value": "30rem" },
-      { "name": "masthead-sheet", "value": "48rem" },
-      { "name": "reel", "value": "769px" }
+      { "name": "employer-grid", "value": "1000px" },
+      { "name": "mobile-menu", "value": "800px" },
+      { "name": "single-column", "value": "560px" },
+      { "name": "compact-mobile", "value": "360px" }
     ],
     "narrative": {
-      "northStar": "The Weather Station",
-      "premise": "A real place at a real hour, read coolly. Live footage behind, instrument in front. Nothing is decorated; things are measured.",
+      "northStar": "Independent boutique advisory",
+      "premise": "A logo-only photographic Home and five navigation-selected content screens, using Caslon and signature blue.",
       "antiReferences": [
-        "The dark statement-panel arrangement the previous site shipped",
-        "The card-grid consultancy page: six things offered at once instead of one"
+        "The retired gradient intro and scroll-driven service reel",
+        "Technical monospace labels, frosted navigation and consultancy card grids",
+        "Invented clients, institutional scale or performance claims"
       ],
       "rules": [
-        {
-          "name": "The One Rule",
-          "text": "Slate is the ink, electric is the signal. Blue never carries running prose: at 5.34:1 it has no room to fade, so a tinted secondary blue collapses and the band goes flat. It is spent in fewer places rather than made louder."
-        },
-        {
-          "name": "The Single Source Rule",
-          "text": "All colour is decided in src/styles/palettes.css and nowhere else, so one attribute on <html> repaints both planes including the WebGL field. A literal colour elsewhere is a bug."
-        },
-        {
-          "name": "The Two Voices Rule",
-          "text": "Fragment Mono for anything a machine would have printed; Switzer for anything a person says. Nothing is set in both, and there is no third family."
-        },
-        {
-          "name": "The One Size Rule",
-          "text": "The machine voice appears at exactly one size and one tracking everywhere. Fragment Mono ships a single weight, which is a feature: there is never a decision to make about it."
-        },
-        {
-          "name": "The No-Border Rule",
-          "text": "Glass panes have no border. A hairline draws the pane's outline, which reads as a shape; the shadow separates it from what is behind, which reads as a sheet lying on top. 50px of blur resolves everything behind to one flat field, so the pane becomes a material rather than a window."
-        },
-        {
-          "name": "The Snap Marker Rule",
-          "text": "Every full-height panel needs a .site-stop marker immediately before it. Page snapping is mandatory, which means the scroll can never rest anywhere that is not a snap position, so a panel without one becomes unreachable. Deleting these markers once forced a retreat to proximity snapping and broke the engagements reel for a full session."
-        }
+        { "name": "Whole viewport", "text": "Centre the Home logo in the whole viewport. Open mobile menus occupy separate space above it." },
+        { "name": "Stable navigation", "text": "Retain the hidden Home header brand's dimensions. Use About, Services, Approach, Expertise and Contact." },
+        { "name": "True italic", "text": "One readable label, invisible sizing copies, real italic faces and no hover underlines." },
+        { "name": "Genuine evidence", "text": "Prominent former-employer evidence belongs below the colour portrait, explicitly not presented as clients." },
+        { "name": "Approved images", "text": "Marbling, sky, gallery, then Hamburg at night. Only marbling and gallery are shaded." },
+        { "name": "Production continuity", "text": "Preserve real enquiry delivery, legal routes, metadata and the server-side password gate." }
       ]
     }
   },
   "components": [
     {
-      "name": "Control",
+      "name": "Editorial action",
       "kind": "button",
-      "refersTo": "control",
-      "description": "Drawn, never filled. A rule with the machine voice inside it; the fill arrives on hover and it is the ink.",
-      "html": "<a class=\"ds-control\" href=\"#\">Start a conversation</a>",
-      "css": ".ds-control { display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem; min-height: 3rem; padding: 0 1.75rem; border: 1px solid currentColor; border-radius: 4px; background: transparent; color: #181d26; font-family: \"Fragment Mono\", ui-monospace, Menlo, monospace; font-size: 0.8125rem; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease; } .ds-control:hover { background: #181d26; color: #f1f2f3; }"
-    },
-    {
-      "name": "Control, solid",
-      "kind": "button",
-      "refersTo": "control-solid",
-      "description": "One per page, for the single action the hero asks for. On a washed photograph a drawn rule is a suggestion; a solid plate is an instruction.",
-      "html": "<a class=\"ds-control-solid\" href=\"#\">Start a conversation</a>",
-      "css": ".ds-control-solid { display: inline-flex; align-items: center; justify-content: center; min-height: 3rem; padding: 0 1.75rem; border: 1px solid #f1f2f3; border-radius: 4px; background: #f1f2f3; color: #181d26; font-family: \"Fragment Mono\", ui-monospace, Menlo, monospace; font-size: 0.8125rem; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease; } .ds-control-solid:hover { background: #fff; border-color: #fff; }"
-    },
-    {
-      "name": "Glass",
-      "kind": "custom",
-      "refersTo": "glass",
-      "description": "The front plane's only material, and only ever over the footage. A film of light, a deep blur, a soft shadow, and no border.",
-      "html": "<nav class=\"ds-glass\"><span>Work</span><span>About</span></nav>",
-      "css": ".ds-glass { display: inline-flex; gap: 1.5rem; align-items: center; height: 2.5rem; padding: 0 1.25rem; background: rgba(226, 230, 238, 0.1); border: 0; border-radius: 4px; box-shadow: 0 4px 35px rgba(0, 0, 0, 0.15); backdrop-filter: blur(50px) saturate(130%); -webkit-backdrop-filter: blur(50px) saturate(130%); color: #f1f2f3; font-family: \"Fragment Mono\", ui-monospace, Menlo, monospace; font-size: 0.8125rem; letter-spacing: 0.14em; text-transform: uppercase; }"
-    },
-    {
-      "name": "Label",
-      "kind": "custom",
-      "refersTo": "label",
-      "description": "The machine voice. Anything a system would have printed rather than a person written.",
-      "html": "<span class=\"ds-label\">Engagement 02</span>",
-      "css": ".ds-label { font-family: \"Fragment Mono\", ui-monospace, Menlo, monospace; font-size: 0.8125rem; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; font-feature-settings: \"tnum\" 1; color: #181d26; }"
-    },
-    {
-      "name": "Field",
-      "kind": "input",
-      "refersTo": "field",
-      "description": "No box. A baseline with the label above it in the machine voice; the rule takes the electric on focus.",
-      "html": "<label class=\"ds-field\"><span>Work email</span><input type=\"email\" placeholder=\"jane@company.com\" /></label>",
-      "css": ".ds-field { display: grid; gap: 0.5rem; } .ds-field span { font-family: \"Fragment Mono\", ui-monospace, Menlo, monospace; font-size: 0.8125rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(24 29 38 / 0.66); } .ds-field input { border: 0; border-bottom: 1px solid rgb(24 29 38 / 0.28); border-radius: 0; background: transparent; padding: 0.6rem 0; color: #181d26; font-family: Switzer, sans-serif; font-size: 1.05rem; } .ds-field input:focus { outline: none; border-bottom: 2px solid #0047ff; }"
-    },
-    {
-      "name": "Panel",
-      "kind": "card",
-      "refersTo": "panel",
-      "description": "A full-height band holding one idea. Inverts its whole subtree rather than restating colour on its children.",
-      "html": "<section class=\"ds-panel\"><h2>Three ways I work</h2><p>Each engagement is scoped around the operating problem in front of you.</p></section>",
-      "css": ".ds-panel { display: grid; align-content: center; gap: 1.5rem; min-height: 60vh; padding: clamp(1.5rem, 5.5vh, 10rem) clamp(1.5rem, 4vw, 3.5rem); background: #f1f2f3; color: #181d26; border-radius: 0; } .ds-panel h2 { margin: 0; font-family: Switzer, sans-serif; font-size: clamp(2.8rem, 5vw, 5.4rem); font-weight: 520; line-height: 0.95; letter-spacing: -0.03em; color: #0047ff; } .ds-panel p { margin: 0; max-width: 46ch; font-size: 1.2rem; line-height: 1.6; color: rgb(24 29 38 / 0.66); }"
+      "refersTo": "navigation",
+      "description": "A restrained text action with real italic hover and visible focus.",
+      "html": "<a class=\"ds-action\" href=\"#\">Start a conversation</a>",
+      "css": ".ds-action { display: inline-flex; align-items: center; min-height: 44px; color: #305cde; font-family: 'Libre Caslon Text', Georgia, serif; font-size: 0.9375rem; text-decoration: none; } .ds-action:hover { font-style: italic; } .ds-action:focus-visible { outline: 2px solid currentColor; outline-offset: 5px; }"
     }
   ]
 }

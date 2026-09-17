@@ -17,7 +17,7 @@ function makeTemplate() {
   template.innerHTML = `
     <style>
       :host {
-        --gradient-blue: var(--p-blue, #0047ff);
+        --gradient-blue: var(--p-blue, #305cde);
         --gradient-ink: color-mix(in srgb, var(--gradient-blue) 6%, #000);
         --gradient-ice: color-mix(in srgb, var(--gradient-blue) 10%, #fff);
         --gradient-loop: 24s;

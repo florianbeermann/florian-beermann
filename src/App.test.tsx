@@ -29,8 +29,9 @@ afterEach(() => {
 });
 
 function recordScroll(top: number) {
-  Object.defineProperty(window, "scrollY", { configurable: true, value: top });
-  fireEvent.scroll(window);
+  const section = document.querySelector<HTMLElement>(".section-screen:not([hidden])")!;
+  section.scrollTop = top;
+  fireEvent.scroll(section);
 }
 
 function nativeFragment(id: string) {
@@ -41,11 +42,12 @@ function nativeFragment(id: string) {
 }
 
 describe("page and fragment navigation", () => {
-  it("honours native contact links rather than restoring the previous scroll position", () => {
+  it("honours native contact links by selecting the Contact screen", () => {
     render(<App />);
     recordScroll(400);
     nativeFragment("contact");
-    expect(scrolledElements.at(-1)).toBe(document.getElementById("contact"));
+    expect(document.documentElement).toHaveAttribute("data-active-screen", "contact");
+    expect(document.querySelector('.section-screen[data-screen="contact"]')).not.toHaveAttribute("hidden");
   });
 
   it("honours a repeated section link even when that fragment has a saved position", () => {
@@ -55,23 +57,23 @@ describe("page and fragment navigation", () => {
     nativeFragment("contact");
     recordScroll(2400);
     nativeFragment("about");
-    expect(scrolledElements.at(-1)).toBe(document.getElementById("about"));
+    expect(document.documentElement).toHaveAttribute("data-active-screen", "florian");
+    expect(document.querySelector<HTMLElement>('.section-screen[data-screen="florian"]')?.scrollTop).toBe(1800);
   });
 
   it("restores the enquiry position when returning from the privacy policy", async () => {
     render(<App />);
     nativeFragment("contact");
+    const enquiry = document.querySelector<HTMLDetailsElement>(".enquiry")!;
+    fireEvent.click(enquiry.querySelector("summary")!);
+    fireEvent(enquiry, new Event("toggle"));
     recordScroll(2400);
     fireEvent.click(screen.getByRole("link", { name: "Read the privacy policy" }));
     expect(screen.getByRole("heading", { name: "Privacy policy", level: 1 })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Return to your enquiry" }));
     await waitFor(() => {
-      expect(screen.getByRole("heading", { name: "What needs to change?" })).toBeInTheDocument();
-      expect(window.scrollTo).toHaveBeenLastCalledWith({
-        left: 0,
-        top: 2400,
-        behavior: "instant",
-      });
+      expect(document.documentElement).toHaveAttribute("data-active-screen", "contact");
+      expect(document.querySelector<HTMLElement>('.section-screen[data-screen="contact"]')?.scrollTop).toBe(2400);
     });
   });
 });

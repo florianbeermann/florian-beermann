@@ -17,7 +17,7 @@ const NotFound = () => {
   return (
     <div className="site-page notfound-page">
       <header className="site-header">
-        <Link className="site-brand" to="/" aria-label="Florian Beermann &amp; Co., home">
+        <Link className="site-brand" to="/" aria-label="Beermann &amp; Company, home">
           {/* The whole lockup, as on the legal pages — see LegalPageLayout. */}
           <Wordmark className="site-brand-lockup" />
         </Link>
@@ -47,7 +47,7 @@ const NotFound = () => {
 
       <footer className="site-footer">
         <span>
-          Florian Beermann &amp; Co. · © {new Date().getFullYear()}
+          Beermann &amp; Company · © {new Date().getFullYear()}
         </span>
         <nav aria-label="Footer navigation">
           <Link to="/imprint">Legal notice</Link>
