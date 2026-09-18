@@ -113,10 +113,15 @@ describe("boutique homepage", () => {
     expect(document.querySelector(".person")?.children).toHaveLength(2);
     expect(copy.querySelector(".experience h3")).not.toBeInTheDocument();
     expect(document.getElementById("experience-title")).not.toBeInTheDocument();
-    expect(document.getElementById("experience-context")?.textContent).toBe("Previous employers");
+    expect(document.getElementById("experience-context")).not.toBeInTheDocument();
+    expect(within(copy as HTMLElement).queryByText("Previous employers")).not.toBeInTheDocument();
     const employers = screen.getByRole("list", { name: "Previous employers" });
-    expect(employers).toHaveAttribute("aria-labelledby", "experience-context");
-    expect(within(employers).getAllByRole("listitem")).toHaveLength(5);
+    expect(employers).toHaveAttribute("aria-label", "Previous employers");
+    expect(employers).not.toHaveAttribute("aria-labelledby");
+    expect(within(employers).getAllByRole("listitem").map(item => item.textContent)).toEqual([
+      "Microsoft", "Capgemini", "HubSpot", "Personio", "Spendesk",
+    ]);
+    expect(employers.querySelectorAll(".employer-mark")).toHaveLength(5);
     expect(document.querySelectorAll(".employer-mark")[1]).toHaveAttribute(
       "style", "--employer-logo: url('/boutique/employers/capgemini.svg');",
     );

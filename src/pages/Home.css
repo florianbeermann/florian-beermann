@@ -544,10 +544,6 @@ html.fixed-sections {
   font: inherit;
 }
 
-.boutique-page .experience p {
-  margin-top: 16px;
-}
-
 .boutique-page .experience li {
   display: flex;
   align-items: center;

@@ -140,7 +140,7 @@ restore duplicated readable labels or hover underlines. Keep visible focus
 outlines and resting underlines on inline privacy links.
 
 The responsive sizes above are owner-approved exceptions, not drift from the
-retired Switzer ramp. Employer names and their caption inherit the surrounding
+retired Switzer ramp. Employer names inherit the surrounding
 body size, including 1rem on mobile. Contact email adapts from 1 to 1.25rem.
 The Apple New York font remains excluded
 by its licence. Font licences live beside their self-hosted assets.
@@ -197,11 +197,11 @@ readability without changing the source photography.
 
 The colour portrait keeps its 1023-by-1537 proportions and definite responsive
 width. The employer list sits **beneath the Expertise text in the same column**,
-not in a separate full-width section. It has no divider or heading. Company
-names and the caption "Previous employers" use the body font and size, and
-the blue marks scale with the text. The caption labels the list for assistive
-technology. Capgemini uses the official vector spade. Provenance and licences
-are recorded in `public/boutique/`.
+not in a separate full-width section. It has no divider, heading or visible
+caption. Company names use the body font and size, and the blue marks scale
+with the text. Keep "Previous employers" only as the list's accessible name.
+Capgemini uses the official vector spade. Provenance and licences are recorded
+in `public/boutique/`.
 
 ## Copy and contact
 

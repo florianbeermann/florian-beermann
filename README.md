@@ -72,9 +72,9 @@ Browser history and legal-page returns restore reading positions and preserve
 enquiries. Leaving Home removes its document scroll lock.
 
 The employer list concludes the Expertise text in the same column, without a
-heading, separator or standalone full-width panel. Company names and the caption
-"Previous employers" share the body type family and size, with proportional
-blue icons. The caption also provides the list's accessible name.
+heading, caption, separator or standalone full-width panel. Company names share
+the body type family and size, with proportional blue icons. "Previous employers"
+remains the list's accessible name, without appearing as visible text.
 
 The Home logo is centred in the entire viewport, including fullscreen, not
 below the header. Navigation is transparent and white. Its hidden header brand
